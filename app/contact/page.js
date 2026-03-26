@@ -1,4 +1,5 @@
-import { BulletList, FormCard, Hero, Section } from "../../components/Sections";
+import { BulletList, Hero, Section } from "../../components/Sections";
+import FormCard from "../../components/FormCard";
 
 export default function ContactPage() {
   return (
@@ -29,6 +30,7 @@ export default function ContactPage() {
             title="Formulaire de contact"
             intro="Employeur, candidat, consultation juridique ou partenariat: choisissez le motif de votre demande et décrivez votre situation."
             buttonLabel="Envoyer le message"
+            formType="contact"
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },

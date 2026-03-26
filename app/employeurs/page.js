@@ -1,4 +1,6 @@
-import { BulletList, CtaBanner, Faq, FormCard, Hero, Section, Steps } from "../../components/Sections";
+import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
+import FormCard from "../../components/FormCard";
+import { professionOptionsByRegion } from "../../lib/professions";
 
 const employerChallenges = [
   {
@@ -136,14 +138,17 @@ export default function EmployeursPage() {
             title="Formulaire employeur"
             intro="Décrivez votre besoin de manière claire pour permettre une première lecture sérieuse du recrutement envisagé."
             buttonLabel="Envoyer le besoin"
+            formType="employeur"
             fields={[
               { label: "Nom du contact", placeholder: "Prénom Nom" },
               { label: "Entreprise", placeholder: "Nom de l'entreprise" },
               { label: "Email professionnel", placeholder: "contact@entreprise.be", type: "email" },
               { label: "Téléphone", placeholder: "+32 ..." },
-              { label: "Région concernée", type: "select", placeholder: "Sélectionnez une région", options: ["Bruxelles-Capitale", "Wallonie", "Flandre"] },
-              { label: "Secteur", placeholder: "Construction, santé, transport..." },
-              { label: "Intitulé du poste", placeholder: "Électricien installateur résidentiel" },
+              { name: "region", label: "Région concernée", type: "select", placeholder: "Sélectionnez une région", options: ["Bruxelles-Capitale", "Wallonie", "Flandre"] },
+              { name: "secteur", label: "Secteur", type: "select", placeholder: "Sélectionnez un secteur", options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Personnel hautement qualifié", "Personnel de direction", "Autre secteur"] },
+              { name: "autreSecteur", label: "Autre secteur / précision", placeholder: "Indiquez ici un autre secteur si nécessaire", showWhen: { field: "secteur", value: "Autre secteur" } },
+              { name: "profession", label: "Métier recherché", type: "select", placeholder: "Choisissez d'abord une région", optionsByField: "region", optionsMap: professionOptionsByRegion },
+              { name: "autreProfession", label: "Autre profession / précision", placeholder: "Indiquez ici une autre profession si nécessaire", showWhen: { field: "profession", value: "Autre profession" } },
               { label: "Type de contrat", placeholder: "CDI, CDD, intérim..." },
               { label: "Nombre d'heures hebdomadaires", placeholder: "38h" },
               { label: "Lieu de travail", placeholder: "Bruxelles, Liège, Gand..." },

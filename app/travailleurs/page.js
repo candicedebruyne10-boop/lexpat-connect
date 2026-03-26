@@ -1,4 +1,6 @@
-import { BulletList, CtaBanner, Faq, FormCard, Hero, Section, Steps } from "../../components/Sections";
+import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
+import FormCard from "../../components/FormCard";
+import { professionOptionsByRegion } from "../../lib/professions";
 
 const candidateBenefits = [
   {
@@ -116,14 +118,17 @@ export default function TravailleursPage() {
             title="Formulaire candidat"
             intro="Présentez les éléments utiles de votre parcours pour rendre votre profil plus clair auprès d'employeurs belges."
             buttonLabel="Envoyer mon profil"
+            formType="candidat"
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },
               { label: "Téléphone", placeholder: "+32 / +..." },
               { label: "Pays de résidence", placeholder: "Pays actuel" },
-              { label: "Région ou ville souhaitée en Belgique", placeholder: "Bruxelles, Liège, Anvers..." },
-              { label: "Secteur visé", placeholder: "Santé, transport, construction..." },
-              { label: "Métier recherché", placeholder: "Infirmier, maçon, technicien..." },
+              { name: "region", label: "Région ou ville souhaitée en Belgique", type: "select", placeholder: "Sélectionnez une région", options: ["Bruxelles-Capitale", "Wallonie", "Flandre"] },
+              { name: "secteur", label: "Secteur visé", type: "select", placeholder: "Sélectionnez un secteur", options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Personnel hautement qualifié", "Personnel de direction", "Autre secteur"] },
+              { name: "autreSecteur", label: "Autre secteur / précision", placeholder: "Indiquez ici un autre secteur si nécessaire", showWhen: { field: "secteur", value: "Autre secteur" } },
+              { name: "profession", label: "Métier recherché", type: "select", placeholder: "Choisissez d'abord une région", optionsByField: "region", optionsMap: professionOptionsByRegion },
+              { name: "autreProfession", label: "Autre profession / précision", placeholder: "Indiquez ici une autre profession si nécessaire", showWhen: { field: "profession", value: "Autre profession" } },
               { label: "Disponibilité", placeholder: "Immédiate, 1 mois, 3 mois..." },
               { label: "Langues parlées", placeholder: "Français, anglais, néerlandais..." },
               { label: "Statut administratif", type: "select", placeholder: "Sélectionnez votre statut", options: ["Permis unique", "Permis A", "Annexe 15", "Annexe 35", "Sans titre actuel", "Autre", "Je ne sais pas"] },

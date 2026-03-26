@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
 export function Hero({
   badge,
@@ -166,7 +169,57 @@ export function Faq({ items }) {
   );
 }
 
+function getFieldKey(field) {
+  return field.name || field.label;
+}
+
+function shouldShowField(field, values) {
+  if (!field.showWhen) {
+    return true;
+  }
+
+  return values[field.showWhen.field] === field.showWhen.value;
+}
+
+function resolveSelectOptions(field, values) {
+  if (field.optionsMap && field.optionsByField) {
+    const selected = values[field.optionsByField];
+    return selected ? field.optionsMap[selected] || [] : [];
+  }
+
+  return field.options || [];
+}
+
 export function FormCard({ title, intro, fields, buttonLabel }) {
+  const [values, setValues] = useState({});
+
+  const visibleFields = useMemo(
+    () => fields.filter((field) => shouldShowField(field, values)),
+    [fields, values]
+  );
+
+  function handleChange(field, value) {
+    const fieldKey = getFieldKey(field);
+
+    setValues((current) => {
+      const next = {
+        ...current,
+        [fieldKey]: value
+      };
+
+      if (fieldKey === "region") {
+        next.profession = "";
+        next.autreProfession = "";
+      }
+
+      if (fieldKey === "profession" && value !== "Autre profession") {
+        next.autreProfession = "";
+      }
+
+      return next;
+    });
+  }
+
   return (
     <div className="rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-8 max-w-2xl">
@@ -177,27 +230,61 @@ export function FormCard({ title, intro, fields, buttonLabel }) {
         <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{intro}</p>
       </div>
       <form className="grid gap-5 md:grid-cols-2">
-        {fields.map((field) => (
-          <label key={field.label} className={field.wide ? "md:col-span-2" : ""}>
-            <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{field.label}</span>
-            {field.type === "textarea" ? (
-              <textarea className="field-input min-h-32" placeholder={field.placeholder} rows="5" />
-            ) : field.type === "select" ? (
-              <select className="field-input" defaultValue="">
-                <option value="" disabled>
-                  {field.placeholder}
-                </option>
-                {field.options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+        {visibleFields.map((field) => {
+          const fieldKey = getFieldKey(field);
+          const options = field.type === "select" ? resolveSelectOptions(field, values) : [];
+          const placeholder = field.type === "select" && field.optionsMap && !values[field.optionsByField]
+            ? "Choisissez d'abord une région"
+            : field.placeholder;
+
+          return (
+            <label key={fieldKey} className={field.wide ? "md:col-span-2" : ""}>
+              <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{field.label}</span>
+              {field.type === "textarea" ? (
+                <textarea
+                  className="field-input min-h-32"
+                  placeholder={field.placeholder}
+                  rows="5"
+                  value={values[fieldKey] || ""}
+                  onChange={(event) => handleChange(field, event.target.value)}
+                />
+              ) : field.type === "select" ? (
+                <select
+                  className="field-input"
+                  value={values[fieldKey] || ""}
+                  onChange={(event) => handleChange(field, event.target.value)}
+                >
+                  <option value="" disabled>
+                    {placeholder}
                   </option>
-                ))}
-              </select>
-            ) : (
-              <input className="field-input" type={field.type || "text"} placeholder={field.placeholder} />
-            )}
-          </label>
-        ))}
+                  {options.map((option) =>
+                    typeof option === "string" ? (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ) : (
+                      <optgroup key={option.label} label={option.label}>
+                        {option.options.map((groupOption) => (
+                          <option key={`${option.label}-${groupOption}`} value={groupOption}>
+                            {groupOption}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )
+                  )}
+                </select>
+              ) : (
+                <input
+                  className="field-input"
+                  type={field.type || "text"}
+                  placeholder={field.placeholder}
+                  value={values[fieldKey] || ""}
+                  onChange={(event) => handleChange(field, event.target.value)}
+                />
+              )}
+            </label>
+          );
+        })}
         <div className="md:col-span-2 flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-2xl text-sm leading-7 text-[#66768b]">
             Cette version sert de socle de présentation. Le branchement technique des formulaires peut être ajouté ensuite sans changer l'expérience utilisateur.
