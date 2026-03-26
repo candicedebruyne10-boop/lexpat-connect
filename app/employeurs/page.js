@@ -1,48 +1,140 @@
 import { BulletList, CtaBanner, Faq, FormCard, Hero, Section, Steps } from "../../components/Sections";
 
+const employerChallenges = [
+  {
+    title: "Des postes qui restent durablement ouverts",
+    text: "Dans plusieurs secteurs, certains recrutements deviennent plus longs, plus incertains et plus coûteux à sécuriser."
+  },
+  {
+    title: "Un besoin de clarté avant d'ouvrir à l'international",
+    text: "Avant même d'identifier un candidat, l'employeur a besoin d'un cadre lisible sur le poste, la région et les conditions du recrutement."
+  },
+  {
+    title: "Des enjeux administratifs à anticiper",
+    text: "Selon le profil recruté, le recrutement peut soulever des questions de permis unique, de droit au travail ou de faisabilité régionale."
+  }
+];
+
+const employerBenefits = [
+  {
+    title: "Structurer le besoin de recrutement",
+    text: "LEXPAT Connect permet de présenter le poste, les missions, la région et les conditions essentielles dans un format plus clair."
+  },
+  {
+    title: "Rendre la recherche plus lisible",
+    text: "La plateforme aide à rapprocher un besoin employeur de profils internationaux pertinents, sans survendre un matching automatique."
+  },
+  {
+    title: "Identifier plus vite le moment où le juridique devient nécessaire",
+    text: "Quand le dossier soulève un enjeu concret de séjour ou d'autorisation de travail, le cabinet LEXPAT peut prendre le relais."
+  }
+];
+
+const employerFaq = [
+  {
+    question: "Puis-je utiliser la plateforme même si je n'ai jamais recruté à l'international ?",
+    answer: "Oui. LEXPAT Connect peut justement servir de point d'entrée pour clarifier votre besoin et comprendre le cadre d'un recrutement international en Belgique."
+  },
+  {
+    question: "La plateforme garantit-elle l'obtention d'un permis unique ?",
+    answer: "Non. Une autorisation de travail ou de séjour dépend toujours d'une situation précise et, le cas échéant, d'une analyse juridique distincte."
+  },
+  {
+    question: "À quel moment faut-il contacter le cabinet LEXPAT ?",
+    answer: "Dès qu'un recrutement soulève une question de droit au travail, de faisabilité régionale, de permis unique ou de sécurisation administrative."
+  }
+];
+
 export default function EmployeursPage() {
   return (
     <>
       <Hero
-        badge="Espace Employeurs"
-        title="Recrutez des talents internationaux pour vos besoins en Belgique"
-        description="LEXPAT Connect aide les employeurs belges à entrer en relation avec des travailleurs internationaux dans les métiers en pénurie, avec une possibilité d'accompagnement juridique par le cabinet LEXPAT lorsque le recrutement le nécessite."
+        badge="Espace employeurs"
+        title={
+          <>
+            Recruter à l'international en Belgique,
+            <span className="block text-[#57b7af]">avec un cadre plus clair dès le départ</span>
+          </>
+        }
+        description="LEXPAT Connect aide les employeurs belges à structurer leurs besoins de recrutement dans les métiers en pénurie, à rendre leurs attentes plus lisibles et à identifier quand un relais juridique devient nécessaire."
         primaryHref="#formulaire"
-        primaryLabel="Déposer un besoin de recrutement"
+        primaryLabel="Déposer un besoin"
         secondaryHref="/accompagnement-juridique"
-        secondaryLabel="Contacter le cabinet LEXPAT"
+        secondaryLabel="Voir le relais juridique"
+        note="La plateforme facilite la mise en relation. Les questions juridiques sont traitées séparément par le cabinet LEXPAT."
+        stats={[
+          { value: "Poste", label: "Un cadrage plus précis du besoin, des missions et du contexte" },
+          { value: "Région", label: "Une lecture attentive de Bruxelles, de la Wallonie et de la Flandre" },
+          { value: "Relais", label: "Une continuité possible avec le cabinet LEXPAT si nécessaire" }
+        ]}
+        panels={[
+          {
+            kicker: "Pour votre entreprise",
+            title: "Rendre le recrutement plus lisible",
+            text: "Clarifiez le métier recherché, le type de contrat, la région et les compétences attendues pour faciliter une mise en relation utile."
+          },
+          {
+            kicker: "Pour le dossier",
+            title: "Ne pas attendre pour sécuriser le cadre",
+            text: "Lorsqu'une situation soulève une question de droit au travail ou de faisabilité, le relais juridique doit être identifié immédiatement."
+          }
+        ]}
       />
+
       <Section
-        title="Recruter devient plus complexe dans certains secteurs"
-        intro="Dans de nombreux métiers techniques, de soin, de construction, de transport ou de maintenance, les employeurs belges rencontrent des difficultés à recruter localement."
+        title="Pourquoi les employeurs utilisent LEXPAT Connect"
+        intro="La plateforme s'adresse aux entreprises qui veulent ouvrir leur recherche à des talents internationaux sans perdre en clarté, en sérieux ni en sécurité."
+        kicker="Besoins"
       >
-        <BulletList
-          items={[
-            { title: "Pénurie de profils", text: "Certains postes restent durablement difficiles à pourvoir." },
-            { title: "Manque de temps", text: "Les équipes RH et dirigeantes ont besoin d'un processus plus simple et plus lisible." },
-            { title: "Cadre administratif", text: "Le recrutement international suppose parfois des démarches spécifiques qu'il faut anticiper." }
-          ]}
-        />
+        <BulletList items={employerChallenges} />
       </Section>
+
       <Section
-        title="Une plateforme conçue pour simplifier la mise en relation"
-        intro="LEXPAT Connect ne remplace pas votre processus RH interne. La plateforme agit comme un point d'entrée structuré pour identifier plus rapidement des candidatures adaptées."
+        title="Ce que la plateforme vous apporte concrètement"
+        intro="LEXPAT Connect n'a pas vocation à remplacer vos process RH internes. Elle sert à structurer le besoin, clarifier les informations utiles et préparer une mise en relation plus crédible."
+        kicker="Apport"
         muted
+      >
+        <BulletList items={employerBenefits} />
+      </Section>
+
+      <Section
+        title="Comment cela fonctionne"
+        intro="Le parcours reste volontairement simple pour vous faire gagner du temps sans brouiller la lecture du dossier."
+        kicker="Étapes"
       >
         <Steps
           items={[
-            { title: "Vous déposez votre besoin", text: "Intitulé du poste, missions, compétences, région et conditions essentielles." },
-            { title: "La plateforme facilite la visibilité", text: "La demande est structurée pour permettre un rapprochement avec des candidats pertinents." },
-            { title: "Vous entrez en contact", text: "Vous identifiez les profils les plus adaptés et poursuivez les échanges." },
-            { title: "Vous sécurisez si nécessaire", text: "Le cabinet LEXPAT peut intervenir sur permis unique, séjour ou analyse régionale." }
+            {
+              title: "Vous décrivez votre besoin",
+              text: "Poste, région, compétences, contrat, niveau d'urgence et contexte du recrutement sont posés dès l'entrée."
+            },
+            {
+              title: "La demande devient plus exploitable",
+              text: "Votre besoin est présenté dans un format qui facilite un rapprochement avec des profils internationaux pertinents."
+            },
+            {
+              title: "La mise en relation peut commencer",
+              text: "Vous pouvez entrer en contact avec des profils adaptés, dans un cadre plus clair et plus professionnel."
+            },
+            {
+              title: "LEXPAT intervient si le dossier l'exige",
+              text: "Permis unique, séjour, faisabilité régionale ou sécurisation administrative peuvent ensuite être traités dans un cadre distinct."
+            }
           ]}
         />
       </Section>
-      <Section title="Déposer un besoin de recrutement" intro="Plus votre besoin est précis, plus la mise en relation sera pertinente." muted>
+
+      <Section
+        title="Déposer un besoin de recrutement"
+        intro="Plus votre demande est précise, plus la mise en relation sera utile et plus le moment d'un éventuel accompagnement juridique pourra être identifié rapidement."
+        kicker="Formulaire"
+        muted
+      >
         <div id="formulaire">
           <FormCard
             title="Formulaire employeur"
-            intro="Prototype de formulaire pour le MVP. Les champs correspondent à votre cadrage fonctionnel actuel."
+            intro="Décrivez votre besoin de manière claire pour permettre une première lecture sérieuse du recrutement envisagé."
             buttonLabel="Envoyer le besoin"
             fields={[
               { label: "Nom du contact", placeholder: "Prénom Nom" },
@@ -61,22 +153,18 @@ export default function EmployeursPage() {
           />
         </div>
       </Section>
+
       <CtaBanner
         title="Un recrutement international peut nécessiter plus qu'une mise en relation"
-        text="Dans certains cas, l'embauche d'un travailleur international implique des démarches d'autorisation de travail et de séjour. Ces démarches dépendent notamment de la Région, du type de poste, du niveau de qualification et de la situation du candidat."
+        text="Lorsque le recrutement implique une question de séjour, de permis unique ou de droit au travail, le cabinet LEXPAT peut intervenir pour sécuriser le dossier dans un cadre distinct."
         primaryHref="/accompagnement-juridique"
         primaryLabel="Découvrir l'accompagnement juridique"
         secondaryHref="/contact"
         secondaryLabel="Poser une question"
       />
-      <Section title="Questions fréquentes des employeurs" muted>
-        <Faq
-          items={[
-            { question: "Puis-je déposer une offre si je n'ai jamais recruté à l'international ?", answer: "Oui. La plateforme peut justement servir de premier point d'entrée pour structurer votre besoin." },
-            { question: "LEXPAT Connect garantit-elle l'obtention d'un permis unique ?", answer: "Non. La plateforme ne garantit aucune décision administrative. Une analyse juridique distincte est nécessaire." },
-            { question: "Quand faut-il contacter le cabinet LEXPAT ?", answer: "Dès qu'un recrutement soulève une question d'autorisation de travail, de séjour ou de sécurisation administrative." }
-          ]}
-        />
+
+      <Section title="Questions fréquentes des employeurs" kicker="FAQ" muted>
+        <Faq items={employerFaq} />
       </Section>
     </>
   );

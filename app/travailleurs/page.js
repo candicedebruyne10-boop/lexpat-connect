@@ -1,45 +1,120 @@
 import { BulletList, CtaBanner, Faq, FormCard, Hero, Section, Steps } from "../../components/Sections";
 
+const candidateBenefits = [
+  {
+    title: "Présenter un profil plus sérieux",
+    text: "Votre expérience, vos compétences, vos langues et votre disponibilité sont présentées dans un format plus clair pour un employeur belge."
+  },
+  {
+    title: "Gagner en lisibilité",
+    text: "La plateforme aide à rendre votre parcours plus compréhensible, sans vous réduire à un simple CV ou à une promesse imprécise."
+  },
+  {
+    title: "Comprendre où vous vous situez",
+    text: "Votre localisation, votre mobilité et votre situation administrative peuvent être décrites de manière plus structurée."
+  },
+  {
+    title: "Être orienté si une question juridique apparaît",
+    text: "Si votre situation soulève un enjeu de droit au travail ou de séjour, le cabinet LEXPAT peut intervenir séparément."
+  }
+];
+
+const candidateFaq = [
+  {
+    question: "Puis-je créer un profil même si je ne suis pas encore en Belgique ?",
+    answer: "Oui. La plateforme peut déjà vous permettre de présenter votre parcours et de rendre votre profil visible pour des opportunités en Belgique."
+  },
+  {
+    question: "Dois-je déjà disposer d'un permis de travail pour m'inscrire ?",
+    answer: "Non. L'inscription sur la plateforme et l'existence d'un droit au travail sont deux choses distinctes."
+  },
+  {
+    question: "Exercer un métier en pénurie suffit-il pour travailler en Belgique ?",
+    answer: "Non. Cela peut constituer un point d'appui, mais chaque situation dépend aussi de la région compétente, du poste et du profil du candidat."
+  }
+];
+
 export default function TravailleursPage() {
   return (
     <>
       <Hero
-        badge="Espace Travailleurs"
-        title="Valorisez votre profil pour travailler en Belgique"
-        description="LEXPAT Connect permet aux travailleurs internationaux de présenter leurs compétences et d'accéder à des opportunités professionnelles en Belgique, en particulier dans les métiers en pénurie."
+        badge="Espace candidats"
+        title={
+          <>
+            Présenter votre profil pour travailler en Belgique,
+            <span className="block text-[#57b7af]">dans un cadre plus sérieux et plus lisible</span>
+          </>
+        }
+        description="LEXPAT Connect permet aux travailleurs internationaux de valoriser leurs compétences, leur expérience et leur disponibilité, tout en facilitant une lecture plus claire de leur profil par des employeurs belges."
         primaryHref="#formulaire"
         primaryLabel="Créer mon profil"
         secondaryHref="/metiers-en-penurie"
         secondaryLabel="Comprendre les opportunités"
+        note="Créer un profil ne vaut jamais validation juridique. Si votre situation soulève une question de droit au travail ou de séjour, le cabinet LEXPAT peut intervenir séparément."
+        stats={[
+          { value: "Profil", label: "Une présentation plus claire de votre parcours et de vos compétences" },
+          { value: "Belgique", label: "Une visibilité pensée pour des employeurs belges" },
+          { value: "LEXPAT", label: "Un accompagnement juridique possible si votre situation l'exige" }
+        ]}
+        panels={[
+          {
+            kicker: "Pour votre candidature",
+            title: "Rendre votre parcours plus compréhensible",
+            text: "Valorisez votre expérience, vos langues, votre disponibilité et le métier que vous recherchez dans un format plus structuré."
+          },
+          {
+            kicker: "Pour la suite",
+            title: "Comprendre quand demander un appui juridique",
+            text: "Si une opportunité professionnelle soulève une question de permis unique, de séjour ou de droit au travail, le relais vers LEXPAT doit être clair."
+          }
+        ]}
       />
+
       <Section
         title="Pourquoi créer votre profil"
-        intro="LEXPAT Connect s'adresse aux personnes qui souhaitent travailler en Belgique et qui disposent d'une expérience, d'une qualification ou d'un savoir-faire recherché par des employeurs belges."
+        intro="LEXPAT Connect s'adresse aux personnes qui souhaitent travailler en Belgique et qui veulent présenter leur parcours de manière plus sérieuse à des employeurs ouverts au recrutement international."
+        kicker="Visibilité"
       >
-        <BulletList
-          items={[
-            { title: "Gagner en visibilité", text: "Votre profil peut être consulté dans le cadre de besoins de recrutement ciblés." },
-            { title: "Présenter clairement vos compétences", text: "Parcours, expérience, langues et disponibilité sont mis en avant." },
-            { title: "Accéder à des opportunités belges", text: "La plateforme est structurée autour du marché belge et de ses réalités régionales." },
-            { title: "Être orienté si une question juridique se pose", text: "Le cabinet LEXPAT peut intervenir séparément si nécessaire." }
-          ]}
-        />
+        <BulletList items={candidateBenefits} />
       </Section>
-      <Section title="Comment utiliser LEXPAT Connect" muted>
+
+      <Section
+        title="Comment cela fonctionne"
+        intro="Le parcours reste simple: vous présentez les informations utiles, votre profil devient plus lisible et la plateforme facilite ensuite une mise en relation plus crédible."
+        kicker="Étapes"
+        muted
+      >
         <Steps
           items={[
-            { title: "Vous créez votre profil", text: "Coordonnées, expérience, métiers visés, compétences et disponibilité." },
-            { title: "Vous précisez votre situation", text: "Localisation, mobilité, statut administratif ou besoins d'information." },
-            { title: "Votre profil peut être rapproché d'un besoin employeur", text: "La plateforme facilite la mise en relation lorsqu'un profil correspond à une demande." },
-            { title: "Vous êtes orienté si besoin", text: "Les questions d'immigration ou d'autorisation de travail peuvent être traitées par le cabinet." }
+            {
+              title: "Vous créez votre profil",
+              text: "Vous indiquez votre identité, votre parcours, les métiers visés et votre disponibilité."
+            },
+            {
+              title: "Vous précisez votre situation",
+              text: "Votre pays de résidence, votre mobilité, vos langues et votre situation administrative peuvent être mentionnés clairement."
+            },
+            {
+              title: "Votre profil devient plus exploitable",
+              text: "Les employeurs peuvent mieux comprendre votre projet professionnel et votre adéquation avec un besoin de recrutement."
+            },
+            {
+              title: "LEXPAT peut intervenir si nécessaire",
+              text: "Si une opportunité révèle une vraie question juridique, le cabinet peut être consulté dans un cadre distinct."
+            }
           ]}
         />
       </Section>
-      <Section title="Créer mon profil" intro="Le statut indiqué ne vaut jamais validation juridique. Il sert à mieux comprendre votre situation de départ.">
+
+      <Section
+        title="Créer mon profil"
+        intro="Le statut indiqué sert à mieux comprendre votre situation de départ. Il ne vaut jamais validation juridique."
+        kicker="Formulaire"
+      >
         <div id="formulaire">
           <FormCard
             title="Formulaire candidat"
-            intro="Version MVP orientée collecte utile et lisible. Les pièces et règles de traitement pourront être branchées ensuite à Supabase."
+            intro="Présentez les éléments utiles de votre parcours pour rendre votre profil plus clair auprès d'employeurs belges."
             buttonLabel="Envoyer mon profil"
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
@@ -58,22 +133,18 @@ export default function TravailleursPage() {
           />
         </div>
       </Section>
+
       <CtaBanner
-        title="Vous avez une question sur votre droit au travail ou votre séjour"
-        text="Dans certains cas, la création d'un profil ou l'intérêt d'un employeur fait apparaître une question plus juridique : permis unique, statut de séjour, changement d'employeur, droit au travail ou installation en Belgique."
+        title="Vous avez une question sur votre droit au travail ou votre séjour en Belgique"
+        text="Dans certains cas, la création d'un profil ou l'intérêt d'un employeur fait apparaître une question plus juridique. Le cabinet LEXPAT peut alors intervenir dans un cadre distinct."
         primaryHref="/accompagnement-juridique"
         primaryLabel="Contacter le cabinet LEXPAT"
         secondaryHref="/contact"
         secondaryLabel="Nous écrire"
       />
-      <Section title="Questions fréquentes des candidats" muted>
-        <Faq
-          items={[
-            { question: "Puis-je créer un profil même si je ne suis pas encore en Belgique ?", answer: "Oui, si vous souhaitez identifier des opportunités et présenter votre parcours." },
-            { question: "Dois-je déjà avoir un permis de travail pour m'inscrire ?", answer: "Non. L'inscription sur la plateforme et l'existence d'un droit au travail sont deux choses différentes." },
-            { question: "Le fait d'exercer un métier en pénurie me donne-t-il automatiquement le droit de travailler en Belgique ?", answer: "Non. Cela peut faciliter certaines démarches, mais chaque situation doit être examinée individuellement." }
-          ]}
-        />
+
+      <Section title="Questions fréquentes des candidats" kicker="FAQ" muted>
+        <Faq items={candidateFaq} />
       </Section>
     </>
   );
