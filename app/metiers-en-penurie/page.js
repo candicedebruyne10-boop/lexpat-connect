@@ -3,35 +3,35 @@ import { CardGrid, CtaBanner, Hero, Section } from "../../components/Sections";
 export default function MetiersPage() {
   return (
     <>
-      <Hero badge="Metiers en penurie en Belgique" title="Comprendre les metiers en penurie en Belgique" description="LEXPAT Connect s'appuie sur les realites du marche belge et sur les listes regionales de metiers en penurie pour structurer les opportunites visibles sur la plateforme." primaryHref="/travailleurs" primaryLabel="Voir les opportunites" secondaryHref="/employeurs" secondaryLabel="Deposer un besoin de recrutement" />
-      <Section title="Pourquoi cette page est importante" intro="En Belgique, les metiers en penurie jouent un role essentiel dans certaines strategies de recrutement, notamment lorsqu'un employeur envisage d'ouvrir sa recherche a l'international.">
+      <Hero badge="Métiers en pénurie en Belgique" title="Comprendre les métiers en pénurie en Belgique" description="LEXPAT Connect s'appuie sur les réalités du marche belge et sur les listes régionales de métiers en pénurie pour structurer les opportunités visibles sur la plateforme." primaryHref="/travailleurs" primaryLabel="Voir les opportunités" secondaryHref="/employeurs" secondaryLabel="Déposer un besoin de recrutement" />
+      <Section title="Pourquoi cette page est importante" intro="En Belgique, les métiers en pénurie jouent un rôle essentiel dans certaines stratégies de recrutement, notamment lorsqu'un employeur envisage d'ouvrir sa recherche a l'international.">
         <CardGrid items={[
-          { title: "La Belgique fonctionne par Regions", text: "Bruxelles, Wallonie et Flandre ont leurs propres listes et leurs propres pratiques." },
-          { title: "Les listes evoluent", text: "Le contenu doit etre mis a jour regulierement et ne peut pas etre traite comme un bloc fige." },
-          { title: "Un metier en penurie ne garantit rien a lui seul", text: "Le contexte du poste et du candidat reste determinant." }
+          { title: "La Belgique fonctionne par Régions", text: "Bruxelles, Wallonie et Flandre ont leurs propres listes et leurs propres pratiques." },
+          { title: "Les listes évoluent", text: "Le contenu doit être mis à jour régulièrement et ne peut pas être traité comme un bloc figé." },
+          { title: "Un métier en pénurie ne garantit rien a lui seul", text: "Le contexte du poste et du candidat reste déterminant." }
         ]} />
       </Section>
-      <Section title="Trois Regions, trois realites" intro="Le futur site devra conserver cette finesse, car c'est la que votre credibilite juridique fera la difference." muted>
+      <Section title="Trois Régions, trois réalités" intro="Le futur site devra conserver cette finesse, car c'est là que votre crédibilité juridique fera la différence." muted>
         <CardGrid items={[
-          { title: "Bruxelles-Capitale", text: "Lecture nuancee des listes et de leur portee, avec attention aux roles d'Actiris et de Bruxelles Economie Emploi." },
-          { title: "Wallonie", text: "Liste regionale propre avec categories et fonctions plus directement mobilisables pour les besoins employeurs." },
-          { title: "Flandre", text: "Cadre plus fonctionnel sur plusieurs metiers techniques, souvent presente via des descriptions de fonctions." }
+          { title: "Bruxelles-Capitale", text: "Lecture nuancée des listes et de leur portée, avec attention aux rôles d'Actiris et de Bruxelles Économie Emploi." },
+          { title: "Wallonie", text: "Liste régionale propre avec catégories et fonctions plus directement mobilisables pour les besoins employeurs." },
+          { title: "Flandre", text: "Cadre plus fonctionnel sur plusieurs métiers techniques, souvent présenté via des descriptions de fonctions." }
         ]} />
       </Section>
-      <Section title="Exemples de secteurs concernes" intro="Les categories exactes peuvent varier selon la Region et les formulations officielles. La plateforme doit rester fidele a cette realite.">
+      <Section title="Exemples de secteurs concernés" intro="Les catégories exactes peuvent varier selon la Région et les formulations officielles. La plateforme doit rester fidèle a cette réalité.">
         <CardGrid items={[
-          { title: "Construction et travaux publics", text: "Maconnerie, couverture, electricite, conduite de chantier, voirie." },
-          { title: "Sante et action sociale", text: "Aide-soignant, infirmier, assistant social, fonctions medicales et paramedicales." },
-          { title: "Transport et logistique", text: "Poids lourd, autobus, navigation interieure, fonctions de conduite ciblees." },
-          { title: "Industrie et maintenance", text: "Electromecanique, automatisation, froid, mecanique, maintenance industrielle." },
-          { title: "Technologies et informatique", text: "Developpement, business analysis, fonctions techniques et communication reseau." },
-          { title: "Education et formation", text: "Enseignement, formation, coordination pedagogique selon les cadres applicables." }
+          { title: "Construction et travaux publics", text: "Maçonnerie, couverture, électricité, conduite de chantier, voirie." },
+          { title: "Santé et action sociale", text: "Aide-soignant, infirmier, assistant social, fonctions médicales et paramédicales." },
+          { title: "Transport et logistique", text: "Poids lourd, autobus, navigation intérieure, fonctions de conduite ciblées." },
+          { title: "Industrie et maintenance", text: "Électromécanique, automatisation, froid, mecanique, maintenance industrielle." },
+          { title: "Technologies et informatique", text: "Développement, business analysis, fonctions techniques et communication réseau." },
+          { title: "Éducation et formation", text: "Enseignement, formation, coordination pédagogique selon les cadres applicables." }
         ]} />
       </Section>
-      <Section title="Ce qu'un metier en penurie ne signifie pas automatiquement" intro="La presence d'un metier sur une liste regionale ne signifie pas, a elle seule, qu'un recrutement international est automatiquement possible ou qu'une autorisation de travail sera delivree." muted>
-        <div className="note-box"><p>D'autres elements entrent en ligne de compte, notamment la Region competente, le profil du candidat, la qualification, la remuneration, la nature du poste et la situation administrative.</p></div>
+      <Section title="Ce qu'un métier en pénurie ne signifie pas automatiquement" intro="La présence d'un metier sur une liste régionale ne signifie pas, a elle seule, qu'un recrutement international est automatiquement possible ou qu'une autorisation de travail sera délivrée." muted>
+        <div className="note-box"><p>D'autres éléments entrent en ligne de compte, notamment la Région compétente, le profil du candidat, la qualification, la rémunération, la nature du poste et la situation administrative.</p></div>
       </Section>
-      <CtaBanner title="Utilisez cette page comme point de depart, pas comme reponse finale" text="Les metiers en penurie sont un excellent point d'entree pour comprendre les opportunites en Belgique. Pour securiser une situation concrete, une analyse individualisee reste souvent necessaire." primaryHref="/accompagnement-juridique" primaryLabel="Parler au cabinet LEXPAT" secondaryHref="/contact" secondaryLabel="Poser une question" />
+      <CtaBanner title="Utilisez cette page comme point de départ, pas comme réponse finale" text="Les métiers en pénurie sont un excellent point d'entrée pour comprendre les opportunités en Belgique. Pour sécuriser une situation concrète, une analyse individualisée reste souvent nécessaire." primaryHref="/accompagnement-juridique" primaryLabel="Parler au cabinet LEXPAT" secondaryHref="/contact" secondaryLabel="Poser une question" />
     </>
   );
 }

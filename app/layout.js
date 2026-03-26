@@ -4,14 +4,14 @@ import Link from "next/link";
 export const metadata = {
   title: "LEXPAT Connect",
   description:
-    "Plateforme de mise en relation entre employeurs belges et talents internationaux, adossee au cabinet LEXPAT."
+    "Plateforme de mise en relation entre employeurs belges et talents internationaux, adossée au cabinet LEXPAT."
 };
 
 const navigation = [
   { href: "/", label: "Accueil" },
   { href: "/employeurs", label: "Employeurs" },
   { href: "/travailleurs", label: "Travailleurs" },
-  { href: "/metiers-en-penurie", label: "Metiers en penurie" },
+  { href: "/metiers-en-penurie", label: "Métiers en pénurie" },
   { href: "/accompagnement-juridique", label: "Cabinet LEXPAT" },
   { href: "/contact", label: "Contact" }
 ];
@@ -61,7 +61,7 @@ export default function RootLayout({ children }) {
                 <p className="footer-title">Important</p>
                 <p className="footer-copy">
                   La plateforme facilite la mise en relation. Les prestations
-                  juridiques sont assurees separement par le cabinet LEXPAT.
+                  juridiques sont assurées séparément par le cabinet LEXPAT.
                 </p>
               </div>
             </div>
