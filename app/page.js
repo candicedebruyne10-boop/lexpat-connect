@@ -3,14 +3,14 @@ import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../components/Se
 const primaryPaths = [
   {
     kicker: "Employeurs belges",
-    title: "Identifier plus vite les profils pertinents",
-    text: "Déposez un besoin structuré, clarifiez le poste, la région et les conditions de recrutement, puis activez le relais juridique si la situation l'exige.",
+    title: "Clarifier un besoin de recrutement international",
+    text: "Déposez un besoin structuré, précisez le métier, la région et le contexte de recrutement, puis identifiez quand un relais juridique devient nécessaire.",
     link: { href: "/employeurs", label: "Accéder à l'espace employeurs" }
   },
   {
     kicker: "Travailleurs internationaux",
-    title: "Rendre votre profil plus lisible et plus sérieux",
-    text: "Présentez vos compétences, votre disponibilité et votre situation de départ pour être visible auprès d'employeurs belges ouverts au recrutement international.",
+    title: "Présenter un profil plus lisible et plus crédible",
+    text: "Valorisez votre expérience, vos compétences, votre disponibilité et votre situation de départ pour être compris plus rapidement par un employeur belge.",
     link: { href: "/travailleurs", label: "Accéder à l'espace candidats" }
   }
 ];
@@ -18,74 +18,74 @@ const primaryPaths = [
 const positioningCards = [
   {
     kicker: "Ce que fait la plateforme",
-    title: "Structurer la mise en relation",
-    text: "LEXPAT Connect aide les employeurs et les candidats à se rencontrer dans un cadre plus lisible, centré sur les métiers en pénurie et le marché belge."
+    title: "Organiser une mise en relation plus sérieuse",
+    text: "LEXPAT Connect structure la rencontre entre employeurs belges et talents internationaux autour des métiers en pénurie et des réalités du marché belge."
   },
   {
     kicker: "Ce que la plateforme ne fait pas",
-    title: "Ne pas remplacer l'analyse juridique",
-    text: "La plateforme n'est ni une agence de recrutement traditionnelle ni un cabinet d'avocats. Elle n'a pas vocation à promettre ce qui dépend d'une situation individuelle."
+    title: "Ne pas promettre ce qui relève d'un dossier individuel",
+    text: "La plateforme n'est ni un cabinet d'avocats ni une promesse d'autorisation automatique. Elle clarifie les parcours sans simplifier à l'excès."
   },
   {
     kicker: "Quand LEXPAT intervient",
     title: "Activer le relais juridique au bon moment",
-    text: "Permis unique, autorisation de travail, faisabilité régionale ou sécurisation administrative : le cabinet LEXPAT prend le relais lorsque le dossier sort du simple cadre de mise en relation."
+    text: "Permis unique, droit au travail, faisabilité régionale ou sécurisation administrative: le cabinet LEXPAT intervient lorsque la mise en relation ne suffit plus."
   }
 ];
 
 const reasons = [
   {
-    title: "Un langage clair pour des sujets complexes",
-    text: "Le site est pensé pour être compris rapidement par un employeur, un candidat et un interlocuteur juridique, sans effet de surpromesse ni jargon inutile."
+    title: "Une lecture immédiate du projet",
+    text: "En quelques secondes, le visiteur comprend s'il est concerné, ce que la plateforme permet réellement et la place du cabinet LEXPAT dans le parcours."
   },
   {
-    title: "Un ancrage belge assumé",
-    text: "Le projet tient compte des réalités de Bruxelles, de la Wallonie et de la Flandre, au lieu de lisser artificiellement les différences administratives."
+    title: "Un ancrage belge clairement assumé",
+    text: "Bruxelles, Wallonie, Flandre: le site ne gomme pas les différences régionales et donne un cadre plus crédible au recrutement international."
   },
   {
-    title: "Une plateforme crédible avant d'être démonstrative",
-    text: "L'accent est mis sur la précision du besoin, la qualité du profil présenté et le moment où un accompagnement juridique distinct devient nécessaire."
+    title: "Un design plus institutionnel et rassurant",
+    text: "Le ton visuel cherche la clarté, la compétence et la sobriété, sans effet startup gadget ni mise en scène trop technologique."
   },
   {
-    title: "Une image sérieuse pour les deux publics",
-    text: "Les employeurs doivent sentir une méthode fiable. Les travailleurs doivent sentir un cadre respectueux, professionnel et rassurant."
+    title: "Un projet utile pour les deux publics",
+    text: "Les employeurs trouvent un cadre plus lisible. Les candidats trouvent une manière plus sérieuse de rendre leur profil visible."
   }
 ];
 
 const steps = [
   {
-    title: "L'employeur précise son besoin",
-    text: "Fonction, région, contrat, niveau de qualification et contexte du recrutement sont posés dès le départ."
+    title: "L'employeur cadre le besoin",
+    text: "Le poste, la région, le type de contrat et le contexte du recrutement sont précisés dès l'entrée."
   },
   {
-    title: "Le candidat construit un profil exploitable",
-    text: "Parcours, compétences, disponibilité, langues et situation administrative deviennent plus faciles à comprendre."
+    title: "Le candidat présente un profil exploitable",
+    text: "Expérience, compétences, langues, disponibilité et situation administrative deviennent plus faciles à lire."
   },
   {
-    title: "La plateforme facilite la mise en relation",
-    text: "Le site sert de point d'entrée professionnel et lisible pour initier des prises de contact sérieuses."
+    title: "La plateforme facilite la prise de contact",
+    text: "LEXPAT Connect agit comme point d'entrée sérieux pour structurer une mise en relation utile."
   },
   {
-    title: "Le cabinet LEXPAT intervient si nécessaire",
-    text: "Dès qu'une question juridique concrète apparaît, le relais est clairement identifié et présenté séparément."
+    title: "LEXPAT prend le relais si besoin",
+    text: "Dès qu'un enjeu juridique concret apparaît, le cabinet intervient dans un cadre distinct et clairement identifié."
   }
 ];
 
 const regions = [
   {
     kicker: "Bruxelles-Capitale",
-    title: "Lecture nuancée des listes et des pratiques",
-    text: "Le recrutement dans les métiers en pénurie suppose une lecture attentive des mécanismes régionaux et de leur portée concrète."
+    title: "Une lecture plus prudente des mécanismes régionaux",
+    text: "Les métiers en pénurie constituent un point d'appui, mais ils doivent être lus avec nuance dans le contexte bruxellois."
   },
   {
     kicker: "Wallonie",
-    title: "Des catégories plus directement mobilisables",
-    text: "La liste wallonne permet souvent de structurer plus rapidement les besoins employeurs, à condition de garder une lecture précise du dossier."
+    title: "Des besoins parfois plus directement structurants",
+    text: "La liste wallonne aide à clarifier certains recrutements, à condition de conserver une lecture précise de chaque dossier."
   },
   {
     kicker: "Flandre",
-    title: "Une logique plus fonctionnelle sur certains métiers",
-    text: "Plusieurs fonctions y sont décrites de manière technique et doivent être présentées de façon rigoureuse pour rester crédibles."
+    title: "Une présentation rigoureuse des fonctions concernées",
+    text: "Certaines fonctions y sont décrites de manière plus technique et doivent être présentées avec précision pour rester crédibles."
   }
 ];
 
@@ -96,15 +96,15 @@ const faqs = [
   },
   {
     question: "Le cabinet LEXPAT intervient-il automatiquement dans chaque dossier ?",
-    answer: "Non. Le cabinet intervient lorsque la situation soulève un enjeu juridique concret : permis unique, droit au travail, analyse régionale ou sécurisation administrative."
+    answer: "Non. Le cabinet intervient lorsque la situation soulève un enjeu juridique concret: permis unique, droit au travail, analyse régionale ou sécurisation administrative."
   },
   {
-    question: "La plateforme garantit-elle l'obtention d'une autorisation de travail ?",
+    question: "La plateforme garantit-elle une autorisation de travail ?",
     answer: "Non. La présence d'un métier sur une liste régionale ou sur la plateforme ne remplace jamais l'analyse individualisée d'un dossier."
   },
   {
     question: "Qui est concerné en priorité ?",
-    answer: "Les employeurs belges qui souhaitent recruter dans des métiers en tension, et les travailleurs internationaux qui veulent présenter un profil professionnel sérieux et lisible."
+    answer: "Les employeurs belges qui recrutent dans des métiers en tension, et les travailleurs internationaux qui souhaitent présenter un profil professionnel clair et sérieux."
   }
 ];
 
@@ -112,9 +112,14 @@ export default function HomePage() {
   return (
     <>
       <Hero
-        badge="Plateforme de mise en relation, recrutement international et relais juridique"
-        title="Recruter à l'international en Belgique, avec plus de clarté, de méthode et de sécurité"
-        description="LEXPAT Connect aide les employeurs belges à structurer leurs besoins de recrutement dans les métiers en pénurie, permet aux travailleurs internationaux de présenter un profil sérieux, et active le relais juridique du cabinet LEXPAT lorsque la situation l'exige."
+        badge="Plateforme de mise en relation et relais juridique en Belgique"
+        title={
+          <>
+            Recruter des talents internationaux en Belgique,
+            <span className="block text-[#57b7af]">avec une lecture plus claire et plus crédible</span>
+          </>
+        }
+        description="LEXPAT Connect aide les employeurs belges à structurer leurs recrutements dans les métiers en pénurie, permet aux travailleurs internationaux de présenter un profil sérieux, et oriente vers le cabinet LEXPAT lorsqu'un accompagnement juridique devient nécessaire."
         primaryHref="/employeurs"
         primaryLabel="Je suis employeur"
         secondaryHref="/travailleurs"
@@ -123,33 +128,33 @@ export default function HomePage() {
         stats={[
           { value: "2 parcours", label: "Une entrée claire pour les employeurs et les candidats" },
           { value: "3 régions", label: "Une lecture attentive des réalités belges" },
-          { value: "1 relais", label: "Un accompagnement juridique mobilisable au bon moment" }
+          { value: "1 relais juridique", label: "Une continuité possible avec le cabinet LEXPAT" }
         ]}
         panels={[
           {
-            kicker: "En 5 secondes",
-            title: "Ce que la plateforme permet",
-            text: "Clarifier un besoin employeur, présenter un profil candidat et faire comprendre immédiatement quand un sujet doit être traité juridiquement."
+            kicker: "En pratique",
+            title: "Ce que le site permet dès l'arrivée",
+            text: "Comprendre qui est concerné, ce que la plateforme fait réellement, et à quel moment le juridique doit être traité séparément."
           },
           {
             kicker: "Positionnement",
-            title: "Ce que la plateforme ne prétend pas faire",
-            text: "Ni promesse technique excessive, ni raccourci administratif. Le projet mise sur la lisibilité, la crédibilité et la qualité de l'orientation."
+            title: "Un projet sérieux, sans surpromesse",
+            text: "Le site privilégie la clarté, la précision et la confiance, plutôt qu'un discours technologique trop démonstratif."
           }
         ]}
       />
 
       <Section
-        title="Deux entrées principales, deux logiques de conversion"
-        intro="Dès l'arrivée sur le site, chacun doit comprendre où cliquer, ce qu'il va trouver et pourquoi la plateforme peut lui être utile."
+        title="Deux entrées principales, deux parcours très lisibles"
+        intro="Le site doit guider immédiatement vers le bon espace, sans ambiguïté, avec une proposition de valeur claire pour chaque public."
         kicker="Parcours"
       >
         <CardGrid columns={2} items={primaryPaths} />
       </Section>
 
       <Section
-        title="Une plateforme conçue pour être comprise rapidement"
-        intro="Le positionnement doit être évident en quelques secondes : qui est concerné, ce que fait la plateforme, ce qu'elle ne fait pas et quand le cabinet LEXPAT intervient."
+        title="Une plateforme pensée pour être comprise en quelques secondes"
+        intro="Le positionnement doit être net: qui est concerné, ce que la plateforme fait, ce qu'elle ne fait pas, et quand le cabinet LEXPAT intervient juridiquement."
         kicker="Positionnement"
         muted
       >
@@ -157,8 +162,8 @@ export default function HomePage() {
       </Section>
 
       <Section
-        title="Pourquoi LEXPAT Connect inspire davantage confiance"
-        intro="Le projet doit parler à la fois aux entreprises, aux candidats et à toute personne attentive aux enjeux juridiques du recrutement international."
+        title="Pourquoi cette approche inspire davantage confiance"
+        intro="La crédibilité du projet repose autant sur le fond métier que sur une manière plus calme, plus claire et plus institutionnelle de le présenter."
         kicker="Crédibilité"
       >
         <CardGrid items={reasons} columns={2} />
@@ -166,7 +171,7 @@ export default function HomePage() {
 
       <Section
         title="Comment ça fonctionne"
-        intro="Le parcours reste volontairement sobre. Le site ne survend pas une mécanique algorithmique ; il clarifie les étapes et prépare une mise en relation plus utile."
+        intro="Le parcours reste volontairement sobre. Il ne prétend pas automatiser des décisions complexes: il structure les étapes et prépare une mise en relation plus utile."
         kicker="Méthode"
         muted
       >
@@ -175,12 +180,12 @@ export default function HomePage() {
 
       <Section
         title="Les métiers en pénurie restent un point d'entrée stratégique"
-        intro="Ils aident à structurer les opportunités visibles sur la plateforme, mais ils ne dispensent jamais d'une lecture régionale ni d'une analyse individualisée lorsque le dossier l'exige."
+        intro="Ils aident à structurer les opportunités visibles sur la plateforme, mais ils n'évitent jamais une lecture régionale ni une analyse individualisée lorsque la situation l'exige."
         kicker="Belgique"
       >
         <CardGrid items={regions} />
-        <div className="mt-6 rounded-[28px] border border-amber-200/80 bg-amber-50/80 p-6 text-sm leading-7 text-slate shadow-soft">
-          <p className="font-semibold text-ink">À retenir</p>
+        <div className="mt-6 rounded-[28px] border border-[#d9ece9] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-6 text-sm leading-7 text-[#5d6e83] shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+          <p className="font-semibold text-[#1d3b8b]">À retenir</p>
           <p className="mt-2">
             Un métier en pénurie ne garantit pas, à lui seul, la faisabilité d'un recrutement international ni l'obtention d'une autorisation de travail. Le contexte du poste, la région compétente et la situation du candidat restent déterminants.
           </p>
@@ -188,8 +193,8 @@ export default function HomePage() {
       </Section>
 
       <CtaBanner
-        title="Quand la mise en relation ne suffit plus, le relais juridique doit être immédiat et clair"
-        text="Permis unique, droit au travail, sécurisation administrative, faisabilité régionale : la valeur du projet repose aussi sur sa capacité à faire comprendre le moment où le cabinet LEXPAT doit intervenir dans un cadre distinct."
+        title="Quand la mise en relation ne suffit plus, le relais juridique doit être immédiat et parfaitement lisible"
+        text="Permis unique, droit au travail, sécurisation administrative, faisabilité régionale: la valeur du projet repose aussi sur la clarté avec laquelle il oriente vers le cabinet LEXPAT."
         primaryHref="/accompagnement-juridique"
         primaryLabel="Voir l'accompagnement juridique"
         secondaryHref="/contact"
@@ -198,7 +203,7 @@ export default function HomePage() {
 
       <Section
         title="Questions fréquentes"
-        intro="La FAQ doit rassurer sans promettre excessivement. Elle sert à cadrer le rôle de la plateforme et à clarifier la place du cabinet."
+        intro="La FAQ sert à rassurer, à cadrer le rôle de la plateforme et à rappeler les limites normales d'un projet de mise en relation dans ce domaine."
         kicker="FAQ"
         muted
       >

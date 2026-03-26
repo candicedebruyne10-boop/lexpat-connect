@@ -13,52 +13,57 @@ export function Hero({
   panels = []
 }) {
   return (
-    <section className="pb-8 pt-8 sm:pb-12 lg:pb-16 lg:pt-12">
+    <section className="pb-10 pt-8 sm:pb-14 lg:pb-20 lg:pt-12">
       <div className="container-shell">
-        <div className="relative overflow-hidden rounded-[36px] bg-hero px-6 py-8 text-white shadow-card sm:px-8 sm:py-10 lg:px-12 lg:py-14">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.14),transparent_30%)]" />
-          <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_360px] lg:items-end">
-            <div>
-              <p className="eyebrow">{badge}</p>
-              <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">
-                {title}
-              </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
-                {description}
-              </p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link href={primaryHref} className="primary-button bg-white text-brand-900 hover:bg-brand-50">
-                  {primaryLabel}
-                </Link>
-                <Link href={secondaryHref} className="secondary-button border-white/20 bg-white/10 text-white hover:border-white/40 hover:bg-white/16">
-                  {secondaryLabel}
-                </Link>
-              </div>
-              {note ? <p className="mt-5 max-w-2xl text-sm leading-7 text-white/68">{note}</p> : null}
-              {stats.length ? (
-                <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                  {stats.map((item) => (
-                    <div key={item.label} className="rounded-3xl border border-white/14 bg-white/10 p-4 backdrop-blur-sm">
-                      <p className="text-2xl font-semibold text-white">{item.value}</p>
-                      <p className="mt-1 text-sm leading-6 text-white/68">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+        <div className="relative overflow-hidden rounded-[36px] border border-[#dfe9ee] bg-white px-6 py-10 shadow-[0_20px_70px_rgba(30,52,94,0.08)] sm:px-8 lg:px-12 lg:py-16">
+          <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(103,190,182,0.16),transparent_62%)]" />
+          <div className="absolute left-1/2 top-0 h-px w-40 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#60b8b1] to-transparent" />
+
+          <div className="relative mx-auto max-w-5xl text-center">
+            <p className="inline-flex items-center justify-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#255c8f]">
+              {badge}
+            </p>
+            <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-[#1d3b8b] sm:text-5xl lg:text-6xl">
+              {title}
+            </h1>
+            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-[#50627a] sm:text-lg">
+              {description}
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href={primaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.28)] transition hover:bg-[#4aa9a2] sm:w-auto">
+                {primaryLabel}
+              </Link>
+              <Link href={secondaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl border border-[#d4dff2] bg-white px-7 py-4 text-base font-semibold text-[#1d3b8b] transition hover:border-[#9cb2da] hover:bg-[#f8fbff] sm:w-auto">
+                {secondaryLabel}
+              </Link>
             </div>
 
-            {panels.length ? (
-              <div className="grid gap-4">
-                {panels.map((panel) => (
-                  <article key={panel.title} className="rounded-[28px] border border-white/14 bg-white/10 p-5 backdrop-blur-md">
-                    <p className="eyebrow !border-0 !bg-white/12 !px-0 !py-0 text-white/62">{panel.kicker}</p>
-                    <h3 className="mt-2 text-xl font-semibold text-white">{panel.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-white/74">{panel.text}</p>
-                  </article>
+            {note ? <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-[#6b7b8f]">{note}</p> : null}
+
+            {stats.length ? (
+              <div className="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-3">
+                {stats.map((item) => (
+                  <div key={item.label} className="rounded-[24px] border border-[#e5edf4] bg-[#fbfdff] px-5 py-5 text-left">
+                    <p className="text-xl font-semibold text-[#1d3b8b]">{item.value}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#66768b]">{item.label}</p>
+                  </div>
                 ))}
               </div>
             ) : null}
           </div>
+
+          {panels.length ? (
+            <div className="relative mx-auto mt-8 grid max-w-5xl gap-4 lg:grid-cols-2">
+              {panels.map((panel) => (
+                <article key={panel.title} className="rounded-[28px] border border-[#e2ebf3] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-6 text-left shadow-[0_12px_30px_rgba(24,53,101,0.05)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{panel.kicker}</p>
+                  <h3 className="mt-3 text-xl font-semibold tracking-tight text-[#1d3b8b]">{panel.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-[#5c6e84]">{panel.text}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
@@ -69,11 +74,15 @@ export function Section({ title, intro, children, muted = false, kicker }) {
   return (
     <section className={muted ? "py-10 sm:py-14 lg:py-16" : "py-10 sm:py-14 lg:py-20"}>
       <div className="container-shell">
-        <div className={muted ? "rounded-[32px] border border-slate-200/80 bg-white/65 p-6 shadow-soft sm:p-8 lg:p-10" : ""}>
-          <div className="mb-8 lg:mb-10">
-            {kicker ? <p className="eyebrow-light">{kicker}</p> : null}
-            <h2 className="section-title mt-3">{title}</h2>
-            {intro ? <p className="section-copy">{intro}</p> : null}
+        <div className={muted ? "rounded-[36px] border border-[#e7eef4] bg-white p-6 shadow-[0_16px_50px_rgba(15,23,42,0.04)] sm:p-8 lg:p-10" : ""}>
+          <div className="mx-auto mb-8 max-w-4xl text-center lg:mb-12">
+            {kicker ? (
+              <p className="inline-flex items-center justify-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+                {kicker}
+              </p>
+            ) : null}
+            <h2 className="section-title mx-auto mt-4">{title}</h2>
+            {intro ? <p className="section-copy mx-auto">{intro}</p> : null}
           </div>
           {children}
         </div>
@@ -88,12 +97,16 @@ export function CardGrid({ items, columns = 3 }) {
   return (
     <div className={`grid gap-5 ${cols}`}>
       {items.map((item) => (
-        <article key={item.title} className="surface-card h-full p-6 sm:p-7">
-          {item.kicker ? <p className="eyebrow-light">{item.kicker}</p> : null}
-          <h3 className="mt-4 text-xl font-semibold tracking-tight text-ink">{item.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-slate">{item.text}</p>
+        <article key={item.title} className="h-full rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
+          {item.kicker ? (
+            <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              {item.kicker}
+            </p>
+          ) : null}
+          <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+          <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
           {item.link ? (
-            <Link href={item.link.href} className="ghost-link mt-5 inline-flex">
+            <Link href={item.link.href} className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]">
               {item.link.label}
             </Link>
           ) : null}
@@ -107,12 +120,12 @@ export function Steps({ items }) {
   return (
     <div className="grid gap-5 lg:grid-cols-4">
       {items.map((item, index) => (
-        <article key={item.title} className="surface-card p-6 sm:p-7">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-sm font-semibold text-brand-800">
+        <article key={item.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f2fbfa] text-sm font-semibold text-[#57b7af]">
             0{index + 1}
           </div>
-          <h3 className="mt-5 text-xl font-semibold tracking-tight text-ink">{item.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-slate">{item.text}</p>
+          <h3 className="mt-5 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+          <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
         </article>
       ))}
     </div>
@@ -123,12 +136,12 @@ export function BulletList({ items }) {
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       {items.map((item) => (
-        <article key={item.title} className="muted-card p-6 sm:p-7">
+        <article key={item.title} className="rounded-[28px] border border-[#e5edf4] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-7">
           <div className="flex items-start gap-4">
-            <span className="mt-1 inline-flex h-3.5 w-3.5 rounded-full bg-brand-700" />
+            <span className="mt-1 inline-flex h-3.5 w-3.5 rounded-full bg-[#57b7af]" />
             <div>
-              <h3 className="text-lg font-semibold tracking-tight text-ink">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate">{item.text}</p>
+              <h3 className="text-lg font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
             </div>
           </div>
         </article>
@@ -141,12 +154,12 @@ export function Faq({ items }) {
   return (
     <div className="grid gap-4">
       {items.map((item) => (
-        <details key={item.question} className="surface-card group p-6 sm:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-left text-lg font-semibold tracking-tight text-ink">
+        <details key={item.question} className="group rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-7">
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-left text-lg font-semibold tracking-tight text-[#1d3b8b]">
             <span>{item.question}</span>
-            <span className="mt-1 text-brand-700 transition group-open:rotate-45">+</span>
+            <span className="mt-1 text-[#57b7af] transition group-open:rotate-45">+</span>
           </summary>
-          <p className="mt-4 max-w-4xl text-sm leading-7 text-slate">{item.answer}</p>
+          <p className="mt-4 max-w-4xl text-sm leading-7 text-[#5d6e83]">{item.answer}</p>
         </details>
       ))}
     </div>
@@ -155,16 +168,18 @@ export function Faq({ items }) {
 
 export function FormCard({ title, intro, fields, buttonLabel }) {
   return (
-    <div className="surface-card p-6 sm:p-8">
+    <div className="rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-8 max-w-2xl">
-        <p className="eyebrow-light">Formulaire</p>
-        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h2>
-        <p className="mt-3 text-sm leading-7 text-slate">{intro}</p>
+        <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+          Formulaire
+        </p>
+        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b] sm:text-3xl">{title}</h2>
+        <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{intro}</p>
       </div>
       <form className="grid gap-5 md:grid-cols-2">
         {fields.map((field) => (
           <label key={field.label} className={field.wide ? "md:col-span-2" : ""}>
-            <span className="mb-2 block text-sm font-semibold text-ink">{field.label}</span>
+            <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{field.label}</span>
             {field.type === "textarea" ? (
               <textarea className="field-input min-h-32" placeholder={field.placeholder} rows="5" />
             ) : field.type === "select" ? (
@@ -184,10 +199,10 @@ export function FormCard({ title, intro, fields, buttonLabel }) {
           </label>
         ))}
         <div className="md:col-span-2 flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-2xl text-sm leading-7 text-slate">
+          <p className="max-w-2xl text-sm leading-7 text-[#66768b]">
             Cette version sert de socle de présentation. Le branchement technique des formulaires peut être ajouté ensuite sans changer l'expérience utilisateur.
           </p>
-          <button type="button" className="primary-button">
+          <button type="button" className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.28)] transition hover:bg-[#4aa9a2]">
             {buttonLabel}
           </button>
         </div>
@@ -205,20 +220,20 @@ export function CtaBanner({
   secondaryLabel
 }) {
   return (
-    <section className="py-10 sm:py-14 lg:py-18">
+    <section className="py-10 sm:py-14 lg:py-20">
       <div className="container-shell">
-        <div className="overflow-hidden rounded-[32px] border border-brand-100 bg-[linear-gradient(135deg,#ffffff_0%,#f8fbff_45%,#eff6ff_100%)] p-6 shadow-card sm:p-8 lg:p-10">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
-            <div>
-              <p className="eyebrow-light">Passerelle LEXPAT</p>
-              <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</h2>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-slate">{text}</p>
-            </div>
-            <div className="flex flex-col gap-3 lg:items-end">
-              <Link href={primaryHref} className="primary-button w-full justify-center lg:w-auto">
+        <div className="overflow-hidden rounded-[36px] border border-[#dce8ee] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-5xl text-center">
+            <p className="inline-flex rounded-full bg-[#f2fbfa] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              Passerelle LEXPAT
+            </p>
+            <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">{title}</h2>
+            <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#5d6e83]">{text}</p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href={primaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.24)] transition hover:bg-[#4aa9a2] sm:w-auto">
                 {primaryLabel}
               </Link>
-              <Link href={secondaryHref} className="secondary-button w-full justify-center lg:w-auto">
+              <Link href={secondaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl border border-[#d4dff2] bg-white px-7 py-4 text-base font-semibold text-[#1d3b8b] transition hover:border-[#9cb2da] hover:bg-[#f8fbff] sm:w-auto">
                 {secondaryLabel}
               </Link>
             </div>
