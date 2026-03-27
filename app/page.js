@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../components/Sections";
 
 const primaryPaths = [
@@ -115,8 +116,8 @@ export default function HomePage() {
         badge="Plateforme de mise en relation et relais juridique en Belgique"
         title={
           <>
-            Recruter des talents internationaux en Belgique,
-            <span className="block text-[#57b7af]">dans un cadre plus clair, plus crédible et plus lisible</span>
+            Recrutez des talents internationaux en Belgique,
+            <span className="block text-[#57b7af]">sans encombre juridique inutile</span>
           </>
         }
         description="LEXPAT Connect aide les employeurs belges à structurer leurs recrutements dans les métiers en pénurie, permet aux travailleurs internationaux de présenter un profil sérieux, et oriente vers le cabinet LEXPAT lorsqu'un accompagnement juridique devient nécessaire."
@@ -159,6 +160,46 @@ export default function HomePage() {
         muted
       >
         <CardGrid items={positioningCards} />
+      </Section>
+
+      <Section
+        title="Qui sommes-nous ?"
+        intro="LEXPAT Connect est né d'un constat de terrain : recruter un travailleur international en Belgique ne se limite jamais à publier une annonce. Il faut aussi comprendre les réalités régionales, anticiper les enjeux administratifs et savoir à quel moment un relais juridique devient indispensable."
+        kicker="Fondatrice"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <article className="rounded-[32px] border border-[#e5edf4] bg-white p-7 shadow-[0_18px_45px_rgba(15,23,42,0.05)] sm:p-8">
+            <h3 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un projet conçu par Maître Candice Debruyne</h3>
+            <p className="mt-4 text-sm leading-8 text-[#5d6e83]">
+              En tant qu'avocate active en droit de l'immigration en Belgique, Maître Debruyne accompagne des situations où le recrutement international, le droit au travail et le séjour doivent être lus ensemble. LEXPAT Connect a été pensé pour créer un pont plus lisible entre les besoins concrets des employeurs belges, les profils de travailleurs internationaux et le moment où un accompagnement juridique doit prendre le relais.
+            </p>
+            <p className="mt-4 text-sm leading-8 text-[#5d6e83]">
+              La plateforme ne remplace pas le cabinet. Elle permet d'organiser la rencontre, de structurer l'information utile et d'orienter plus clairement les dossiers qui nécessitent ensuite une analyse individualisée.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/accompagnement-juridique" className="primary-button">
+                Découvrir le cabinet LEXPAT
+              </Link>
+              <a href="https://www.lexpat.be" target="_blank" rel="noreferrer" className="ghost-link">
+                Voir le site du cabinet
+              </a>
+            </div>
+          </article>
+          <article className="rounded-[32px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-7 shadow-[0_18px_45px_rgba(15,23,42,0.05)] sm:p-8">
+            <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              Pourquoi ce site
+            </p>
+            <ul className="mt-5 space-y-4 text-sm leading-8 text-[#5d6e83]">
+              <li><span className="font-semibold text-[#1d3b8b]">Pour les employeurs :</span> clarifier un recrutement international avant qu'il ne devienne un dossier administratif confus.</li>
+              <li><span className="font-semibold text-[#1d3b8b]">Pour les candidats :</span> présenter un parcours plus sérieux, plus compréhensible et mieux aligné avec le marché belge.</li>
+              <li><span className="font-semibold text-[#1d3b8b]">Pour le cabinet :</span> rendre visible le moment où une mise en relation soulève ensuite un enjeu juridique réel.</li>
+            </ul>
+            <div className="mt-6 rounded-[24px] border border-[#d9ece9] bg-white p-5 text-sm leading-7 text-[#5d6e83]">
+              <p className="font-semibold text-[#1d3b8b]">Version anglaise</p>
+              <p className="mt-2">Une version anglaise du site fait partie des prochaines évolutions prioritaires pour améliorer l'accès des travailleurs internationaux à la plateforme.</p>
+            </div>
+          </article>
+        </div>
       </Section>
 
       <Section

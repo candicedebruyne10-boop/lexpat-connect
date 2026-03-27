@@ -12,7 +12,7 @@ export default function ContactPage() {
             <span className="block text-[#57b7af]">commencez ici</span>
           </>
         }
-        description="Cette page vous permet de nous écrire pour une question employeur, une question candidat, une demande liée au cabinet LEXPAT ou une demande plus générale."
+        description="Cette page vous permet de nous poser une question employeur, une question candidat, une demande liée au cabinet LEXPAT ou une demande plus générale."
         primaryHref="#formulaire"
         primaryLabel="Nous écrire"
         secondaryHref="/accompagnement-juridique"
@@ -43,7 +43,7 @@ export default function ContactPage() {
       </Section>
 
       <Section
-        title="Avant d'écrire"
+        title="Avant de nous poser une question"
         intro="Quelques points utiles pour bien comprendre le rôle de chaque espace."
         kicker="Repères"
         muted

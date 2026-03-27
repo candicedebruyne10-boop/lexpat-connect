@@ -47,6 +47,21 @@ const employerFaq = [
   }
 ];
 
+const employerSpacePreview = [
+  {
+    title: "Suivre ses offres et besoins publiés",
+    text: "Un futur espace employeur permettra de retrouver l'ensemble des besoins déposés, leur état d'avancement et les profils consultés."
+  },
+  {
+    title: "Centraliser les informations de l'entreprise",
+    text: "L'idée est de permettre à l'employeur de renseigner durablement ses critères de sélection, ses secteurs et son contexte de recrutement."
+  },
+  {
+    title: "Préparer ensuite un suivi plus structuré",
+    text: "Cet espace a vocation à devenir le point d'entrée d'un vrai suivi employeur, plus proche d'un tableau de bord que d'un simple formulaire."
+  }
+];
+
 export default function EmployeursPage() {
   return (
     <>
@@ -157,6 +172,14 @@ export default function EmployeursPage() {
             ]}
           />
         </div>
+      </Section>
+
+      <Section
+        title="Espace employeur en préparation"
+        intro="Le site pose aujourd'hui le socle de collecte et de mise en relation. Un espace employeur plus complet constitue la prochaine étape produit logique."
+        kicker="À venir"
+      >
+        <BulletList items={employerSpacePreview} />
       </Section>
 
       <CtaBanner

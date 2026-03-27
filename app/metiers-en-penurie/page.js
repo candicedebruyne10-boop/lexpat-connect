@@ -1,4 +1,5 @@
-import { CardGrid, CtaBanner, Hero, Section } from "../../components/Sections";
+import Link from "next/link";
+import { CtaBanner, Hero, Section } from "../../components/Sections";
 
 const foundations = [
   {
@@ -35,28 +36,82 @@ const regions = [
 
 const sectors = [
   {
+    id: "construction",
     title: "Construction et travaux publics",
-    text: "Maçonnerie, couverture, électricité, conduite de chantier, voirie et fonctions de terrain spécifiques."
+    summary: "Maçonnerie, couverture, électricité, conduite de chantier, voirie et fonctions de terrain spécifiques.",
+    jobs: [
+      "Maçon / maçonne",
+      "Couvreur / couvreuse",
+      "Électricien / électricienne",
+      "Chef de chantier",
+      "Conducteur de travaux",
+      "Ouvrier voirie"
+    ]
   },
   {
+    id: "sante",
     title: "Santé et action sociale",
-    text: "Aide-soignant, infirmier, fonctions médicales et paramédicales, accompagnement social."
+    summary: "Aide-soignant, infirmier, fonctions médicales et paramédicales, accompagnement social.",
+    jobs: [
+      "Infirmier / infirmière",
+      "Aide-soignant / aide-soignante",
+      "Sage-femme",
+      "Kinésithérapeute",
+      "Médecin spécialiste",
+      "Accompagnateur social"
+    ]
   },
   {
+    id: "transport",
     title: "Transport et logistique",
-    text: "Fonctions de conduite, logistique, poids lourd, navigation intérieure et métiers ciblés du secteur."
+    summary: "Fonctions de conduite, logistique, poids lourd, navigation intérieure et métiers ciblés du secteur.",
+    jobs: [
+      "Chauffeur poids lourd",
+      "Cariste",
+      "Planificateur logistique",
+      "Gestionnaire de stock",
+      "Conducteur d'autobus",
+      "Agent logistique"
+    ]
   },
   {
+    id: "industrie",
     title: "Industrie et maintenance",
-    text: "Électromécanique, automatisation, maintenance industrielle, froid, mécanique et fonctions techniques."
+    summary: "Électromécanique, automatisation, maintenance industrielle, froid, mécanique et fonctions techniques.",
+    jobs: [
+      "Électromécanicien / électromécanicienne",
+      "Technicien de maintenance",
+      "Mécanicien industriel / mécanicienne industrielle",
+      "Soudeur / soudeuse",
+      "Frigoriste",
+      "Automaticien / automaticienne"
+    ]
   },
   {
+    id: "it",
     title: "Technologies et informatique",
-    text: "Développement, infrastructure, analyse fonctionnelle et plusieurs fonctions numériques spécialisées."
+    summary: "Développement, infrastructure, analyse fonctionnelle et plusieurs fonctions numériques spécialisées.",
+    jobs: [
+      "Développeur / développeuse",
+      "Analyste informatique",
+      "Ingénieur logiciel",
+      "Administrateur systèmes",
+      "Chef de projet technique",
+      "Data engineer"
+    ]
   },
   {
+    id: "education",
     title: "Éducation et formation",
-    text: "Certaines fonctions d'enseignement, de coordination ou de formation selon les cadres régionaux applicables."
+    summary: "Certaines fonctions d'enseignement, de coordination ou de formation selon les cadres régionaux applicables.",
+    jobs: [
+      "Enseignant / enseignante",
+      "Formateur / formatrice",
+      "Coordinateur pédagogique",
+      "Professeur technique",
+      "Conseiller en insertion",
+      "Responsable de formation"
+    ]
   }
 ];
 
@@ -68,7 +123,7 @@ export default function MetiersPage() {
         title={
           <>
             Comprendre les métiers en pénurie,
-            <span className="block text-[#57b7af]">sans simplifier ce qui doit rester nuancé</span>
+            <span className="block text-[#57b7af]">avec une lecture claire et rigoureuse</span>
           </>
         }
         description="LEXPAT Connect s'appuie sur les réalités du marché belge et sur les listes régionales de métiers en pénurie pour structurer les opportunités visibles sur la plateforme."
@@ -89,7 +144,14 @@ export default function MetiersPage() {
         intro="Les métiers en pénurie jouent un rôle important dans certains recrutements internationaux. Ils constituent un repère utile, à condition d'être lus dans le bon cadre."
         kicker="Repères"
       >
-        <CardGrid items={foundations} />
+        <div className="grid gap-5 lg:grid-cols-3">
+          {foundations.map((item) => (
+            <article key={item.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
+              <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
+            </article>
+          ))}
+        </div>
       </Section>
 
       <Section
@@ -98,15 +160,56 @@ export default function MetiersPage() {
         kicker="Régions"
         muted
       >
-        <CardGrid items={regions} />
+        <div className="grid gap-5 lg:grid-cols-3">
+          {regions.map((item) => (
+            <article key={item.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
+              <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{item.kicker}</p>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
+            </article>
+          ))}
+        </div>
       </Section>
 
       <Section
-        title="Exemples de secteurs concernés"
-        intro="Les formulations exactes varient selon les sources régionales, mais plusieurs secteurs reviennent de manière récurrente dans les besoins exprimés sur le marché belge."
+        title="Secteurs concernés"
+        intro="Vous pouvez désormais cliquer sur un secteur pour accéder directement à quelques métiers représentatifs. Cette page garde une fonction pédagogique: les intitulés exacts et leur portée doivent toujours être vérifiés dans le cadre régional applicable."
         kicker="Secteurs"
       >
-        <CardGrid items={sectors} />
+        <div className="grid gap-5 lg:grid-cols-3">
+          {sectors.map((sector) => (
+            <Link
+              key={sector.id}
+              href={`#${sector.id}`}
+              className="group rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[#cfe1de] hover:shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-7"
+            >
+              <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b] transition group-hover:text-[#57b7af]">{sector.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{sector.summary}</p>
+              <span className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#57b7af]">Voir les métiers liés</span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Métiers par secteur"
+        intro="Cette présentation permet une lecture plus pratique des secteurs. Elle ne remplace pas une vérification régionale complète du dossier."
+        kicker="Accès rapide"
+        muted
+      >
+        <div className="grid gap-5 lg:grid-cols-2">
+          {sectors.map((sector) => (
+            <article key={sector.id} id={sector.id} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7 scroll-mt-32">
+              <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{sector.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{sector.summary}</p>
+              <ul className="mt-5 space-y-3 text-sm leading-7 text-[#5d6e83]">
+                {sector.jobs.map((job) => (
+                  <li key={job} className="flex gap-3"><span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#57b7af]" /> <span>{job}</span></li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
       </Section>
 
       <Section

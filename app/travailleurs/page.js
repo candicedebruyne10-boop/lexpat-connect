@@ -36,6 +36,21 @@ const candidateFaq = [
   }
 ];
 
+const candidateSpacePreview = [
+  {
+    title: "Compléter son profil dans le temps",
+    text: "Un futur espace candidat permettra d'enrichir son dossier avec davantage d'informations, de documents et de préférences professionnelles."
+  },
+  {
+    title: "Mieux structurer sa présentation",
+    text: "L'objectif est d'aller au-delà d'un simple formulaire pour créer un vrai profil lisible par les employeurs belges."
+  },
+  {
+    title: "Suivre sa visibilité et ses démarches",
+    text: "À terme, cet espace pourrait centraliser les candidatures, les échanges et les informations utiles liées au projet professionnel en Belgique."
+  }
+];
+
 export default function TravailleursPage() {
   return (
     <>
@@ -119,6 +134,7 @@ export default function TravailleursPage() {
             intro="Présentez les éléments utiles de votre parcours pour rendre votre profil plus clair auprès d'employeurs belges."
             buttonLabel="Envoyer mon profil"
             formType="candidat"
+            successMessage="Votre profil a bien été envoyé. Un email de confirmation vous a été adressé."
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },
@@ -137,6 +153,14 @@ export default function TravailleursPage() {
             ]}
           />
         </div>
+      </Section>
+
+      <Section
+        title="Espace candidat en préparation"
+        intro="Le formulaire actuel constitue une première étape utile. La prochaine brique produit logique est un espace candidat plus complet et plus personnalisable."
+        kicker="À venir"
+      >
+        <BulletList items={candidateSpacePreview} />
       </Section>
 
       <CtaBanner
