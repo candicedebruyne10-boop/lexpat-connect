@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
 import { professionOptionsByRegion } from "../../lib/professions";
@@ -49,16 +50,16 @@ const employerFaq = [
 
 const employerSpacePreview = [
   {
-    title: "Suivre ses offres et besoins publiés",
-    text: "Un futur espace employeur permettra de retrouver l'ensemble des besoins déposés, leur état d'avancement et les profils consultés."
+    title: "Tableau de bord employeur",
+    text: "Une première interface permet déjà de visualiser la logique d'un espace entreprise avec offres, activité récente et relais juridique."
   },
   {
-    title: "Centraliser les informations de l'entreprise",
-    text: "L'idée est de permettre à l'employeur de renseigner durablement ses critères de sélection, ses secteurs et son contexte de recrutement."
+    title: "Fiche entreprise structurée",
+    text: "L'espace employeur prépare un cadre plus sérieux pour décrire l'entreprise, ses critères et son contexte de recrutement."
   },
   {
-    title: "Préparer ensuite un suivi plus structuré",
-    text: "Cet espace a vocation à devenir le point d'entrée d'un vrai suivi employeur, plus proche d'un tableau de bord que d'un simple formulaire."
+    title: "Offres et suivi",
+    text: "Une vue dédiée anticipe la centralisation des offres publiées, de leur statut et des profils à analyser."
   }
 ];
 
@@ -143,6 +144,31 @@ export default function EmployeursPage() {
       </Section>
 
       <Section
+        title="Découvrir le futur espace employeur"
+        intro="Nous avons déjà maquetté une première version de l'espace employeur pour structurer plus sérieusement la fiche entreprise, les offres et le suivi du recrutement."
+        kicker="Aperçu"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace entreprise</p>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme RH</h3>
+            <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
+              Inspiré des logiques de suivi entreprise, cet espace prépare une navigation claire entre tableau de bord, fiche employeur et gestion des offres.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/employeurs/espace" className="primary-button">
+                Voir l'espace employeur
+              </Link>
+              <Link href="#formulaire" className="secondary-button">
+                Commencer par le formulaire
+              </Link>
+            </div>
+          </div>
+          <BulletList items={employerSpacePreview} />
+        </div>
+      </Section>
+
+      <Section
         title="Déposer un besoin de recrutement"
         intro="Plus votre demande est précise, plus la mise en relation sera utile et plus le moment d'un éventuel accompagnement juridique pourra être identifié rapidement."
         kicker="Formulaire"
@@ -172,14 +198,6 @@ export default function EmployeursPage() {
             ]}
           />
         </div>
-      </Section>
-
-      <Section
-        title="Espace employeur en préparation"
-        intro="Le site pose aujourd'hui le socle de collecte et de mise en relation. Un espace employeur plus complet constitue la prochaine étape produit logique."
-        kicker="À venir"
-      >
-        <BulletList items={employerSpacePreview} />
       </Section>
 
       <CtaBanner

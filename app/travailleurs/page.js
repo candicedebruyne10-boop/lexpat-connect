@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
 import { professionOptionsByRegion } from "../../lib/professions";
@@ -38,16 +39,16 @@ const candidateFaq = [
 
 const candidateSpacePreview = [
   {
-    title: "Compléter son profil dans le temps",
-    text: "Un futur espace candidat permettra d'enrichir son dossier avec davantage d'informations, de documents et de préférences professionnelles."
+    title: "Tableau de bord candidat",
+    text: "Un premier espace de suivi permet déjà de visualiser la logique d'un tableau de bord avec progression, statistiques et notifications."
   },
   {
-    title: "Mieux structurer sa présentation",
-    text: "L'objectif est d'aller au-delà d'un simple formulaire pour créer un vrai profil lisible par les employeurs belges."
+    title: "Profil structuré",
+    text: "L'espace travailleur pose les bases d'un profil plus complet, avec des champs mieux organisés pour les employeurs belges."
   },
   {
-    title: "Suivre sa visibilité et ses démarches",
-    text: "À terme, cet espace pourrait centraliser les candidatures, les échanges et les informations utiles liées au projet professionnel en Belgique."
+    title: "CV enrichi",
+    text: "Une vue dédiée au CV prépare la structuration des formations, expériences, certificats et compétences dans un format plus lisible."
   }
 ];
 
@@ -124,6 +125,31 @@ export default function TravailleursPage() {
       </Section>
 
       <Section
+        title="Découvrir le futur espace travailleur"
+        intro="Nous avons déjà maquetté une première version de l'espace travailleur pour structurer plus sérieusement le profil candidat, le CV et la progression du dossier."
+        kicker="Aperçu"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace candidat</p>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme</h3>
+            <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
+              Inspiré des interfaces de suivi candidat, cet espace prépare une logique de tableau de bord avec profil, CV, progression et prochaines actions utiles.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/travailleurs/espace" className="primary-button">
+                Voir l'espace travailleur
+              </Link>
+              <Link href="#formulaire" className="secondary-button">
+                Commencer par le formulaire
+              </Link>
+            </div>
+          </div>
+          <BulletList items={candidateSpacePreview} />
+        </div>
+      </Section>
+
+      <Section
         title="Créer mon profil"
         intro="Le statut indiqué sert à mieux comprendre votre situation de départ. Il ne vaut jamais validation juridique."
         kicker="Formulaire"
@@ -153,14 +179,6 @@ export default function TravailleursPage() {
             ]}
           />
         </div>
-      </Section>
-
-      <Section
-        title="Espace candidat en préparation"
-        intro="Le formulaire actuel constitue une première étape utile. La prochaine brique produit logique est un espace candidat plus complet et plus personnalisable."
-        kicker="À venir"
-      >
-        <BulletList items={candidateSpacePreview} />
       </Section>
 
       <CtaBanner
