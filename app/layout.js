@@ -1,25 +1,25 @@
-import "./globals.css";
-import Link from "next/link";
-import { Manrope } from "next/font/google";
+import './globals.css';
+import Link from 'next/link';
+import { Manrope } from 'next/font/google';
 
 const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope"
+  subsets: ['latin'],
+  variable: '--font-manrope'
 });
 
 export const metadata = {
-  title: "LEXPAT Connect",
+  title: 'LEXPAT Connect',
   description:
-    "Plateforme de mise en relation entre employeurs belges et talents internationaux, adossée au cabinet LEXPAT."
+    'Plateforme de mise en relation entre employeurs belges et talents internationaux, adossée au cabinet LEXPAT.'
 };
 
 const navigation = [
-  { href: "/", label: "Accueil" },
-  { href: "/employeurs", label: "Employeurs" },
-  { href: "/travailleurs", label: "Travailleurs" },
-  { href: "/metiers-en-penurie", label: "Métiers en pénurie" },
-  { href: "/accompagnement-juridique", label: "Cabinet LEXPAT" },
-  { href: "/contact", label: "Contact" }
+  { href: '/', label: 'Accueil' },
+  { href: '/employeurs', label: 'Employeurs' },
+  { href: '/travailleurs', label: 'Travailleurs' },
+  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
+  { href: '/accompagnement-juridique', label: 'Cabinet LEXPAT' },
+  { href: '/contact', label: 'Contact' }
 ];
 
 export default function RootLayout({ children }) {
@@ -35,6 +35,9 @@ export default function RootLayout({ children }) {
                 </Link>
                 <Link href="/accompagnement-juridique" className="transition hover:text-[#57b7af]">
                   Cabinet LEXPAT
+                </Link>
+                <Link href="/connexion" className="transition hover:text-[#57b7af]">
+                  Connexion
                 </Link>
                 <span className="text-[#8b99aa]">Français</span>
               </div>
@@ -54,7 +57,7 @@ export default function RootLayout({ children }) {
                   </span>
                 </Link>
 
-                <div className="hidden items-center gap-6 lg:flex">
+                <div className="hidden items-center gap-4 lg:flex">
                   <nav className="flex items-center gap-6 text-sm font-medium text-[#607086]">
                     {navigation.map((item) => (
                       <Link key={item.href} href={item.href} className="transition hover:text-[#1d3b8b]">
@@ -62,14 +65,17 @@ export default function RootLayout({ children }) {
                       </Link>
                     ))}
                   </nav>
-                  <Link href="/contact" className="primary-button">
-                    Nous contacter
+                  <Link href="/connexion" className="secondary-button">
+                    Se connecter
+                  </Link>
+                  <Link href="/inscription" className="primary-button">
+                    Créer un compte
                   </Link>
                 </div>
 
                 <div className="flex items-center gap-3 lg:hidden">
-                  <Link href="/contact" className="secondary-button">
-                    Contact
+                  <Link href="/connexion" className="secondary-button">
+                    Connexion
                   </Link>
                   <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-[#c8d8ee] bg-white text-[#1d3b8b] shadow-[0_8px_20px_rgba(29,59,139,0.06)]">
                     <span className="flex flex-col gap-1">
@@ -91,6 +97,12 @@ export default function RootLayout({ children }) {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  href="/inscription"
+                  className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
+                >
+                  Créer un compte
+                </Link>
               </nav>
             </div>
           </header>
@@ -138,7 +150,8 @@ export default function RootLayout({ children }) {
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
                     <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin employeur</Link>
                     <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Créer un profil candidat</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Comprendre les métiers en pénurie</Link>
+                    <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
+                    <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
                   </div>
                 </div>
 
