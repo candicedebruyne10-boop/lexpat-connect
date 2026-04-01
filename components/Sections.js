@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -12,6 +13,19 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
     <section className="relative overflow-hidden pb-20 pt-16 sm:pb-24 lg:pb-32 lg:pt-24"
       style={{ background: "linear-gradient(135deg, #080f2e 0%, #0c1a4a 38%, #122060 65%, #1a2e7a 100%)" }}
     >
+      <div className="absolute inset-0">
+        <Image
+          src="/hero-accueil-lexpat-connect.png"
+          alt="Visualisation de la mise en relation entre employeurs belges et talents internationaux"
+          fill
+          priority
+          className="object-cover object-center opacity-35"
+          sizes="100vw"
+        />
+      </div>
+
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,46,0.48)_0%,rgba(8,15,46,0.62)_30%,rgba(8,15,46,0.84)_68%,rgba(8,15,46,0.96)_100%)]" />
+
       {/* Decorative radial glows */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(ellipse_90%_55%_at_50%_-5%,rgba(87,183,175,0.22),transparent)]" />
@@ -21,6 +35,18 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
       </div>
 
       <div className="container-shell relative">
+        <div className="mb-8 flex justify-center">
+          <div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-white/10 bg-white shadow-[0_18px_40px_rgba(0,0,0,0.25)] sm:h-28 sm:w-28">
+            <Image
+              src="/logo-lexpat-connect.png"
+              alt="Logo LEXPAT Connect"
+              fill
+              className="object-cover"
+              sizes="112px"
+            />
+          </div>
+        </div>
+
         {/* Badge pill */}
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
@@ -422,6 +448,8 @@ export function Hero({
   secondaryHref,
   secondaryLabel,
   note,
+  logoSrc,
+  logoAlt = "",
   stats = [],
   panels = []
 }) {
@@ -433,6 +461,19 @@ export function Hero({
           <div className="absolute left-1/2 top-0 h-px w-40 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#60b8b1] to-transparent" />
 
           <div className="relative mx-auto max-w-5xl text-center">
+            {logoSrc ? (
+              <div className="mx-auto mb-5 flex justify-center">
+                <div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-[#dce7ef] bg-white shadow-[0_18px_40px_rgba(17,39,87,0.08)] sm:h-28 sm:w-28">
+                  <Image
+                    src={logoSrc}
+                    alt={logoAlt}
+                    fill
+                    className="object-cover"
+                    sizes="112px"
+                  />
+                </div>
+              </div>
+            ) : null}
             <p className="inline-flex items-center justify-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#255c8f]">
               {badge}
             </p>

@@ -1,5 +1,6 @@
 import './globals.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Manrope } from 'next/font/google';
 
 const manrope = Manrope({
@@ -14,10 +15,10 @@ export const metadata = {
 };
 
 const navigation = [
+  { href: '/', label: 'Accueil' },
   { href: '/employeurs', label: 'Employeurs' },
   { href: '/travailleurs', label: 'Talents' },
-  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
-  { href: '/contact', label: 'Contact' }
+  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' }
 ];
 
 export default function RootLayout({ children }) {
@@ -25,29 +26,18 @@ export default function RootLayout({ children }) {
     <html lang="fr" className={manrope.variable}>
       <body className="font-sans">
         <div className="shell">
-          <div className="border-b border-[#edf1f5] bg-white/88 backdrop-blur">
-            <div className="container-shell py-3">
-              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-[#607086] sm:justify-end">
-                <Link href="/employeurs" className="transition hover:text-[#57b7af]">
-                  Je recrute
-                </Link>
-                <Link href="/travailleurs" className="transition hover:text-[#57b7af]">
-                  Je rends mon profil visible
-                </Link>
-                <Link href="/connexion" className="transition hover:text-[#57b7af]">
-                  Connexion
-                </Link>
-                <span className="text-[#8b99aa]">Français</span>
-              </div>
-            </div>
-          </div>
-
           <header className="sticky top-0 z-40 border-b border-[#edf1f5] bg-white/92 backdrop-blur-xl">
             <div className="container-shell py-5">
               <div className="flex items-center justify-between gap-4">
                 <Link href="/" className="flex items-center gap-3">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#eef7fb_0%,#dff4f1_100%)] text-sm font-bold tracking-[0.24em] text-[#1d3b8b]">
-                    LC
+                  <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-[18px] border border-[#d9e9f1] bg-white shadow-[0_10px_24px_rgba(17,39,87,0.08)]">
+                    <Image
+                      src="/logo-lexpat-connect.png"
+                      alt="Logo LEXPAT Connect"
+                      fill
+                      className="object-cover"
+                      sizes="56px"
+                    />
                   </span>
                   <span>
                     <span className="block text-lg font-extrabold tracking-[0.12em] text-[#1d3b8b]">LEXPAT</span>
@@ -57,17 +47,11 @@ export default function RootLayout({ children }) {
 
                 <div className="hidden items-center gap-4 lg:flex">
                   <nav className="flex items-center gap-6 text-sm font-medium text-[#607086]">
-                    <Link href="/" className="transition hover:text-[#1d3b8b]">
-                      Accueil
-                    </Link>
                     {navigation.map((item) => (
                       <Link key={item.href} href={item.href} className="transition hover:text-[#1d3b8b]">
                         {item.label}
                       </Link>
                     ))}
-                    <Link href="/accompagnement-juridique" className="text-[#6e7f95] transition hover:text-[#1d3b8b]">
-                      Cabinet LEXPAT
-                    </Link>
                   </nav>
                   <Link href="/connexion" className="secondary-button">
                     Se connecter
@@ -92,12 +76,6 @@ export default function RootLayout({ children }) {
               </div>
 
               <nav className="mt-4 flex gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
-                <Link
-                  href="/"
-                  className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#cde2df] hover:text-[#57b7af]"
-                >
-                  Accueil
-                </Link>
                 {navigation.map((item) => (
                   <Link
                     key={item.href}
@@ -112,12 +90,6 @@ export default function RootLayout({ children }) {
                   className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
                 >
                   Créer un compte
-                </Link>
-                <Link
-                  href="/accompagnement-juridique"
-                  className="whitespace-nowrap rounded-full border border-[#edf1f5] bg-[#fafcfd] px-4 py-2 text-[#6b7b8f] transition hover:text-[#1d3b8b]"
-                >
-                  Cabinet LEXPAT
                 </Link>
               </nav>
             </div>
