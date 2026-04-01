@@ -3,63 +3,63 @@ import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../componen
 import FormCard from "../../components/FormCard";
 import { professionOptionsByRegion } from "../../lib/professions";
 
-const employerChallenges = [
+const employerBenefits = [
   {
-    title: "Des postes qui restent durablement ouverts",
-    text: "Dans plusieurs secteurs, certains recrutements deviennent plus longs, plus incertains et plus coûteux à sécuriser."
+    title: "Décrivez clairement le poste",
+    text: "Métier, région, contrat, compétences attendues : votre besoin devient plus lisible dès le départ."
   },
   {
-    title: "Un besoin de clarté avant d'ouvrir à l'international",
-    text: "Avant même d'identifier un candidat, l'employeur a besoin d'un cadre lisible sur le poste, la région et les conditions du recrutement."
+    title: "Touchez des talents internationaux ciblés",
+    text: "La plateforme met en avant des profils alignés avec les métiers en pénurie en Belgique."
   },
   {
-    title: "Des enjeux administratifs à anticiper",
-    text: "Selon le profil recruté, le recrutement peut soulever des questions de permis unique, de droit au travail ou de faisabilité régionale."
+    title: "Accélérez la mise en relation",
+    text: "Vous passez plus vite d'un besoin flou à une prise de contact utile avec des profils adaptés."
   }
 ];
 
-const employerBenefits = [
+const employerSteps = [
   {
-    title: "Structurer le besoin de recrutement",
-    text: "LEXPAT Connect permet de présenter le poste, les missions, la région et les conditions essentielles dans un format plus clair."
+    title: "Déposez votre besoin",
+    text: "Vous indiquez le métier recherché, la région, le contrat et les compétences attendues."
   },
   {
-    title: "Rendre la recherche plus lisible",
-    text: "La plateforme aide à rapprocher un besoin employeur de profils internationaux pertinents, sans survendre un matching automatique."
+    title: "Le matching devient plus simple",
+    text: "Votre recherche gagne en lisibilité et peut être rapprochée de talents internationaux pertinents."
   },
   {
-    title: "Identifier plus vite le moment où le juridique devient nécessaire",
-    text: "Quand le dossier soulève un enjeu concret de séjour ou d'autorisation de travail, le cabinet LEXPAT peut prendre le relais."
+    title: "Vous entrez en contact",
+    text: "La mise en relation se fait plus vite dans un cadre plus clair et plus professionnel."
+  }
+];
+
+const employerPreview = [
+  {
+    title: "Tableau de bord entreprise",
+    text: "Une vue dédiée pour suivre l'activité, les besoins déposés et les prochaines actions."
+  },
+  {
+    title: "Fiche entreprise",
+    text: "Un espace plus propre pour présenter votre structure, vos critères et votre contexte de recrutement."
+  },
+  {
+    title: "Suivi des offres",
+    text: "Une base pour centraliser vos recrutements en cours et les profils en cours d'analyse."
   }
 ];
 
 const employerFaq = [
   {
-    question: "Puis-je utiliser la plateforme même si je n'ai jamais recruté à l'international ?",
-    answer: "Oui. LEXPAT Connect peut justement servir de point d'entrée pour clarifier votre besoin et comprendre le cadre d'un recrutement international en Belgique."
+    question: "À qui s'adresse la plateforme ?",
+    answer: "Aux employeurs belges qui souhaitent recruter des talents internationaux, en particulier dans les métiers en pénurie."
   },
   {
-    question: "La plateforme garantit-elle l'obtention d'un permis unique ?",
-    answer: "Non. Une autorisation de travail ou de séjour dépend toujours d'une situation précise et, le cas échéant, d'une analyse juridique distincte."
+    question: "Puis-je l'utiliser si je n'ai jamais recruté à l'international ?",
+    answer: "Oui. La plateforme est justement pensée pour structurer un premier besoin de manière claire et exploitable."
   },
   {
-    question: "À quel moment faut-il contacter le cabinet LEXPAT ?",
-    answer: "Dès qu'un recrutement soulève une question de droit au travail, de faisabilité régionale, de permis unique ou de sécurisation administrative."
-  }
-];
-
-const employerSpacePreview = [
-  {
-    title: "Tableau de bord employeur",
-    text: "Une première interface permet déjà de visualiser la logique d'un espace entreprise avec offres, activité récente et relais juridique."
-  },
-  {
-    title: "Fiche entreprise structurée",
-    text: "L'espace employeur prépare un cadre plus sérieux pour décrire l'entreprise, ses critères et son contexte de recrutement."
-  },
-  {
-    title: "Offres et suivi",
-    text: "Une vue dédiée anticipe la centralisation des offres publiées, de leur statut et des profils à analyser."
+    question: "Le juridique intervient-il tout de suite ?",
+    answer: "Non. La priorité reste la mise en relation. Le cabinet LEXPAT intervient ensuite seulement si une question de permis unique ou de droit au travail apparaît."
   }
 ];
 
@@ -70,114 +70,87 @@ export default function EmployeursPage() {
         badge="Espace employeurs"
         title={
           <>
-            Recruter à l'international en Belgique,
-            <span className="block text-[#57b7af]">avec un cadre plus clair dès le départ</span>
+            Trouvez des talents internationaux
+            <span className="block text-[#57b7af]">pour les métiers en pénurie en Belgique</span>
           </>
         }
-        description="LEXPAT Connect aide les employeurs belges à structurer leurs besoins de recrutement dans les métiers en pénurie, à rendre leurs attentes plus lisibles et à identifier quand un relais juridique devient nécessaire."
+        description="Déposez votre besoin, gagnez en visibilité et accélérez la mise en relation avec des profils internationaux qualifiés."
         primaryHref="#formulaire"
         primaryLabel="Déposer un besoin"
-        secondaryHref="/accompagnement-juridique"
-        secondaryLabel="Voir le relais juridique"
-        note="La plateforme facilite la mise en relation. Les questions juridiques sont traitées séparément par le cabinet LEXPAT."
+        secondaryHref="/travailleurs"
+        secondaryLabel="Voir le parcours talents"
+        note="Le juridique n'intervient qu'après la mise en relation, si le recrutement le nécessite."
         stats={[
-          { value: "Poste", label: "Un cadrage plus précis du besoin, des missions et du contexte" },
-          { value: "Région", label: "Une lecture attentive de Bruxelles, de la Wallonie et de la Flandre" },
-          { value: "Relais", label: "Une continuité possible avec le cabinet LEXPAT si nécessaire" }
+          { value: "Poste", label: "Un besoin mieux structuré et immédiatement compréhensible" },
+          { value: "Belgique", label: "Une approche pensée pour les métiers en pénurie et les réalités régionales" },
+          { value: "Contact", label: "Une mise en relation plus rapide avec des talents pertinents" }
         ]}
         panels={[
           {
-            kicker: "Pour votre entreprise",
-            title: "Rendre le recrutement plus lisible",
-            text: "Clarifiez le métier recherché, le type de contrat, la région et les compétences attendues pour faciliter une mise en relation utile."
+            kicker: "Bénéfice immédiat",
+            title: "Rendre votre recrutement visible et exploitable",
+            text: "Vous clarifiez rapidement le poste, les attentes et le contexte pour gagner du temps."
           },
           {
-            kicker: "Pour le dossier",
-            title: "Ne pas attendre pour sécuriser le cadre",
-            text: "Lorsqu'une situation soulève une question de droit au travail ou de faisabilité, le relais juridique doit être identifié immédiatement."
+            kicker: "Étape suivante",
+            title: "Faire intervenir LEXPAT seulement si nécessaire",
+            text: "Le cabinet prend le relais plus tard, lorsque le dossier soulève un enjeu de permis unique ou d'immigration économique."
           }
         ]}
       />
 
       <Section
-        title="Pourquoi les employeurs utilisent LEXPAT Connect"
-        intro="La plateforme s'adresse aux entreprises qui veulent ouvrir leur recherche à des talents internationaux sans perdre en clarté, en sérieux ni en sécurité."
-        kicker="Besoins"
-      >
-        <BulletList items={employerChallenges} />
-      </Section>
-
-      <Section
-        title="Ce que la plateforme vous apporte concrètement"
-        intro="LEXPAT Connect n'a pas vocation à remplacer vos process RH internes. Elle sert à structurer le besoin, clarifier les informations utiles et préparer une mise en relation plus crédible."
-        kicker="Apport"
-        muted
+        title="Pourquoi déposer votre besoin ici"
+        intro="La plateforme est conçue pour vous aider à passer plus vite d'un besoin de recrutement à une mise en relation utile."
+        kicker="Employeurs"
       >
         <BulletList items={employerBenefits} />
       </Section>
 
       <Section
-        title="Comment cela fonctionne"
-        intro="Le parcours reste volontairement simple pour vous faire gagner du temps sans brouiller la lecture du dossier."
-        kicker="Étapes"
+        title="Comment ça marche"
+        intro="Un parcours direct, sans jargon, centré sur le recrutement."
+        kicker="3 étapes"
+        muted
       >
-        <Steps
-          items={[
-            {
-              title: "Vous décrivez votre besoin",
-              text: "Poste, région, compétences, contrat, niveau d'urgence et contexte du recrutement sont posés dès l'entrée."
-            },
-            {
-              title: "La demande devient plus exploitable",
-              text: "Votre besoin est présenté dans un format qui facilite un rapprochement avec des profils internationaux pertinents."
-            },
-            {
-              title: "La mise en relation peut commencer",
-              text: "Vous pouvez entrer en contact avec des profils adaptés, dans un cadre plus clair et plus professionnel."
-            },
-            {
-              title: "LEXPAT intervient si le dossier l'exige",
-              text: "Permis unique, séjour, faisabilité régionale ou sécurisation administrative peuvent ensuite être traités dans un cadre distinct."
-            }
-          ]}
-        />
+        <Steps items={employerSteps} />
       </Section>
 
       <Section
-        title="Découvrir le futur espace employeur"
-        intro="Nous avons déjà maquetté une première version de l'espace employeur pour structurer plus sérieusement la fiche entreprise, les offres et le suivi du recrutement."
+        title="Un espace employeur en préparation"
+        intro="Nous préparons une interface dédiée pour structurer vos offres, votre fiche entreprise et le suivi des profils."
         kicker="Aperçu"
       >
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace entreprise</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme RH</h3>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme de recrutement</h3>
             <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
-              Inspiré des logiques de suivi entreprise, cet espace prépare une navigation claire entre tableau de bord, fiche employeur et gestion des offres.
+              Tableau de bord, informations entreprise, offres en cours et suivi des opportunités : la logique est déjà posée.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/employeurs/espace" className="primary-button">
                 Voir l'espace employeur
               </Link>
               <Link href="#formulaire" className="secondary-button">
-                Commencer par le formulaire
+                Commencer maintenant
               </Link>
             </div>
           </div>
-          <BulletList items={employerSpacePreview} />
+          <BulletList items={employerPreview} />
         </div>
       </Section>
 
       <Section
         title="Déposer un besoin de recrutement"
-        intro="Plus votre demande est précise, plus la mise en relation sera utile et plus le moment d'un éventuel accompagnement juridique pourra être identifié rapidement."
+        intro="Plus votre demande est précise, plus la mise en relation sera efficace."
         kicker="Formulaire"
         muted
       >
         <div id="formulaire">
           <FormCard
             title="Formulaire employeur"
-            intro="Décrivez votre besoin de manière claire pour permettre une première lecture sérieuse du recrutement envisagé."
+            intro="Décrivez votre besoin pour permettre une première lecture claire et exploitable."
             buttonLabel="Envoyer le besoin"
             formType="employeur"
             fields={[
@@ -201,15 +174,15 @@ export default function EmployeursPage() {
       </Section>
 
       <CtaBanner
-        title="Un recrutement international peut nécessiter plus qu'une mise en relation"
-        text="Lorsque le recrutement implique une question de séjour, de permis unique ou de droit au travail, le cabinet LEXPAT peut intervenir pour sécuriser le dossier dans un cadre distinct."
+        title="Une fois le match validé, le juridique peut prendre le relais"
+        text="Permis unique, droit au travail, immigration économique : le cabinet LEXPAT intervient ensuite seulement si le recrutement le nécessite."
         primaryHref="/accompagnement-juridique"
-        primaryLabel="Découvrir l'accompagnement juridique"
+        primaryLabel="Voir le relais juridique"
         secondaryHref="/contact"
         secondaryLabel="Poser une question"
       />
 
-      <Section title="Questions fréquentes des employeurs" kicker="FAQ" muted>
+      <Section title="Questions fréquentes des employeurs" kicker="FAQ">
         <Faq items={employerFaq} />
       </Section>
     </>

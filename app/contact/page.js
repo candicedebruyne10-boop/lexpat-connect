@@ -1,6 +1,21 @@
 import { BulletList, Hero, Section } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
 
+const contactPoints = [
+  {
+    title: "Une question employeur",
+    text: "Pour déposer un besoin, clarifier un recrutement ou comprendre comment utiliser la plateforme."
+  },
+  {
+    title: "Une question talent",
+    text: "Pour rendre votre profil visible, mieux présenter votre parcours ou comprendre les opportunités."
+  },
+  {
+    title: "Une question juridique",
+    text: "Pour les sujets de permis unique, droit au travail, séjour ou immigration économique."
+  }
+];
+
 export default function ContactPage() {
   return (
     <>
@@ -8,62 +23,47 @@ export default function ContactPage() {
         badge="Contact"
         title={
           <>
-            Une question sur la plateforme ou sur le cabinet,
-            <span className="block text-[#57b7af]">commencez ici</span>
+            Une question sur la plateforme
+            <span className="block text-[#57b7af]">ou sur le relais juridique</span>
           </>
         }
-        description="Cette page vous permet de nous poser une question employeur, une question candidat, une demande liée au cabinet LEXPAT ou une demande plus générale."
+        description="Posez votre question ici pour être orienté vers le bon interlocuteur : plateforme, recrutement, profil candidat ou cabinet LEXPAT."
         primaryHref="#formulaire"
-        primaryLabel="Nous écrire"
-        secondaryHref="/accompagnement-juridique"
-        secondaryLabel="Voir le cadre juridique"
-        note="Selon votre besoin, votre message pourra être orienté vers la plateforme LEXPAT Connect ou vers le cabinet LEXPAT."
+        primaryLabel="Poser ma question"
+        secondaryHref="/"
+        secondaryLabel="Revenir à l'accueil"
+        note="La prise de contact reste simple : on commence par votre besoin, puis on vous oriente vers la bonne suite."
       />
 
       <Section
-        title="Nous écrire"
-        intro="Décrivez votre situation ou votre question pour permettre une première lecture claire de votre besoin."
+        title="Dans quel cas nous écrire"
+        intro="Cette page sert de point d'entrée unique pour les questions liées à la plateforme ou au cabinet."
+        kicker="Orientation"
+      >
+        <BulletList items={contactPoints} />
+      </Section>
+
+      <Section
+        title="Poser votre question"
+        intro="Décrivez votre situation le plus clairement possible pour permettre une première lecture rapide et utile."
         kicker="Formulaire"
+        muted
       >
         <div id="formulaire">
           <FormCard
             title="Formulaire de contact"
-            intro="Employeur, candidat, consultation juridique ou partenariat: choisissez le motif de votre demande et décrivez votre situation."
+            intro="Employeur, talent, consultation juridique ou partenariat : choisissez le bon motif et décrivez votre besoin."
             buttonLabel="Envoyer le message"
             formType="contact"
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },
               { label: "Téléphone", placeholder: "+32 ..." },
-              { label: "Type de demande", type: "select", placeholder: "Sélectionnez votre besoin", options: ["Question employeur", "Question candidat", "Consultation juridique", "Partenariat", "Autre"] },
+              { label: "Type de demande", type: "select", placeholder: "Sélectionnez votre besoin", options: ["Question employeur", "Question talent", "Consultation juridique", "Partenariat", "Autre"] },
               { label: "Message", type: "textarea", placeholder: "Expliquez votre situation ou votre question...", wide: true }
             ]}
           />
         </div>
-      </Section>
-
-      <Section
-        title="Avant de nous poser une question"
-        intro="Quelques points utiles pour bien comprendre le rôle de chaque espace."
-        kicker="Repères"
-        muted
-      >
-        <BulletList
-          items={[
-            {
-              title: "La plateforme facilite la mise en relation",
-              text: "LEXPAT Connect sert à structurer un besoin employeur ou à présenter un profil candidat de manière plus claire."
-            },
-            {
-              title: "Le cabinet LEXPAT intervient pour le juridique",
-              text: "Les questions de permis unique, de droit au travail, de séjour ou de faisabilité régionale relèvent du cabinet dans un cadre distinct."
-            },
-            {
-              title: "Les informations légales et RGPD devront être finalisées avant déploiement public définitif",
-              text: "La structure du site est en place, mais les mentions complètes, les cookies et les informations de traitement devront être complétés avant une diffusion finale."
-            }
-          ]}
-        />
       </Section>
     </>
   );

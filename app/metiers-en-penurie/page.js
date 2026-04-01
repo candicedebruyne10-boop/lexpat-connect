@@ -1,36 +1,21 @@
 import Link from "next/link";
 import { CtaBanner, Hero, Section } from "../../components/Sections";
 
-const foundations = [
-  {
-    title: "La Belgique fonctionne par Régions",
-    text: "Bruxelles, la Wallonie et la Flandre appliquent leurs propres listes et leurs propres pratiques administratives."
-  },
-  {
-    title: "Les listes évoluent dans le temps",
-    text: "Elles doivent être lues comme des repères utiles et régulièrement actualisés, jamais comme un cadre figé."
-  },
-  {
-    title: "Un métier en pénurie ne suffit pas à lui seul",
-    text: "La réalité du poste, le profil du candidat et la région compétente restent déterminants."
-  }
-];
-
-const regions = [
+const regionCards = [
   {
     kicker: "Bruxelles-Capitale",
-    title: "Une lecture particulièrement nuancée",
-    text: "Les listes et leur portée concrète doivent être appréciées avec prudence, en tenant compte des réalités administratives bruxelloises."
+    title: "Des besoins à lire avec précision",
+    text: "Des fonctions recherchées, mais une lecture administrative qui demande plus de nuance."
   },
   {
     kicker: "Wallonie",
-    title: "Des besoins souvent plus directement structurants",
-    text: "La liste wallonne peut aider à cadrer plus vite certains recrutements, à condition de conserver une lecture précise du dossier."
+    title: "Des métiers souvent plus directement mobilisables",
+    text: "Une région clé pour lire rapidement les besoins de recrutement sur plusieurs fonctions."
   },
   {
     kicker: "Flandre",
-    title: "Une logique plus fonctionnelle sur plusieurs métiers",
-    text: "De nombreuses fonctions y sont décrites de manière plus technique et demandent une présentation rigoureuse."
+    title: "Des profils techniques fortement demandés",
+    text: "Une logique très fonctionnelle, particulièrement utile pour les métiers industriels et logistiques."
   }
 ];
 
@@ -38,7 +23,7 @@ const sectors = [
   {
     id: "construction",
     title: "Construction et travaux publics",
-    summary: "Maçonnerie, couverture, électricité, conduite de chantier, voirie et fonctions de terrain spécifiques.",
+    summary: "Des métiers de terrain régulièrement recherchés par les employeurs belges.",
     jobs: [
       "Maçon / maçonne",
       "Couvreur / couvreuse",
@@ -51,7 +36,7 @@ const sectors = [
   {
     id: "sante",
     title: "Santé et action sociale",
-    summary: "Aide-soignant, infirmier, fonctions médicales et paramédicales, accompagnement social.",
+    summary: "Des profils de soin et d'accompagnement parmi les plus recherchés actuellement.",
     jobs: [
       "Infirmier / infirmière",
       "Aide-soignant / aide-soignante",
@@ -64,7 +49,7 @@ const sectors = [
   {
     id: "transport",
     title: "Transport et logistique",
-    summary: "Fonctions de conduite, logistique, poids lourd, navigation intérieure et métiers ciblés du secteur.",
+    summary: "Des fonctions essentielles pour les entreprises qui recrutent en tension.",
     jobs: [
       "Chauffeur poids lourd",
       "Cariste",
@@ -77,7 +62,7 @@ const sectors = [
   {
     id: "industrie",
     title: "Industrie et maintenance",
-    summary: "Électromécanique, automatisation, maintenance industrielle, froid, mécanique et fonctions techniques.",
+    summary: "Des profils techniques recherchés pour renforcer des équipes rapidement.",
     jobs: [
       "Électromécanicien / électromécanicienne",
       "Technicien de maintenance",
@@ -90,7 +75,7 @@ const sectors = [
   {
     id: "it",
     title: "Technologies et informatique",
-    summary: "Développement, infrastructure, analyse fonctionnelle et plusieurs fonctions numériques spécialisées.",
+    summary: "Des profils numériques spécialisés présents dans plusieurs listes régionales.",
     jobs: [
       "Développeur / développeuse",
       "Analyste informatique",
@@ -103,7 +88,7 @@ const sectors = [
   {
     id: "education",
     title: "Éducation et formation",
-    summary: "Certaines fonctions d'enseignement, de coordination ou de formation selon les cadres régionaux applicables.",
+    summary: "Certaines fonctions pédagogiques ou de formation restent également recherchées.",
     jobs: [
       "Enseignant / enseignante",
       "Formateur / formatrice",
@@ -122,46 +107,30 @@ export default function MetiersPage() {
         badge="Métiers en pénurie en Belgique"
         title={
           <>
-            Comprendre les métiers en pénurie,
-            <span className="block text-[#57b7af]">avec une lecture claire et rigoureuse</span>
+            Identifiez les profils
+            <span className="block text-[#57b7af]">les plus recherchés en Belgique</span>
           </>
         }
-        description="LEXPAT Connect s'appuie sur les réalités du marché belge et sur les listes régionales de métiers en pénurie pour structurer les opportunités visibles sur la plateforme."
-        primaryHref="/travailleurs"
-        primaryLabel="Je suis candidat"
-        secondaryHref="/employeurs"
-        secondaryLabel="Je suis employeur"
-        note="Cette page sert de point d'entrée. Elle n'a pas vocation à remplacer l'analyse d'une situation individuelle."
+        description="Une lecture directe des métiers en pénurie pour repérer plus vite les secteurs qui recrutent et les profils les plus demandés."
+        primaryHref="/employeurs"
+        primaryLabel="Je recrute"
+        secondaryHref="/travailleurs"
+        secondaryLabel="Je rends mon profil visible"
+        note="Les listes régionales sont un point d'entrée utile. Elles ne remplacent jamais l'analyse complète d'un dossier."
         stats={[
-          { value: "Bruxelles", label: "Des réalités à lire avec une attention particulière" },
-          { value: "Wallonie", label: "Des catégories souvent plus directement mobilisables" },
-          { value: "Flandre", label: "Des fonctions parfois formulées de manière plus technique" }
+          { value: "Santé", label: "Des fonctions durablement recherchées dans plusieurs régions" },
+          { value: "Construction", label: "Des métiers de terrain qui restent en forte tension" },
+          { value: "Industrie", label: "Des profils techniques recherchés pour des besoins immédiats" }
         ]}
       />
 
       <Section
-        title="Pourquoi cette page compte"
-        intro="Les métiers en pénurie jouent un rôle important dans certains recrutements internationaux. Ils constituent un repère utile, à condition d'être lus dans le bon cadre."
-        kicker="Repères"
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {foundations.map((item) => (
-            <article key={item.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
-              <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="Trois Régions, trois lectures différentes"
-        intro="La crédibilité de LEXPAT Connect repose aussi sur cette distinction: un métier ou une situation ne se lit pas exactement de la même manière selon la région concernée."
+        title="Trois régions, trois lectures du marché"
+        intro="La Belgique ne fonctionne pas avec une seule liste. Les besoins sont réels, mais ils se lisent toujours par région."
         kicker="Régions"
-        muted
       >
         <div className="grid gap-5 lg:grid-cols-3">
-          {regions.map((item) => (
+          {regionCards.map((item) => (
             <article key={item.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
               <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{item.kicker}</p>
               <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
@@ -172,9 +141,10 @@ export default function MetiersPage() {
       </Section>
 
       <Section
-        title="Secteurs concernés"
-        intro="Vous pouvez désormais cliquer sur un secteur pour accéder directement à quelques métiers représentatifs. Cette page garde une fonction pédagogique: les intitulés exacts et leur portée doivent toujours être vérifiés dans le cadre régional applicable."
+        title="Les secteurs les plus recherchés actuellement"
+        intro="Cliquez sur un secteur pour aller directement aux métiers qui reviennent le plus souvent dans les recrutements en Belgique."
         kicker="Secteurs"
+        muted
       >
         <div className="grid gap-5 lg:grid-cols-3">
           {sectors.map((sector) => (
@@ -185,7 +155,9 @@ export default function MetiersPage() {
             >
               <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b] transition group-hover:text-[#57b7af]">{sector.title}</h3>
               <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{sector.summary}</p>
-              <span className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#57b7af]">Voir les métiers liés</span>
+              <span className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#57b7af]">
+                Voir les métiers liés
+              </span>
             </Link>
           ))}
         </div>
@@ -193,18 +165,20 @@ export default function MetiersPage() {
 
       <Section
         title="Métiers par secteur"
-        intro="Cette présentation permet une lecture plus pratique des secteurs. Elle ne remplace pas une vérification régionale complète du dossier."
+        intro="Une lecture rapide des profils les plus demandés pour aider employeurs et talents à se repérer immédiatement."
         kicker="Accès rapide"
-        muted
       >
         <div className="grid gap-5 lg:grid-cols-2">
           {sectors.map((sector) => (
-            <article key={sector.id} id={sector.id} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7 scroll-mt-32">
+            <article key={sector.id} id={sector.id} className="scroll-mt-32 rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
               <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{sector.title}</h3>
               <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{sector.summary}</p>
               <ul className="mt-5 space-y-3 text-sm leading-7 text-[#5d6e83]">
                 {sector.jobs.map((job) => (
-                  <li key={job} className="flex gap-3"><span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#57b7af]" /> <span>{job}</span></li>
+                  <li key={job} className="flex gap-3">
+                    <span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#57b7af]" />
+                    <span>{job}</span>
+                  </li>
                 ))}
               </ul>
             </article>
@@ -213,25 +187,25 @@ export default function MetiersPage() {
       </Section>
 
       <Section
-        title="Ce qu'un métier en pénurie ne signifie pas automatiquement"
-        intro="La présence d'un métier sur une liste régionale ne suffit pas, à elle seule, à sécuriser un recrutement international ou à garantir une autorisation de travail."
+        title="Ce qu'il faut garder en tête"
+        intro="Un métier en pénurie donne de la visibilité à un recrutement ou à un profil. Il ne garantit pas, à lui seul, la faisabilité complète du dossier."
         kicker="À retenir"
         muted
       >
         <div className="rounded-[28px] border border-[#d9ece9] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-6 text-sm leading-7 text-[#5d6e83] shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-8">
           <p>
-            D'autres éléments entrent en ligne de compte, notamment la région compétente, le profil du candidat, la qualification, la rémunération, la nature du poste et la situation administrative.
+            La région compétente, le profil du candidat, le niveau de qualification, la nature du poste et le contexte administratif restent déterminants. La plateforme aide à se repérer vite. Le juridique intervient ensuite seulement si nécessaire.
           </p>
         </div>
       </Section>
 
       <CtaBanner
-        title="Utilisez cette page comme point de départ, pas comme réponse définitive"
-        text="Les métiers en pénurie permettent de mieux comprendre les opportunités visibles sur la plateforme. Pour sécuriser une situation concrète, une analyse individualisée reste souvent nécessaire."
-        primaryHref="/accompagnement-juridique"
-        primaryLabel="Parler au cabinet LEXPAT"
-        secondaryHref="/contact"
-        secondaryLabel="Poser une question"
+        title="Passez maintenant de l'information à l'action"
+        text="Déposez un besoin de recrutement ou rendez votre profil visible à partir des métiers actuellement les plus recherchés en Belgique."
+        primaryHref="/employeurs"
+        primaryLabel="Je recrute"
+        secondaryHref="/travailleurs"
+        secondaryLabel="Je rends mon profil visible"
       />
     </>
   );

@@ -10,15 +10,13 @@ const manrope = Manrope({
 export const metadata = {
   title: 'LEXPAT Connect',
   description:
-    'Plateforme de mise en relation entre employeurs belges et talents internationaux, adossée au cabinet LEXPAT.'
+    'Plateforme de mise en relation entre employeurs belges et talents internationaux dans les métiers en pénurie.'
 };
 
 const navigation = [
-  { href: '/', label: 'Accueil' },
   { href: '/employeurs', label: 'Employeurs' },
-  { href: '/travailleurs', label: 'Travailleurs' },
+  { href: '/travailleurs', label: 'Talents' },
   { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
-  { href: '/accompagnement-juridique', label: 'Cabinet LEXPAT' },
   { href: '/contact', label: 'Contact' }
 ];
 
@@ -31,10 +29,10 @@ export default function RootLayout({ children }) {
             <div className="container-shell py-3">
               <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-[#607086] sm:justify-end">
                 <Link href="/employeurs" className="transition hover:text-[#57b7af]">
-                  Pour les employeurs
+                  Je recrute
                 </Link>
-                <Link href="/accompagnement-juridique" className="transition hover:text-[#57b7af]">
-                  Cabinet LEXPAT
+                <Link href="/travailleurs" className="transition hover:text-[#57b7af]">
+                  Je rends mon profil visible
                 </Link>
                 <Link href="/connexion" className="transition hover:text-[#57b7af]">
                   Connexion
@@ -59,11 +57,17 @@ export default function RootLayout({ children }) {
 
                 <div className="hidden items-center gap-4 lg:flex">
                   <nav className="flex items-center gap-6 text-sm font-medium text-[#607086]">
+                    <Link href="/" className="transition hover:text-[#1d3b8b]">
+                      Accueil
+                    </Link>
                     {navigation.map((item) => (
                       <Link key={item.href} href={item.href} className="transition hover:text-[#1d3b8b]">
                         {item.label}
                       </Link>
                     ))}
+                    <Link href="/accompagnement-juridique" className="text-[#6e7f95] transition hover:text-[#1d3b8b]">
+                      Cabinet LEXPAT
+                    </Link>
                   </nav>
                   <Link href="/connexion" className="secondary-button">
                     Se connecter
@@ -88,6 +92,12 @@ export default function RootLayout({ children }) {
               </div>
 
               <nav className="mt-4 flex gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
+                <Link
+                  href="/"
+                  className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#cde2df] hover:text-[#57b7af]"
+                >
+                  Accueil
+                </Link>
                 {navigation.map((item) => (
                   <Link
                     key={item.href}
@@ -103,6 +113,12 @@ export default function RootLayout({ children }) {
                 >
                   Créer un compte
                 </Link>
+                <Link
+                  href="/accompagnement-juridique"
+                  className="whitespace-nowrap rounded-full border border-[#edf1f5] bg-[#fafcfd] px-4 py-2 text-[#6b7b8f] transition hover:text-[#1d3b8b]"
+                >
+                  Cabinet LEXPAT
+                </Link>
               </nav>
             </div>
           </header>
@@ -111,7 +127,7 @@ export default function RootLayout({ children }) {
 
           <footer className="mt-20 border-t border-[#edf1f5] bg-white/90">
             <div className="container-shell py-14">
-              <div className="grid gap-10 lg:grid-cols-[1.4fr_0.8fr_0.8fr_1fr]">
+              <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.9fr]">
                 <div className="space-y-5">
                   <div className="flex items-center gap-3">
                     <span className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#eef7fb_0%,#dff4f1_100%)] text-sm font-bold tracking-[0.24em] text-[#1d3b8b]">
@@ -123,20 +139,22 @@ export default function RootLayout({ children }) {
                     </div>
                   </div>
                   <p className="max-w-md text-sm leading-7 text-[#607086]">
-                    Une plateforme pensée pour clarifier le recrutement international en Belgique,
-                    rendre les parcours plus lisibles et activer, si nécessaire, le relais juridique du cabinet LEXPAT.
+                    Une plateforme pensée pour connecter les employeurs belges aux talents internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible.
                   </p>
                   <div className="rounded-[28px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086] shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
-                    <p className="font-semibold text-[#1d3b8b]">Important</p>
+                    <p className="font-semibold text-[#1d3b8b]">Après la mise en relation</p>
                     <p className="mt-2 leading-7">
-                      La plateforme facilite la mise en relation. Les prestations juridiques sont assurées séparément par le cabinet LEXPAT.
+                      Si un recrutement suppose un permis unique ou une question d'immigration économique, le cabinet LEXPAT peut ensuite prendre le relais.
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Navigation</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Plateforme</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
+                    <Link href="/" className="block transition hover:text-[#1d3b8b]">
+                      Accueil
+                    </Link>
                     {navigation.map((item) => (
                       <Link key={item.href} href={item.href} className="block transition hover:text-[#1d3b8b]">
                         {item.label}
@@ -146,10 +164,11 @@ export default function RootLayout({ children }) {
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Parcours</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Actions rapides</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin employeur</Link>
-                    <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Créer un profil candidat</Link>
+                    <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin de recrutement</Link>
+                    <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Rendre mon profil visible</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Explorer les métiers en pénurie</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
                   </div>
@@ -158,14 +177,14 @@ export default function RootLayout({ children }) {
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Cabinet LEXPAT</p>
                   <p className="mt-4 text-sm leading-7 text-[#607086]">
-                    Permis unique, immigration économique, sécurisation d'embauche internationale et analyse juridique individualisée.
+                    Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement.
                   </p>
                   <div className="mt-5 flex flex-col gap-3">
-                    <Link href="/accompagnement-juridique" className="primary-button">
-                      Voir l'accompagnement juridique
+                    <Link href="/accompagnement-juridique" className="secondary-button">
+                      Voir l'accompagnement
                     </Link>
                     <Link href="/contact" className="ghost-link">
-                      Demander un échange
+                      Parler à LEXPAT
                     </Link>
                   </div>
                 </div>

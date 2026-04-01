@@ -3,34 +3,45 @@ import { BulletList, CtaBanner, Hero, Section, Steps } from "../../components/Se
 const legalRoles = [
   {
     title: "Pour les employeurs",
-    text: "Évaluer la faisabilité d'un recrutement, lire le cadre régional applicable, préparer un permis unique et anticiper les risques administratifs."
+    text: "Sécuriser un recrutement international, analyser un permis unique ou vérifier la faisabilité d'un dossier."
   },
   {
-    title: "Pour les travailleurs internationaux",
-    text: "Comprendre une situation de séjour, un droit au travail, un changement d'employeur ou un projet de mobilité professionnelle."
+    title: "Pour les talents internationaux",
+    text: "Clarifier une situation de séjour, de droit au travail ou un projet professionnel en Belgique."
   },
   {
-    title: "Pour les dossiers qui dépassent la simple mise en relation",
-    text: "Intervenir lorsque la plateforme ne suffit plus et qu'une analyse individualisée devient nécessaire."
+    title: "Pour les situations sensibles",
+    text: "Intervenir lorsque la mise en relation a déjà eu lieu et qu'un cadre juridique devient nécessaire."
   }
 ];
 
 const legalExamples = [
   {
     title: "Permis unique",
-    text: "Préparation, vérification et sécurisation du dossier lorsque le recrutement l'exige."
+    text: "Lecture, préparation et sécurisation du dossier lorsque le recrutement l'exige."
   },
   {
     title: "Immigration économique",
-    text: "Orientation juridique adaptée à la région, au poste, au niveau de qualification et à la situation du candidat."
+    text: "Analyse adaptée à la région, au poste, au niveau de qualification et au profil du candidat."
   },
   {
-    title: "Analyse préalable d'un recrutement",
-    text: "Lecture de la faisabilité avant d'engager ou de poursuivre une embauche internationale."
+    title: "Analyse préalable",
+    text: "Vérifier la faisabilité d'un projet avant d'aller plus loin dans le recrutement."
+  }
+];
+
+const legalSteps = [
+  {
+    title: "Une mise en relation existe déjà",
+    text: "Le besoin de recrutement ou l'opportunité professionnelle est identifié."
   },
   {
-    title: "Conseil stratégique",
-    text: "Accompagnement ciblé pour un employeur ou un candidat lorsque les enjeux administratifs doivent être clarifiés."
+    title: "Une question juridique apparaît",
+    text: "Permis unique, droit au travail, immigration économique ou lecture régionale du dossier."
+  },
+  {
+    title: "LEXPAT prend le relais",
+    text: "Le cabinet intervient alors dans un cadre distinct pour analyser et sécuriser la situation."
   }
 ];
 
@@ -41,34 +52,34 @@ export default function AccompagnementPage() {
         badge="Cabinet LEXPAT"
         title={
           <>
-            Un accompagnement juridique pour sécuriser
-            <span className="block text-[#57b7af]">le recrutement international en Belgique</span>
+            Un relais juridique clair
+            <span className="block text-[#57b7af]">lorsque la mise en relation ne suffit plus</span>
           </>
         }
-        description="Lorsque la mise en relation débouche sur un projet concret d'embauche ou de mobilité, le cabinet LEXPAT peut intervenir sur les aspects juridiques liés au travail et au séjour en Belgique."
+        description="LEXPAT Connect sert d'abord au matching. Lorsque le recrutement international soulève une vraie question de permis unique, de droit au travail ou d'immigration économique, le cabinet LEXPAT peut ensuite intervenir."
         primaryHref="/contact"
-        primaryLabel="Prendre rendez-vous"
-        secondaryHref="/employeurs"
+        primaryLabel="Prendre contact"
+        secondaryHref="/"
         secondaryLabel="Revenir à la plateforme"
-        note="LEXPAT Connect et le cabinet LEXPAT sont complémentaires, mais leurs rôles restent distincts."
+        note="Le juridique n'est pas l'entrée principale du site. Il intervient au moment utile, lorsque le dossier l'exige réellement."
         stats={[
-          { value: "Employeurs", label: "Pour sécuriser un recrutement international ou un permis unique" },
-          { value: "Travailleurs", label: "Pour clarifier une situation de séjour ou de droit au travail" },
-          { value: "Belgique", label: "Avec une lecture attentive des cadres régionaux applicables" }
+          { value: "Permis unique", label: "Pour sécuriser un recrutement qui a déjà pris forme" },
+          { value: "Travail et séjour", label: "Pour clarifier une situation administrative concrète" },
+          { value: "Belgique", label: "Avec une lecture attentive du cadre régional applicable" }
         ]}
       />
 
       <Section
-        title="Quand le cabinet LEXPAT intervient"
-        intro="LEXPAT Connect facilite la mise en relation. Le cabinet LEXPAT intervient lorsque le dossier soulève une vraie question juridique qui doit être traitée séparément."
-        kicker="Rôle du cabinet"
+        title="Quand faire intervenir le cabinet"
+        intro="Le rôle du cabinet commence là où la plateforme s'arrête : quand une situation concrète doit être analysée juridiquement."
+        kicker="Relais juridique"
       >
         <BulletList items={legalRoles} />
       </Section>
 
       <Section
-        title="Exemples d'accompagnement"
-        intro="Chaque dossier dépend de faits précis. Le cabinet intervient pour analyser, orienter et sécuriser la situation lorsqu'un cadre juridique clair devient nécessaire."
+        title="Les sujets les plus fréquents"
+        intro="Le cabinet intervient sur des dossiers ciblés, directement liés à une embauche, une opportunité ou une situation administrative précise."
         kicker="Interventions"
         muted
       >
@@ -76,39 +87,20 @@ export default function AccompagnementPage() {
       </Section>
 
       <Section
-        title="À quel moment prendre contact"
-        intro="Un échange utile intervient souvent au moment où une situation concrète doit être vérifiée, sécurisée ou clarifiée avant d'aller plus loin."
-        kicker="Moments clés"
+        title="Comment le relais se fait"
+        intro="Une fois le besoin de matching couvert, l'accompagnement juridique peut prendre le relais de façon claire et séparée."
+        kicker="3 étapes"
       >
-        <Steps
-          items={[
-            {
-              title: "Avant de lancer un recrutement international",
-              text: "Pour comprendre le cadre applicable, les options possibles et les points de vigilance dès le départ."
-            },
-            {
-              title: "Lorsqu'un candidat est identifié",
-              text: "Pour vérifier rapidement si le recrutement semble juridiquement envisageable dans la situation donnée."
-            },
-            {
-              title: "Lorsqu'une situation administrative bloque",
-              text: "Pour éviter les erreurs de parcours et reposer le dossier sur une base plus solide."
-            },
-            {
-              title: "Lorsqu'un dossier doit être préparé sérieusement",
-              text: "Pour passer d'un simple projet d'embauche à une démarche plus sécurisée sur le plan juridique."
-            }
-          ]}
-        />
+        <Steps items={legalSteps} />
       </Section>
 
       <CtaBanner
         title="Besoin d'un regard juridique sur une situation concrète"
-        text="Le cabinet LEXPAT peut intervenir lorsque le recrutement international, le droit au travail ou la situation de séjour demandent une lecture individualisée et rigoureuse."
+        text="Si un recrutement ou une opportunité professionnelle soulève une vraie question de séjour, de permis unique ou de droit au travail, le cabinet LEXPAT peut intervenir."
         primaryHref="/contact"
-        primaryLabel="Prendre rendez-vous"
-        secondaryHref="/travailleurs"
-        secondaryLabel="Voir l'espace candidats"
+        primaryLabel="Prendre contact"
+        secondaryHref="/employeurs"
+        secondaryLabel="Revenir au matching"
       />
     </>
   );

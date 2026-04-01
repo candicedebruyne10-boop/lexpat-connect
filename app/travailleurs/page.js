@@ -5,50 +5,61 @@ import { professionOptionsByRegion } from "../../lib/professions";
 
 const candidateBenefits = [
   {
-    title: "Présenter un profil plus sérieux",
-    text: "Votre expérience, vos compétences, vos langues et votre disponibilité sont présentées dans un format plus clair pour un employeur belge."
+    title: "Rendre votre profil visible",
+    text: "Votre parcours devient plus lisible pour des employeurs belges qui recrutent dans les métiers en pénurie."
   },
   {
-    title: "Gagner en lisibilité",
-    text: "La plateforme aide à rendre votre parcours plus compréhensible, sans vous réduire à un simple CV ou à une promesse imprécise."
+    title: "Mettre en avant ce qui compte",
+    text: "Compétences, expérience, langues, disponibilité : les informations utiles apparaissent tout de suite."
   },
   {
-    title: "Comprendre où vous vous situez",
-    text: "Votre localisation, votre mobilité et votre situation administrative peuvent être décrites de manière plus structurée."
+    title: "Créer plus d'opportunités",
+    text: "Vous augmentez vos chances d'être compris plus vite et de déclencher une vraie prise de contact."
+  }
+];
+
+const candidateSteps = [
+  {
+    title: "Créez votre profil",
+    text: "Vous indiquez votre métier, votre région visée, vos compétences et votre disponibilité."
   },
   {
-    title: "Être orienté si une question juridique apparaît",
-    text: "Si votre situation soulève un enjeu de droit au travail ou de séjour, le cabinet LEXPAT peut intervenir séparément."
+    title: "Votre candidature devient plus claire",
+    text: "Les employeurs comprennent plus vite votre parcours et votre adéquation avec leurs besoins."
+  },
+  {
+    title: "La mise en relation peut commencer",
+    text: "Vous gagnez en visibilité auprès d'entreprises belges ouvertes au recrutement international."
+  }
+];
+
+const candidatePreview = [
+  {
+    title: "Tableau de bord candidat",
+    text: "Une base d'espace personnel pour suivre votre visibilité, votre profil et vos prochaines étapes."
+  },
+  {
+    title: "Profil structuré",
+    text: "Une présentation plus claire de votre parcours, pensée pour des employeurs belges."
+  },
+  {
+    title: "CV enrichi",
+    text: "Une logique déjà prévue pour centraliser expériences, formations, certificats et compétences."
   }
 ];
 
 const candidateFaq = [
   {
-    question: "Puis-je créer un profil même si je ne suis pas encore en Belgique ?",
-    answer: "Oui. La plateforme peut déjà vous permettre de présenter votre parcours et de rendre votre profil visible pour des opportunités en Belgique."
+    question: "Puis-je créer un profil si je ne suis pas encore en Belgique ?",
+    answer: "Oui. La plateforme permet déjà de rendre votre profil visible et de présenter votre projet professionnel."
   },
   {
-    question: "Dois-je déjà disposer d'un permis de travail pour m'inscrire ?",
-    answer: "Non. L'inscription sur la plateforme et l'existence d'un droit au travail sont deux choses distinctes."
+    question: "Dois-je déjà avoir un permis de travail ?",
+    answer: "Non. L'inscription sur la plateforme et le droit au travail sont deux sujets différents."
   },
   {
-    question: "Exercer un métier en pénurie suffit-il pour travailler en Belgique ?",
-    answer: "Non. Cela peut constituer un point d'appui, mais chaque situation dépend aussi de la région compétente, du poste et du profil du candidat."
-  }
-];
-
-const candidateSpacePreview = [
-  {
-    title: "Tableau de bord candidat",
-    text: "Un premier espace de suivi permet déjà de visualiser la logique d'un tableau de bord avec progression, statistiques et notifications."
-  },
-  {
-    title: "Profil structuré",
-    text: "L'espace travailleur pose les bases d'un profil plus complet, avec des champs mieux organisés pour les employeurs belges."
-  },
-  {
-    title: "CV enrichi",
-    text: "Une vue dédiée au CV prépare la structuration des formations, expériences, certificats et compétences dans un format plus lisible."
+    question: "Le cabinet LEXPAT intervient-il automatiquement ?",
+    answer: "Non. Le cabinet n'intervient que si une opportunité soulève ensuite une vraie question de séjour, de permis unique ou de droit au travail."
   }
 ];
 
@@ -56,108 +67,89 @@ export default function TravailleursPage() {
   return (
     <>
       <Hero
-        badge="Espace candidats"
+        badge="Espace talents internationaux"
         title={
           <>
-            Présenter votre profil pour travailler en Belgique,
-            <span className="block text-[#57b7af]">dans un cadre plus sérieux et plus lisible</span>
+            Rendez votre profil visible
+            <span className="block text-[#57b7af]">auprès d'employeurs belges qui recrutent</span>
           </>
         }
-        description="LEXPAT Connect permet aux travailleurs internationaux de valoriser leurs compétences, leur expérience et leur disponibilité, tout en facilitant une lecture plus claire de leur profil par des employeurs belges."
+        description="Présentez votre expérience, vos compétences et votre disponibilité dans un format plus clair, plus crédible et plus utile pour accéder à des opportunités en Belgique."
         primaryHref="#formulaire"
         primaryLabel="Créer mon profil"
         secondaryHref="/metiers-en-penurie"
-        secondaryLabel="Comprendre les opportunités"
-        note="Créer un profil ne vaut jamais validation juridique. Si votre situation soulève une question de droit au travail ou de séjour, le cabinet LEXPAT peut intervenir séparément."
+        secondaryLabel="Voir les métiers recherchés"
+        note="Le rôle du cabinet LEXPAT n'intervient qu'après la mise en relation, si une question juridique apparaît."
         stats={[
-          { value: "Profil", label: "Une présentation plus claire de votre parcours et de vos compétences" },
-          { value: "Belgique", label: "Une visibilité pensée pour des employeurs belges" },
-          { value: "LEXPAT", label: "Un accompagnement juridique possible si votre situation l'exige" }
+          { value: "Profil", label: "Une présentation plus claire de votre parcours professionnel" },
+          { value: "Belgique", label: "Une visibilité pensée pour les employeurs belges" },
+          { value: "Opportunités", label: "Plus de chances de déclencher une prise de contact sérieuse" }
         ]}
         panels={[
           {
-            kicker: "Pour votre candidature",
-            title: "Rendre votre parcours plus compréhensible",
-            text: "Valorisez votre expérience, vos langues, votre disponibilité et le métier que vous recherchez dans un format plus structuré."
+            kicker: "Bénéfice immédiat",
+            title: "Présentez ce qui intéresse vraiment un employeur",
+            text: "Votre métier, vos compétences, vos langues et votre disponibilité sont mis en avant dans un format plus exploitable."
           },
           {
-            kicker: "Pour la suite",
-            title: "Comprendre quand demander un appui juridique",
-            text: "Si une opportunité professionnelle soulève une question de permis unique, de séjour ou de droit au travail, le relais vers LEXPAT doit être clair."
+            kicker: "Étape suivante",
+            title: "Faire intervenir LEXPAT uniquement si nécessaire",
+            text: "Si une opportunité professionnelle soulève une question de permis unique ou de droit au travail, le cabinet peut ensuite prendre le relais."
           }
         ]}
       />
 
       <Section
         title="Pourquoi créer votre profil"
-        intro="LEXPAT Connect s'adresse aux personnes qui souhaitent travailler en Belgique et qui veulent présenter leur parcours de manière plus sérieuse à des employeurs ouverts au recrutement international."
-        kicker="Visibilité"
+        intro="La plateforme est pensée pour vous rendre plus visible, plus lisible et plus crédible auprès d'employeurs belges."
+        kicker="Talents"
       >
         <BulletList items={candidateBenefits} />
       </Section>
 
       <Section
-        title="Comment cela fonctionne"
-        intro="Le parcours reste simple: vous présentez les informations utiles, votre profil devient plus lisible et la plateforme facilite ensuite une mise en relation plus crédible."
-        kicker="Étapes"
+        title="Comment ça marche"
+        intro="Un parcours simple, centré sur votre visibilité et la mise en relation."
+        kicker="3 étapes"
         muted
       >
-        <Steps
-          items={[
-            {
-              title: "Vous créez votre profil",
-              text: "Vous indiquez votre identité, votre parcours, les métiers visés et votre disponibilité."
-            },
-            {
-              title: "Vous précisez votre situation",
-              text: "Votre pays de résidence, votre mobilité, vos langues et votre situation administrative peuvent être mentionnés clairement."
-            },
-            {
-              title: "Votre profil devient plus exploitable",
-              text: "Les employeurs peuvent mieux comprendre votre projet professionnel et votre adéquation avec un besoin de recrutement."
-            },
-            {
-              title: "LEXPAT peut intervenir si nécessaire",
-              text: "Si une opportunité révèle une vraie question juridique, le cabinet peut être consulté dans un cadre distinct."
-            }
-          ]}
-        />
+        <Steps items={candidateSteps} />
       </Section>
 
       <Section
-        title="Découvrir le futur espace travailleur"
-        intro="Nous avons déjà maquetté une première version de l'espace travailleur pour structurer plus sérieusement le profil candidat, le CV et la progression du dossier."
+        title="Un espace travailleur en préparation"
+        intro="Nous préparons une interface dédiée pour gérer votre profil, votre CV et votre visibilité de façon plus professionnelle."
         kicker="Aperçu"
       >
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace candidat</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme</h3>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Une vraie base d'espace personnel</h3>
             <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
-              Inspiré des interfaces de suivi candidat, cet espace prépare une logique de tableau de bord avec profil, CV, progression et prochaines actions utiles.
+              Tableau de bord, profil, CV et progression : la structure est déjà pensée pour vous aider à mieux présenter votre parcours.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/travailleurs/espace" className="primary-button">
                 Voir l'espace travailleur
               </Link>
               <Link href="#formulaire" className="secondary-button">
-                Commencer par le formulaire
+                Commencer maintenant
               </Link>
             </div>
           </div>
-          <BulletList items={candidateSpacePreview} />
+          <BulletList items={candidatePreview} />
         </div>
       </Section>
 
       <Section
         title="Créer mon profil"
-        intro="Le statut indiqué sert à mieux comprendre votre situation de départ. Il ne vaut jamais validation juridique."
+        intro="Le statut administratif indiqué permet simplement de mieux comprendre votre point de départ. Il ne vaut jamais validation juridique."
         kicker="Formulaire"
       >
         <div id="formulaire">
           <FormCard
             title="Formulaire candidat"
-            intro="Présentez les éléments utiles de votre parcours pour rendre votre profil plus clair auprès d'employeurs belges."
+            intro="Présentez les informations utiles de votre parcours pour augmenter votre visibilité."
             buttonLabel="Envoyer mon profil"
             formType="candidat"
             successMessage="Votre profil a bien été envoyé. Un email de confirmation vous a été adressé."
@@ -182,15 +174,15 @@ export default function TravailleursPage() {
       </Section>
 
       <CtaBanner
-        title="Vous avez une question sur votre droit au travail ou votre séjour en Belgique"
-        text="Dans certains cas, la création d'un profil ou l'intérêt d'un employeur fait apparaître une question plus juridique. Le cabinet LEXPAT peut alors intervenir dans un cadre distinct."
+        title="Une question de séjour ou de droit au travail peut être traitée ensuite"
+        text="Une fois la mise en relation engagée, le cabinet LEXPAT peut intervenir si votre situation appelle un accompagnement juridique distinct."
         primaryHref="/accompagnement-juridique"
-        primaryLabel="Contacter le cabinet LEXPAT"
+        primaryLabel="Voir le relais juridique"
         secondaryHref="/contact"
         secondaryLabel="Nous écrire"
       />
 
-      <Section title="Questions fréquentes des candidats" kicker="FAQ" muted>
+      <Section title="Questions fréquentes des talents" kicker="FAQ">
         <Faq items={candidateFaq} />
       </Section>
     </>
