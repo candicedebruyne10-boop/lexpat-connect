@@ -57,27 +57,22 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    ───────────────────────────────────────────────────────────────────────────── */
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0">
-        <Image
-          src="/hero-accueil-lexpat-connect.png"
-          alt="Visualisation de la mise en relation entre employeurs belges et talents internationaux"
-          fill
-          priority
-          className="object-cover object-[58%_42%] sm:object-[58%_34%] lg:object-[center_32%]"
-          sizes="100vw"
-        />
-      </div>
-
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,15,43,0.84)_0%,rgba(7,15,43,0.62)_34%,rgba(7,15,43,0.28)_60%,rgba(7,15,43,0.2)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,15,43,0.5)_0%,rgba(7,15,43,0.08)_32%,rgba(7,15,43,0.38)_100%)]" />
+    <section
+      className="relative overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, #08122f 0%, #10255b 38%, #173A8A 68%, #214b9d 100%)"
+      }}
+    >
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_22%_38%,rgba(89,185,177,0.16),transparent_24%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,rgba(7,15,43,0.5),transparent)]" />
+        <div className="absolute left-[-10%] top-[-10%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(89,185,177,0.2),transparent_62%)] blur-3xl" />
+        <div className="absolute right-[-12%] top-[10%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_62%)] blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(to_top,rgba(7,15,43,0.42),transparent)]" />
+        <div className="absolute inset-y-0 left-[56%] hidden w-px bg-white/10 lg:block" />
       </div>
 
       <div className="container-shell relative">
-        <div className="grid min-h-[760px] items-end py-16 sm:min-h-[820px] sm:py-20 lg:min-h-[880px] lg:py-28">
+        <div className="grid min-h-[720px] items-center gap-12 py-16 sm:min-h-[760px] sm:py-20 lg:min-h-[820px] lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:py-24">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/90 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[#59B9B1]" />
@@ -123,6 +118,40 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
               >
                 Profils internationaux qualifiés
               </span>
+            </div>
+          </div>
+
+          <div className="hidden lg:block">
+            <div className="rounded-[36px] border border-white/10 bg-white/8 p-7 shadow-[0_24px_60px_rgba(6,12,34,0.24)] backdrop-blur-md">
+              <div className="grid gap-4">
+                <div className="rounded-[26px] border border-[rgba(23,58,138,0.22)] bg-[#EEF4FF] p-5">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#173A8A] shadow-[0_10px_20px_rgba(23,58,138,0.12)]">
+                    <BriefcaseIcon className="h-5 w-5" />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
+                    Parcours employeur
+                  </p>
+                  <p className="mt-3 text-2xl font-bold leading-tight text-[#0b1738]">
+                    Déposer un besoin. Recevoir des profils ciblés.
+                  </p>
+                </div>
+
+                <div className="rounded-[26px] border border-[rgba(89,185,177,0.26)] bg-[#ECFAF8] p-5">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#59B9B1] shadow-[0_10px_20px_rgba(89,185,177,0.14)]">
+                    <TalentIcon className="h-5 w-5" />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#2F9F97]">
+                    Parcours talent
+                  </p>
+                  <p className="mt-3 text-2xl font-bold leading-tight text-[#0b1738]">
+                    Rendre son profil visible. Être contacté plus vite.
+                  </p>
+                </div>
+
+                <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4 text-sm leading-7 text-white/72">
+                  Matching d’abord. Le juridique intervient ensuite uniquement si la mise en relation avance vers un recrutement.
+                </div>
+              </div>
             </div>
           </div>
         </div>
