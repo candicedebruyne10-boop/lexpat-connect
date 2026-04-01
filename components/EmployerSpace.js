@@ -173,14 +173,202 @@ function CompanyView() {
   );
 }
 
+function CreateOfferForm({ onSuccess }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [values, setValues] = useState({
+    title: "",
+    region: "",
+    contract: "",
+    urgency: "",
+    email: "",
+    description: ""
+  });
+
+  function set(key, value) {
+    setValues((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/forms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formType: "offer",
+          title: `Nouvelle offre : ${values.title || "Sans titre"}`,
+          fields: [
+            { label: "Intitulé du poste", value: values.title },
+            { label: "Région", value: values.region },
+            { label: "Type de contrat", value: values.contract },
+            { label: "Niveau d'urgence", value: values.urgency },
+            { label: "Email de contact", value: values.email },
+            { label: "Description du besoin", value: values.description }
+          ]
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
+
+      setValues({ title: "", region: "", contract: "", urgency: "", email: "", description: "" });
+      setOpen(false);
+      onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <section className="rounded-[30px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-6 sm:p-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Créer une nouvelle offre</h2>
+        <p className="mt-3 text-sm leading-7 text-[#5f7086]">
+          Déposez votre besoin de recrutement. Il sera transmis directement à LEXPAT Connect pour traitement et mise en relation.
+        </p>
+        <button onClick={() => setOpen(true)} className="primary-button mt-5">
+          Ajouter une offre
+        </button>
+      </section>
+    );
+  }
+
+  return (
+    <section className="rounded-[30px] border border-[#d4e2f4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Nouvelle offre</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Décrivez votre besoin de recrutement</h2>
+        </div>
+        <button
+          onClick={() => { setOpen(false); setError(""); }}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e0eaf2] bg-[#f5f9fd] text-[#6b7b8f] transition hover:bg-[#edf3f9]"
+          aria-label="Fermer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Intitulé du poste *</span>
+          <input
+            className="field-input"
+            type="text"
+            placeholder="Ex : Soudeur industriel, Infirmier, Chauffeur SPL…"
+            required
+            value={values.title}
+            onChange={(e) => set("title", e.target.value)}
+          />
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région *</span>
+          <select className="field-input" required value={values.region} onChange={(e) => set("region", e.target.value)}>
+            <option value="" disabled>Sélectionnez une région</option>
+            <option>Bruxelles-Capitale</option>
+            <option>Wallonie</option>
+            <option>Flandre</option>
+            <option>Plusieurs régions</option>
+          </select>
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Type de contrat</span>
+          <select className="field-input" value={values.contract} onChange={(e) => set("contract", e.target.value)}>
+            <option value="" disabled>Sélectionnez un type</option>
+            <option>CDI</option>
+            <option>CDD</option>
+            <option>Intérim</option>
+            <option>Temps plein</option>
+            <option>Temps partiel</option>
+          </select>
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Niveau d'urgence</span>
+          <select className="field-input" value={values.urgency} onChange={(e) => set("urgency", e.target.value)}>
+            <option value="" disabled>Sélectionnez un niveau</option>
+            <option>Normal</option>
+            <option>Urgent</option>
+            <option>Très urgent</option>
+          </select>
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Email de contact *</span>
+          <input
+            className="field-input"
+            type="email"
+            placeholder="contact@entreprise.be"
+            required
+            value={values.email}
+            onChange={(e) => set("email", e.target.value)}
+          />
+        </label>
+
+        <label className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Description du besoin</span>
+          <textarea
+            className="field-input min-h-[8rem]"
+            placeholder="Compétences attendues, expérience, contexte, disponibilité souhaitée…"
+            rows={5}
+            value={values.description}
+            onChange={(e) => set("description", e.target.value)}
+          />
+        </label>
+
+        {error && (
+          <div className="md:col-span-2 rounded-[18px] border border-[#f2c4c4] bg-[#fff5f5] px-4 py-3 text-sm text-[#a33f3f]">
+            {error}
+          </div>
+        )}
+
+        <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm leading-6 text-[#6b7b8f]">
+            Votre offre sera transmise à LEXPAT Connect. Vous recevrez une confirmation par email.
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setError(""); }}
+              className="secondary-button"
+            >
+              Annuler
+            </button>
+            <button type="submit" disabled={loading} className="primary-button disabled:cursor-not-allowed disabled:opacity-70">
+              {loading ? "Envoi…" : "Soumettre l'offre"}
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 function OffersView() {
+  const [successMsg, setSuccessMsg] = useState("");
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mes offres</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Préparer et suivre vos besoins de recrutement</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Cette première vue permet de visualiser la logique d'un espace où les offres, leurs statuts et les profils reçus seront centralisés.</p>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Déposez vos offres directement depuis cet espace. Chaque besoin sera transmis à LEXPAT Connect pour traitement et mise en relation.</p>
       </section>
+
+      {successMsg && (
+        <div className="rounded-[24px] border border-[#c6e8e3] bg-[#f0fbf9] px-5 py-4 text-sm font-semibold text-[#1d7a6e]">
+          {successMsg}
+        </div>
+      )}
 
       <section className="grid gap-5 lg:grid-cols-2">
         {offerCards.map((offer) => (
@@ -195,17 +383,15 @@ function OffersView() {
               </span>
             </div>
             <div className="mt-5 rounded-[22px] border border-[#ebf0f6] bg-[#f9fbfd] p-4 text-sm leading-7 text-[#5f7086]">
-              Une future version permettra de suivre les candidatures reçues, les profils en analyse et les dossiers à transmettre au cabinet si nécessaire.
+              Le suivi des candidatures et profils reçus sera disponible dans la prochaine version.
             </div>
           </article>
         ))}
       </section>
 
-      <section className="rounded-[30px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-6 sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Créer une nouvelle offre</h2>
-        <p className="mt-3 text-sm leading-7 text-[#5f7086]">La logique produit est posée: vos futures offres pourront être sauvegardées ici avec leur métier, leur région, leur statut et leur niveau d'urgence.</p>
-        <button className="secondary-button mt-5">Ajouter une offre</button>
-      </section>
+      <CreateOfferForm
+        onSuccess={() => setSuccessMsg("Votre offre a bien été transmise à LEXPAT Connect. Vous recevrez une confirmation par email.")}
+      />
     </div>
   );
 }
