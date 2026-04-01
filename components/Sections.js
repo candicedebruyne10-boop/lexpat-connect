@@ -19,19 +19,19 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           alt="Visualisation de la mise en relation entre employeurs belges et talents internationaux"
           fill
           priority
-          className="object-cover object-center opacity-35"
+          className="object-cover object-center opacity-80"
           sizes="100vw"
         />
       </div>
 
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,46,0.48)_0%,rgba(8,15,46,0.62)_30%,rgba(8,15,46,0.84)_68%,rgba(8,15,46,0.96)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,46,0.16)_0%,rgba(8,15,46,0.26)_24%,rgba(8,15,46,0.46)_62%,rgba(8,15,46,0.72)_100%)]" />
 
       {/* Decorative radial glows */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(ellipse_90%_55%_at_50%_-5%,rgba(87,183,175,0.22),transparent)]" />
-        <div className="absolute right-0 top-0 h-96 w-96 translate-x-1/3 -translate-y-1/3 rounded-full bg-blue-600/10 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-80 w-80 -translate-x-1/3 translate-y-1/3 rounded-full bg-[#57b7af]/10 blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(to_top,rgba(8,15,46,0.6),transparent)]" />
+        <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(ellipse_90%_55%_at_50%_-5%,rgba(87,183,175,0.12),transparent)]" />
+        <div className="absolute right-0 top-0 h-96 w-96 translate-x-1/3 -translate-y-1/3 rounded-full bg-blue-600/6 blur-3xl" />
+        <div className="absolute bottom-0 left-0 h-80 w-80 -translate-x-1/3 translate-y-1/3 rounded-full bg-[#57b7af]/8 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,rgba(8,15,46,0.34),transparent)]" />
       </div>
 
       <div className="container-shell relative">
