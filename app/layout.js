@@ -21,6 +21,13 @@ const navigation = [
   { href: '/metiers-en-penurie', label: 'Métiers en pénurie' }
 ];
 
+const legalLinks = [
+  { href: '/mentions-legales', label: 'Mentions légales' },
+  { href: '/politique-de-confidentialite', label: 'Confidentialité' },
+  { href: '/cookies', label: 'Cookies' },
+  { href: '/conditions-utilisation', label: 'Conditions d’utilisation' }
+];
+
 export default function RootLayout({ children }) {
   return (
     <html lang="fr" className={manrope.variable}>
@@ -86,6 +93,12 @@ export default function RootLayout({ children }) {
                   </Link>
                 ))}
                 <Link
+                  href="/liste-metiers-penurie"
+                  className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
+                >
+                  Liste complète 2026
+                </Link>
+                <Link
                   href="/inscription"
                   className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
                 >
@@ -124,9 +137,6 @@ export default function RootLayout({ children }) {
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Plateforme</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    <Link href="/" className="block transition hover:text-[#1d3b8b]">
-                      Accueil
-                    </Link>
                     {navigation.map((item) => (
                       <Link key={item.href} href={item.href} className="block transition hover:text-[#1d3b8b]">
                         {item.label}
@@ -141,6 +151,7 @@ export default function RootLayout({ children }) {
                     <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin de recrutement</Link>
                     <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Rendre mon profil visible</Link>
                     <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Explorer les métiers en pénurie</Link>
+                    <Link href="/liste-metiers-penurie" className="block transition hover:text-[#1d3b8b]">Voir la liste complète 2026</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
                   </div>
@@ -158,6 +169,25 @@ export default function RootLayout({ children }) {
                     <Link href="/contact" className="ghost-link">
                       Parler à LEXPAT
                     </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10 border-t border-[#edf1f5] pt-6">
+                <div className="flex flex-col gap-4 rounded-[24px] border border-[#edf3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] px-5 py-4 text-sm text-[#6d7b8d] shadow-[0_10px_24px_rgba(15,23,42,0.03)] lg:flex-row lg:items-center lg:justify-between lg:px-6">
+                  <p className="leading-7">
+                    LEXPAT Connect — Plateforme de mise en relation pour métiers en pénurie en Belgique.
+                  </p>
+                  <div className="flex flex-wrap gap-x-5 gap-y-2">
+                  {legalLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="inline-flex rounded-full border border-transparent px-3 py-1.5 transition hover:border-[#dce7ef] hover:bg-white hover:text-[#1d3b8b]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                   </div>
                 </div>
               </div>

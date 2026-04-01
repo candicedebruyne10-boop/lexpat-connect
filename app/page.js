@@ -1,6 +1,7 @@
 import {
   HeroPremium,
   DualEntry,
+  ShortageJobsQuickLink,
   HowItWorksPremium,
   JobSectors,
   LexpatStrip,
@@ -24,6 +25,8 @@ export default function HomePage() {
 
       {/* Section 2 — Double entrée : 2 cartes premium élaborées */}
       <DualEntry />
+
+      <ShortageJobsQuickLink />
 
       {/* Section 3 — Comment ça marche : 3 étapes, zéro jargon */}
       <HowItWorksPremium />

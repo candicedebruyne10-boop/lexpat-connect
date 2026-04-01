@@ -4,204 +4,274 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+const EMPLOYER = {
+  primary: "#173A8A",
+  secondary: "#2E5AA2",
+  soft: "#EEF4FF",
+  border: "rgba(23,58,138,0.18)"
+};
+
+const TALENT = {
+  primary: "#59B9B1",
+  secondary: "#6EC9C1",
+  soft: "#ECFAF8",
+  border: "rgba(89,185,177,0.22)"
+};
+
+function BriefcaseIcon({ className = "h-5 w-5" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M4 9.5A1.5 1.5 0 0 1 5.5 8h13A1.5 1.5 0 0 1 20 9.5v8A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-8Z" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4 12h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function TalentIcon({ className = "h-5 w-5" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="8" r="3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M6.5 18.5a5.5 5.5 0 0 1 11 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function StepIcon({ index, className = "h-5 w-5" }) {
+  const paths = [
+    <path key="a" d="M5 7.5h14M7 12h10M9 16.5h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />,
+    <path key="b" d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />,
+    <path key="c" d="M12 4.5v6m0 0 3-3m-3 3-3-3M6 14.5h12v4H6z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  ];
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      {paths[index]}
+    </svg>
+  );
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    HERO PREMIUM — Section 1
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
-    <section className="relative overflow-hidden pb-20 pt-16 sm:pb-24 lg:pb-32 lg:pt-24"
-      style={{ background: "linear-gradient(135deg, #080f2e 0%, #0c1a4a 38%, #122060 65%, #1a2e7a 100%)" }}
-    >
+    <section className="relative overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="/hero-accueil-lexpat-connect.png"
           alt="Visualisation de la mise en relation entre employeurs belges et talents internationaux"
           fill
           priority
-          className="object-cover object-center opacity-80"
+          className="object-cover object-[58%_42%] sm:object-[58%_34%] lg:object-[center_32%]"
           sizes="100vw"
         />
       </div>
 
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,46,0.16)_0%,rgba(8,15,46,0.26)_24%,rgba(8,15,46,0.46)_62%,rgba(8,15,46,0.72)_100%)]" />
-
-      {/* Decorative radial glows */}
-        <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(ellipse_90%_55%_at_50%_-5%,rgba(87,183,175,0.12),transparent)]" />
-        <div className="absolute right-0 top-0 h-96 w-96 translate-x-1/3 -translate-y-1/3 rounded-full bg-blue-600/6 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-80 w-80 -translate-x-1/3 translate-y-1/3 rounded-full bg-[#57b7af]/8 blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,rgba(8,15,46,0.34),transparent)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,15,43,0.84)_0%,rgba(7,15,43,0.62)_34%,rgba(7,15,43,0.28)_60%,rgba(7,15,43,0.2)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,15,43,0.5)_0%,rgba(7,15,43,0.08)_32%,rgba(7,15,43,0.38)_100%)]" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_22%_38%,rgba(89,185,177,0.16),transparent_24%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,rgba(7,15,43,0.5),transparent)]" />
       </div>
 
       <div className="container-shell relative">
-        <div className="mb-8 flex justify-center">
-          <div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-white/10 bg-white shadow-[0_18px_40px_rgba(0,0,0,0.25)] sm:h-28 sm:w-28">
-            <Image
-              src="/logo-lexpat-connect.png"
-              alt="Logo LEXPAT Connect"
-              fill
-              className="object-cover"
-              sizes="112px"
-            />
-          </div>
-        </div>
+        <div className="grid min-h-[760px] items-end py-16 sm:min-h-[820px] sm:py-20 lg:min-h-[880px] lg:py-28">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/90 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#59B9B1]" />
+              Belgique · Métiers en pénurie · Mise en relation directe
+            </div>
 
-        {/* Badge pill */}
-        <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#57b7af]" />
-            Belgique · Métiers en pénurie · Mise en relation directe
-          </div>
-        </div>
+            <h1 className="mt-7 max-w-[12ch] text-[clamp(3rem,7vw,6rem)] font-bold leading-[0.96] tracking-[-0.06em] text-white">
+              Employeurs belges.{" "}
+              <span className="text-[#59B9B1]">Talents internationaux.</span>{" "}
+              Connexion directe.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/78 sm:text-[1.05rem]">
+              La plateforme qui met en relation les entreprises belges et les profils internationaux qualifiés dans les métiers en pénurie.
+            </p>
 
-        {/* Main headline */}
-        <div className="mx-auto mt-10 max-w-5xl text-center">
-          <h1 className="text-[clamp(2.6rem,5.8vw,5.2rem)] font-bold leading-[1.04] tracking-[-0.045em] text-white">
-            Employeurs belges.{" "}
-            <span className="text-[#57b7af]">Talents internationaux.</span>{" "}
-            Match direct.
-          </h1>
-          <p className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-white/[0.58] sm:text-[1.1rem]">
-            La plateforme qui connecte les entreprises belges aux profils qualifiés dans les métiers en pénurie — sans intermédiaire, sans délai.
-          </p>
-        </div>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href={primaryHref}
+                className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-7 py-4 text-base font-bold text-white shadow-[0_18px_44px_rgba(23,58,138,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(23,58,138,0.42)]"
+                style={{ background: EMPLOYER.primary }}
+              >
+                Je recrute
+              </Link>
+              <Link
+                href={secondaryHref}
+                className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-7 py-4 text-base font-bold text-white shadow-[0_18px_44px_rgba(89,185,177,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(89,185,177,0.38)]"
+                style={{ background: TALENT.primary }}
+              >
+                Je me fais repérer par des employeurs belges
+              </Link>
+            </div>
 
-        {/* Dual CTA cards */}
-        <div className="mx-auto mt-12 grid max-w-2xl gap-4 sm:grid-cols-2 lg:max-w-[44rem]">
-          {/* Employer card */}
-          <Link
-            href={primaryHref}
-            className="group flex flex-col justify-between rounded-[26px] border border-white/[0.1] bg-white/[0.07] p-7 backdrop-blur-sm transition duration-300 hover:border-white/[0.2] hover:bg-white/[0.12] hover:shadow-[0_24px_64px_rgba(0,0,0,0.3)]"
-          >
-            <div>
-              <span className="inline-block rounded-full bg-[#57b7af]/[0.22] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#57b7af]">
-                Employeurs belges
+            <div className="mt-10 flex flex-wrap gap-3">
+              <span
+                className="inline-flex items-center rounded-full border px-4 py-2 text-xs font-semibold"
+                style={{ background: "rgba(238,244,255,0.14)", borderColor: EMPLOYER.border, color: "#dfe8ff" }}
+              >
+                Recrutement en tension
               </span>
-              <h3 className="mt-5 text-xl font-bold leading-snug tracking-[-0.02em] text-white">
-                Trouvez les talents internationaux que vous ne trouvez pas localement
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-white/[0.5]">
-                Déposez votre besoin. Ciblez les métiers en tension. Recrutez plus vite.
-              </p>
-            </div>
-            <div className="mt-7 inline-flex items-center gap-2 text-base font-bold text-white transition-all duration-200 group-hover:gap-3.5">
-              Je recrute <span aria-hidden="true">→</span>
-            </div>
-          </Link>
-
-          {/* Talent card */}
-          <Link
-            href={secondaryHref}
-            className="group flex flex-col justify-between rounded-[26px] border border-[#57b7af]/[0.3] bg-[#57b7af]/[0.12] p-7 backdrop-blur-sm transition duration-300 hover:border-[#57b7af]/[0.5] hover:bg-[#57b7af]/[0.2] hover:shadow-[0_24px_64px_rgba(87,183,175,0.15)]"
-          >
-            <div>
-              <span className="inline-block rounded-full bg-[#57b7af]/[0.25] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#57b7af]">
-                Talents internationaux
+              <span
+                className="inline-flex items-center rounded-full border px-4 py-2 text-xs font-semibold"
+                style={{ background: "rgba(236,250,248,0.12)", borderColor: TALENT.border, color: "#d7f6f2" }}
+              >
+                Profils internationaux qualifiés
               </span>
-              <h3 className="mt-5 text-xl font-bold leading-snug tracking-[-0.02em] text-white">
-                Rendez votre profil visible auprès des employeurs belges
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-white/[0.5]">
-                Présentez vos compétences, votre expérience, votre disponibilité.
-              </p>
             </div>
-            <div className="mt-7 inline-flex items-center gap-2 text-base font-bold text-white transition-all duration-200 group-hover:gap-3.5">
-              Je rends mon profil visible <span aria-hidden="true">→</span>
-            </div>
-          </Link>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   DUAL ENTRY — Section 2
-   Two premium elaborated cards — one employer, one talent
-   ───────────────────────────────────────────────────────────────────────────── */
+const ENTRY_CARDS = [
+  {
+    title: "Employeurs belges",
+    text: "Déposez votre besoin et accédez à des profils internationaux ciblés pour les métiers en pénurie.",
+    cta: "Je recrute",
+    href: "/employeurs",
+    icon: BriefcaseIcon,
+    colors: EMPLOYER
+  },
+  {
+    title: "Talents internationaux",
+    text: "Rendez votre profil visible auprès des employeurs belges qui recrutent dans votre métier.",
+    cta: "Je rends mon profil visible",
+    href: "/travailleurs",
+    icon: TalentIcon,
+    colors: TALENT
+  }
+];
+
 export function DualEntry() {
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="container-shell">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="inline-flex items-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#57b7af]">
-            Accès direct
+          <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
+            Deux parcours
           </p>
-          <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
-            Pour qui est cette plateforme ?
+          <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
+            Choisissez votre entrée
           </h2>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Employer card — navy palette */}
-          <article className="relative overflow-hidden rounded-[32px] border border-[#c8d8f0] bg-[linear-gradient(150deg,#f0f5ff_0%,#e6eefb_100%)] p-8 shadow-[0_20px_60px_rgba(15,31,79,0.08)] transition duration-300 hover:shadow-[0_30px_72px_rgba(15,31,79,0.14)] sm:p-10">
-            <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#1d3b8b]/[0.06] blur-2xl" />
-            <span className="inline-block rounded-full border border-[#b0c6e8] bg-[#dce8f8] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#1d3b8b]">
-              Employeurs belges
-            </span>
-            <h3 className="mt-5 text-2xl font-bold leading-tight tracking-[-0.03em] text-[#080f2e] sm:text-3xl">
-              Recrutez des talents internationaux alignés avec vos besoins
-            </h3>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-[#5d6e83]">
-              Déposez votre besoin de recrutement. La plateforme cible les métiers en pénurie et vous connecte aux profils internationaux qualifiés, disponibles et prêts à travailler en Belgique.
-            </p>
-            <div className="mt-8">
-              <Link
-                href="/employeurs"
-                className="inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl bg-[#1d3b8b] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_36px_rgba(29,59,139,0.28)] transition hover:bg-[#162d6b] hover:shadow-[0_16px_44px_rgba(29,59,139,0.36)]"
+          {ENTRY_CARDS.map((card) => {
+            const Icon = card.icon;
+            return (
+              <article
+                key={card.title}
+                className="rounded-[32px] border bg-white p-8 shadow-[0_18px_52px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)] sm:p-10"
+                style={{
+                  background: `linear-gradient(180deg, #ffffff 0%, ${card.colors.soft} 100%)`,
+                  borderColor: card.colors.border
+                }}
               >
-                Je recrute maintenant
-              </Link>
-            </div>
-          </article>
-
-          {/* Talent card — teal palette */}
-          <article className="relative overflow-hidden rounded-[32px] border border-[#9dd4d0] bg-[linear-gradient(150deg,#f0fbf9_0%,#e4f7f5_100%)] p-8 shadow-[0_20px_60px_rgba(87,183,175,0.1)] transition duration-300 hover:shadow-[0_30px_72px_rgba(87,183,175,0.18)] sm:p-10">
-            <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#57b7af]/[0.12] blur-2xl" />
-            <span className="inline-block rounded-full border border-[#8fcdc8] bg-[#d4f0ee] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#2a8a82]">
-              Talents internationaux
-            </span>
-            <h3 className="mt-5 text-2xl font-bold leading-tight tracking-[-0.03em] text-[#080f2e] sm:text-3xl">
-              Rendez votre profil visible auprès des bons employeurs
-            </h3>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-[#5d6e83]">
-              Présentez votre expérience, vos compétences et votre disponibilité dans un format lisible, clair et directement exploitable par les employeurs belges qui recrutent dans votre domaine.
-            </p>
-            <div className="mt-8">
-              <Link
-                href="/travailleurs"
-                className="inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_36px_rgba(87,183,175,0.32)] transition hover:bg-[#4aa9a2] hover:shadow-[0_16px_44px_rgba(87,183,175,0.42)]"
-              >
-                Je rends mon profil visible
-              </Link>
-            </div>
-          </article>
+                <div
+                  className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border"
+                  style={{ background: card.colors.soft, borderColor: card.colors.border, color: card.colors.primary }}
+                >
+                  <Icon className="h-6 w-6" />
+                </div>
+                <div
+                  className="mt-5 inline-flex rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
+                  style={{
+                    background: card.colors.soft,
+                    border: `1px solid ${card.colors.border}`,
+                    color: card.colors.primary
+                  }}
+                >
+                  {card.title}
+                </div>
+                <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#080f2e] sm:text-[2rem]">
+                  {card.title}
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[#5d6e83]">
+                  {card.text}
+                </p>
+                <div className="mt-8">
+                  <Link
+                    href={card.href}
+                    className="inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+                    style={{
+                      background: card.colors.primary,
+                      boxShadow:
+                        card.colors === EMPLOYER
+                          ? "0 14px 34px rgba(23,58,138,0.24)"
+                          : "0 14px 34px rgba(89,185,177,0.28)"
+                    }}
+                  >
+                    {card.cta}
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   HOW IT WORKS PREMIUM — Section 3
-   3 steps, horizontal flow, zero jargon
-   ───────────────────────────────────────────────────────────────────────────── */
+export function ShortageJobsQuickLink() {
+  return (
+    <section className="py-4 sm:py-6 lg:py-8">
+      <div className="container-shell">
+        <div className="rounded-[32px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4fbfa_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
+          <div className="max-w-2xl">
+            <p className="inline-flex rounded-full bg-[#e9f8f5] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              Liste complète 2026
+            </p>
+            <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#080f2e] sm:text-3xl">
+              Consultez tous les métiers en pénurie repris par région
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
+              Une page dédiée rassemble l’ensemble des métiers en pénurie 2026 pour Bruxelles, la Wallonie et la Flandre.
+            </p>
+          </div>
+          <div className="mt-6 flex-shrink-0 lg:mt-0">
+            <Link
+              href="/liste-metiers-penurie"
+              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374]"
+            >
+              Voir la liste complète 2026
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const HOW_IT_WORKS = [
   {
     num: "01",
-    title: "Dépôt",
-    text: "L'employeur décrit son besoin. Le talent présente son parcours, ses compétences et sa disponibilité."
+    title: "Déposer un besoin ou un profil",
+    text: "Employeurs et talents renseignent l’essentiel, sans parcours complexe.",
+    accent: EMPLOYER,
+    iconIndex: 0
   },
   {
     num: "02",
-    title: "Matching",
-    text: "Région, métier en pénurie, expérience : le contexte rend la mise en relation plus pertinente et plus rapide."
+    title: "Entrer en relation",
+    text: "La plateforme facilite une mise en relation rapide et lisible.",
+    accent: TALENT,
+    iconIndex: 1
   },
   {
     num: "03",
-    title: "Contact direct",
-    text: "Employeurs et talents avancent directement vers une mise en relation sérieuse, sans intermédiaire."
+    title: "Sécuriser le juridique si nécessaire",
+    text: "LEXPAT intervient ensuite uniquement quand le recrutement l’exige.",
+    accent: EMPLOYER,
+    iconIndex: 2
   }
 ];
 
@@ -211,39 +281,35 @@ export function HowItWorksPremium() {
       <div className="container-shell">
         <div className="overflow-hidden rounded-[40px] border border-[#e2ecf4] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-10 lg:p-14">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <p className="inline-flex items-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#57b7af]">
+            <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
               3 étapes
             </p>
             <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
               Comment ça marche
             </h2>
-            <p className="mx-auto mt-4 text-base leading-7 text-[#5d6e83]">
-              Un parcours simple, centré sur la mise en relation.
-            </p>
           </div>
 
-          <div className="grid gap-6 sm:gap-0 sm:grid-cols-3">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.num} className="relative flex flex-col items-center px-6 py-4 text-center sm:px-8 sm:py-6">
-                {/* Connecting dashed line (desktop) */}
-                {i < HOW_IT_WORKS.length - 1 && (
+          <div className="grid gap-5 lg:grid-cols-3">
+            {HOW_IT_WORKS.map((step) => (
+              <article
+                key={step.num}
+                className="rounded-[30px] border bg-white p-7 text-left shadow-[0_14px_36px_rgba(15,23,42,0.04)]"
+                style={{ borderColor: step.accent.border }}
+              >
+                <div className="flex items-center justify-between gap-4">
                   <div
-                    className="absolute hidden sm:block"
-                    style={{
-                      top: "2.5rem",
-                      left: "62%",
-                      right: "-38%",
-                      borderTop: "2px dashed #c8e0dc"
-                    }}
-                  />
-                )}
-                {/* Step number */}
-                <div className="relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#57b7af,#3d9a93)] text-xl font-bold text-white shadow-[0_14px_36px_rgba(87,183,175,0.28)]">
-                  {step.num}
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-2xl"
+                    style={{ background: step.accent.soft, color: step.accent.primary }}
+                  >
+                    <StepIcon index={step.iconIndex} className="h-5 w-5" />
+                  </div>
+                  <span className="text-sm font-bold tracking-[0.16em]" style={{ color: step.accent.primary }}>
+                    {step.num}
+                  </span>
                 </div>
-                <h3 className="mt-6 text-lg font-bold tracking-tight text-[#080f2e]">{step.title}</h3>
-                <p className="mt-3 max-w-[16rem] text-sm leading-7 text-[#5d6e83]">{step.text}</p>
-              </div>
+                <h3 className="mt-5 text-xl font-bold tracking-tight text-[#080f2e]">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{step.text}</p>
+              </article>
             ))}
           </div>
         </div>
@@ -252,47 +318,12 @@ export function HowItWorksPremium() {
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   JOB SECTORS — Section 4
-   Most sought-after profiles in Belgium
-   ───────────────────────────────────────────────────────────────────────────── */
 const JOB_SECTORS = [
-  {
-    id: "sante",
-    label: "Santé & soins",
-    roles: "Infirmiers, aides-soignants, profils de soin",
-    note: "Demande élevée dans plusieurs régions belges.",
-    dotColor: "#e04a6a",
-    tagBg: "#fdf0f3",
-    tagColor: "#c0335a"
-  },
-  {
-    id: "construction",
-    label: "Construction",
-    roles: "Maçons, couvreurs, électriciens, techniciens",
-    note: "Métiers de terrain à besoin récurrent et élevé.",
-    dotColor: "#d97706",
-    tagBg: "#fffbec",
-    tagColor: "#b45309"
-  },
-  {
-    id: "industrie",
-    label: "Industrie & maintenance",
-    roles: "Soudeurs, mécaniciens, opérateurs, maintenance",
-    note: "Profils techniques pour renforcer les équipes rapidement.",
-    dotColor: "#2563eb",
-    tagBg: "#eff6ff",
-    tagColor: "#1d4ed8"
-  },
-  {
-    id: "transport",
-    label: "Transport & logistique",
-    roles: "Chauffeurs, préparateurs, fonctions logistiques",
-    note: "Indispensables pour les entreprises qui recrutent en tension.",
-    dotColor: "#059669",
-    tagBg: "#ecfdf5",
-    tagColor: "#047857"
-  }
+  { id: "software", label: "Software Engineer", region: "Bruxelles", color: EMPLOYER },
+  { id: "infirmier", label: "Infirmier", region: "Wallonie", color: TALENT },
+  { id: "electricien", label: "Électricien", region: "Flandre", color: EMPLOYER },
+  { id: "data", label: "Data Scientist", region: "Anvers", color: TALENT },
+  { id: "biotech", label: "Biotech Specialist", region: "Liège", color: EMPLOYER }
 ];
 
 export function JobSectors() {
@@ -300,34 +331,36 @@ export function JobSectors() {
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="container-shell">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="inline-flex items-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#57b7af]">
+          <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
             Métiers en pénurie
           </p>
           <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
-            Les profils les plus recherchés en Belgique
+            Les profils les plus recherchés actuellement en Belgique
           </h2>
           <p className="mx-auto mt-4 text-base leading-7 text-[#5d6e83]">
-            La plateforme cible en priorité les fonctions en tension pour rendre les mises en relation plus utiles.
+            Des fonctions prioritaires pour accélérer les recrutements et donner plus de visibilité aux profils internationaux.
           </p>
         </div>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {JOB_SECTORS.map((sector) => (
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
+          {JOB_SECTORS.map((job) => (
             <article
-              key={sector.id}
-              className="group rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition duration-300 hover:shadow-[0_20px_56px_rgba(15,23,42,0.09)] hover:-translate-y-1 sm:p-7"
+              key={job.id}
+              className="rounded-[28px] border bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(15,23,42,0.09)]"
+              style={{ borderColor: job.color.border }}
             >
               <span
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em]"
-                style={{ background: sector.tagBg, color: sector.tagColor }}
+                className="inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em]"
+                style={{
+                  background: job.color.soft,
+                  border: `1px solid ${job.color.border}`,
+                  color: job.color.primary
+                }}
               >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: sector.dotColor }} />
-                {sector.label}
+                {job.region}
               </span>
-              <h3 className="mt-5 text-base font-bold leading-snug tracking-tight text-[#080f2e]">
-                {sector.roles}
+              <h3 className="mt-5 text-lg font-bold leading-snug tracking-tight text-[#080f2e]">
+                {job.label}
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#5d6e83]">{sector.note}</p>
             </article>
           ))}
         </div>
@@ -364,10 +397,10 @@ export function LexpatStrip() {
                 Cabinet LEXPAT — Relais juridique
               </p>
               <p className="mt-2 max-w-2xl text-base font-bold leading-snug text-[#080f2e]">
-                Une fois la mise en relation validée, LEXPAT peut sécuriser le permis unique et accompagner l'immigration économique.
+                Sécurisation juridique après mise en relation
               </p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b7b8f]">
-                Intervention uniquement si la situation l'exige. La mise en relation reste la priorité.
+                Une fois le matching validé, le cabinet LEXPAT prend le relais pour sécuriser le permis unique, l'immigration économique et le droit au travail.
               </p>
             </div>
           </div>
@@ -408,25 +441,33 @@ export function CtaBannerDark({ primaryHref, secondaryHref }) {
             </p>
 
             <h2 className="mx-auto mt-7 max-w-3xl text-3xl font-bold leading-[1.06] tracking-[-0.04em] text-white sm:text-4xl lg:text-5xl">
-              La mise en relation commence maintenant
+              Passez à l'action maintenant
             </h2>
 
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/[0.55] sm:text-lg">
-              Déposez votre besoin ou rendez votre profil visible. La plateforme pensée pour accélérer le recrutement dans les métiers en pénurie en Belgique.
+              Recrutez plus vite ou rendez votre profil visible auprès des employeurs belges.
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href={primaryHref}
-                className="inline-flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl bg-[#57b7af] px-9 py-4 text-base font-bold text-white shadow-[0_16px_48px_rgba(87,183,175,0.34)] transition hover:bg-[#4aa9a2] hover:shadow-[0_20px_56px_rgba(87,183,175,0.44)] sm:w-auto"
+                className="inline-flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-auto"
+                style={{
+                  background: EMPLOYER.primary,
+                  boxShadow: "0 16px 48px rgba(23,58,138,0.32)"
+                }}
               >
-                Je recrute maintenant
+                Recruter maintenant
               </Link>
               <Link
                 href={secondaryHref}
-                className="inline-flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl border border-white/[0.2] bg-white/[0.08] px-9 py-4 text-base font-bold text-white backdrop-blur-sm transition hover:border-white/[0.35] hover:bg-white/[0.14] sm:w-auto"
+                className="inline-flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-auto"
+                style={{
+                  background: TALENT.primary,
+                  boxShadow: "0 16px 48px rgba(89,185,177,0.28)"
+                }}
               >
-                Je rends mon profil visible
+                Déposer mon profil
               </Link>
             </div>
           </div>

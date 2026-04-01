@@ -125,6 +125,25 @@ export default function MetiersPage() {
       />
 
       <Section
+        title="Consulter la liste complète 2026"
+        intro="Accédez à une page dédiée qui reprend, région par région, les métiers en pénurie issus de votre document de référence."
+        kicker="Nouveau"
+        muted
+      >
+        <div className="mx-auto max-w-3xl rounded-[30px] border border-[#cfe1de] bg-[linear-gradient(180deg,#ffffff_0%,#f2fbfa_100%)] p-6 text-center shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+          <p className="mx-auto max-w-2xl text-sm leading-7 text-[#5d6e83]">
+            Cette page regroupe la liste complète 2026 des métiers en pénurie en Belgique, organisée par région pour une lecture directe.
+          </p>
+          <Link
+            href="/liste-metiers-penurie"
+            className="mt-6 inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374]"
+          >
+            Voir la liste complète des métiers en pénurie 2026
+          </Link>
+        </div>
+      </Section>
+
+      <Section
         title="Trois régions, trois lectures du marché"
         intro="La Belgique ne fonctionne pas avec une seule liste. Les besoins sont réels, mais ils se lisent toujours par région."
         kicker="Régions"
