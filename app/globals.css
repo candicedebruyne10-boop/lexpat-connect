@@ -5,10 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: linear-gradient(180deg, #fcfdfd 0%, #f7fafb 100%);
+    background: #f8fafb;
     color: #17345d;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -16,16 +17,19 @@
 
   ::selection {
     background: #d8f1ed;
-    color: #17345d;
+    color: #080f2e;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 }
 
 @layer components {
+  /* ── Layout shell ── */
   .shell {
     min-height: 100vh;
-    background:
-      radial-gradient(circle at top, rgba(98, 188, 180, 0.1), transparent 22%),
-      linear-gradient(180deg, #fcfdfd 0%, #f8fbfc 55%, #f5f9fb 100%);
+    background: #f8fafb;
   }
 
   .container-shell {
@@ -35,13 +39,14 @@
     padding-inline: 1rem;
   }
 
+  /* ── Section typography (used by legacy pages) ── */
   .section-title {
     max-width: 50rem;
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.08;
     letter-spacing: -0.04em;
-    color: #1d3b8b;
+    color: #080f2e;
   }
 
   .section-copy {
@@ -52,6 +57,7 @@
     color: #5f7086;
   }
 
+  /* ── Buttons ── */
   .primary-button {
     display: inline-flex;
     min-height: 3.25rem;
@@ -61,14 +67,15 @@
     background: #57b7af;
     padding: 0.9rem 1.5rem;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #ffffff;
     transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-    box-shadow: 0 16px 36px rgba(87, 183, 175, 0.24);
+    box-shadow: 0 16px 36px rgba(87, 183, 175, 0.26);
   }
 
   .primary-button:hover {
     background: #4ba8a1;
+    box-shadow: 0 20px 44px rgba(87, 183, 175, 0.36);
   }
 
   .secondary-button {
@@ -81,19 +88,20 @@
     background: #ffffff;
     padding: 0.9rem 1.5rem;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #1d3b8b;
-    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
   }
 
   .secondary-button:hover {
     border-color: #a8b8d8;
-    background: #f8fbff;
+    background: #f4f8ff;
+    box-shadow: 0 8px 20px rgba(29, 59, 139, 0.1);
   }
 
   .ghost-link {
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #1d3b8b;
     transition: color 160ms ease;
   }
@@ -102,6 +110,7 @@
     color: #57b7af;
   }
 
+  /* ── Form fields ── */
   .field-input {
     width: 100%;
     border-radius: 1rem;
