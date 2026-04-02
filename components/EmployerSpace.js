@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
@@ -398,6 +400,24 @@ function OffersView() {
 
 export default function EmployerSpace() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [authChecked, setAuthChecked] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    let supabase;
+    try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) { router.replace("/connexion"); } else { setAuthChecked(true); }
+    });
+  }, [router]);
+
+  if (!authChecked) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" />
+      </div>
+    );
+  }
 
   const completion = useMemo(() => {
     if (activeTab === "dashboard") return 31;

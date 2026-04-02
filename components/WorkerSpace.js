@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const dashboardStats = [
   { label: "Candidatures envoyées", value: 0, tone: "blue" },
@@ -175,6 +177,8 @@ function DashboardView() {
           </div>
         </article>
       </section>
+
+      <SubmitCandidacyForm />
     </div>
   );
 }
@@ -224,6 +228,186 @@ function CvCollection({ title, description, items, buttonLabel = "Ajouter" }) {
   );
 }
 
+function SubmitCandidacyForm() {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [values, setValues] = useState({
+    name: "",
+    title: "",
+    region: "",
+    sector: "",
+    experience: "",
+    email: "",
+    description: ""
+  });
+
+  function set(key, value) {
+    setValues((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/forms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formType: "candidacy",
+          title: `Nouvelle candidature : ${values.title || "Sans titre"}`,
+          fields: [
+            { label: "Nom complet", value: values.name },
+            { label: "Titre recherché", value: values.title },
+            { label: "Région souhaitée", value: values.region },
+            { label: "Secteur", value: values.sector },
+            { label: "Expérience", value: values.experience },
+            { label: "Email", value: values.email },
+            { label: "Présentation", value: values.description }
+          ]
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
+
+      setValues({ name: "", title: "", region: "", sector: "", experience: "", email: "", description: "" });
+      setOpen(false);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (success) {
+    return (
+      <div className="rounded-[24px] border border-[#c6e8e3] bg-[#f0fbf9] px-5 py-4 text-sm font-semibold text-[#1d7a6e]">
+        Votre candidature a bien été transmise à LEXPAT Connect. Vous recevrez une confirmation par email.
+      </div>
+    );
+  }
+
+  if (!open) {
+    return (
+      <section className="rounded-[30px] border border-dashed border-[#a8d9d4] bg-[#f2fbfa] p-6 sm:p-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Soumettre ma candidature</h2>
+        <p className="mt-3 text-sm leading-7 text-[#5f7086]">
+          Signalez votre intérêt à LEXPAT Connect. Votre profil sera examiné et mis en relation avec les employeurs belges correspondant à votre secteur.
+        </p>
+        <button onClick={() => setOpen(true)} className="mt-5 inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5">
+          Soumettre ma candidature
+        </button>
+      </section>
+    );
+  }
+
+  return (
+    <section className="rounded-[30px] border border-[#a8d9d4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Nouvelle candidature</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Décrivez votre profil et votre recherche</h2>
+        </div>
+        <button
+          onClick={() => { setOpen(false); setError(""); }}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e0eaf2] bg-[#f5f9fd] text-[#6b7b8f] transition hover:bg-[#edf3f9]"
+          aria-label="Fermer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Nom complet *</span>
+          <input className="field-input" type="text" placeholder="Prénom Nom" required value={values.name} onChange={(e) => set("name", e.target.value)} />
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Email *</span>
+          <input className="field-input" type="email" placeholder="votre.email@example.com" required value={values.email} onChange={(e) => set("email", e.target.value)} />
+        </label>
+
+        <label className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Titre / Poste recherché *</span>
+          <input className="field-input" type="text" placeholder="Ex : Soudeur, Infirmier, Chauffeur SPL…" required value={values.title} onChange={(e) => set("title", e.target.value)} />
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée</span>
+          <select className="field-input" value={values.region} onChange={(e) => set("region", e.target.value)}>
+            <option value="" disabled>Sélectionnez une région</option>
+            <option>Bruxelles-Capitale</option>
+            <option>Wallonie</option>
+            <option>Flandre</option>
+            <option>Toute la Belgique</option>
+          </select>
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur</span>
+          <select className="field-input" value={values.sector} onChange={(e) => set("sector", e.target.value)}>
+            <option value="" disabled>Sélectionnez un secteur</option>
+            <option>Construction et travaux publics</option>
+            <option>Santé et action sociale</option>
+            <option>Transport et logistique</option>
+            <option>Industrie et maintenance</option>
+            <option>Technologies et informatique</option>
+            <option>Éducation et formation</option>
+            <option>Autre</option>
+          </select>
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Expérience</span>
+          <select className="field-input" value={values.experience} onChange={(e) => set("experience", e.target.value)}>
+            <option value="" disabled>Sélectionnez</option>
+            <option>Moins d'1 an</option>
+            <option>1 à 3 ans</option>
+            <option>3 à 5 ans</option>
+            <option>5 à 10 ans</option>
+            <option>10 ans et plus</option>
+          </select>
+        </label>
+
+        <label className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Présentation</span>
+          <textarea
+            className="field-input min-h-[8rem]"
+            placeholder="Décrivez brièvement votre parcours, vos compétences et votre situation actuelle (pays de résidence, disponibilité, langues…)"
+            rows={5}
+            value={values.description}
+            onChange={(e) => set("description", e.target.value)}
+          />
+        </label>
+
+        {error && (
+          <div className="md:col-span-2 rounded-[18px] border border-[#f2c4c4] bg-[#fff5f5] px-4 py-3 text-sm text-[#a33f3f]">
+            {error}
+          </div>
+        )}
+
+        <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm leading-6 text-[#6b7b8f]">
+            Votre candidature sera examinée par LEXPAT Connect. Vous recevrez une confirmation par email.
+          </p>
+          <div className="flex gap-3">
+            <button type="button" onClick={() => { setOpen(false); setError(""); }} className="secondary-button">Annuler</button>
+            <button type="submit" disabled={loading} className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70">
+              {loading ? "Envoi…" : "Envoyer ma candidature"}
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 function CvView() {
   return (
     <div className="space-y-6">
@@ -259,6 +443,24 @@ function CvView() {
 
 export default function WorkerSpace() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [authChecked, setAuthChecked] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    let supabase;
+    try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) { router.replace("/connexion"); } else { setAuthChecked(true); }
+    });
+  }, [router]);
+
+  if (!authChecked) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#59B9B1] border-t-transparent" />
+      </div>
+    );
+  }
 
   const completion = useMemo(() => {
     if (activeTab === "dashboard") return 38;
