@@ -18,7 +18,8 @@ const navigation = [
   { href: '/', label: 'Accueil' },
   { href: '/employeurs', label: 'Employeurs' },
   { href: '/travailleurs', label: 'Talents' },
-  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' }
+  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
+  { href: '/permis-unique', label: 'Permis unique' }
 ];
 
 const legalLinks = [
@@ -100,6 +101,12 @@ export default function RootLayout({ children }) {
                   Guide métiers en pénurie
                 </Link>
                 <Link
+                  href="/permis-unique"
+                  className="whitespace-nowrap rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[#1d3b8b] transition hover:border-[#cde2df] hover:text-[#57b7af]"
+                >
+                  Permis unique
+                </Link>
+                <Link
                   href="/securite-conformite"
                   className="whitespace-nowrap rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[#1d3b8b] transition hover:border-[#cde2df] hover:text-[#57b7af]"
                 >
@@ -159,6 +166,7 @@ export default function RootLayout({ children }) {
                     <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Rendre mon profil visible</Link>
                     <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Explorer les métiers en pénurie</Link>
                     <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Guide métiers en pénurie</Link>
+                    <Link href="/permis-unique" className="block transition hover:text-[#1d3b8b]">Comprendre le permis unique</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
                   </div>
