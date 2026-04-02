@@ -251,6 +251,45 @@ const specificActivityRows = [
   }
 ];
 
+const activitySpecificDetails = [
+  {
+    title: "Personnel hautement qualifié",
+    note: "En pratique, il faut un profil cohérent avec la fonction, un niveau de qualification suffisant et un salaire qui atteint le seuil régional applicable. Ces seuils évoluent chaque année."
+  },
+  {
+    title: "Personnel de direction",
+    note: "Ce qui compte surtout est la réalité du rôle : direction effective, pouvoir de décision, autonomie réelle et place dans l’organigramme de l’entreprise."
+  },
+  {
+    title: "Sportifs professionnels et entraîneurs",
+    note: "Le dossier doit montrer une activité réellement professionnelle, avec contrat clair, structure d’accueil sérieuse et niveau de rémunération adapté."
+  },
+  {
+    title: "Artistes de spectacle",
+    note: "Il faut pouvoir démontrer la nature artistique de la prestation, l’encadrement contractuel et le cadre professionnel dans lequel l’activité sera exercée."
+  },
+  {
+    title: "Jeunes au pair",
+    note: "Il faut vérifier l’âge, le niveau d’études, les compétences linguistiques, la composition de la famille d’accueil, le nombre d’heures et la compensation financière."
+  },
+  {
+    title: "Stagiaires",
+    note: "La logique reste pédagogique : il faut un vrai stage, un encadrement, un objectif de formation et une durée cohérente."
+  },
+  {
+    title: "Travailleurs saisonniers",
+    note: "Le travail doit être lié à une activité saisonnière identifiable, avec une durée courte et un besoin temporaire clairement établi."
+  },
+  {
+    title: "Transfert temporaire intra-groupe",
+    note: "Il faut démontrer le lien entre les sociétés, la fonction exercée, l’ancienneté du travailleur dans le groupe et le caractère temporaire de la mission."
+  },
+  {
+    title: "Chercheurs et post-doc",
+    note: "Le dossier est généralement plus lisible quand l’institution d’accueil, le projet scientifique et le financement sont clairement documentés."
+  }
+];
+
 const stayConditions = [
   "Le travailleur doit en principe se trouver dans son pays d’origine ou dans un pays où il est autorisé au séjour au moment de la demande.",
   "Une introduction peut parfois se faire avec présence du travailleur en Belgique, mais seulement dans certaines hypothèses bien encadrées.",
@@ -259,11 +298,34 @@ const stayConditions = [
   "Certaines situations précaires ne permettent pas d’introduire correctement la demande."
 ];
 
+const stayTimingCards = [
+  {
+    title: "Depuis l’étranger",
+    note: "C’est le cas le plus simple. Le travailleur se trouve dans son pays d’origine ou dans un pays où il séjourne régulièrement au moment de l’introduction."
+  },
+  {
+    title: "Depuis la Belgique",
+    note: "C’est parfois possible, mais pas dans toutes les hypothèses. Il faut regarder très précisément le type de séjour en cours et la catégorie visée."
+  },
+  {
+    title: "Point d’attention majeur",
+    note: "Une présence en Belgique avec un statut trop fragile peut bloquer la bonne introduction du dossier, même si le profil est bon sur le fond."
+  }
+];
+
 const otherConditions = [
   "Respecter la réglementation belge du travail : rémunération, conditions de travail, barèmes et règles applicables.",
   "Prévoir un contrat de travail clair, cohérent et complet.",
   "Veiller à ce que la rémunération soit au moins au niveau minimum requis pour la catégorie concernée.",
   "Ajouter les documents utiles selon la catégorie d’activité : description de fonction, CV, diplôme, organigramme, preuve de compétences ou éléments sur l’employeur."
+];
+
+const employerFileChecklist = [
+  "Description de fonction lisible et cohérente avec la réalité du poste",
+  "Contrat de travail clair avec durée, fonction, lieu de travail et rémunération",
+  "Preuves de qualification ou d’expérience du candidat",
+  "Pièces sur l’employeur selon la catégorie : organigramme, activité réelle, besoin de recrutement",
+  "Vérification préalable du seuil salarial applicable dans la région concernée"
 ];
 
 const laborMarketReview = [
@@ -287,6 +349,25 @@ const workAccessSummary = [
   "Certaines catégories peuvent aller jusqu’à plusieurs années.",
   "Les travailleurs saisonniers et les stagiaires restent dans des durées plus courtes.",
   "Le changement d’employeur ou l’activité complémentaire dépend de la catégorie et de la région."
+];
+
+const permitDurationCards = [
+  {
+    title: "Règle générale",
+    note: "La durée suit souvent le contrat de travail, avec un cadre limité dans le temps."
+  },
+  {
+    title: "Catégories renforcées",
+    note: "Certaines catégories peuvent bénéficier d’une durée plus longue, notamment les profils hautement qualifiés ou certaines missions intra-groupe."
+  },
+  {
+    title: "Catégories courtes",
+    note: "Les stagiaires et les saisonniers restent généralement dans des durées plus limitées."
+  },
+  {
+    title: "Changement d’employeur",
+    note: "Il n’est pas libre. Il dépend de la catégorie, du moment du dossier et parfois d’une lecture régionale différente."
+  }
 ];
 
 export default function MemberLockedPermitContent() {
@@ -491,6 +572,11 @@ export default function MemberLockedPermitContent() {
                     <SmallCard key={item.title} title={item.title} note={item.note} />
                   ))}
                 </div>
+                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                  {activitySpecificDetails.map((item) => (
+                    <SmallCard key={`${item.title}-detail`} title={item.title} note={item.note} />
+                  ))}
+                </div>
               </ContentSection>
 
               <ContentSection
@@ -499,6 +585,11 @@ export default function MemberLockedPermitContent() {
                 title="Au moment de la demande"
                 intro="Avant même le fond du dossier, il faut vérifier si la situation de séjour permet d’introduire correctement la demande."
               >
+                <div className="mb-5 grid gap-4 lg:grid-cols-3">
+                  {stayTimingCards.map((item) => (
+                    <SmallCard key={item.title} title={item.title} note={item.note} />
+                  ))}
+                </div>
                 <div className="rounded-[26px] border border-[#dfe8f0] bg-white p-6">
                   <ul className="space-y-4 text-sm leading-7 text-[#607086]">
                     {stayConditions.map((item) => (
@@ -517,15 +608,28 @@ export default function MemberLockedPermitContent() {
                 title="Ce qu’un employeur doit aussi sécuriser"
                 intro="Le permis unique ne dépend pas seulement du statut du travailleur. L’employeur doit aussi cadrer correctement le travail proposé."
               >
-                <div className="rounded-[26px] border border-[#dfe8f0] bg-white p-6">
-                  <ul className="space-y-4 text-sm leading-7 text-[#607086]">
-                    {otherConditions.map((item) => (
-                      <li key={item} className="flex items-start gap-3">
-                        <span className="mt-2 h-2 w-2 rounded-full bg-[#59B9B1]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
+                  <div className="rounded-[26px] border border-[#dfe8f0] bg-white p-6">
+                    <ul className="space-y-4 text-sm leading-7 text-[#607086]">
+                      {otherConditions.map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <span className="mt-2 h-2 w-2 rounded-full bg-[#59B9B1]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-[26px] border border-[rgba(89,185,177,0.22)] bg-[#f4fbfa] p-6">
+                    <h4 className="text-lg font-semibold tracking-tight text-[#163573]">Checklist employeur</h4>
+                    <ul className="mt-4 space-y-3 text-sm leading-7 text-[#607086]">
+                      {employerFileChecklist.map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <span className="mt-2 h-2 w-2 rounded-full bg-[#2f9f97]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </ContentSection>
 
@@ -548,6 +652,11 @@ export default function MemberLockedPermitContent() {
                 title="Durée et limites de l’autorisation"
                 intro="En pratique, l’autorisation n’est pas toujours large ni durable. Elle dépend du contrat, de la catégorie et parfois de la région."
               >
+                <div className="mb-5 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+                  {permitDurationCards.map((item) => (
+                    <SmallCard key={item.title} title={item.title} note={item.note} />
+                  ))}
+                </div>
                 <div className="rounded-[26px] border border-[#dfe8f0] bg-white p-6">
                   <ul className="space-y-4 text-sm leading-7 text-[#607086]">
                     {workAccessSummary.map((item) => (
