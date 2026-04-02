@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
   { id: "company", label: "Mon entreprise" },
-  { id: "offers", label: "Mes offres" }
-];
-
-const dashboardStats = [
-  { label: "Offres publiées", value: 0, tone: "blue" },
-  { label: "Profils reçus", value: 0, tone: "teal" },
-  { label: "Dossiers à clarifier", value: 0, tone: "amber" },
-  { label: "Recrutements finalisés", value: 0, tone: "green" }
+  { id: "offers", label: "Mes offres" },
+  { id: "matches", label: "Profils matchés" }
 ];
 
 const toneClasses = {
@@ -88,7 +82,29 @@ function Field({ field }) {
   );
 }
 
-function DashboardView() {
+function DashboardView({ token, onNavigate }) {
+  const [stats, setStats] = useState({ offers: 0, matches: 0 });
+
+  useEffect(() => {
+    if (!token) return;
+    Promise.all([
+      fetch("/api/offers", { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json()),
+      fetch("/api/matches?role=employer", { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json())
+    ]).then(([offersData, matchesData]) => {
+      setStats({
+        offers: offersData.offers?.length || 0,
+        matches: matchesData.matches?.length || 0
+      });
+    }).catch(() => {});
+  }, [token]);
+
+  const displayStats = [
+    { label: "Offres publiées", value: stats.offers, tone: "blue" },
+    { label: "Profils matchés", value: stats.matches, tone: "teal" },
+    { label: "Dossiers à clarifier", value: 0, tone: "amber" },
+    { label: "Recrutements finalisés", value: 0, tone: "green" }
+  ];
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
@@ -97,52 +113,38 @@ function DashboardView() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace employeur</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Tableau de bord recrutement</h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5f7086]">
-              Suivez vos besoins publiés, clarifiez vos critères de recrutement et préparez un cadre plus structuré pour l'évaluation de profils internationaux.
+              Suivez vos offres publiées et les profils matchés automatiquement par le moteur LEXPAT Connect.
             </p>
           </div>
           <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            Espace entreprise: <span className="font-semibold text-[#1d3b8b]">version de travail</span>
+            Matching : <span className="font-semibold text-[#1d3b8b]">actif</span>
           </div>
         </div>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-4">
-        {dashboardStats.map((item) => (
-          <article key={item.label} className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+        {displayStats.map((item) => (
+          <article
+            key={item.label}
+            className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] cursor-pointer transition hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
+            onClick={() => item.label === "Profils matchés" ? onNavigate("matches") : item.label === "Offres publiées" ? onNavigate("offers") : null}
+          >
             <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-semibold ${toneClasses[item.tone]}`}>
               {item.value}
             </div>
             <h3 className="mt-5 text-lg font-semibold tracking-tight text-[#1d3b8b]">{item.label}</h3>
-            <p className="mt-2 text-sm leading-6 text-[#6b7b8f]">Ces indicateurs sont prêts à accueillir un vrai suivi des offres et des profils.</p>
           </article>
         ))}
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
-        <article className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Activité récente</h2>
-          <div className="mt-6 space-y-4">
-            {[
-              "Ajoutez une première offre pour commencer à structurer votre espace employeur.",
-              "Complétez les informations entreprise pour rendre vos besoins plus crédibles.",
-              "Préparez vos critères de sélection afin d'accélérer l'analyse des candidatures."
-            ].map((item) => (
-              <div key={item} className="rounded-[22px] border border-[#ebf0f6] bg-[#f9fbfd] p-4 text-sm leading-6 text-[#5f7086]">
-                {item}
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Relais juridique</h2>
-          <p className="mt-3 text-sm leading-7 text-[#5f7086]">
-            Quand une offre implique un permis unique, une analyse régionale ou une sécurisation du recrutement, cet espace a vocation à orienter clairement vers le cabinet LEXPAT.
-          </p>
-          <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
-            À terme, chaque offre pourra faire apparaître un niveau d'attention juridique, pour distinguer les besoins simples des situations à sécuriser.
-          </div>
-        </article>
+      <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Relais juridique</h2>
+        <p className="mt-3 text-sm leading-7 text-[#5f7086]">
+          Quand un recrutement avance vers un permis unique ou une situation d'immigration économique, le cabinet LEXPAT intervient dans un périmètre séparé de la plateforme.
+        </p>
+        <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
+          Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné.
+        </div>
       </section>
     </div>
   );
@@ -175,17 +177,12 @@ function CompanyView() {
   );
 }
 
-function CreateOfferForm({ onSuccess }) {
+function CreateOfferForm({ onSuccess, token }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [values, setValues] = useState({
-    title: "",
-    region: "",
-    contract: "",
-    urgency: "",
-    email: "",
-    description: ""
+    title: "", sector: "", region: "", contract: "", urgency: "", description: ""
   });
 
   function set(key, value) {
@@ -198,27 +195,23 @@ function CreateOfferForm({ onSuccess }) {
     setError("");
 
     try {
-      const res = await fetch("/api/forms", {
+      const res = await fetch("/api/offers", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          formType: "offer",
-          title: `Nouvelle offre : ${values.title || "Sans titre"}`,
-          fields: [
-            { label: "Intitulé du poste", value: values.title },
-            { label: "Région", value: values.region },
-            { label: "Type de contrat", value: values.contract },
-            { label: "Niveau d'urgence", value: values.urgency },
-            { label: "Email de contact", value: values.email },
-            { label: "Description du besoin", value: values.description }
-          ]
+          title:         values.title,
+          sector:        values.sector,
+          region:        values.region,
+          contract_type: values.contract,
+          urgency:       values.urgency,
+          description:   values.description
         })
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
 
-      setValues({ title: "", region: "", contract: "", urgency: "", email: "", description: "" });
+      setValues({ title: "", sector: "", region: "", contract: "", urgency: "", description: "" });
       setOpen(false);
       onSuccess();
     } catch (err) {
@@ -259,16 +252,23 @@ function CreateOfferForm({ onSuccess }) {
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
-        <label>
+        <label className="md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Intitulé du poste *</span>
-          <input
-            className="field-input"
-            type="text"
-            placeholder="Ex : Soudeur industriel, Infirmier, Chauffeur SPL…"
-            required
-            value={values.title}
-            onChange={(e) => set("title", e.target.value)}
-          />
+          <input className="field-input" type="text" placeholder="Ex : Soudeur industriel, Infirmier, Chauffeur SPL…" required value={values.title} onChange={(e) => set("title", e.target.value)} />
+        </label>
+
+        <label>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(utilisé pour le matching)</span></span>
+          <select className="field-input" required value={values.sector} onChange={(e) => set("sector", e.target.value)}>
+            <option value="" disabled>Sélectionnez un secteur</option>
+            <option>Construction et travaux publics</option>
+            <option>Santé et action sociale</option>
+            <option>Transport et logistique</option>
+            <option>Industrie et maintenance</option>
+            <option>Technologies et informatique</option>
+            <option>Éducation et formation</option>
+            <option>Autre</option>
+          </select>
         </label>
 
         <label>
@@ -355,8 +355,19 @@ function CreateOfferForm({ onSuccess }) {
   );
 }
 
-function OffersView() {
+function OffersView({ token }) {
   const [successMsg, setSuccessMsg] = useState("");
+  const [offers, setOffers] = useState([]);
+
+  const refreshOffers = useCallback(() => {
+    if (!token) return;
+    fetch("/api/offers", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => setOffers(d.offers || []))
+      .catch(() => {});
+  }, [token]);
+
+  useEffect(() => { refreshOffers(); }, [refreshOffers]);
 
   return (
     <div className="space-y-6">
@@ -372,28 +383,93 @@ function OffersView() {
         </div>
       )}
 
-      <section className="grid gap-5 lg:grid-cols-2">
-        {offerCards.map((offer) => (
-          <article key={offer.title} className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{offer.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-[#5f7086]">{offer.meta}</p>
+      {offers.length > 0 && (
+        <section className="grid gap-5 lg:grid-cols-2">
+          {offers.map((offer) => (
+            <article key={offer.id} className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{offer.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-[#5f7086]">
+                    {[offer.sector, offer.region, offer.contract_type, offer.urgency].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+                <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">
+                  {offer.status === "active" ? "Active" : "Fermée"}
+                </span>
               </div>
-              <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">
-                {offer.status}
-              </span>
-            </div>
-            <div className="mt-5 rounded-[22px] border border-[#ebf0f6] bg-[#f9fbfd] p-4 text-sm leading-7 text-[#5f7086]">
-              Le suivi des candidatures et profils reçus sera disponible dans la prochaine version.
-            </div>
-          </article>
-        ))}
-      </section>
+            </article>
+          ))}
+        </section>
+      )}
 
       <CreateOfferForm
-        onSuccess={() => setSuccessMsg("Votre offre a bien été transmise à LEXPAT Connect. Vous recevrez une confirmation par email.")}
+        token={token}
+        onSuccess={() => { setSuccessMsg("Offre publiée — le matching démarre automatiquement."); refreshOffers(); }}
       />
+    </div>
+  );
+}
+
+function MatchesView({ token }) {
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/matches?role=employer", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => { setMatches(d.matches || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [token]);
+
+  const scoreColor = (score) => {
+    if (score >= 80) return "bg-[#eef9f1] text-[#2f9d57]";
+    if (score >= 60) return "bg-[#eef5ff] text-[#1d3b8b]";
+    return "bg-[#fff7e7] text-[#d08900]";
+  };
+
+  return (
+    <div className="space-y-6">
+      <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Matching</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Profils matchés à vos offres</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
+          Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les données identifiantes ne sont partagées qu'après validation du match.
+        </p>
+      </section>
+
+      {loading ? (
+        <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" /></div>
+      ) : matches.length === 0 ? (
+        <div className="rounded-[28px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-8 text-center text-sm text-[#5f7086]">
+          Aucun match pour l'instant. Publiez une offre avec un secteur pour déclencher le matching automatique.
+        </div>
+      ) : (
+        <div className="grid gap-5 lg:grid-cols-2">
+          {matches.map((match) => (
+            <article key={match.id} className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#57b7af]">{match.offer?.title}</p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#1d3b8b]">
+                    {match.worker?.job_title || "Profil en cours de complétion"}
+                  </h2>
+                  <p className="mt-1 text-sm text-[#5f7086]">
+                    {[match.worker?.sector, match.worker?.region, match.worker?.experience].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+                <span className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-bold ${scoreColor(match.score)}`}>
+                  Score {match.score}/100
+                </span>
+              </div>
+              <div className="mt-4 rounded-[20px] border border-[#ebf0f6] bg-[#f9fbfd] px-4 py-3 text-xs text-[#5f7086]">
+                Statut : <span className="font-semibold capitalize">{match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -401,13 +477,15 @@ function OffersView() {
 export default function EmployerSpace() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [authChecked, setAuthChecked] = useState(false);
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     let supabase;
     try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
     supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) { router.replace("/connexion"); } else { setAuthChecked(true); }
+      if (!data.session) { router.replace("/connexion"); }
+      else { setToken(data.session.access_token); setAuthChecked(true); }
     });
   }, [router]);
 
@@ -468,9 +546,10 @@ export default function EmployerSpace() {
           </aside>
 
           <div>
-            {activeTab === "dashboard" ? <DashboardView /> : null}
+            {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} /> : null}
             {activeTab === "company" ? <CompanyView /> : null}
-            {activeTab === "offers" ? <OffersView /> : null}
+            {activeTab === "offers" ? <OffersView token={token} /> : null}
+            {activeTab === "matches" ? <MatchesView token={token} /> : null}
           </div>
         </div>
       </div>

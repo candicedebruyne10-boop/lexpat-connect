@@ -1,18 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
-const dashboardStats = [
-  { label: "Candidatures envoyées", value: 0, tone: "blue" },
-  { label: "Dossiers en examen", value: 0, tone: "amber" },
-  { label: "Vues du profil", value: 0, tone: "rose" },
-  { label: "Présélectionné", value: 0, tone: "green" }
-];
-
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
+  { id: "matches", label: "Mes matchs" },
   { id: "profile", label: "Mon profil" },
   { id: "cv", label: "Mon CV" }
 ];
@@ -111,7 +105,24 @@ function Field({ field }) {
   );
 }
 
-function DashboardView() {
+function DashboardView({ token, onNavigate }) {
+  const [matchCount, setMatchCount] = useState(0);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/matches?role=worker", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => setMatchCount(d.matches?.length || 0))
+      .catch(() => {});
+  }, [token]);
+
+  const displayStats = [
+    { label: "Offres matchées", value: matchCount, tone: "teal" },
+    { label: "Dossiers en examen", value: 0, tone: "amber" },
+    { label: "Vues du profil", value: 0, tone: "rose" },
+    { label: "Présélectionné", value: 0, tone: "green" }
+  ];
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
@@ -120,92 +131,219 @@ function DashboardView() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace travailleur</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Tableau de bord candidat</h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5f7086]">
-              Retrouvez ici l'état de votre profil, vos indicateurs de visibilité et les prochaines étapes pour rendre votre dossier plus crédible auprès d'employeurs belges.
+              Retrouvez vos offres matchées, complétez votre profil et suivez votre visibilité auprès des employeurs belges.
             </p>
           </div>
           <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            Profil public: <span className="font-semibold text-[#1d3b8b]">en préparation</span>
+            Matching : <span className="font-semibold text-[#1d3b8b]">actif</span>
           </div>
         </div>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-4">
-        {dashboardStats.map((item) => (
-          <article key={item.label} className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+        {displayStats.map((item) => (
+          <article
+            key={item.label}
+            className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] cursor-pointer transition hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
+            onClick={() => item.label === "Offres matchées" ? onNavigate("matches") : null}
+          >
             <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-semibold ${toneClasses[item.tone]}`}>
               {item.value}
             </div>
             <h3 className="mt-5 text-lg font-semibold tracking-tight text-[#1d3b8b]">{item.label}</h3>
-            <p className="mt-2 text-sm leading-6 text-[#6b7b8f]">Les indicateurs se rempliront au fur et à mesure de l'usage réel de la plateforme.</p>
           </article>
         ))}
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
-        <article className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Vues de votre profil</h2>
-              <p className="mt-2 text-sm leading-7 text-[#5f7086]">Une lecture simple de votre visibilité, avec une logique plus claire que celle d'un simple CV isolé.</p>
-            </div>
-            <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">30 jours</span>
-          </div>
-          <div className="mt-8 h-72 rounded-[26px] border border-[#e6edf5] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f8fb_100%)] p-5">
-            <div className="flex h-full items-end gap-3">
-              {[6, 10, 8, 12, 11, 16, 24, 22, 28, 42, 36, 58].map((value, index) => (
-                <div key={index} className="flex flex-1 flex-col items-center justify-end gap-3">
-                  <div className="w-full rounded-t-[18px] bg-[linear-gradient(180deg,#89d2cb_0%,#1d3b8b_100%)]" style={{ height: `${value}%` }} />
-                  <span className="text-[10px] font-medium text-[#8695a8]">S{index + 1}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </article>
-
-        <article className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Notifications</h2>
-          <div className="mt-6 space-y-4">
-            {[
-              "Complétez votre titre recherché pour rendre votre profil plus lisible.",
-              "Ajoutez un CV pour enrichir votre dossier candidat.",
-              "Indiquez vos langues et votre mobilité pour gagner en crédibilité."
-            ].map((item) => (
-              <div key={item} className="rounded-[22px] border border-[#ebf0f6] bg-[#f9fbfd] p-4 text-sm leading-6 text-[#5f7086]">
-                {item}
-              </div>
-            ))}
-          </div>
-        </article>
-      </section>
-
-      <SubmitCandidacyForm />
+      <SubmitCandidacyForm token={token} />
     </div>
   );
 }
 
-function ProfileView() {
+function WorkerMatchesView({ token }) {
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/matches?role=worker", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => { setMatches(d.matches || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [token]);
+
+  const scoreColor = (score) => {
+    if (score >= 80) return "bg-[#eef9f1] text-[#2f9d57]";
+    if (score >= 60) return "bg-[#ecfaf8] text-[#2f9f97]";
+    return "bg-[#fff7e7] text-[#d08900]";
+  };
+
+  return (
+    <div className="space-y-6">
+      <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mes matchs</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Offres qui correspondent à votre profil</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
+          Le moteur LEXPAT Connect croise automatiquement votre secteur et votre région avec les offres des employeurs belges. Les coordonnées employeur sont partagées uniquement après validation.
+        </p>
+      </section>
+
+      {loading ? (
+        <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#59B9B1] border-t-transparent" /></div>
+      ) : matches.length === 0 ? (
+        <div className="rounded-[28px] border border-dashed border-[#a8d9d4] bg-[#f2fbfa] p-8 text-center text-sm text-[#5f7086]">
+          Aucun match pour l'instant. Complétez votre profil avec un secteur et une région pour être détecté automatiquement.
+        </div>
+      ) : (
+        <div className="grid gap-5 lg:grid-cols-2">
+          {matches.map((match) => (
+            <article key={match.id} className="rounded-[28px] border border-[#dce9e7] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{match.offer?.title}</h2>
+                  <p className="mt-1 text-sm text-[#5f7086]">
+                    {[match.offer?.sector, match.offer?.region, match.offer?.contract_type, match.offer?.urgency].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+                <span className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-bold ${scoreColor(match.score)}`}>
+                  {match.score}/100
+                </span>
+              </div>
+              <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
+                Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProfileView({ token }) {
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+  const [values, setValues] = useState({
+    full_name: "", job_title: "", sector: "", region: "",
+    experience: "", languages: "", description: "", profile_visibility: "review"
+  });
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/profile", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => { if (d.profile) setValues((prev) => ({ ...prev, ...d.profile })); })
+      .catch(() => {});
+  }, [token]);
+
+  async function handleSave(e) {
+    e.preventDefault();
+    setSaving(true);
+    setSaveMsg("");
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(values)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSaveMsg("Profil enregistré — votre visibilité est maintenant active dans le moteur de matching.");
+    } catch (err) {
+      setSaveMsg("Erreur : " + err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function set(key, val) { setValues((prev) => ({ ...prev, [key]: val })); }
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mon profil</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Modifier mon profil</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Renseignez les informations qui permettent à un employeur de comprendre plus rapidement qui vous êtes, ce que vous recherchez et dans quelles conditions vous êtes disponible.</p>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Ces informations alimentent directement le moteur de matching. Un secteur et une région renseignés suffisent pour être détecté par les employeurs belges.</p>
       </section>
 
-      {profileSections.map((section) => (
-        <section key={section.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{section.title}</h2>
+      <form onSubmit={handleSave} className="space-y-6">
+        <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Informations de matching</h2>
+          <p className="mt-2 text-sm text-[#57b7af] font-medium">Ces champs alimentent directement le moteur de matching.</p>
           <div className="mt-6 grid gap-5 md:grid-cols-2">
-            {section.fields.map((field) => (
-              <Field key={field.label} field={field} />
-            ))}
+            <label className="md:col-span-2">
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Nom complet</span>
+              <input className="field-input" value={values.full_name || ""} onChange={(e) => set("full_name", e.target.value)} placeholder="Prénom Nom" />
+            </label>
+            <label className="md:col-span-2">
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Titre / Poste recherché *</span>
+              <input className="field-input" value={values.job_title || ""} onChange={(e) => set("job_title", e.target.value)} placeholder="Ex : Soudeur, Infirmier, Chauffeur SPL…" />
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(matching)</span></span>
+              <select className="field-input" value={values.sector || ""} onChange={(e) => set("sector", e.target.value)}>
+                <option value="" disabled>Sélectionnez un secteur</option>
+                <option>Construction et travaux publics</option>
+                <option>Santé et action sociale</option>
+                <option>Transport et logistique</option>
+                <option>Industrie et maintenance</option>
+                <option>Technologies et informatique</option>
+                <option>Éducation et formation</option>
+                <option>Autre</option>
+              </select>
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée * <span className="text-[#57b7af]">(matching)</span></span>
+              <select className="field-input" value={values.region || ""} onChange={(e) => set("region", e.target.value)}>
+                <option value="" disabled>Sélectionnez une région</option>
+                <option>Bruxelles-Capitale</option>
+                <option>Wallonie</option>
+                <option>Flandre</option>
+                <option>Toute la Belgique</option>
+              </select>
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Expérience</span>
+              <select className="field-input" value={values.experience || ""} onChange={(e) => set("experience", e.target.value)}>
+                <option value="" disabled>Sélectionnez</option>
+                <option>Moins d'1 an</option>
+                <option>1 à 3 ans</option>
+                <option>3 à 5 ans</option>
+                <option>5 à 10 ans</option>
+                <option>10 ans et plus</option>
+              </select>
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Langues</span>
+              <input className="field-input" value={values.languages || ""} onChange={(e) => set("languages", e.target.value)} placeholder="Français, anglais, arabe…" />
+            </label>
+            <label className="md:col-span-2">
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Présentation</span>
+              <textarea className="field-input min-h-[7rem]" rows={4} value={values.description || ""} onChange={(e) => set("description", e.target.value)} placeholder="Décrivez brièvement votre parcours, votre situation actuelle et vos attentes." />
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Visibilité du profil</span>
+              <select className="field-input" value={values.profile_visibility || "review"} onChange={(e) => set("profile_visibility", e.target.value)}>
+                <option value="visible">Visible par les employeurs</option>
+                <option value="review">Visible après validation LEXPAT</option>
+                <option value="hidden">Masqué</option>
+              </select>
+            </label>
           </div>
         </section>
-      ))}
 
-      <div className="flex justify-end">
-        <button className="primary-button">Enregistrer mon profil</button>
-      </div>
+        {saveMsg && (
+          <div className={`rounded-[22px] border px-4 py-3 text-sm ${saveMsg.startsWith("Erreur") ? "border-[#f2c4c4] bg-[#fff5f5] text-[#a33f3f]" : "border-[#c6e8e3] bg-[#f0fbf9] text-[#1d7a6e]"}`}>
+            {saveMsg}
+          </div>
+        )}
+
+        <div className="flex justify-end">
+          <button type="submit" disabled={saving} className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-8 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-70">
+            {saving ? "Enregistrement…" : "Enregistrer mon profil"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
@@ -228,7 +366,7 @@ function CvCollection({ title, description, items, buttonLabel = "Ajouter" }) {
   );
 }
 
-function SubmitCandidacyForm() {
+function SubmitCandidacyForm({ token }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -444,13 +582,15 @@ function CvView() {
 export default function WorkerSpace() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [authChecked, setAuthChecked] = useState(false);
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     let supabase;
     try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
     supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) { router.replace("/connexion"); } else { setAuthChecked(true); }
+      if (!data.session) { router.replace("/connexion"); }
+      else { setToken(data.session.access_token); setAuthChecked(true); }
     });
   }, [router]);
 
@@ -511,8 +651,9 @@ export default function WorkerSpace() {
           </aside>
 
           <div>
-            {activeTab === "dashboard" ? <DashboardView /> : null}
-            {activeTab === "profile" ? <ProfileView /> : null}
+            {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} /> : null}
+            {activeTab === "matches" ? <WorkerMatchesView token={token} /> : null}
+            {activeTab === "profile" ? <ProfileView token={token} /> : null}
             {activeTab === "cv" ? <CvView /> : null}
           </div>
         </div>
