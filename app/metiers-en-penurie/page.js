@@ -1,5 +1,4 @@
 import Script from "next/script";
-import Link from "next/link";
 import { CtaBanner, Faq, Hero, Section } from "../../components/Sections";
 import { shortageJobs2026 } from "../../lib/shortageJobs2026";
 
@@ -122,12 +121,6 @@ const regionInsights = [
   }
 ];
 
-const regionSourceLinks = {
-  bruxelles: "https://www.actiris.brussels",
-  wallonie: "https://www.leforem.be",
-  flandre: "https://www.vdab.be/trends/knelpuntberoepen"
-};
-
 const permitCards = [
   {
     title: "Facilitation du dossier",
@@ -147,24 +140,12 @@ const permitCards = [
   }
 ];
 
-const officialSources = [
-  {
-    label: "Belgium.be — travailler en Belgique et permis unique",
-    href: "https://www.belgium.be/fr/emploi/venir_travailler_en_belgique"
-  },
-  {
-    label: "Le Forem — fonctions critiques et métiers en tension",
-    href: "https://www.leforem.be"
-  },
-  {
-    label: "Actiris — marché de l’emploi à Bruxelles",
-    href: "https://www.actiris.brussels"
-  },
-  {
-    label: "VDAB — knelpuntberoepen en Flandre",
-    href: "https://www.vdab.be/trends/knelpuntberoepen"
-  }
-];
+const regionMetrics = shortageJobs2026.map((region) => ({
+  id: region.id,
+  label: region.label,
+  groups: region.groups.length,
+  jobs: region.groups.reduce((total, group) => total + group.jobs.length, 0)
+}));
 
 const faqItems = [
   {
@@ -229,7 +210,7 @@ export default function MetiersPage() {
         primaryLabel="Vérifier si votre poste est concerné"
         secondaryHref="/employeurs"
         secondaryLabel="Déposer un besoin de recrutement"
-        note="Cette page synthétise les logiques régionales officielles. Pour une décision concrète sur un recrutement hors UE, la fonction doit toujours être relue dans sa région compétente et dans le contexte du dossier."
+        note="Cette page s’appuie sur la base régionale LEXPAT Connect, organisée par région, enrichie pour la lecture employeur et mise à jour en continu à partir de votre liste de référence."
         stats={[
           { value: "3", label: "Régions publient leurs propres listes et lectures du marché" },
           { value: "UE", label: "Le raisonnement permis unique se construit région par région" },
@@ -248,6 +229,56 @@ export default function MetiersPage() {
           }
         ]}
       />
+
+      <Section
+        title="Une base régionale pensée pour aller vite"
+        intro="Plutôt qu’une liste froide ou dispersée, LEXPAT Connect rassemble les professions en pénurie par région dans un format exploitable immédiatement par les employeurs."
+        kicker="Référence LEXPAT Connect"
+        muted
+      >
+        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+          <article className="rounded-[30px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-7 shadow-[0_14px_36px_rgba(15,23,42,0.04)]">
+            <p className="inline-flex rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
+              Mise à jour continue
+            </p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">
+              La référence rapide pour repérer les professions en pénurie par région
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
+              Notre base regroupe, classe et reformule les professions par région pour permettre une lecture immédiate côté employeur. L’objectif est simple : savoir rapidement si une fonction mérite d’être explorée dans une logique de recrutement international.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <span className="inline-flex rounded-full border border-[rgba(23,58,138,0.16)] bg-[#eef4ff] px-3.5 py-1.5 text-xs font-semibold text-[#173A8A]">
+                Classement par région
+              </span>
+              <span className="inline-flex rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-3.5 py-1.5 text-xs font-semibold text-[#2f9f97]">
+                Lecture employeur
+              </span>
+              <span className="inline-flex rounded-full border border-[rgba(23,58,138,0.16)] bg-[#f8fbff] px-3.5 py-1.5 text-xs font-semibold text-[#173A8A]">
+                Mise à jour constante
+              </span>
+            </div>
+          </article>
+
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+            {regionMetrics.map((region) => (
+              <article key={region.id} className="rounded-[24px] border border-[#e3eaf2] bg-white p-5 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+                <p className="text-sm font-semibold text-[#1d3b8b]">{region.label}</p>
+                <div className="mt-3 flex items-end gap-5">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7b8f]">Familles</p>
+                    <p className="mt-1 text-2xl font-semibold text-[#173A8A]">{region.groups}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7b8f]">Professions</p>
+                    <p className="mt-1 text-2xl font-semibold text-[#57b7af]">{region.jobs}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </Section>
 
       <Section
         title="Comprendre simplement ce qu’est un métier en pénurie"
@@ -326,14 +357,6 @@ export default function MetiersPage() {
                   </div>
                 </div>
 
-                <a
-                  href={regionSourceLinks[region.id]}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]"
-                >
-                  Voir la source officielle régionale
-                </a>
               </article>
             );
           })}
@@ -438,19 +461,20 @@ export default function MetiersPage() {
           </article>
 
           <article className="rounded-[30px] border border-[#dfe8f2] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] p-7 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Sources officielles</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Base régionale LEXPAT Connect</p>
+            <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
+              Cette page est pensée comme une référence pratique pour identifier rapidement les professions en pénurie par région, sans obliger l’employeur à naviguer entre plusieurs lectures fragmentées.
+            </p>
             <div className="mt-5 space-y-3">
-              {officialSources.map((source) => (
-                <a
-                  key={source.href}
-                  href={source.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block rounded-2xl border border-[#e3eaf2] bg-white px-4 py-4 text-sm font-medium text-[#1d3b8b] transition hover:border-[#c8d9ef] hover:text-[#57b7af]"
-                >
-                  {source.label}
-                </a>
-              ))}
+              <div className="rounded-2xl border border-[#e3eaf2] bg-white px-4 py-4 text-sm font-medium text-[#1d3b8b]">
+                Professions classées par région
+              </div>
+              <div className="rounded-2xl border border-[#e3eaf2] bg-white px-4 py-4 text-sm font-medium text-[#1d3b8b]">
+                Lecture plus rapide pour PME et RH
+              </div>
+              <div className="rounded-2xl border border-[#e3eaf2] bg-white px-4 py-4 text-sm font-medium text-[#1d3b8b]">
+                Base maintenue et mise à jour en continu
+              </div>
             </div>
           </article>
         </div>
