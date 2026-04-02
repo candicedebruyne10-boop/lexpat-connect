@@ -57,128 +57,76 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    ───────────────────────────────────────────────────────────────────────────── */
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(135deg, #08122f 0%, #10255b 38%, #173A8A 68%, #214b9d 100%)"
-      }}
-    >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-10%] top-[-10%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(89,185,177,0.2),transparent_62%)] blur-3xl" />
-        <div className="absolute right-[-12%] top-[10%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_62%)] blur-3xl" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(to_top,rgba(7,15,43,0.42),transparent)]" />
-        <div className="absolute inset-y-0 left-[56%] hidden w-px bg-white/10 lg:block" />
-      </div>
+    <section className="relative flex min-h-[88vh] items-center overflow-hidden lg:min-h-screen">
+      {/* ── Image de fond : carte monde + Belgique mise en lumière ── */}
+      <Image
+        src="/hero-world-map.jpg"
+        alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
+        fill
+        priority
+        quality={90}
+        className="object-cover"
+        style={{ objectPosition: "58% 42%" }}
+        sizes="100vw"
+      />
 
-      <div className="container-shell relative">
-        <div className="grid min-h-[720px] items-center gap-12 py-16 sm:min-h-[760px] sm:py-20 lg:min-h-[820px] lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:py-24">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/90 backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#59B9B1]" />
-              Belgique · Métiers en pénurie · Mise en relation directe
-            </div>
+      {/* ── Overlays : split composition gauche (texte) / droite (carte) ── */}
+      <div className="absolute inset-0 bg-[linear-gradient(108deg,rgba(6,12,38,0.97)_0%,rgba(7,14,42,0.92)_22%,rgba(8,16,50,0.78)_40%,rgba(8,16,50,0.48)_58%,rgba(6,12,38,0.22)_78%,rgba(6,12,38,0.10)_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(to_top,rgba(6,12,38,0.82),transparent)]" />
+      <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.55),transparent)]" />
+      <div className="pointer-events-none absolute left-0 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/[0.06] blur-3xl" />
 
-            <h1 className="mt-7 max-w-[12ch] text-[clamp(3rem,7vw,6rem)] font-bold leading-[0.96] tracking-[-0.06em] text-white">
-              Employeurs belges.{" "}
-              <span className="text-[#59B9B1]">Talents internationaux.</span>{" "}
-              Connexion directe.
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/78 sm:text-[1.05rem]">
-              La plateforme qui met en relation les entreprises belges et les profils internationaux qualifiés dans les métiers en pénurie.
-            </p>
+      {/* ── Contenu ── */}
+      <div className="container-shell relative z-10 w-full py-24 sm:py-28 lg:py-32">
+        <div className="max-w-2xl xl:max-w-[52rem]">
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href={primaryHref}
-                className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-7 py-4 text-base font-bold text-white shadow-[0_18px_44px_rgba(23,58,138,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(23,58,138,0.42)]"
-                style={{ background: EMPLOYER.primary }}
-              >
-                Je recrute
-              </Link>
-              <Link
-                href={secondaryHref}
-                className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-7 py-4 text-base font-bold text-white shadow-[0_18px_44px_rgba(89,185,177,0.3)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(89,185,177,0.38)]"
-                style={{ background: TALENT.primary }}
-              >
-                Je me fais repérer par des employeurs belges
-              </Link>
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-3">
-              <span
-                className="inline-flex items-center rounded-full border px-4 py-2 text-xs font-semibold"
-                style={{ background: "rgba(238,244,255,0.14)", borderColor: EMPLOYER.border, color: "#dfe8ff" }}
-              >
-                Recrutement en tension
-              </span>
-              <span
-                className="inline-flex items-center rounded-full border px-4 py-2 text-xs font-semibold"
-                style={{ background: "rgba(236,250,248,0.12)", borderColor: TALENT.border, color: "#d7f6f2" }}
-              >
-                Profils internationaux qualifiés
-              </span>
-            </div>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#59B9B1]" />
+            Belgique · Métiers en pénurie · Matching international
           </div>
 
-          <div className="hidden lg:block">
-            <div className="rounded-[36px] border border-white/10 bg-white/8 p-7 shadow-[0_24px_60px_rgba(6,12,34,0.24)] backdrop-blur-md">
-              <div className="grid gap-4">
-                <div className="rounded-[26px] border border-[rgba(23,58,138,0.22)] bg-[#EEF4FF] p-5">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#173A8A] shadow-[0_10px_20px_rgba(23,58,138,0.12)]">
-                    <BriefcaseIcon className="h-5 w-5" />
-                  </div>
-                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
-                    Parcours employeur
-                  </p>
-                  <p className="mt-3 text-2xl font-bold leading-tight text-[#0b1738]">
-                    Déposer un besoin. Recevoir des profils ciblés.
-                  </p>
-                </div>
+          <h1 className="mt-8 text-[clamp(2.8rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
+            Employeurs belges.<br />
+            <span className="text-[#5ec9c1]">Talents internationaux.</span><br />
+            Match direct.
+          </h1>
 
-                <div className="rounded-[26px] border border-[rgba(89,185,177,0.26)] bg-[#ECFAF8] p-5">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#59B9B1] shadow-[0_10px_20px_rgba(89,185,177,0.14)]">
-                    <TalentIcon className="h-5 w-5" />
-                  </div>
-                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#2F9F97]">
-                    Parcours talent
-                  </p>
-                  <p className="mt-3 text-2xl font-bold leading-tight text-[#0b1738]">
-                    Rendre son profil visible. Être contacté plus vite.
-                  </p>
-                </div>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
+            La plateforme qui connecte les entreprises belges aux profils qualifiés dans les métiers en pénurie — de façon claire, rapide et ciblée.
+          </p>
 
-                <div className="rounded-[24px] border border-white/10 bg-white/6 px-5 py-4 text-sm leading-7 text-white/72">
-                  Matching d’abord. Le juridique intervient ensuite uniquement si la mise en relation avance vers un recrutement.
-                </div>
-              </div>
-            </div>
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <Link
+              href={primaryHref}
+              className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(23,58,138,0.48)]"
+              style={{ background: EMPLOYER.primary }}
+            >
+              Je recrute
+            </Link>
+            <Link
+              href={secondaryHref}
+              className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(89,185,177,0.42)]"
+              style={{ background: TALENT.primary }}
+            >
+              Je me fais repérer
+            </Link>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-3">
+            {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Permis unique"].map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.07] px-3.5 py-1.5 text-xs font-semibold text-white/[0.55] backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
     </section>
   );
 }
-
-const ENTRY_CARDS = [
-  {
-    title: "Employeurs belges",
-    text: "Déposez votre besoin et accédez à des profils internationaux ciblés pour les métiers en pénurie.",
-    cta: "Je recrute",
-    href: "/employeurs",
-    icon: BriefcaseIcon,
-    colors: EMPLOYER
-  },
-  {
-    title: "Talents internationaux",
-    text: "Rendez votre profil visible auprès des employeurs belges qui recrutent dans votre métier.",
-    cta: "Je rends mon profil visible",
-    href: "/travailleurs",
-    icon: TalentIcon,
-    colors: TALENT
-  }
-];
-
 export function DualEntry() {
   return (
     <section className="py-16 sm:py-20 lg:py-24">
