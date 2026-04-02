@@ -25,7 +25,8 @@ const legalLinks = [
   { href: '/mentions-legales', label: 'Mentions légales' },
   { href: '/politique-de-confidentialite', label: 'Confidentialité' },
   { href: '/cookies', label: 'Cookies' },
-  { href: '/conditions-utilisation', label: 'Conditions d’utilisation' }
+  { href: '/conditions-utilisation', label: 'Conditions d’utilisation' },
+  { href: '/securite-conformite', label: 'Sécurité & conformité' }
 ];
 
 export default function RootLayout({ children }) {
@@ -93,10 +94,16 @@ export default function RootLayout({ children }) {
                   </Link>
                 ))}
                 <Link
-                  href="/liste-metiers-penurie"
+                  href="/metiers-en-penurie"
                   className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
                 >
-                  Liste complète 2026
+                  Guide métiers en pénurie
+                </Link>
+                <Link
+                  href="/securite-conformite"
+                  className="whitespace-nowrap rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[#1d3b8b] transition hover:border-[#cde2df] hover:text-[#57b7af]"
+                >
+                  Sécurité & conformité
                 </Link>
                 <Link
                   href="/inscription"
@@ -151,7 +158,7 @@ export default function RootLayout({ children }) {
                     <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin de recrutement</Link>
                     <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Rendre mon profil visible</Link>
                     <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Explorer les métiers en pénurie</Link>
-                    <Link href="/liste-metiers-penurie" className="block transition hover:text-[#1d3b8b]">Voir la liste complète 2026</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Guide métiers en pénurie</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
                   </div>

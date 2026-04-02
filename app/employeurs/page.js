@@ -105,6 +105,18 @@ export default function EmployeursPage() {
         kicker="Employeurs"
       >
         <BulletList items={employerBenefits} />
+        <div className="mt-8 rounded-[28px] border border-[#dce7ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-7">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Avant de recruter hors UE</p>
+          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#1d3b8b]">
+            Vérifiez d’abord si votre fonction figure parmi les métiers en pénurie
+          </h3>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5d6e83]">
+            Notre guide vous aide à comprendre la logique régionale, l’impact potentiel sur le permis unique et les secteurs les plus porteurs.
+          </p>
+          <Link href="/metiers-en-penurie" className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]">
+            Lire le guide métiers en pénurie
+          </Link>
+        </div>
       </Section>
 
       <Section

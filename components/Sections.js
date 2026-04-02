@@ -257,22 +257,71 @@ export function ShortageJobsQuickLink() {
         <div className="rounded-[32px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4fbfa_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
           <div className="max-w-2xl">
             <p className="inline-flex rounded-full bg-[#e9f8f5] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-              Liste complète 2026
+              Guide employeur
             </p>
             <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#080f2e] sm:text-3xl">
-              Consultez tous les métiers en pénurie repris par région
+              Comprenez quels métiers en pénurie comptent vraiment pour votre recrutement
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
-              Une page dédiée rassemble l’ensemble des métiers en pénurie 2026 pour Bruxelles, la Wallonie et la Flandre.
+              Une page unique vous aide à lire les listes régionales officielles, à comprendre leur impact sur le permis unique et à repérer les secteurs les plus porteurs.
             </p>
           </div>
           <div className="mt-6 flex-shrink-0 lg:mt-0">
             <Link
-              href="/liste-metiers-penurie"
+              href="/metiers-en-penurie"
               className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374]"
             >
-              Voir la liste complète 2026
+              Lire le guide métiers en pénurie
             </Link>
+            <p className="mt-3 text-xs leading-6 text-[#6c7b8f]">
+              Idéal pour vérifier rapidement si votre poste peut s’appuyer sur une liste régionale officielle.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function SecurityComplianceTeaser() {
+  return (
+    <section className="py-4 sm:py-6 lg:py-8">
+      <div className="container-shell">
+        <div className="relative overflow-hidden rounded-[34px] border border-[#dce7ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-8 lg:p-9">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top,rgba(103,190,182,0.12),transparent_68%)]" />
+          <div className="relative lg:flex lg:items-end lg:justify-between lg:gap-8">
+            <div className="max-w-2xl">
+              <p className="inline-flex rounded-full border border-[#d7e8e6] bg-[#f6fbfb] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#255c8f]">
+              Sécurité & conformité
+              </p>
+              <h2 className="mt-4 max-w-3xl text-2xl font-bold tracking-[-0.04em] text-[#0f214b] sm:text-3xl">
+                Une architecture conçue pour séparer le matching professionnel du traitement juridique
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5d6e83] sm:text-[0.98rem]">
+                Données hébergées en Europe, partage limité avant mise en relation et relais juridique distinct uniquement quand le recrutement l’exige.
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <span className="inline-flex rounded-full border border-[rgba(23,58,138,0.16)] bg-[#eef4ff] px-3.5 py-1.5 text-xs font-semibold text-[#173A8A]">
+                  Hébergement UE
+                </span>
+                <span className="inline-flex rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-3.5 py-1.5 text-xs font-semibold text-[#2f9f97]">
+                  Consentement avant transfert
+                </span>
+                <span className="inline-flex rounded-full border border-[rgba(39,79,150,0.16)] bg-[#f4f7fe] px-3.5 py-1.5 text-xs font-semibold text-[#274f96]">
+                  Relais juridique séparé
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex-shrink-0 lg:mt-0">
+              <Link
+                href="/securite-conformite"
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-[#d6dfef] bg-white px-7 py-4 text-base font-semibold text-[#173A8A] shadow-[0_12px_28px_rgba(23,58,138,0.08)] transition hover:-translate-y-0.5 hover:border-[#b7c8e3] hover:bg-[#f5f9ff]"
+              >
+                Comprendre notre architecture RGPD
+              </Link>
+            </div>
           </div>
         </div>
       </div>
