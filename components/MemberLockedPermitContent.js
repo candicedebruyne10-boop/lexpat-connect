@@ -23,7 +23,7 @@ function SmallCard({ title, subtitle, note }) {
   );
 }
 
-function ContentSection({ badge, badgeTone = "blue", title, intro, children }) {
+function ContentSection({ id, badge, badgeTone = "blue", title, intro, children }) {
   const tones = {
     blue: "bg-[#eef4ff] text-[#173A8A]",
     green: "bg-[#ecfaf8] text-[#2f9f97]",
@@ -32,6 +32,7 @@ function ContentSection({ badge, badgeTone = "blue", title, intro, children }) {
 
   return (
     <section className="rounded-[30px] border border-[#dfe8f0] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
+      {id ? <span id={id} className="block -translate-y-24" aria-hidden="true" /> : null}
       <p className={`inline-flex rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${tones[badgeTone]}`}>
         {badge}
       </p>
@@ -402,14 +403,22 @@ export default function MemberLockedPermitContent() {
   }, []);
 
   return (
-    <section className="py-10 sm:py-14 lg:py-16">
+    <section id="contenu-membre" className="py-10 sm:py-14 lg:py-16">
       <div className="container-shell">
         <div className="rounded-[36px] border border-[#e3ebf3] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-8 lg:p-10">
           <div className="mx-auto mb-8 max-w-4xl text-center">
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
-              <LockIcon />
-              Contenu membre
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
+                <LockIcon />
+                Contenu membre
+              </p>
+              {status === "member" ? (
+                <p className="inline-flex items-center gap-2 rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
+                  <span className="h-2 w-2 rounded-full bg-[#59B9B1]" />
+                  Contenu débloqué
+                </p>
+              ) : null}
+            </div>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">
               Dispenses de permis de travail
             </h2>
@@ -456,10 +465,10 @@ export default function MemberLockedPermitContent() {
                   <li>Dispenses régionales de l’examen du marché de l’emploi</li>
                 </ul>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Link href="/inscription" className="primary-button">
+                  <Link href="/inscription?next=/permis-unique%23contenu-membre" className="primary-button">
                     Devenir membre
                   </Link>
-                  <Link href="/connexion" className="secondary-button">
+                  <Link href="/connexion?next=/permis-unique%23contenu-membre" className="secondary-button">
                     Se connecter
                   </Link>
                 </div>
@@ -470,6 +479,7 @@ export default function MemberLockedPermitContent() {
           {status === "member" ? (
             <div className="space-y-8">
               <ContentSection
+                id="acces-direct"
                 badge="Sans titre de séjour"
                 title="Cas très spécifiques"
                 intro="Ce sont des hypothèses particulières où l’on ne repart pas sur une logique classique de permis unique."
@@ -482,6 +492,7 @@ export default function MemberLockedPermitContent() {
               </ContentSection>
 
               <ContentSection
+                id="acces-facilite"
                 badge="Dispenses — séjours illimités"
                 title="Les cas les plus simples à lire"
                 intro="Ici, le droit au travail découle généralement du statut ou d’un séjour stable déjà reconnu."
@@ -520,6 +531,7 @@ export default function MemberLockedPermitContent() {
               </ContentSection>
 
               <ContentSection
+                id="acces-facilite-categories"
                 badge="Activité spécifique"
                 title="Dispense de l’examen du marché de l’emploi"
                 intro="Certaines catégories de travailleurs peuvent entrer dans une logique spécifique, notamment les profils hautement qualifiés. La lecture varie ensuite selon la région compétente."
@@ -634,6 +646,7 @@ export default function MemberLockedPermitContent() {
               </ContentSection>
 
               <ContentSection
+                id="analyse-marche-emploi"
                 badge="Examen du marché de l’emploi"
                 badgeTone="dark"
                 title="Lecture pratique par région"

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getSupabaseBrowserClient } from '../lib/supabase/client';
 
 const roleOptions = [
@@ -37,6 +37,21 @@ export default function AuthForm({ mode = 'login' }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [nextPath, setNextPath] = useState('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const next = new URLSearchParams(window.location.search).get('next') || '';
+    setNextPath(next);
+  }, []);
+
+  function getSafeRedirect(fallback) {
+    const next = nextPath;
+    if (!next || !next.startsWith('/')) {
+      return fallback;
+    }
+    return next;
+  }
 
   async function bootstrapUser(session, bootstrapRole) {
     const response = await fetch('/api/auth/bootstrap', {
@@ -92,7 +107,8 @@ export default function AuthForm({ mode = 'login' }) {
 
         if (data.session) {
           const redirectTo = await bootstrapUser(data.session, role);
-          router.push(redirectTo);
+          const target = getSafeRedirect(redirectTo);
+          router.push(target);
           router.refresh();
           return;
         }
@@ -112,7 +128,8 @@ export default function AuthForm({ mode = 'login' }) {
 
       const detectedRole = data.user?.user_metadata?.role || 'worker';
       const redirectTo = await bootstrapUser(data.session, detectedRole);
-      router.push(redirectTo);
+      const target = getSafeRedirect(redirectTo);
+      router.push(target);
       router.refresh();
     } catch (err) {
       setError(err.message || 'Une erreur est survenue.');
