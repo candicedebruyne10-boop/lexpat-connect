@@ -12,30 +12,30 @@ export const metadata = {
 const basicCards = [
   {
     title: "À quoi sert le permis unique ?",
-    text: "Le permis unique permet à un ressortissant hors Union européenne de séjourner et de travailler en Belgique comme salarié dans un cadre déterminé."
+    text: "Il autorise un ressortissant hors UE à séjourner et travailler en Belgique comme salarié."
   },
   {
     title: "Qui en a besoin ?",
-    text: "En pratique, un travailleur étranger qui vient travailler en Belgique comme salarié doit souvent passer par ce mécanisme si aucun autre droit au travail ne s'applique déjà."
+    text: "Souvent, un salarié hors UE qui vient travailler en Belgique si aucun autre droit au travail ne s'applique déjà."
   },
   {
     title: "Ce n’est pas pour tout le monde",
-    text: "Certaines personnes ont déjà un droit au travail via leur titre de séjour, leur nationalité, leur statut ou un autre régime spécifique."
+    text: "Certaines personnes peuvent déjà travailler via leur séjour, leur nationalité ou un statut particulier."
   }
 ];
 
 const landscapeCards = [
   {
     title: "Union européenne",
-    text: "Elle fixe le cadre général de certaines règles, dont la logique du permis unique."
+    text: "Elle pose le cadre général."
   },
   {
     title: "État fédéral",
-    text: "L'Office des étrangers intervient pour la partie séjour."
+    text: "Il gère la partie séjour."
   },
   {
     title: "Régions",
-    text: "La région compétente traite la partie travail et examine la fonction, l'employeur et le dossier."
+    text: "Elles gèrent la partie travail."
   }
 ];
 
@@ -43,7 +43,7 @@ const accessCategories = [
   {
     kicker: "Accès direct à l'emploi",
     title: "Le candidat peut déjà travailler en Belgique",
-    text: "Dans cette catégorie, l’employeur n’a pas à lancer un permis unique classique, car le droit au travail existe déjà via le statut ou le titre de séjour.",
+    text: "Le droit au travail existe déjà. Le sujet principal est donc de vérifier correctement le statut ou le titre de séjour.",
     points: [
       "L’enjeu principal est de vérifier correctement le document de séjour",
       "Tous les statuts ne donnent pas le même niveau d’accès au travail",
@@ -55,7 +55,7 @@ const accessCategories = [
   {
     kicker: "Accès facilité à l'emploi",
     title: "Le recrutement peut être plus simple à défendre",
-    text: "Ici, le dossier peut avancer dans une logique plus favorable, par exemple parce que le profil ou la catégorie réduit le poids de l’analyse du marché de l’emploi.",
+    text: "Le dossier peut avancer plus facilement, parce que le profil ou la catégorie réduit le poids de l’analyse du marché de l’emploi.",
     points: [
       "Typiquement : profils hautement qualifiés, direction, chercheurs, transferts intra-groupe",
       "La région, le salaire et le niveau du candidat restent décisifs",
@@ -67,7 +67,7 @@ const accessCategories = [
   {
     kicker: "Nécessité d'une analyse du marché de l'emploi",
     title: "L’employeur doit justifier la difficulté à recruter localement",
-    text: "Dans cette catégorie, il faut montrer que le poste n’a pas pu être pourvu raisonnablement sur le marché belge ou régional avant d’avancer plus loin.",
+    text: "Ici, il faut montrer que le poste n’a pas pu être pourvu raisonnablement sur le marché belge ou régional.",
     points: [
       "Ce n’est ni un accès direct, ni une catégorie facilitée",
       "La méthode diffère entre Bruxelles, la Wallonie et la Flandre",
@@ -81,53 +81,83 @@ const accessCategories = [
 const employerPoints = [
   {
     title: "Vérifier avant l’entrée en fonction",
-    text: "L'employeur doit vérifier le droit au séjour et le droit au travail avant l'occupation."
+    text: "Le droit au séjour et le droit au travail doivent être vérifiés avant l’entrée en fonction."
   },
   {
     title: "Ne pas confondre vitesse et sécurité",
-    text: "Un besoin urgent de recrutement ne dispense pas de vérifier la bonne procédure et la bonne région."
+    text: "L’urgence ne dispense jamais de choisir la bonne procédure ni la bonne région."
   },
   {
     title: "Attention aux sanctions",
-    text: "Employer une personne sans base valable peut entraîner des sanctions administratives, sociales et pénales."
+    text: "Employer sans base valable peut entraîner des sanctions administratives, sociales et pénales."
   }
 ];
 
 const permitSteps = [
   {
     title: "Vérifier le poste et la région compétente",
-    text: "On part du lieu de travail, de la fonction, du salaire et du profil du candidat."
+    text: "On part du lieu de travail, de la fonction, du salaire et du profil."
   },
   {
     title: "Construire le dossier",
-    text: "L'employeur et le candidat réunissent les pièces utiles pour la partie travail et la partie séjour."
+    text: "L’employeur et le candidat réunissent les pièces utiles."
   },
   {
     title: "Déposer et suivre la procédure",
-    text: "La région traite l'autorisation de travail et l'Office des étrangers intervient sur le séjour."
+    text: "La région traite le travail, l’Office des étrangers traite le séjour."
   }
 ];
 
 const permitFaq = [
   {
-    question: "Le permis unique est-il obligatoire pour tout travailleur étranger ?",
+    question: "Qui est compétent pour autoriser un étranger à travailler en Belgique ?",
     answer:
-      "Non. Tout dépend de la nationalité, du titre de séjour déjà détenu, du statut de la personne et du type de travail envisagé. Certaines personnes ont déjà un droit au travail."
+      "La compétence est partagée. L’État fédéral gère l’accès au séjour des étrangers ainsi que l’accès au travail des personnes dont le motif de séjour n’est pas professionnel. Les Régions, elles, sont compétentes pour l’accès au travail des personnes qui séjournent en Belgique pour travailler."
   },
   {
-    question: "Un métier en pénurie donne-t-il automatiquement droit au permis unique ?",
+    question: "Certains étrangers peuvent-ils travailler sans aucune démarche de l’employeur ?",
     answer:
-      "Non. Un métier en pénurie peut aider à soutenir un dossier, mais il ne garantit jamais à lui seul l'obtention du permis unique."
+      "Oui. Certains profils disposent déjà d’un droit au travail. Dans ce cas, l’employeur ne doit pas introduire de demande préalable. En pratique, le titre de séjour ou le statut de la personne montre déjà que l’accès au marché du travail est illimité."
   },
   {
-    question: "Qui décide pour un permis unique en Belgique ?",
+    question: "Quelles sont les règles pour le travail des étudiants étrangers ?",
     answer:
-      "La logique est partagée : la région compétente traite la partie travail, et l'État fédéral via l'Office des étrangers intervient pour la partie séjour."
+      "Les étudiants qui disposent d’un titre de séjour valable peuvent travailler, mais dans un cadre limité. En pratique, ils peuvent travailler jusqu’à 20 heures par semaine pendant l’année scolaire. Pendant les vacances scolaires, cette limite ne s’applique pas de la même manière."
   },
   {
-    question: "Quand un employeur doit-il demander un avis juridique ?",
+    question: "Qu’est-ce que le permis unique ?",
     answer:
-      "Dès qu'il y a un doute sur la bonne procédure, la région compétente, le statut du candidat, le niveau de salaire ou les risques de non-conformité."
+      "Le permis unique est une procédure qui combine, dans un même dossier, l’autorisation de séjour et l’autorisation de travail en Belgique pour un travailleur salarié hors Union européenne."
+  },
+  {
+    question: "Qui doit introduire la demande de permis unique ?",
+    answer:
+      "C’est l’employeur, ou son mandataire, qui introduit la demande pour son futur travailleur. La démarche se fait en ligne sur la plateforme nationale dédiée au permis unique."
+  },
+  {
+    question: "Faut-il toujours prouver qu’aucun travailleur local n’est disponible ?",
+    answer:
+      "Non. C’est la logique de base, mais il existe de nombreuses situations dans lesquelles l’employeur n’a pas à démontrer qu’il a d’abord cherché localement. C’est notamment le cas pour certaines activités spécifiques ou certains profils qualifiés."
+  },
+  {
+    question: "Quel est le salaire minimum pour embaucher un travailleur étranger sous permis unique ?",
+    answer:
+      "La rémunération doit toujours atteindre au moins le revenu minimum moyen mensuel garanti, y compris en cas de temps partiel. Pour certaines catégories, comme les profils hautement qualifiés, des seuils nettement plus élevés doivent aussi être respectés."
+  },
+  {
+    question: "Quelle est la durée de validité d’une autorisation de travail limitée ?",
+    answer:
+      "En règle générale, l’autorisation suit la durée du contrat avec un maximum d’un an. Certaines catégories peuvent aller jusqu’à trois ans, notamment les profils hautement qualifiés, certaines cartes bleues, le personnel de direction ou certains transferts intra-groupe."
+  },
+  {
+    question: "Que se passe-t-il à la fin du contrat de travail d’un étranger sous permis unique ?",
+    answer:
+      "L’employeur doit signaler la fin de l’occupation à l’autorité régionale compétente. En pratique, le séjour du travailleur reste en principe valable pendant 90 jours après la fin de l’autorisation d’occupation, sauf décision contraire sur le séjour."
+  },
+  {
+    question: "Comment un étranger peut-il obtenir un accès illimité au marché de l’emploi ?",
+    answer:
+      "Après une certaine durée de travail sous autorisation limitée, le travailleur peut, dans certains cas, demander lui-même un accès illimité au marché de l’emploi. Les conditions précises dépendent notamment de la région compétente et du temps déjà presté ou séjourné en Belgique."
   }
 ];
 
@@ -161,12 +191,12 @@ export default function PermisUniquePage() {
             <span className="block text-[#57b7af]">l’essentiel, en langage simple</span>
           </>
         }
-        description="Cette page vous aide à comprendre rapidement quand un permis unique peut être nécessaire, qui décide, ce que l'employeur doit vérifier et à quel moment faire intervenir le cabinet."
+        description="Comprenez rapidement quand un permis unique peut être nécessaire, qui décide et ce que l’employeur doit vérifier."
         primaryHref="/contact"
         primaryLabel="Parler à un avocat"
         secondaryHref="/metiers-en-penurie"
         secondaryLabel="Voir les métiers en pénurie"
-        note="Objectif : aller droit au but. Pas de jargon inutile, seulement ce qu'un employeur doit comprendre avant de recruter hors UE."
+        note="Objectif : aller droit au but, sans jargon inutile."
         stats={[
           { value: "UE + Belgique", label: "Un cadre partagé entre règles européennes, État fédéral et régions" },
           { value: "Régions", label: "La partie travail dépend de la région compétente" },
@@ -176,7 +206,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Les principes généraux"
-        intro="En version simple : pour travailler en Belgique, un ressortissant étranger doit avoir une base valable pour travailler. Parfois ce droit existe déjà. Parfois il faut une autorisation spécifique, comme le permis unique."
+        intro="Pour travailler en Belgique, il faut une base valable. Parfois elle existe déjà. Parfois il faut un permis unique."
         kicker="Comprendre vite"
       >
         <CardGrid items={basicCards} columns={3} />
@@ -184,7 +214,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Pourquoi le système paraît complexe"
-        intro="Le permis unique n'est pas géré par une seule autorité. C'est justement ce qui rend les choses parfois difficiles à lire pour un employeur."
+        intro="Le permis unique n’est pas géré par une seule autorité. C’est ce qui rend le système parfois difficile à lire."
         kicker="Paysage institutionnel"
         muted
       >
@@ -193,7 +223,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Trois lectures très différentes"
-        intro="Avant de parler de permis unique, il faut distinguer trois catégories : le droit au travail déjà existant, les cas où l'accès est facilité, et les cas où une vraie analyse du marché de l'emploi reste nécessaire."
+        intro="Avant de parler de permis unique, il faut distinguer trois cas : accès direct, accès facilité ou vraie analyse du marché de l’emploi."
         kicker="Autorisation de travail"
       >
         <div className="grid gap-5 lg:grid-cols-3">
@@ -258,7 +288,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Ce que l'employeur doit retenir"
-        intro="Le point le plus important : vérifier avant l'entrée en fonction. C'est là que se joue le risque."
+        intro="Le point clé : vérifier avant l’entrée en fonction."
         kicker="Côté employeur"
         muted
       >
@@ -267,7 +297,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Concrètement, comment fonctionne un permis unique"
-        intro="Le dossier se construit en plusieurs étapes. L'objectif est de vérifier le poste, la région compétente et la situation réelle du candidat avant tout dépôt."
+        intro="Le dossier suit trois étapes simples : qualifier, préparer, déposer."
         kicker="En 3 étapes"
       >
         <Steps items={permitSteps} />
@@ -275,7 +305,7 @@ export default function PermisUniquePage() {
 
       <Section
         title="Quand le cabinet LEXPAT intervient"
-        intro="LEXPAT Connect sert d'abord à clarifier le besoin et le recrutement. Le cabinet intervient ensuite quand il faut sécuriser juridiquement le dossier."
+        intro="La plateforme clarifie le besoin. Le cabinet intervient quand il faut sécuriser juridiquement le dossier."
         kicker="Relais juridique"
         muted
       >
@@ -295,7 +325,7 @@ export default function PermisUniquePage() {
             </p>
             <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">Le permis unique ne se résume pas à un formulaire</h3>
             <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
-              Il faut articuler la fonction, la région, le contrat, le salaire, le profil du candidat et la logique séjour. C'est là que l'accompagnement juridique devient utile.
+              Il faut articuler la fonction, la région, le contrat, le salaire, le profil du candidat et la logique séjour.
             </p>
           </article>
         </div>
