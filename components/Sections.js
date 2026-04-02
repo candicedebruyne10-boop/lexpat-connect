@@ -60,7 +60,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
     <section className="relative flex min-h-[88vh] items-center overflow-hidden lg:min-h-screen">
       {/* ── Image de fond : carte monde + Belgique mise en lumière ── */}
       <Image
-        src="/hero-world-map.jpg"
+        src="/hero-world-map_2.png"
         alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
         fill
         priority
