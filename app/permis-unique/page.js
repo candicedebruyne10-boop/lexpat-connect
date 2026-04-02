@@ -1,5 +1,6 @@
 import Script from "next/script";
 import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
+import MemberLockedPermitContent from "../../components/MemberLockedPermitContent";
 
 export const metadata = {
   title: "Permis unique en Belgique : guide simple pour employeurs | LEXPAT Connect",
@@ -215,6 +216,8 @@ export default function PermisUniquePage() {
           </article>
         </div>
       </Section>
+
+      <MemberLockedPermitContent />
 
       <Section
         title="FAQ permis unique"
