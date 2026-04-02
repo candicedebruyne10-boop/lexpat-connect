@@ -127,6 +127,25 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
     </section>
   );
 }
+const ENTRY_CARDS = [
+  {
+    icon: BriefcaseIcon,
+    title: "J'ai un poste à pourvoir",
+    text: "Vous cherchez un profil qualifié dans un métier en pénurie ? Déposez votre besoin et accédez à des candidats internationaux prêts à s'installer en Belgique.",
+    href: "/employeurs",
+    cta: "Voir l'espace employeur",
+    colors: EMPLOYER
+  },
+  {
+    icon: TalentIcon,
+    title: "Je cherche un emploi en Belgique",
+    text: "Vous avez une expérience dans un métier en pénurie et souhaitez travailler en Belgique ? Créez votre profil et faites-vous repérer par les employeurs belges.",
+    href: "/travailleurs",
+    cta: "Voir l'espace talent",
+    colors: TALENT
+  }
+];
+
 export function DualEntry() {
   return (
     <section className="py-16 sm:py-20 lg:py-24">
