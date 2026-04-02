@@ -1,4 +1,5 @@
 import Script from "next/script";
+import Link from "next/link";
 import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import MemberLockedPermitContent from "../../components/MemberLockedPermitContent";
 
@@ -38,16 +39,42 @@ const landscapeCards = [
   }
 ];
 
-const rightsCards = [
+const accessCategories = [
   {
-    kicker: "Travail autorisé",
-    title: "Autorisation de plein droit",
-    text: "Certaines personnes peuvent déjà travailler parce que leur situation de séjour l'autorise. Dans ce cas, on ne repart pas automatiquement sur un permis unique."
+    kicker: "Accès direct à l'emploi",
+    title: "Le candidat peut déjà travailler en Belgique",
+    text: "Dans cette catégorie, l’employeur n’a pas à lancer un permis unique classique, car le droit au travail existe déjà via le statut ou le titre de séjour.",
+    points: [
+      "L’enjeu principal est de vérifier correctement le document de séjour",
+      "Tous les statuts ne donnent pas le même niveau d’accès au travail",
+      "Le détail complet est réservé aux membres"
+    ],
+    href: "#acces-direct",
+    tone: "blue"
   },
   {
-    kicker: "Travail encadré",
-    title: "Autorisation spécifique",
-    text: "D'autres personnes ne peuvent travailler que dans le cadre précis de l'autorisation reçue : permis unique, autre autorisation limitée ou droit lié à un statut particulier."
+    kicker: "Accès facilité à l'emploi",
+    title: "Le recrutement peut être plus simple à défendre",
+    text: "Ici, le dossier peut avancer dans une logique plus favorable, par exemple parce que le profil ou la catégorie réduit le poids de l’analyse du marché de l’emploi.",
+    points: [
+      "Typiquement : profils hautement qualifiés, direction, chercheurs, transferts intra-groupe",
+      "La région, le salaire et le niveau du candidat restent décisifs",
+      "Le détail complet est réservé aux membres"
+    ],
+    href: "#acces-facilite",
+    tone: "green"
+  },
+  {
+    kicker: "Nécessité d'une analyse du marché de l'emploi",
+    title: "L’employeur doit justifier la difficulté à recruter localement",
+    text: "Dans cette catégorie, il faut montrer que le poste n’a pas pu être pourvu raisonnablement sur le marché belge ou régional avant d’avancer plus loin.",
+    points: [
+      "Ce n’est ni un accès direct, ni une catégorie facilitée",
+      "La méthode diffère entre Bruxelles, la Wallonie et la Flandre",
+      "Le détail complet est réservé aux membres"
+    ],
+    href: "#analyse-marche-emploi",
+    tone: "dark"
   }
 ];
 
@@ -165,11 +192,68 @@ export default function PermisUniquePage() {
       </Section>
 
       <Section
-        title="Deux situations très différentes"
-        intro="Avant de parler de permis unique, il faut d'abord distinguer deux cas simples."
+        title="Trois lectures très différentes"
+        intro="Avant de parler de permis unique, il faut distinguer trois catégories : le droit au travail déjà existant, les cas où l'accès est facilité, et les cas où une vraie analyse du marché de l'emploi reste nécessaire."
         kicker="Autorisation de travail"
       >
-        <CardGrid items={rightsCards} columns={2} />
+        <div className="grid gap-5 lg:grid-cols-3">
+          {accessCategories.map((item) => (
+            <article
+              key={item.title}
+              className={`rounded-[30px] border p-6 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-7 ${
+                item.tone === "blue"
+                  ? "border-[rgba(23,58,138,0.18)] bg-[linear-gradient(180deg,#ffffff_0%,#eef4ff_100%)]"
+                  : item.tone === "green"
+                    ? "border-[rgba(89,185,177,0.22)] bg-[linear-gradient(180deg,#ffffff_0%,#ecfaf8_100%)]"
+                    : "border-[#dfe8f0] bg-[linear-gradient(180deg,#ffffff_0%,#f5f8fb_100%)]"
+              }`}
+            >
+              <p
+                className={`inline-flex rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${
+                  item.tone === "blue"
+                    ? "bg-[#eef4ff] text-[#173A8A]"
+                    : item.tone === "green"
+                      ? "bg-[#ecfaf8] text-[#2f9f97]"
+                      : "bg-[#edf3f8] text-[#1b355f]"
+                }`}
+              >
+                {item.kicker}
+              </p>
+              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-[#607086]">{item.text}</p>
+              <ul className="mt-5 space-y-3 text-sm leading-7 text-[#4f6178]">
+                {item.points.map((point) => (
+                  <li key={point} className="flex items-start gap-3">
+                    <span
+                      className={`mt-2 h-2 w-2 rounded-full ${
+                        item.tone === "blue"
+                          ? "bg-[#173A8A]"
+                          : item.tone === "green"
+                            ? "bg-[#59B9B1]"
+                            : "bg-[#58728f]"
+                      }`}
+                    />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6">
+                <Link
+                  href={item.href}
+                  className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+                    item.tone === "blue"
+                      ? "bg-[#173A8A] text-white hover:bg-[#143273]"
+                      : item.tone === "green"
+                        ? "bg-[#59B9B1] text-white hover:bg-[#48aaa2]"
+                        : "border border-[#d7e2ec] bg-white text-[#1d3b8b] hover:bg-[#f7faff]"
+                  }`}
+                >
+                  Voir le détail membre
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
       </Section>
 
       <Section
