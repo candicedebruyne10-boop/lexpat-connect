@@ -1,6 +1,7 @@
 import Script from "next/script";
 import Link from "next/link";
 import { CtaBanner, Faq, Hero, Section } from "../../components/Sections";
+import { shortageJobs2026 } from "../../lib/shortageJobs2026";
 
 export const metadata = {
   title: "Métiers en pénurie en Belgique : comment recruter plus vite à l’international | LEXPAT Connect",
@@ -81,6 +82,51 @@ const sectors = [
     examples: ["Technicien en automatisation", "Dessinateur-concepteur", "Installateur d’ascenseurs", "Technicien réseaux"]
   }
 ];
+
+const regionInsights = [
+  {
+    id: "bruxelles",
+    kicker: "Bruxelles-Capitale",
+    title: "Une liste utile, mais à lire avec prudence administrative",
+    text:
+      "À Bruxelles, la liste publiée par Actiris sert de repère sur les fonctions critiques, mais elle n’emporte pas automatiquement la même portée qu’en Wallonie. Pour un employeur, cela veut dire qu’il faut vérifier la fonction réelle, la région compétente et la logique administrative du dossier avant de conclure qu’un recrutement hors UE sera facilité.",
+    emphasis: "Bruxelles demande souvent la lecture la plus nuancée.",
+    accent: "border-[rgba(23,58,138,0.16)] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]",
+    badge: "bg-[#eef4ff] text-[#173A8A] border-[rgba(23,58,138,0.16)]",
+    pill: "bg-[#eef4ff] text-[#173A8A] border-[rgba(23,58,138,0.16)]",
+    line: "from-[#173A8A]/20 via-[#173A8A]/5 to-transparent"
+  },
+  {
+    id: "wallonie",
+    kicker: "Wallonie",
+    title: "La lecture la plus directe pour les employeurs",
+    text:
+      "La Wallonie publie une liste opérationnelle et concrète, souvent la plus simple à mobiliser pour comprendre rapidement si un poste s’inscrit dans une logique de pénurie. Elle est particulièrement parlante pour les métiers de terrain, la maintenance, l’industrie, la logistique et certains profils de soins.",
+    emphasis: "C’est souvent la liste la plus lisible pour une PME.",
+    accent: "border-[rgba(89,185,177,0.22)] bg-[linear-gradient(180deg,#ffffff_0%,#f5fcfb_100%)]",
+    badge: "bg-[#ecfaf8] text-[#2f9f97] border-[rgba(89,185,177,0.22)]",
+    pill: "bg-[#ecfaf8] text-[#2f9f97] border-[rgba(89,185,177,0.22)]",
+    line: "from-[#59B9B1]/25 via-[#59B9B1]/5 to-transparent"
+  },
+  {
+    id: "flandre",
+    kicker: "Flandre",
+    title: "Une logique par familles fonctionnelles",
+    text:
+      "La Flandre raisonne souvent par familles de fonctions et métiers critiques, avec une forte présence de profils techniques, industriels, logistiques et de soins. Pour un employeur, la bonne approche consiste moins à chercher un intitulé exact qu’à vérifier si le poste entre dans une famille clairement en tension.",
+    emphasis: "La grille flamande est souvent plus fonctionnelle que littérale.",
+    accent: "border-[rgba(98,84,183,0.18)] bg-[linear-gradient(180deg,#ffffff_0%,#f7f3ff_100%)]",
+    badge: "bg-[#eee8ff] text-[#6254B7] border-[rgba(98,84,183,0.18)]",
+    pill: "bg-[#f4f1ff] text-[#6254B7] border-[rgba(98,84,183,0.18)]",
+    line: "from-[#6254B7]/22 via-[#6254B7]/5 to-transparent"
+  }
+];
+
+const regionSourceLinks = {
+  bruxelles: "https://www.actiris.brussels",
+  wallonie: "https://www.leforem.be",
+  flandre: "https://www.vdab.be/trends/knelpuntberoepen"
+};
 
 const permitCards = [
   {
@@ -215,6 +261,93 @@ export default function MetiersPage() {
               <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{card.text}</p>
             </article>
           ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Trois régions, trois lectures différentes des métiers en pénurie"
+        intro="C’est un point essentiel : la Belgique ne fonctionne pas avec une seule liste. Bruxelles, la Wallonie et la Flandre publient chacune leur propre lecture du marché, avec un niveau d’opérabilité différent pour l’employeur."
+        kicker="Différences régionales"
+        muted
+      >
+        <div className="mb-8 grid gap-4 lg:grid-cols-3">
+          <div className="rounded-[24px] border border-[rgba(23,58,138,0.16)] bg-[#eef4ff] px-5 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#173A8A]">Bruxelles</p>
+            <p className="mt-2 text-sm font-semibold text-[#173A8A]">Lecture prudente</p>
+            <p className="mt-1 text-sm leading-6 text-[#415676]">Un repère utile, mais à articuler avec une lecture administrative plus nuancée.</p>
+          </div>
+          <div className="rounded-[24px] border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-5 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">Wallonie</p>
+            <p className="mt-2 text-sm font-semibold text-[#2f9f97]">Lecture directe</p>
+            <p className="mt-1 text-sm leading-6 text-[#415676]">La liste est souvent la plus simple à mobiliser pour un premier diagnostic employeur.</p>
+          </div>
+          <div className="rounded-[24px] border border-[rgba(98,84,183,0.18)] bg-[#f4f1ff] px-5 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6254B7]">Flandre</p>
+            <p className="mt-2 text-sm font-semibold text-[#6254B7]">Lecture par familles</p>
+            <p className="mt-1 text-sm leading-6 text-[#415676]">La fonction doit souvent être rapprochée d’une catégorie métier plutôt que d’un intitulé exact.</p>
+          </div>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-3">
+          {regionInsights.map((region) => {
+            const details = shortageJobs2026.find((item) => item.id === region.id);
+            const examples = details
+              ? details.groups.flatMap((group) => group.jobs).slice(0, 6)
+              : [];
+
+            return (
+              <article
+                key={region.id}
+                className={`relative overflow-hidden rounded-[30px] border p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7 ${region.accent}`}
+              >
+                <div className={`pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${region.line}`} />
+                <p className={`inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${region.badge}`}>
+                  {region.kicker}
+                </p>
+                <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">{region.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-[#5d6e83]">{region.text}</p>
+                <p className={`mt-4 inline-flex rounded-full border px-3.5 py-1.5 text-sm font-semibold leading-6 ${region.pill}`}>
+                  {region.emphasis}
+                </p>
+
+                <div className="mt-6 rounded-[24px] border border-white/80 bg-white/80 p-5 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6a7a8f]">
+                    Exemples de fonctions repères
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2.5">
+                    {examples.map((job) => (
+                      <span
+                        key={job}
+                        className="inline-flex rounded-full border border-[#dfe7ef] bg-white px-3 py-1.5 text-xs font-medium text-[#334968]"
+                      >
+                        {job}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <a
+                  href={regionSourceLinks[region.id]}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]"
+                >
+                  Voir la source officielle régionale
+                </a>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 rounded-[28px] border border-[#dce9e7] bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-8">
+          <h3 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">
+            Ce que cela change concrètement pour l’employeur
+          </h3>
+          <ul className="mt-5 space-y-3 text-sm leading-7 text-[#5d6e83]">
+            <li className="flex gap-3"><span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#173A8A]" /><span>Un même poste peut être plus facile à argumenter dans une région que dans une autre.</span></li>
+            <li className="flex gap-3"><span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#173A8A]" /><span>La bonne question n’est pas seulement “le métier est-il en pénurie ?”, mais aussi “dans quelle région et sous quelle logique ?”.</span></li>
+            <li className="flex gap-3"><span className="mt-2 inline-flex h-2.5 w-2.5 rounded-full bg-[#173A8A]" /><span>Pour un recrutement hors UE, la région compétente doit toujours être intégrée dès le départ dans la stratégie.</span></li>
+          </ul>
         </div>
       </Section>
 
