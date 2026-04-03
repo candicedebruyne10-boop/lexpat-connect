@@ -480,6 +480,13 @@ export default function EmployerSpace() {
   const [token, setToken] = useState(null);
   const router = useRouter();
 
+  // useMemo MUST be before any conditional return (Rules of Hooks)
+  const completion = useMemo(() => {
+    if (activeTab === "dashboard") return 31;
+    if (activeTab === "company") return 56;
+    return 44;
+  }, [activeTab]);
+
   useEffect(() => {
     let supabase;
     try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
@@ -496,12 +503,6 @@ export default function EmployerSpace() {
       </div>
     );
   }
-
-  const completion = useMemo(() => {
-    if (activeTab === "dashboard") return 31;
-    if (activeTab === "company") return 56;
-    return 44;
-  }, [activeTab]);
 
   return (
     <section className="pb-12 pt-8 sm:pb-16 lg:pb-20 lg:pt-10">
