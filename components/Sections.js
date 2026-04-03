@@ -79,6 +79,19 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.55),transparent)]" />
           <div className="pointer-events-none absolute left-0 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/[0.06] blur-3xl" />
 
+          {/* ── Effets lumineux Belgique (desktop) ── */}
+          {/* Éclat teal principal rayonnant depuis la Belgique (~62% x, ~44% y) */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_28%_38%_at_62%_44%,rgba(89,185,177,0.28),transparent_70%)]" />
+          {/* Second éclat plus large, plus doux — connexions mondiales */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_55%_at_64%_46%,rgba(89,185,177,0.10),transparent_80%)]" />
+          {/* Contre-lueur bleue profonde derrière la Belgique */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_40%_at_62%_44%,rgba(29,59,139,0.22),transparent_70%)]" />
+          {/* Halo pulsant — point Belgique */}
+          <div className="pointer-events-none absolute animate-ping rounded-full bg-[#59B9B1]/25" style={{ left: '62%', top: '44%', width: 72, height: 72, transform: 'translate(-50%,-50%)' }} />
+          <div className="pointer-events-none absolute animate-pulse rounded-full bg-[#59B9B1]/40 blur-md" style={{ left: '62%', top: '44%', width: 32, height: 32, transform: 'translate(-50%,-50%)' }} />
+          {/* Point brillant Belgique */}
+          <div className="pointer-events-none absolute rounded-full bg-[#9de8e2] shadow-[0_0_12px_4px_rgba(89,185,177,0.7)]" style={{ left: '62%', top: '44%', width: 8, height: 8, transform: 'translate(-50%,-50%)' }} />
+
           {/* Contenu desktop */}
           <div className="container-shell relative z-10 w-full py-32">
             <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
