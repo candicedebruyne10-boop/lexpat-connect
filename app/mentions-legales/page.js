@@ -17,7 +17,7 @@ const sections = [
           <strong className="text-[#1d3b8b]">LEXPAT SRL</strong><br />
           Cabinet d’avocats spécialisé en immigration économique et mobilité internationale<br />
           Belgique<br />
-          Email : contact@lexpat-connect.be<br />
+          Email : lexpat@lexpat.be<br />
           Responsable de la publication : Candice Debruyne
         </p>
       </>
