@@ -27,7 +27,8 @@ const legalLinks = [
   { href: '/politique-de-confidentialite', label: 'Confidentialité' },
   { href: '/cookies', label: 'Cookies' },
   { href: '/conditions-utilisation', label: 'Conditions d’utilisation' },
-  { href: '/securite-conformite', label: 'Sécurité & conformité' }
+  { href: '/securite-conformite', label: 'Sécurité & conformité' },
+  { href: '/retours-test', label: 'Retours testeurs' }
 ];
 
 export default function RootLayout({ children }) {
