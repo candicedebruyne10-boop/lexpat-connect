@@ -57,74 +57,127 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    ───────────────────────────────────────────────────────────────────────────── */
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
-    <section className="relative flex min-h-[88vh] items-center overflow-hidden lg:min-h-screen">
-      {/* ── Image de fond : carte monde + Belgique mise en lumière ── */}
-      <Image
-        src="/hero-world-map_2.png"
-        alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
-        fill
-        priority
-        quality={90}
-        className="object-cover object-[20%_42%] lg:object-[58%_42%]"
-        sizes="100vw"
-      />
+    <section className="relative overflow-hidden bg-[#060c26]">
 
-      {/* ── Overlays : split composition gauche (texte) / droite (carte) ── */}
-      {/* Mobile : voile uniforme pour lisibilité du texte — Desktop : gradient directionnel */}
-      <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(6,12,38,0.82)_0%,rgba(6,12,38,0.58)_60%,rgba(6,12,38,0.38)_100%)] lg:bg-[linear-gradient(108deg,rgba(6,12,38,0.97)_0%,rgba(7,14,42,0.92)_22%,rgba(8,16,50,0.78)_40%,rgba(8,16,50,0.48)_58%,rgba(6,12,38,0.22)_78%,rgba(6,12,38,0.10)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(to_top,rgba(6,12,38,0.82),transparent)]" />
-      <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.55),transparent)]" />
-      <div className="pointer-events-none absolute left-0 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/[0.06] blur-3xl" />
+      {/* ═══════════════════════════════════════════════════
+          DESKTOP UNIQUEMENT : image plein écran en fond
+      ════════════════════════════════════════════════════ */}
+      <div className="hidden lg:block">
+        <div className="relative flex min-h-screen items-center">
+          <Image
+            src="/hero-world-map_2.png"
+            alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-[58%_42%]"
+            sizes="100vw"
+          />
+          {/* Overlays desktop */}
+          <div className="absolute inset-0 bg-[linear-gradient(108deg,rgba(6,12,38,0.97)_0%,rgba(7,14,42,0.92)_22%,rgba(8,16,50,0.78)_40%,rgba(8,16,50,0.48)_58%,rgba(6,12,38,0.22)_78%,rgba(6,12,38,0.10)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(to_top,rgba(6,12,38,0.82),transparent)]" />
+          <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.55),transparent)]" />
+          <div className="pointer-events-none absolute left-0 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/[0.06] blur-3xl" />
 
-      {/* ── Contenu ── */}
-      <div className="container-shell relative z-10 w-full py-24 sm:py-28 lg:py-32">
-        <div className="max-w-2xl xl:max-w-[52rem]">
-
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#59B9B1]" />
-            Belgique · Métiers en pénurie · Matching international
-          </div>
-
-          <h1 className="mt-8 text-[clamp(2.8rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
-            Employeurs belges.<br />
-            <span className="text-[#5ec9c1]">Talents internationaux.</span><br />
-            Match direct.
-          </h1>
-
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
-            La plateforme qui connecte les entreprises belges aux profils qualifiés dans les métiers en pénurie — de façon claire, rapide et ciblée.
-          </p>
-
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <Link
-              href={primaryHref}
-              className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(23,58,138,0.48)]"
-              style={{ background: EMPLOYER.primary }}
-            >
-              Je recrute
-            </Link>
-            <Link
-              href={secondaryHref}
-              className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(89,185,177,0.42)]"
-              style={{ background: TALENT.primary }}
-            >
-              Je me fais repérer
-            </Link>
-          </div>
-
-          <div className="mt-10 flex flex-wrap gap-3">
-            {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Permis unique"].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.07] px-3.5 py-1.5 text-xs font-semibold text-white/[0.55] backdrop-blur-sm"
-              >
-                {tag}
-              </span>
-            ))}
+          {/* Contenu desktop */}
+          <div className="container-shell relative z-10 w-full py-32">
+            <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
           </div>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════
+          MOBILE UNIQUEMENT : texte + carte visible en bas
+      ════════════════════════════════════════════════════ */}
+      <div className="lg:hidden">
+        {/* Zone texte sur fond sombre */}
+        <div className="relative px-6 pb-8 pt-12">
+          {/* Lueur décorative bleue en arrière-plan */}
+          <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
+          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
+        </div>
+
+        {/* Carte Belgique visible — image encadrée avec effets lumineux */}
+        <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18),0_0_0_1px_rgba(89,185,177,0.10)]">
+          <Image
+            src="/hero-world-map_2.png"
+            alt="Carte Belgique — connexions internationales"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-[22%_45%]"
+            sizes="100vw"
+          />
+          {/* Fondu haut — raccord avec la zone texte */}
+          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.95),transparent)]" />
+          {/* Fondu bas */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.85),transparent)]" />
+          {/* Éclat lumineux centré sur la Belgique */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_30%_50%,rgba(89,185,177,0.30),transparent_70%)]" />
+          {/* Second éclat plus chaud pour les connexions mondiales */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_65%_45%,rgba(29,59,139,0.22),transparent_80%)]" />
+          {/* Halo pulsant simulant les liaisons */}
+          <div className="pointer-events-none absolute left-[28%] top-[48%] h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-[#59B9B1]/40 blur-md" />
+          <div className="pointer-events-none absolute left-[28%] top-[48%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/90 blur-[2px]" />
+
+          {/* Badge flottant */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+            Belgique · Hub international
+          </div>
+        </div>
+      </div>
+
     </section>
+  );
+}
+
+/* Contenu textuel partagé mobile / desktop */
+function HeroContent({ primaryHref, secondaryHref }) {
+  return (
+    <div className="max-w-2xl xl:max-w-[52rem]">
+      <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#59B9B1]" />
+        Belgique · Métiers en pénurie · Matching international
+      </div>
+
+      <h1 className="mt-8 text-[clamp(2.4rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
+        Employeurs belges.<br />
+        <span className="text-[#5ec9c1]">Talents internationaux.</span><br />
+        Match direct.
+      </h1>
+
+      <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
+        La plateforme qui connecte les entreprises belges aux profils qualifiés dans les métiers en pénurie — de façon claire, rapide et ciblée.
+      </p>
+
+      <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+        <Link
+          href={primaryHref}
+          className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(23,58,138,0.48)]"
+          style={{ background: EMPLOYER.primary }}
+        >
+          Je recrute
+        </Link>
+        <Link
+          href={secondaryHref}
+          className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(89,185,177,0.42)]"
+          style={{ background: TALENT.primary }}
+        >
+          Je me fais repérer
+        </Link>
+      </div>
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Permis unique"].map((tag) => (
+          <span
+            key={tag}
+            className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.07] px-3.5 py-1.5 text-xs font-semibold text-white/[0.55] backdrop-blur-sm"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 const ENTRY_CARDS = [
