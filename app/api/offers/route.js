@@ -2,9 +2,23 @@ import { NextResponse } from "next/server";
 import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
 import { Resend } from "resend";
 
+const regionToDb = {
+  "Bruxelles-Capitale": "brussels",
+  Wallonie: "wallonia",
+  Flandre: "flanders",
+  "Plusieurs régions": "multi_region"
+};
+
+const regionFromDb = {
+  brussels: "Bruxelles-Capitale",
+  wallonia: "Wallonie",
+  flanders: "Flandre",
+  multi_region: "Plusieurs régions"
+};
+
 /**
  * POST /api/offers
- * Saves an employer offer to the DB, then triggers matching.
+ * Saves an employer offer to the DB.
  * Body: { title, sector, region, contract_type, urgency, description }
  */
 export async function POST(request) {
@@ -23,33 +37,37 @@ export async function POST(request) {
       return NextResponse.json({ error: "Espace employeur introuvable." }, { status: 404 });
     }
 
-    // 2. Insert the offer
+    // 2. Insert the offer in the real employer schema
     const { data: offer, error: offerError } = await supabase
-      .from("offers")
+      .from("job_offers")
       .insert({
         employer_profile_id: membership.employer_profile_id,
         title:         body.title,
         sector:        body.sector,
-        region:        body.region,
+        region:        regionToDb[body.region] || null,
         contract_type: body.contract_type,
         urgency:       body.urgency,
-        description:   body.description,
-        status:        "active"
+        missions:      body.description,
+        status:        "published"
       })
-      .select("id")
+      .select("id, title, sector, region, contract_type, urgency, status, created_at")
       .single();
 
     if (offerError || !offer) {
       return NextResponse.json({ error: offerError?.message || "Erreur création offre." }, { status: 500 });
     }
 
-    // 3. Trigger matching asynchronously (fire-and-forget)
-    runMatching(offer.id, body.sector, body.region, supabase);
-
-    // 4. Send notification email to LEXPAT (best-effort, non-blocking)
+    // 3. Send notification email to LEXPAT (best-effort, non-blocking)
     sendNotificationEmail(body).catch(() => {});
 
-    return NextResponse.json({ ok: true, offerId: offer.id });
+    return NextResponse.json({
+      ok: true,
+      offerId: offer.id,
+      offer: {
+        ...offer,
+        region: regionFromDb[offer.region] || offer.region
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
@@ -57,7 +75,7 @@ export async function POST(request) {
 
 /**
  * GET /api/offers
- * Returns all active offers for the authenticated employer.
+ * Returns all offers for the authenticated employer.
  */
 export async function GET(request) {
   try {
@@ -72,73 +90,20 @@ export async function GET(request) {
     if (!membership) return NextResponse.json({ offers: [] });
 
     const { data: offers } = await supabase
-      .from("offers")
+      .from("job_offers")
       .select("id, title, sector, region, contract_type, urgency, status, created_at")
       .eq("employer_profile_id", membership.employer_profile_id)
       .order("created_at", { ascending: false });
 
-    return NextResponse.json({ offers: offers || [] });
+    return NextResponse.json({
+      offers: (offers || []).map((offer) => ({
+        ...offer,
+        region: regionFromDb[offer.region] || offer.region
+      }))
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
-}
-
-// ─── Matching engine ──────────────────────────────────────────
-
-async function runMatching(offerId, offerSector, offerRegion, supabase) {
-  try {
-    // Fetch all visible worker profiles
-    const { data: workers } = await supabase
-      .from("worker_profiles")
-      .select("id, sector, region, experience")
-      .in("profile_visibility", ["visible", "review"]);
-
-    if (!workers?.length) return;
-
-    const matchRows = workers
-      .map((w) => ({
-        offer_id:          offerId,
-        worker_profile_id: w.id,
-        score:             computeScore(w, offerSector, offerRegion),
-        status:            "pending"
-      }))
-      .filter((m) => m.score >= 40); // Minimum: sector must match
-
-    if (matchRows.length === 0) return;
-
-    await supabase
-      .from("matches")
-      .upsert(matchRows, { onConflict: "offer_id,worker_profile_id", ignoreDuplicates: false });
-  } catch {
-    // Matching is best-effort — never block the offer creation
-  }
-}
-
-function computeScore(worker, offerSector, offerRegion) {
-  let score = 10; // base
-
-  // Sector match: +40 pts (most important)
-  if (worker.sector && offerSector && normalize(worker.sector) === normalize(offerSector)) {
-    score += 40;
-  }
-
-  // Region match: +30 pts
-  if (worker.region && offerRegion) {
-    const wRegion = normalize(worker.region);
-    const oRegion = normalize(offerRegion);
-    if (wRegion === oRegion || oRegion === "toute-la-belgique" || wRegion === "toute-la-belgique") {
-      score += 30;
-    }
-  }
-
-  // Experience: +20 pts if filled
-  if (worker.experience) score += 20;
-
-  return Math.min(score, 100);
-}
-
-function normalize(str) {
-  return str.toLowerCase().trim().replace(/\s+/g, "-").replace(/[éèê]/g, "e").replace(/[àâ]/g, "a");
 }
 
 async function sendNotificationEmail(body) {

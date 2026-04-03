@@ -18,54 +18,43 @@ const toneClasses = {
   green: "bg-[#eef9f1] text-[#2f9d57]"
 };
 
-const companySections = [
+const companyFields = [
+  { name: "companyName", label: "Nom de l'entreprise", placeholder: "Raison sociale" },
   {
-    title: "Informations entreprise",
-    fields: [
-      { label: "Nom de l'entreprise", placeholder: "Raison sociale" },
-      { label: "Secteur principal", type: "select", options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Autre"] },
-      { label: "Personne de contact", placeholder: "Prénom Nom" },
-      { label: "Email professionnel", type: "email", placeholder: "contact@entreprise.be" },
-      { label: "Téléphone", placeholder: "+32 ..." },
-      { label: "Site internet", placeholder: "https://..." },
-      { label: "Description de l'entreprise", type: "textarea", placeholder: "Présentez brièvement l'activité, la taille et le contexte de l'entreprise.", wide: true }
-    ]
+    name: "sector",
+    label: "Secteur principal",
+    type: "select",
+    options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Autre"]
+  },
+  { name: "contactName", label: "Personne de contact", placeholder: "Prénom Nom" },
+  { name: "email", label: "Email professionnel", type: "email", placeholder: "contact@entreprise.be" },
+  { name: "phone", label: "Téléphone", placeholder: "+32 ..." },
+  { name: "website", label: "Site internet", placeholder: "https://..." },
+  {
+    name: "region",
+    label: "Région principale",
+    type: "select",
+    options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Plusieurs régions"]
   },
   {
-    title: "Contexte de recrutement",
-    fields: [
-      { label: "Région principale", type: "select", options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Plusieurs régions"] },
-      { label: "Type de profils recherchés", placeholder: "Métiers, fonctions, niveaux..." },
-      { label: "Expérience minimale", type: "select", options: ["Débutant accepté", "1 à 3 ans", "3 à 5 ans", "5 ans et plus"] },
-      { label: "Langues attendues", placeholder: "Français, néerlandais, anglais..." },
-      { label: "Critères de sélection", type: "textarea", placeholder: "Compétences, disponibilité, mobilité, certifications...", wide: true }
-    ]
+    name: "description",
+    label: "Description de l'entreprise",
+    type: "textarea",
+    placeholder: "Présentez brièvement l'activité, la taille et le contexte de l'entreprise.",
+    wide: true
   }
 ];
 
-const offerCards = [
-  {
-    title: "Soudeur industriel",
-    meta: "Wallonie • Temps plein • Urgent",
-    status: "Brouillon"
-  },
-  {
-    title: "Aide-soignant",
-    meta: "Bruxelles-Capitale • Temps plein",
-    status: "À publier"
-  }
-];
-
-function Field({ field }) {
+function Field({ field, value, onChange }) {
   const base = "field-input";
 
   return (
     <label className={field.wide ? "md:col-span-2" : ""}>
       <span className="mb-2 block text-sm font-semibold text-[#17345d]">{field.label}</span>
       {field.type === "textarea" ? (
-        <textarea className={`${base} min-h-36`} rows={6} placeholder={field.placeholder} />
+        <textarea className={`${base} min-h-36`} rows={6} placeholder={field.placeholder} value={value} onChange={(event) => onChange(field.name, event.target.value)} />
       ) : field.type === "select" ? (
-        <select className={base} defaultValue="">
+        <select className={base} value={value} onChange={(event) => onChange(field.name, event.target.value)}>
           <option value="" disabled>
             Sélectionnez une option
           </option>
@@ -76,7 +65,7 @@ function Field({ field }) {
           ))}
         </select>
       ) : (
-        <input className={base} type={field.type || "text"} placeholder={field.placeholder} />
+        <input className={base} type={field.type || "text"} placeholder={field.placeholder} value={value} onChange={(event) => onChange(field.name, event.target.value)} />
       )}
     </label>
   );
@@ -150,7 +139,79 @@ function DashboardView({ token, onNavigate }) {
   );
 }
 
-function CompanyView() {
+function CompanyView({ token }) {
+  const [values, setValues] = useState({
+    companyName: "",
+    sector: "",
+    contactName: "",
+    email: "",
+    phone: "",
+    website: "",
+    region: "",
+    description: ""
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const updateValue = useCallback((key, value) => {
+    setValues((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/employer-profile", { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.profile) {
+          setValues({
+            companyName: data.profile.companyName || "",
+            sector: data.profile.sector || "",
+            contactName: data.profile.contactName || "",
+            email: data.profile.email || "",
+            phone: data.profile.phone || "",
+            website: data.profile.website || "",
+            region: data.profile.region || "",
+            description: data.profile.description || ""
+          });
+        }
+      })
+      .catch(() => {
+        setError("Impossible de charger la fiche entreprise.");
+      })
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await fetch("/api/employer-profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(values)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible d'enregistrer l'entreprise.");
+      }
+
+      setMessage(`Fiche entreprise enregistrée. Complétude : ${data.completion}%`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
@@ -159,20 +220,44 @@ function CompanyView() {
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Centralisez les éléments qui permettent de présenter votre entreprise, votre contexte de recrutement et vos critères de sélection de manière plus sérieuse.</p>
       </section>
 
-      {companySections.map((section) => (
-        <section key={section.title} className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{section.title}</h2>
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            {section.fields.map((field) => (
-              <Field key={field.label} field={field} />
-            ))}
-          </div>
-        </section>
-      ))}
+      <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Informations entreprise</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
+          Cette fiche structure votre présence employeur et sert de base aux prochains recrutements publiés sur la plateforme.
+        </p>
 
-      <div className="flex justify-end">
-        <button className="primary-button">Enregistrer l'entreprise</button>
-      </div>
+        {loading ? (
+          <div className="mt-6 flex justify-center py-10">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" />
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+            <div className="grid gap-5 md:grid-cols-2">
+              {companyFields.map((field) => (
+                <Field key={field.name} field={field} value={values[field.name] || ""} onChange={updateValue} />
+              ))}
+            </div>
+
+            {error ? (
+              <div className="rounded-[18px] border border-[#f2c4c4] bg-[#fff5f5] px-4 py-3 text-sm text-[#a33f3f]">
+                {error}
+              </div>
+            ) : null}
+
+            {message ? (
+              <div className="rounded-[18px] border border-[#c6e8e3] bg-[#f0fbf9] px-4 py-3 text-sm text-[#1d7a6e]">
+                {message}
+              </div>
+            ) : null}
+
+            <div className="flex justify-end">
+              <button disabled={saving} className="primary-button disabled:cursor-not-allowed disabled:opacity-70">
+                {saving ? "Enregistrement…" : "Enregistrer l'entreprise"}
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
     </div>
   );
 }
@@ -182,7 +267,7 @@ function CreateOfferForm({ onSuccess, token }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [values, setValues] = useState({
-    title: "", sector: "", region: "", contract: "", urgency: "", description: ""
+    title: "", sector: "", region: "", contract: "", urgency: "", email: "", description: ""
   });
 
   function set(key, value) {
@@ -395,7 +480,7 @@ function OffersView({ token }) {
                   </p>
                 </div>
                 <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">
-                  {offer.status === "active" ? "Active" : "Fermée"}
+                  {offer.status === "published" ? "Publiée" : offer.status === "draft" ? "Brouillon" : offer.status}
                 </span>
               </div>
             </article>
@@ -405,7 +490,7 @@ function OffersView({ token }) {
 
       <CreateOfferForm
         token={token}
-        onSuccess={() => { setSuccessMsg("Offre publiée — le matching démarre automatiquement."); refreshOffers(); }}
+        onSuccess={() => { setSuccessMsg("Offre enregistrée et publiée."); refreshOffers(); }}
       />
     </div>
   );
@@ -548,7 +633,7 @@ export default function EmployerSpace() {
 
           <div>
             {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} /> : null}
-            {activeTab === "company" ? <CompanyView /> : null}
+            {activeTab === "company" ? <CompanyView token={token} /> : null}
             {activeTab === "offers" ? <OffersView token={token} /> : null}
             {activeTab === "matches" ? <MatchesView token={token} /> : null}
           </div>
