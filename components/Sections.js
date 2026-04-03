@@ -65,8 +65,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
         fill
         priority
         quality={90}
-        className="object-cover"
-        style={{ objectPosition: "58% 42%" }}
+        className="object-cover object-[20%_42%] lg:object-[58%_42%]"
         sizes="100vw"
       />
 
