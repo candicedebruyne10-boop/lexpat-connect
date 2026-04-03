@@ -94,30 +94,6 @@ export default function RootLayout({ children }) {
                     {item.label}
                   </Link>
                 ))}
-                <Link
-                  href="/metiers-en-penurie"
-                  className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
-                >
-                  Guide métiers en pénurie
-                </Link>
-                <Link
-                  href="/permis-unique"
-                  className="whitespace-nowrap rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[#1d3b8b] transition hover:border-[#cde2df] hover:text-[#57b7af]"
-                >
-                  Permis unique
-                </Link>
-                <Link
-                  href="/securite-conformite"
-                  className="whitespace-nowrap rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[#1d3b8b] transition hover:border-[#cde2df] hover:text-[#57b7af]"
-                >
-                  Sécurité & conformité
-                </Link>
-                <Link
-                  href="/inscription"
-                  className="whitespace-nowrap rounded-full border border-[#d7ece8] bg-[#f5fbfb] px-4 py-2 text-[#1d3b8b] transition hover:text-[#57b7af]"
-                >
-                  Créer un compte
-                </Link>
               </nav>
             </div>
           </header>
