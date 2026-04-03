@@ -71,7 +71,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
 
       {/* ── Overlays : split composition gauche (texte) / droite (carte) ── */}
       {/* Mobile : voile uniforme pour lisibilité du texte — Desktop : gradient directionnel */}
-      <div className="absolute inset-0 bg-[rgba(6,12,38,0.72)] lg:bg-[linear-gradient(108deg,rgba(6,12,38,0.97)_0%,rgba(7,14,42,0.92)_22%,rgba(8,16,50,0.78)_40%,rgba(8,16,50,0.48)_58%,rgba(6,12,38,0.22)_78%,rgba(6,12,38,0.10)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(6,12,38,0.82)_0%,rgba(6,12,38,0.58)_60%,rgba(6,12,38,0.38)_100%)] lg:bg-[linear-gradient(108deg,rgba(6,12,38,0.97)_0%,rgba(7,14,42,0.92)_22%,rgba(8,16,50,0.78)_40%,rgba(8,16,50,0.48)_58%,rgba(6,12,38,0.22)_78%,rgba(6,12,38,0.10)_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(to_top,rgba(6,12,38,0.82),transparent)]" />
       <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.55),transparent)]" />
       <div className="pointer-events-none absolute left-0 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/[0.06] blur-3xl" />
