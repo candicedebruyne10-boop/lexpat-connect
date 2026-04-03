@@ -63,7 +63,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           DESKTOP UNIQUEMENT : image plein écran en fond
       ════════════════════════════════════════════════════ */}
       <div className="hidden lg:block">
-        <div className="relative flex min-h-screen items-center">
+        <div className="relative flex min-h-[92vh] items-start">
           <Image
             src="/hero-world-map_2.png"
             alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
@@ -93,7 +93,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           <div className="pointer-events-none absolute rounded-full bg-[#9de8e2] shadow-[0_0_12px_4px_rgba(89,185,177,0.7)]" style={{ left: '62%', top: '44%', width: 8, height: 8, transform: 'translate(-50%,-50%)' }} />
 
           {/* Contenu desktop */}
-          <div className="container-shell relative z-10 w-full py-32">
+          <div className="container-shell relative z-10 w-full pt-16 pb-20">
             <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
           </div>
         </div>
