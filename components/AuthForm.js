@@ -113,7 +113,7 @@ export default function AuthForm({ mode = 'login' }) {
           return;
         }
 
-        setMessage('Votre compte a été créé. Vérifiez votre boîte mail puis connectez-vous pour accéder à votre espace.');
+        setMessage('Votre compte a été créé ! Un email de confirmation vous a été envoyé. Cliquez sur le lien dans cet email pour accéder à votre espace — pensez à vérifier vos spams.');
         return;
       }
 
