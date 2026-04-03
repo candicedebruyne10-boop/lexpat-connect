@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
 import { Resend } from "resend";
+import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -57,7 +58,14 @@ export async function POST(request) {
       return NextResponse.json({ error: offerError?.message || "Erreur création offre." }, { status: 500 });
     }
 
-    // 3. Send notification email to LEXPAT (best-effort, non-blocking)
+    // 3. Generate simple matches for the new offer (best-effort)
+    runMatchingForOffer(supabase, {
+      id: offer.id,
+      sector: body.sector,
+      region: regionFromDb[offer.region] || offer.region
+    }).catch(() => {});
+
+    // 4. Send notification email to LEXPAT (best-effort, non-blocking)
     sendNotificationEmail(body).catch(() => {});
 
     return NextResponse.json({
@@ -71,6 +79,33 @@ export async function POST(request) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
+}
+
+async function runMatchingForOffer(supabase, offer) {
+  const { data: workers, error: workersError } = await supabase
+    .from("worker_profiles")
+    .select("id, full_name, job_title, sector, region, experience, profile_visibility")
+    .neq("profile_visibility", "hidden");
+
+  if (workersError || !workers?.length) return;
+
+  const rows = workers
+    .map((worker) => ({
+      job_offer_id: offer.id,
+      worker_profile_id: worker.id,
+      score: computeMatchScore(worker, {
+        sector: offer.sector,
+        region: normalizeRegion(offer.region)
+      }),
+      status: "new"
+    }))
+    .filter((match) => match.score >= 40);
+
+  if (!rows.length) return;
+
+  await supabase
+    .from("matches")
+    .upsert(rows, { onConflict: "job_offer_id,worker_profile_id" });
 }
 
 /**
