@@ -53,7 +53,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          LEXPAT Connect est une plateforme de mise en relation entre les employeurs belges et les talents internationaux dans les métiers en pénurie en Belgique.
+          LEXPAT Connect est une plateforme de mise en relation entre les employeurs belges et les travailleurs internationaux dans les métiers en pénurie en Belgique.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           La plateforme facilite la mise en relation. Le cabinet LEXPAT peut intervenir séparément après le matching pour le permis unique, le droit au travail et l’immigration économique.

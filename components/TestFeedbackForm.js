@@ -7,7 +7,7 @@ const TESTERS = ["Margaux", "Zahra"];
 const PAGE_OPTIONS = [
   "Accueil",
   "Employeurs",
-  "Talents",
+  "Travailleurs",
   "Métiers en pénurie",
   "Permis unique",
   "Connexion",

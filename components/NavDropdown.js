@@ -6,7 +6,7 @@ import Link from 'next/link';
 /**
  * Palettes couleur par audience
  * blue   → Employeurs
- * teal   → Talents / Travailleurs
+ * teal   → Travailleurs
  * slate  → Immigration (neutre)
  */
 const palette = {

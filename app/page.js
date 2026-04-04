@@ -10,9 +10,9 @@ import {
 } from "../components/Sections";
 
 export const metadata = {
-  title: "LEXPAT Connect — Mise en relation ciblée employeurs belges & talents internationaux",
+  title: "LEXPAT Connect — Mise en relation ciblée employeurs belges & travailleurs internationaux",
   description:
-    "La plateforme de mise en relation ciblée entre employeurs belges et talents internationaux qualifiés dans les métiers en pénurie. Recrutement sécurisé, accompagnement juridique si nécessaire."
+    "La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie. Recrutement sécurisé, accompagnement juridique si nécessaire."
 };
 
 export default function HomePage() {

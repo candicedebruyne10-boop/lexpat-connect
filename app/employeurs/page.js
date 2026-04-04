@@ -9,7 +9,7 @@ const employerBenefits = [
     text: "Métier, région, contrat, compétences attendues : votre besoin devient plus lisible dès le départ."
   },
   {
-    title: "Touchez des talents internationaux ciblés",
+    title: "Touchez des travailleurs internationaux ciblés",
     text: "La plateforme met en relation des profils qualifiés disponibles dans les métiers en pénurie en Belgique."
   },
   {
@@ -25,7 +25,7 @@ const employerSteps = [
   },
   {
     title: "La mise en relation devient plus simple",
-    text: "Votre recherche gagne en lisibilité et peut être rapprochée de talents internationaux pertinents."
+    text: "Votre recherche gagne en lisibilité et peut être rapprochée de travailleurs internationaux pertinents."
   },
   {
     title: "Vous entrez en contact",
@@ -51,7 +51,7 @@ const employerPreview = [
 const employerFaq = [
   {
     question: "À qui s'adresse la plateforme ?",
-    answer: "Aux employeurs belges qui souhaitent recruter des talents internationaux, en particulier dans les métiers en pénurie."
+    answer: "Aux employeurs belges qui souhaitent recruter des travailleurs internationaux, en particulier dans les métiers en pénurie."
   },
   {
     question: "Puis-je l'utiliser si je n'ai jamais recruté à l'international ?",
@@ -70,7 +70,7 @@ export default function EmployeursPage() {
         badge="Espace employeurs"
         title={
           <>
-            Trouvez des talents internationaux
+            Trouvez des travailleurs internationaux
             <span className="block text-[#57b7af]">pour les métiers en pénurie en Belgique</span>
           </>
         }
@@ -78,12 +78,12 @@ export default function EmployeursPage() {
         primaryHref="#formulaire"
         primaryLabel="Déposer un besoin"
         secondaryHref="/travailleurs"
-        secondaryLabel="Voir le parcours talents"
+        secondaryLabel="Voir le parcours travailleurs"
         note="Le juridique n'intervient qu'après la mise en relation, si le recrutement le nécessite."
         stats={[
           { value: "Poste", label: "Un besoin mieux structuré et immédiatement compréhensible" },
           { value: "Belgique", label: "Une approche pensée pour les métiers en pénurie et les réalités régionales" },
-          { value: "Contact", label: "Une mise en relation plus rapide avec des talents pertinents" }
+          { value: "Contact", label: "Une mise en relation plus rapide avec des travailleurs pertinents" }
         ]}
         panels={[
           {

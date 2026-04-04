@@ -67,7 +67,7 @@ export default function TravailleursPage() {
   return (
     <>
       <Hero
-        badge="Espace talents internationaux"
+        badge="Espace travailleurs internationaux"
         title={
           <>
             Rendez votre profil visible
@@ -102,7 +102,7 @@ export default function TravailleursPage() {
       <Section
         title="Pourquoi créer votre profil"
         intro="La plateforme est pensée pour vous rendre plus visible, plus lisible et plus crédible auprès d'employeurs belges."
-        kicker="Talents"
+        kicker="Travailleurs"
       >
         <BulletList items={candidateBenefits} />
       </Section>
@@ -182,7 +182,7 @@ export default function TravailleursPage() {
         secondaryLabel="Nous écrire"
       />
 
-      <Section title="Questions fréquentes des talents" kicker="FAQ">
+      <Section title="Questions fréquentes des travailleurs" kicker="FAQ">
         <Faq items={candidateFaq} />
       </Section>
     </>

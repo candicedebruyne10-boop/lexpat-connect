@@ -21,7 +21,7 @@ const openSans = Open_Sans({
 export const metadata = {
   title: 'LEXPAT Connect',
   description:
-    'La plateforme de mise en relation ciblée entre employeurs belges et talents internationaux qualifiés dans les métiers en pénurie.'
+    'La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.'
 };
 
 // Onglets principaux — 5 entrées claires (charte LEXPAT Connect)
@@ -213,7 +213,7 @@ export default function RootLayout({ children }) {
                     </div>
                   </div>
                   <p className="max-w-md text-sm leading-7 text-[#607086]">
-                    Une plateforme pensée pour connecter les employeurs belges aux talents internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible.
+                    Une plateforme pensée pour connecter les employeurs belges aux travailleurs internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible.
                   </p>
                   <div className="rounded-[28px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086] shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
                     <p className="font-semibold text-[#1E3A78]">Après la mise en relation</p>

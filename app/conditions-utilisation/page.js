@@ -3,7 +3,7 @@ import LegalPageLayout from "../../components/LegalPageLayout";
 export const metadata = {
   title: "Conditions d’utilisation | LEXPAT Connect",
   description:
-    "Conditions d’utilisation de LEXPAT Connect : accès au site, obligations des employeurs et talents, rôle de la plateforme, responsabilité et droit applicable."
+    "Conditions d’utilisation de LEXPAT Connect : accès au site, obligations des employeurs et travailleurs, rôle de la plateforme, responsabilité et droit applicable."
 };
 
 const sections = [
@@ -13,7 +13,7 @@ const sections = [
     title: "Accès et objet des conditions d’utilisation",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        Les présentes conditions régissent l’accès et l’utilisation de LEXPAT Connect, plateforme de mise en relation entre employeurs belges et talents internationaux dans les métiers en pénurie. L’utilisation du site implique l’acceptation des présentes conditions.
+        Les présentes conditions régissent l’accès et l’utilisation de LEXPAT Connect, plateforme de mise en relation entre employeurs belges et travailleurs internationaux dans les métiers en pénurie. L’utilisation du site implique l’acceptation des présentes conditions.
       </p>
     )
   },
@@ -28,12 +28,12 @@ const sections = [
     )
   },
   {
-    id: "talents",
-    eyebrow: "Talents",
-    title: "Obligations des talents internationaux",
+    id: "travailleurs",
+    eyebrow: "Travailleurs",
+    title: "Obligations des travailleurs internationaux",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        Les talents s’engagent à fournir des informations exactes, loyales et actualisées sur leur identité, leur parcours, leurs compétences, leur disponibilité et leur situation professionnelle. Ils restent responsables des documents et déclarations transmis via la plateforme.
+        Les travailleurs s’engagent à fournir des informations exactes, loyales et actualisées sur leur identité, leur parcours, leurs compétences, leur disponibilité et leur situation professionnelle. Ils restent responsables des documents et déclarations transmis via la plateforme.
       </p>
     )
   },
@@ -98,7 +98,7 @@ export default function ConditionsUtilisationPage() {
   return (
     <LegalPageLayout
       title="Conditions d’utilisation"
-      intro="Ces conditions précisent les règles applicables à l’utilisation de LEXPAT Connect par les employeurs, les talents internationaux et les visiteurs du site."
+      intro="Ces conditions précisent les règles applicables à l’utilisation de LEXPAT Connect par les employeurs, les travailleurs internationaux et les visiteurs du site."
       sections={sections}
     />
   );

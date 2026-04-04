@@ -14,7 +14,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          LEXPAT Connect traite les données personnelles avec un objectif précis : permettre une mise en relation crédible, professionnelle et sécurisée entre employeurs belges et talents internationaux.
+          LEXPAT Connect traite les données personnelles avec un objectif précis : permettre une mise en relation crédible, professionnelle et sécurisée entre employeurs belges et travailleurs internationaux.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           Nous appliquons les principes du Règlement général sur la protection des données (RGPD), notamment la limitation des finalités, la minimisation des données, l’exactitude, la sécurité et la transparence.
@@ -29,7 +29,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Pour les talents internationaux : identité, coordonnées, localisation, langues, disponibilité, expérience, compétences, CV, informations sur le métier recherché, secteur visé et statut administratif communiqué volontairement.
+          Pour les travailleurs internationaux : identité, coordonnées, localisation, langues, disponibilité, expérience, compétences, CV, informations sur le métier recherché, secteur visé et statut administratif communiqué volontairement.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           Pour les employeurs : identité de l’entreprise, coordonnées, besoin de recrutement, métier en pénurie concerné, région, informations de contact et critères liés à l’offre.
@@ -47,7 +47,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Les données sont utilisées pour recevoir les demandes, structurer les profils et besoins, permettre le matching, organiser les mises en relation et assurer le suivi opérationnel de la plateforme.
+          Les données sont utilisées pour recevoir les demandes, structurer les profils et besoins, permettre le mise en relation, organiser les mises en relation et assurer le suivi opérationnel de la plateforme.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           Lorsque cela devient nécessaire après une mise en relation, certaines informations peuvent également être utilisées pour orienter un dossier vers le cabinet LEXPAT dans le cadre d’un permis unique, du droit au travail ou de l’immigration économique.
@@ -86,7 +86,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Les données sont accessibles uniquement aux personnes autorisées au sein de LEXPAT Connect et, lorsque cela est nécessaire, au cabinet LEXPAT. Les mises en relation impliquent naturellement la transmission d’informations pertinentes entre employeurs et talents, dans la stricte mesure utile au matching.
+          Les données sont accessibles uniquement aux personnes autorisées au sein de LEXPAT Connect et, lorsque cela est nécessaire, au cabinet LEXPAT. Les mises en relation impliquent naturellement la transmission d’informations pertinentes entre employeurs et travailleurs, dans la stricte mesure utile au mise en relation.
         </p>
       </>
     )
@@ -142,7 +142,7 @@ export default function PolitiqueConfidentialitePage() {
   return (
     <LegalPageLayout
       title="Politique de confidentialité"
-      intro="Cette politique explique de manière claire comment LEXPAT Connect collecte, utilise, conserve et protège les données personnelles des employeurs, talents internationaux et utilisateurs des formulaires du site."
+      intro="Cette politique explique de manière claire comment LEXPAT Connect collecte, utilise, conserve et protège les données personnelles des employeurs, travailleurs internationaux et utilisateurs des formulaires du site."
       sections={sections}
     />
   );

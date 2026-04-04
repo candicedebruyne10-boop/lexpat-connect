@@ -67,7 +67,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
         <div className="relative flex min-h-[88vh] items-start">
           <Image
             src="/hero-world-map_2.png"
-            alt="LEXPAT Connect — Connexion Belgique et talents internationaux"
+            alt="LEXPAT Connect — Connexion Belgique et travailleurs internationaux"
             fill
             priority
             quality={90}
@@ -156,12 +156,12 @@ function HeroContent({ primaryHref, secondaryHref }) {
 
       <h1 className="font-heading mt-8 text-[clamp(2.4rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
         Employeurs belges.<br />
-        <span className="text-[#57B7AF]">Talents internationaux.</span><br />
+        <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
         Recrutement ciblé.
       </h1>
 
       <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
-        La plateforme de mise en relation ciblée entre employeurs belges et talents internationaux qualifiés dans les métiers en pénurie.
+        La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
       </p>
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -208,7 +208,7 @@ const ENTRY_CARDS = [
     title: "Je cherche un emploi en Belgique",
     text: "Vous avez une expérience dans un métier en pénurie et souhaitez travailler en Belgique ? Créez votre profil et faites-vous repérer par les employeurs belges.",
     href: "/travailleurs",
-    cta: "Voir l'espace talent",
+    cta: "Voir l'espace travailleur",
     colors: TALENT
   }
 ];
@@ -367,7 +367,7 @@ const HOW_IT_WORKS = [
   {
     num: "01",
     title: "Déposer un besoin ou un profil",
-    text: "Employeurs et talents renseignent l’essentiel, sans parcours complexe.",
+    text: "Employeurs et travailleurs renseignent l’essentiel, sans parcours complexe.",
     accent: EMPLOYER,
     iconIndex: 0
   },

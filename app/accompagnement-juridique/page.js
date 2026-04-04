@@ -6,7 +6,7 @@ const legalRoles = [
     text: "Sécuriser un recrutement international, analyser un permis unique ou vérifier la faisabilité d'un dossier."
   },
   {
-    title: "Pour les talents internationaux",
+    title: "Pour les travailleurs internationaux",
     text: "Clarifier une situation de séjour, de droit au travail ou un projet professionnel en Belgique."
   },
   {

@@ -10,7 +10,7 @@ const blocks = [
       "LEXPAT Connect concentre les formulaires et parcours de départ dans une interface unique, claire et orientée matching.",
     items: [
       "CTA employeurs",
-      "CTA talents",
+      "CTA travailleurs",
       "Formulaires simples",
       "Point d'entrée unique"
     ]
@@ -35,7 +35,7 @@ const blocks = [
     title: "Règles métier et compatibilité",
     accent: "teal",
     description:
-      "Le matching croise les besoins employeurs et les profils talents sans exposer immédiatement les données identifiantes.",
+      "Le matching croise les besoins employeurs et les profils travailleurs sans exposer immédiatement les données identifiantes.",
     items: [
       "Score de compatibilité",
       "Matching métier",
@@ -213,7 +213,7 @@ export default function SecurityComplianceSection() {
             <div className="mt-6 rounded-[22px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086]">
               <p className="font-semibold text-[#1d3b8b]">Pourquoi cette page ?</p>
               <p className="mt-2 leading-7">
-                Montrer que le matching et le traitement juridique n’obéissent pas au même périmètre de données renforce la confiance des employeurs comme des talents.
+                Montrer que le matching et le traitement juridique n’obéissent pas au même périmètre de données renforce la confiance des employeurs comme des travailleurs.
               </p>
             </div>
           </aside>
@@ -231,7 +231,7 @@ export default function SecurityComplianceSection() {
                   Bénéfices
                 </p>
                 <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14315f] sm:text-[2.2rem]">
-                  Pourquoi cette architecture protège employeurs et talents
+                  Pourquoi cette architecture protège employeurs et travailleurs
                 </h2>
                 <p className="mt-4 text-base leading-8 text-[#55677f]">
                   La plateforme limite les transferts, sépare les rôles et active l’intervention du cabinet uniquement lorsque la relation avance vers un recrutement réel.
