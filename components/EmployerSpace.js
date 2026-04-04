@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { useAuth } from "./AuthProvider";
+import RegionSelector from "./RegionSelector";
+import {
+  findSectorForProfession,
+  getProfessionGroupsForRegions,
+  parseRegionSelection,
+  sectorOptions
+} from "../lib/professions";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
@@ -269,11 +276,40 @@ function CreateOfferForm({ onSuccess, token }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [values, setValues] = useState({
-    title: "", sector: "", region: "", contract: "", urgency: "", email: "", description: ""
+    title: "", profession: "", otherProfession: "", sector: "", region: "", contract: "", urgency: "", email: "", description: ""
   });
 
   function set(key, value) {
-    setValues((prev) => ({ ...prev, [key]: value }));
+    setValues((prev) => {
+      const next = { ...prev, [key]: value };
+
+      if (key === "region") {
+        next.profession = "";
+        next.otherProfession = "";
+        next.title = "";
+        if (next.sector !== "Autre secteur") {
+          next.sector = "";
+        }
+      }
+
+      if (key === "profession") {
+        if (value !== "Autre profession") {
+          next.otherProfession = "";
+          next.title = value;
+        }
+
+        const derivedSector = findSectorForProfession(next.region, value);
+        if (derivedSector) {
+          next.sector = derivedSector;
+        }
+      }
+
+      if (key === "otherProfession") {
+        next.title = value;
+      }
+
+      return next;
+    });
   }
 
   async function handleSubmit(e) {
@@ -286,7 +322,9 @@ function CreateOfferForm({ onSuccess, token }) {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          title:         values.title,
+          title:         values.profession === "Autre profession" ? values.otherProfession : values.profession,
+          shortage_job:  values.profession,
+          shortage_job_other: values.profession === "Autre profession" ? values.otherProfession : "",
           sector:        values.sector,
           region:        values.region,
           contract_type: values.contract,
@@ -298,7 +336,7 @@ function CreateOfferForm({ onSuccess, token }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
 
-      setValues({ title: "", sector: "", region: "", contract: "", urgency: "", description: "" });
+      setValues({ title: "", profession: "", otherProfession: "", sector: "", region: "", contract: "", urgency: "", email: "", description: "" });
       setOpen(false);
       onSuccess();
     } catch (err) {
@@ -339,35 +377,60 @@ function CreateOfferForm({ onSuccess, token }) {
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
-        <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Intitulé du poste *</span>
-          <input className="field-input" type="text" placeholder="Ex : Soudeur industriel, Infirmier, Chauffeur SPL…" required value={values.title} onChange={(e) => set("title", e.target.value)} />
-        </label>
-
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(utilisé pour le matching)</span></span>
           <select className="field-input" required value={values.sector} onChange={(e) => set("sector", e.target.value)}>
             <option value="" disabled>Sélectionnez un secteur</option>
-            <option>Construction et travaux publics</option>
-            <option>Santé et action sociale</option>
-            <option>Transport et logistique</option>
-            <option>Industrie et maintenance</option>
-            <option>Technologies et informatique</option>
-            <option>Éducation et formation</option>
-            <option>Autre</option>
+            {sectorOptions.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
 
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région *</span>
-          <select className="field-input" required value={values.region} onChange={(e) => set("region", e.target.value)}>
-            <option value="" disabled>Sélectionnez une région</option>
-            <option>Bruxelles-Capitale</option>
-            <option>Wallonie</option>
-            <option>Flandre</option>
-            <option>Plusieurs régions</option>
-          </select>
+          <RegionSelector
+            value={parseRegionSelection(values.region)}
+            onChange={(nextRegions) => set("region", nextRegions)}
+            helperText="Sélectionnez une, deux ou trois régions selon votre besoin de recrutement."
+          />
         </label>
+
+        <label className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Métier recherché *</span>
+          {values.region ? (
+            <select className="field-input" required value={values.profession} onChange={(e) => set("profession", e.target.value)}>
+              <option value="" disabled>Sélectionnez le métier visé</option>
+              {getProfessionGroupsForRegions(values.region).map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.options.map((profession) => (
+                    <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          ) : (
+            <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
+              Sélectionnez d'abord une région pour choisir un métier
+            </div>
+          )}
+          {parseRegionSelection(values.region).length === 1 ? (
+            <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
+              Liste officielle des métiers en pénurie pour {parseRegionSelection(values.region)[0]} — mise à jour 2026
+            </p>
+          ) : values.region ? (
+            <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
+              Liste consolidée des métiers en pénurie 2026 pour les régions sélectionnées.
+            </p>
+          ) : null}
+        </label>
+
+        {values.profession === "Autre profession" ? (
+          <label className="md:col-span-2">
+            <span className="mb-2 block text-sm font-semibold text-[#17345d]">Autre profession / précision *</span>
+            <input className="field-input" type="text" placeholder="Précisez l'intitulé exact du poste" required value={values.otherProfession} onChange={(e) => set("otherProfession", e.target.value)} />
+          </label>
+        ) : null}
 
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Type de contrat</span>
@@ -419,6 +482,10 @@ function CreateOfferForm({ onSuccess, token }) {
             {error}
           </div>
         )}
+
+        <div className="md:col-span-2 rounded-[18px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-3 text-sm text-[#4e6380]">
+          Intitulé retenu pour le matching : <span className="font-semibold text-[#1d3b8b]">{values.profession === "Autre profession" ? values.otherProfession || "À préciser" : values.profession || "Non sélectionné"}</span>
+        </div>
 
         <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm leading-6 text-[#6b7b8f]">

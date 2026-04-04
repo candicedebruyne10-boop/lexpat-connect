@@ -2,30 +2,26 @@ import { NextResponse } from "next/server";
 import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
 import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
-
-const regionToDb = {
-  "Bruxelles-Capitale": "brussels",
-  Wallonie: "wallonia",
-  Flandre: "flanders",
-  "Plusieurs régions": "multi_region"
-};
-
-const regionFromDb = {
-  brussels: "Bruxelles-Capitale",
-  wallonia: "Wallonie",
-  flanders: "Flandre",
-  multi_region: "Plusieurs régions"
-};
+import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 
 /**
  * POST /api/offers
  * Saves an employer offer to the DB.
- * Body: { title, sector, region, contract_type, urgency, description }
+ * Body: { title, shortage_job, shortage_job_other, sector, region, contract_type, urgency, description }
  */
 export async function POST(request) {
   try {
     const { user, supabase } = await getUserFromRequest(request);
     const body = await request.json();
+    const shortageJob = body.shortage_job || "";
+    const shortageJobOther = body.shortage_job_other || "";
+    const normalizedTitle = (shortageJob === "Autre profession" ? shortageJobOther : shortageJob) || body.title || "";
+    const normalizedSector = body.sector || findSectorForProfession(body.region, shortageJob) || null;
+    const selectedRegions = parseRegionSelection(body.region || body.regions);
+    const normalizedRegion =
+      selectedRegions.length > 1
+        ? stringifyRegionSelection(selectedRegions, "Plusieurs régions")
+        : selectedRegions[0] || "";
 
     // 1. Find the employer_profile_id for this user
     const { data: membership, error: memberError } = await supabase
@@ -43,9 +39,11 @@ export async function POST(request) {
       .from("job_offers")
       .insert({
         employer_profile_id: membership.employer_profile_id,
-        title:         body.title,
-        sector:        body.sector,
-        region:        regionToDb[body.region] || null,
+        title:         normalizedTitle,
+        sector:        normalizedSector,
+        region:        normalizedRegion || null,
+        shortage_job:  shortageJob || null,
+        shortage_job_other: shortageJob === "Autre profession" ? shortageJobOther || null : null,
         contract_type: body.contract_type,
         urgency:       body.urgency,
         missions:      body.description,
@@ -61,8 +59,9 @@ export async function POST(request) {
     // 3. Generate simple matches for the new offer (best-effort)
     runMatchingForOffer(supabase, {
       id: offer.id,
-      sector: body.sector,
-      region: regionFromDb[offer.region] || offer.region
+      sector: normalizedSector,
+      region: offer.region,
+      jobTitle: normalizedTitle
     }).catch(() => {});
 
     // 4. Send notification email to LEXPAT (best-effort, non-blocking)
@@ -73,7 +72,7 @@ export async function POST(request) {
       offerId: offer.id,
       offer: {
         ...offer,
-        region: regionFromDb[offer.region] || offer.region
+        region: offer.region
       }
     });
   } catch (error) {
@@ -95,10 +94,12 @@ async function runMatchingForOffer(supabase, offer) {
       worker_profile_id: worker.id,
       score: computeMatchScore({
         profile_visibility: worker.profile_visibility,
+        job_title: worker.target_job,
         sector: worker.target_sector,
         region: worker.preferred_region,
         experience: worker.experience_level
       }, {
+        job_title: offer.jobTitle,
         sector: offer.sector,
         region: normalizeRegion(offer.region)
       }),
@@ -137,8 +138,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       offers: (offers || []).map((offer) => ({
-        ...offer,
-        region: regionFromDb[offer.region] || offer.region
+        ...offer
       }))
     });
   } catch (error) {
@@ -157,6 +157,6 @@ async function sendNotificationEmail(body) {
   await resend.emails.send({
     from, to,
     subject: `[LEXPAT Connect] Nouvelle offre : ${body.title}`,
-    html: `<p>Secteur: ${body.sector || "-"} | Région: ${body.region || "-"} | Urgence: ${body.urgency || "-"}</p><p>${body.description || ""}</p>`
+    html: `<p>Secteur: ${body.sector || "-"} | Région: ${stringifyRegionSelection(body.region || body.regions, "Plusieurs régions") || "-"} | Urgence: ${body.urgency || "-"}</p><p>${body.description || ""}</p>`
   });
 }

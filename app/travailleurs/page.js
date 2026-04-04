@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
-import { professionOptionsByRegion } from "../../lib/professions";
+import {
+  groupedProfessionOptionsByRegion,
+  professionSectorByRegion,
+  sectorOptions
+} from "../../lib/professions";
 
 const candidateBenefits = [
   {
@@ -157,10 +161,10 @@ stats={[
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },
               { label: "Téléphone", placeholder: "+32 / +..." },
               { label: "Pays de résidence", placeholder: "Pays actuel" },
-              { name: "region", label: "Région ou ville souhaitée en Belgique", type: "select", placeholder: "Sélectionnez une région", options: ["Bruxelles-Capitale", "Wallonie", "Flandre"] },
-              { name: "secteur", label: "Secteur visé", type: "select", placeholder: "Sélectionnez un secteur", options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Personnel hautement qualifié", "Personnel de direction", "Autre secteur"] },
+              { name: "region", label: "Région ou ville souhaitée en Belgique", type: "region-multi", helperText: "Sélectionnez une ou plusieurs régions belges selon votre mobilité." },
+              { name: "secteur", label: "Secteur visé", type: "select", placeholder: "Sélectionnez un secteur", options: sectorOptions },
               { name: "autreSecteur", label: "Autre secteur / précision", placeholder: "Indiquez ici un autre secteur si nécessaire", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Métier recherché", type: "select", placeholder: "Choisissez d'abord une région", optionsByField: "region", optionsMap: professionOptionsByRegion },
+              { name: "profession", label: "Métier recherché", type: "select", placeholder: "Choisissez d'abord une région", optionsByField: "region", optionsMap: groupedProfessionOptionsByRegion, deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
               { name: "autreProfession", label: "Autre profession / précision", placeholder: "Indiquez ici une autre profession si nécessaire", showWhen: { field: "profession", value: "Autre profession" } },
               { label: "Disponibilité", placeholder: "Immédiate, 1 mois, 3 mois..." },
               { label: "Langues parlées", placeholder: "Français, anglais, néerlandais..." },

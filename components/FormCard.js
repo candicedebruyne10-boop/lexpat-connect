@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import RegionSelector from "./RegionSelector";
+import { findSectorForProfession, getProfessionGroupsForRegions, stringifyRegionSelection } from "../lib/professions";
 
 function getFieldKey(field) {
   return field.name || field.label;
@@ -17,6 +19,9 @@ function shouldShowField(field, values) {
 function resolveSelectOptions(field, values) {
   if (field.optionsMap && field.optionsByField) {
     const selected = values[field.optionsByField];
+    if (Array.isArray(selected)) {
+      return getProfessionGroupsForRegions(selected);
+    }
     return selected ? field.optionsMap[selected] || [] : [];
   }
 
@@ -50,8 +55,12 @@ export default function FormCard({
       };
 
       if (fieldKey === "region") {
+        next.regionLabel = stringifyRegionSelection(value, "Plusieurs régions");
         next.profession = "";
         next.autreProfession = "";
+        if (Object.prototype.hasOwnProperty.call(next, "secteur")) {
+          next.secteur = "";
+        }
       }
 
       if (fieldKey === "profession" && value !== "Autre profession") {
@@ -60,6 +69,19 @@ export default function FormCard({
 
       if (fieldKey === "secteur" && value !== "Autre secteur") {
         next.autreSecteur = "";
+      }
+
+      if (field.deriveField && field.deriveMap) {
+        const selectedParentValue = field.deriveByField ? next[field.deriveByField] : null;
+        const derivedValue = Array.isArray(selectedParentValue)
+          ? findSectorForProfession(selectedParentValue, value)
+          : selectedParentValue
+            ? field.deriveMap[selectedParentValue]?.[value]
+            : field.deriveMap[value];
+
+        if (derivedValue) {
+          next[field.deriveField] = derivedValue;
+        }
       }
 
       return next;
@@ -74,7 +96,9 @@ export default function FormCard({
     const payloadFields = visibleFields.map((field) => ({
       label: field.label,
       name: getFieldKey(field),
-      value: values[getFieldKey(field)] || ""
+      value: Array.isArray(values[getFieldKey(field)])
+        ? values[getFieldKey(field)].join(", ")
+        : values[getFieldKey(field)] || ""
     }));
 
     try {
@@ -135,6 +159,12 @@ export default function FormCard({
                   rows="5"
                   value={values[fieldKey] || ""}
                   onChange={(event) => handleChange(field, event.target.value)}
+                />
+              ) : field.type === "region-multi" ? (
+                <RegionSelector
+                  value={values[fieldKey] || []}
+                  onChange={(nextValue) => handleChange(field, nextValue)}
+                  helperText={field.helperText}
                 />
               ) : field.type === "select" ? (
                 <select

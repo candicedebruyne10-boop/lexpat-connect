@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { useAuth } from "./AuthProvider";
-import { professionOptionsByRegion } from "../lib/professions";
+import RegionSelector from "./RegionSelector";
+import {
+  getProfessionGroupsForRegions,
+  findSectorForProfession,
+  parseRegionSelection,
+  sectorOptions,
+  stringifyRegionSelection
+} from "../lib/professions";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
@@ -227,7 +234,7 @@ function ProfileView({ token }) {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const [values, setValues] = useState({
-    full_name: "", job_title: "", sector: "", region: "",
+    full_name: "", profession: "", otherProfession: "", sector: "", regions: [],
     experience: "", languages: "", description: "", profile_visibility: "review"
   });
 
@@ -235,7 +242,17 @@ function ProfileView({ token }) {
     if (!token) return;
     fetch("/api/profile", { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
-      .then((d) => { if (d.profile) setValues((prev) => ({ ...prev, ...d.profile })); })
+      .then((d) => {
+        if (d.profile) {
+          setValues((prev) => ({
+            ...prev,
+            ...d.profile,
+            profession: d.profile.job_option || d.profile.job_title || "",
+            otherProfession: d.profile.otherProfession || "",
+            regions: d.profile.regions || parseRegionSelection(d.profile.region)
+          }));
+        }
+      })
       .catch(() => {});
   }, [token]);
 
@@ -247,7 +264,13 @@ function ProfileView({ token }) {
       const res = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(values)
+        body: JSON.stringify({
+          ...values,
+          region: stringifyRegionSelection(values.regions, "Toute la Belgique"),
+          job_option: values.profession,
+          job_title: values.profession === "Autre profession" ? values.otherProfession : values.profession,
+          job_title_other: values.profession === "Autre profession" ? values.otherProfession : ""
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -259,14 +282,38 @@ function ProfileView({ token }) {
     }
   }
 
-  function set(key, val) { setValues((prev) => ({ ...prev, [key]: val })); }
+  function set(key, val) {
+    setValues((prev) => {
+      const next = { ...prev, [key]: val };
+
+      if (key === "regions") {
+        next.profession = "";
+        next.otherProfession = "";
+        if (next.sector !== "Autre secteur") {
+          next.sector = "";
+        }
+      }
+
+      if (key === "profession") {
+        if (val !== "Autre profession") {
+          next.otherProfession = "";
+        }
+        const derivedSector = findSectorForProfession(next.regions, val);
+        if (derivedSector) {
+          next.sector = derivedSector;
+        }
+      }
+
+      return next;
+    });
+  }
 
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mon profil</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Modifier mon profil</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Ces informations alimentent directement le moteur de matching. Un secteur et une région renseignés suffisent pour être détecté par les employeurs belges.</p>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Ces informations alimentent directement le moteur de matching. Un secteur et une ou plusieurs régions renseignés suffisent pour être détecté par les employeurs belges.</p>
       </section>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -282,31 +329,18 @@ function ProfileView({ token }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(matching)</span></span>
               <select className="field-input" value={values.sector || ""} onChange={(e) => set("sector", e.target.value)}>
                 <option value="" disabled>Sélectionnez un secteur</option>
-                <option>Construction et travaux publics</option>
-                <option>Santé et action sociale</option>
-                <option>Transport et logistique</option>
-                <option>Industrie et maintenance</option>
-                <option>Technologies et informatique</option>
-                <option>Éducation et formation</option>
-                <option>Autre</option>
+                {sectorOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
             </label>
             <label>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée * <span className="text-[#57B7AF]">(mise en relation)</span></span>
-              <select
-                className="field-input"
-                value={values.region || ""}
-                onChange={(e) => {
-                  set("region", e.target.value);
-                  set("job_title", ""); // reset métier quand région change
-                }}
-              >
-                <option value="" disabled>Sélectionnez une région</option>
-                <option>Bruxelles-Capitale</option>
-                <option>Wallonie</option>
-                <option>Flandre</option>
-                <option>Toute la Belgique</option>
-              </select>
+              <RegionSelector
+                value={values.regions || []}
+                onChange={(nextRegions) => set("regions", nextRegions)}
+                helperText="Sélectionnez une, deux ou trois régions selon votre mobilité."
+              />
             </label>
 
             {/* ── Métier en pénurie — dynamique selon la région ── */}
@@ -314,30 +348,47 @@ function ProfileView({ token }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">
                 Métier en pénurie * <span className="text-[#57B7AF]">(mise en relation)</span>
               </span>
-              {values.region && values.region !== "Toute la Belgique" ? (
+              {(values.regions || []).length ? (
                 <select
                   className="field-input"
-                  value={values.job_title || ""}
-                  onChange={(e) => set("job_title", e.target.value)}
+                  value={values.profession || ""}
+                  onChange={(e) => set("profession", e.target.value)}
                 >
                   <option value="" disabled>Sélectionnez votre métier</option>
-                  {(professionOptionsByRegion[values.region] || []).map((prof) => (
-                    <option key={prof} value={prof}>{prof}</option>
+                  {getProfessionGroupsForRegions(values.regions).map((group) => (
+                    <optgroup key={group.label} label={group.label}>
+                      {group.options.map((profession) => (
+                        <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               ) : (
                 <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
-                  {values.region === "Toute la Belgique"
-                    ? "Choisissez une région précise pour voir les métiers disponibles"
-                    : "Sélectionnez d'abord une région pour voir les métiers en pénurie"}
+                  Sélectionnez au moins une région pour voir les métiers en pénurie
                 </div>
               )}
-              {values.region && values.region !== "Toute la Belgique" && (
+              {(values.regions || []).length > 0 && (
                 <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
-                  Liste officielle des métiers en pénurie pour {values.region} — mise à jour 2026
+                  {(values.regions || []).length === 1
+                    ? `Liste officielle des métiers en pénurie pour ${values.regions[0]} — mise à jour 2026`
+                    : "Liste consolidée des métiers en pénurie 2026 pour les régions sélectionnées"}
                 </p>
               )}
             </label>
+
+            {values.profession === "Autre profession" ? (
+              <label className="md:col-span-2">
+                <span className="mb-2 block text-sm font-semibold text-[#17345d]">Autre profession / précision</span>
+                <input
+                  className="field-input"
+                  value={values.otherProfession || ""}
+                  onChange={(e) => set("otherProfession", e.target.value)}
+                  placeholder="Précisez l'intitulé exact du métier recherché"
+                />
+              </label>
+            ) : null}
+
             <label>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Expérience</span>
               <select className="field-input" value={values.experience || ""} onChange={(e) => set("experience", e.target.value)}>
@@ -410,7 +461,8 @@ function SubmitCandidacyForm({ token }) {
   const [values, setValues] = useState({
     name: "",
     title: "",
-    region: "",
+    otherProfession: "",
+    regions: [],
     sector: "",
     experience: "",
     email: "",
@@ -418,7 +470,33 @@ function SubmitCandidacyForm({ token }) {
   });
 
   function set(key, value) {
-    setValues((prev) => ({ ...prev, [key]: value }));
+    setValues((prev) => {
+      const next = { ...prev, [key]: value };
+
+      if (key === "regions") {
+        next.title = "";
+        next.otherProfession = "";
+        if (next.sector !== "Autre secteur") {
+          next.sector = "";
+        }
+      }
+
+      if (key === "title") {
+        if (value !== "Autre profession") {
+          next.otherProfession = "";
+        }
+        const derivedSector = findSectorForProfession(next.regions, value);
+        if (derivedSector) {
+          next.sector = derivedSector;
+        }
+      }
+
+      if (key === "otherProfession") {
+        next.title = value;
+      }
+
+      return next;
+    });
   }
 
   async function handleSubmit(e) {
@@ -432,11 +510,11 @@ function SubmitCandidacyForm({ token }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           formType: "candidacy",
-          title: `Nouvelle candidature : ${values.title || "Sans titre"}`,
+          title: `Nouvelle candidature : ${(values.title === "Autre profession" ? values.otherProfession : values.title) || "Sans titre"}`,
           fields: [
             { label: "Nom complet", value: values.name },
-            { label: "Titre recherché", value: values.title },
-            { label: "Région souhaitée", value: values.region },
+            { label: "Titre recherché", value: values.title === "Autre profession" ? values.otherProfession : values.title },
+            { label: "Région souhaitée", value: stringifyRegionSelection(values.regions, "Toute la Belgique") },
             { label: "Secteur", value: values.sector },
             { label: "Expérience", value: values.experience },
             { label: "Email", value: values.email },
@@ -448,7 +526,7 @@ function SubmitCandidacyForm({ token }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
 
-      setValues({ name: "", title: "", region: "", sector: "", experience: "", email: "", description: "" });
+      setValues({ name: "", title: "", otherProfession: "", regions: [], sector: "", experience: "", email: "", description: "" });
       setOpen(false);
       setSuccess(true);
     } catch (err) {
@@ -507,35 +585,58 @@ function SubmitCandidacyForm({ token }) {
           <input className="field-input" type="email" placeholder="votre.email@example.com" required value={values.email} onChange={(e) => set("email", e.target.value)} />
         </label>
 
-        <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Titre / Poste recherché *</span>
-          <input className="field-input" type="text" placeholder="Ex : Soudeur, Infirmier, Chauffeur SPL…" required value={values.title} onChange={(e) => set("title", e.target.value)} />
-        </label>
-
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée</span>
-          <select className="field-input" value={values.region} onChange={(e) => set("region", e.target.value)}>
-            <option value="" disabled>Sélectionnez une région</option>
-            <option>Bruxelles-Capitale</option>
-            <option>Wallonie</option>
-            <option>Flandre</option>
-            <option>Toute la Belgique</option>
-          </select>
+          <RegionSelector
+            value={values.regions || []}
+            onChange={(nextRegions) => set("regions", nextRegions)}
+            helperText="Sélectionnez une ou plusieurs régions pour élargir votre recherche."
+          />
         </label>
 
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur</span>
           <select className="field-input" value={values.sector} onChange={(e) => set("sector", e.target.value)}>
             <option value="" disabled>Sélectionnez un secteur</option>
-            <option>Construction et travaux publics</option>
-            <option>Santé et action sociale</option>
-            <option>Transport et logistique</option>
-            <option>Industrie et maintenance</option>
-            <option>Technologies et informatique</option>
-            <option>Éducation et formation</option>
-            <option>Autre</option>
+            {sectorOptions.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
+
+        <label className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Métier recherché</span>
+          {(values.regions || []).length ? (
+            <select className="field-input" value={values.title} onChange={(e) => set("title", e.target.value)}>
+              <option value="" disabled>Sélectionnez votre métier</option>
+              {getProfessionGroupsForRegions(values.regions).map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.options.map((profession) => (
+                    <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          ) : (
+            <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
+              Sélectionnez au moins une région pour choisir un métier
+            </div>
+          )}
+          {(values.regions || []).length ? (
+            <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
+              {(values.regions || []).length === 1
+                ? `Liste officielle des métiers en pénurie pour ${values.regions[0]} — mise à jour 2026`
+                : "Liste consolidée des métiers en pénurie 2026 pour les régions sélectionnées"}
+            </p>
+          ) : null}
+        </label>
+
+        {values.title === "Autre profession" ? (
+          <label className="md:col-span-2">
+            <span className="mb-2 block text-sm font-semibold text-[#17345d]">Autre profession / précision</span>
+            <input className="field-input" type="text" placeholder="Précisez l'intitulé exact du poste recherché" value={values.otherProfession} onChange={(e) => set("otherProfession", e.target.value)} />
+          </label>
+        ) : null}
 
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Expérience</span>
