@@ -105,36 +105,41 @@ export default function HistoireFondatricePage() {
                             alt="Maître Candice Debruyne"
                             fill
                             priority
-                            className="object-cover"
+                            className="object-cover object-[50%_22%] scale-[1.04]"
                             sizes="(min-width: 1024px) 420px, 100vw"
                           />
                         </div>
-                        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(to_top,rgba(8,20,52,0.88),rgba(8,20,52,0.12))] px-5 pb-5 pt-10">
-                          <p className="text-2xl font-semibold tracking-tight text-white">Maître Candice Debruyne</p>
-                          <p className="mt-2 text-sm leading-7 text-white/76">
+                        <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(8,20,52,0.34),transparent)]" />
+                        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(to_top,rgba(5,15,40,0.96)_0%,rgba(5,15,40,0.86)_42%,rgba(5,15,40,0.18)_100%)] px-5 pb-5 pt-14">
+                          <div className="rounded-[22px] border border-white/10 bg-[rgba(6,16,42,0.56)] px-4 py-4 backdrop-blur-md">
+                            <p className="text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-white">
+                              Maître Candice Debruyne
+                            </p>
+                            <p className="mt-2 text-sm leading-7 text-white/88">
                             Avocate en immigration économique
                             <br />
                             Fondatrice de LEXPAT Connect
-                          </p>
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 space-y-4 rounded-[26px] border border-white/12 bg-[#ffffff]/10 p-5 text-sm leading-7 text-white/82">
-                    <div className="flex items-center justify-between gap-4 rounded-[20px] border border-white/10 bg-white/6 px-4 py-3">
+                  <div className="mt-8 space-y-4 rounded-[26px] border border-white/12 bg-[rgba(255,255,255,0.11)] p-5 text-sm leading-7 text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                    <div className="flex items-center justify-between gap-4 rounded-[20px] border border-white/12 bg-[rgba(255,255,255,0.06)] px-4 py-3">
                       <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a9ece7]">
                         Signature
                       </span>
-                      <span className="text-xs font-medium text-white/70">
+                      <span className="text-xs font-medium text-white/82">
                         Immigration économique · Belgique
                       </span>
                     </div>
-                    <p>
+                    <p className="text-[15px] leading-8 text-white/92">
                       Une approche née du terrain : écouter les employeurs, comprendre les blocages concrets et rendre enfin visibles les talents internationaux capables d’y répondre.
                     </p>
-                    <div className="rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.03)_100%)] px-4 py-4">
-                      <p className="text-base font-semibold tracking-[-0.02em] text-white">
+                    <div className="rounded-[20px] border border-white/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.04)_100%)] px-4 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.12)]">
+                      <p className="text-[1.05rem] font-semibold tracking-[-0.02em] leading-8 text-white">
                         Recruter plus juste. Sécuriser au bon moment. Donner une vraie place à la confiance.
                       </p>
                     </div>
