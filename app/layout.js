@@ -117,23 +117,23 @@ export default function RootLayout({ children }) {
         <AuthProvider>
         <div className="shell">
           <header className="sticky top-0 z-40 border-b border-[#edf1f5] bg-white/92 backdrop-blur-xl">
-            <div className="container-shell py-5">
-              <div className="flex items-center justify-between gap-4">
-                <Link href="/" className="flex items-center gap-3">
-                  <span className="relative inline-flex h-14 w-14 overflow-hidden rounded-[18px] border border-[#d9e9f1] bg-white shadow-[0_10px_24px_rgba(17,39,87,0.08)]">
+            <div className="container-shell flex min-h-[72px] items-center lg:min-h-[88px]">
+              <div className="flex w-full items-center justify-between gap-4">
+                <Link href="/" className="flex items-center gap-3 lg:gap-4">
+                  <span className="relative inline-flex h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white shadow-[0_10px_24px_rgba(17,39,87,0.08)] lg:h-[72px] lg:w-[72px]">
                     <Image
                       src="/logo-lexpat-connect.png"
                       alt="Logo LEXPAT Connect"
                       fill
-                      className="object-cover"
-                      sizes="56px"
+                      className="object-cover p-[5px]"
+                      sizes="(min-width: 1024px) 72px, 56px"
                     />
                   </span>
                   <span className="leading-tight">
-                    <span className="block text-base font-extrabold tracking-[0.12em] text-[#1E3A78]">
+                    <span className="font-heading block text-[20px] font-bold tracking-[0.08em] text-[#1E3A78] lg:text-[24px]">
                       LEXPAT
                     </span>
-                    <span className="block text-[0.78rem] font-normal tracking-[0.04em] text-[#6d7b8d]">
+                    <span className="block text-[15px] font-normal tracking-[0.03em] text-[#6d7b8d] lg:text-[18px]">
                       Connect
                     </span>
                   </span>

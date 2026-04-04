@@ -57,10 +57,12 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
-  { city: "Bruxelles", left: "27%", top: "50%" },
-  { city: "Anvers",    left: "25%", top: "38%" },
-  { city: "Liège",     left: "37%", top: "53%" },
-  { city: "Mons",      left: "20%", top: "57%" },
+  { city: "Bruxelles",        left: "27%", top: "50%" },
+  { city: "Anvers",           left: "25%", top: "40%" },
+  { city: "Liège",            left: "36%", top: "53%" },
+  { city: "Mons",             left: "20%", top: "57%" },
+  { city: "Malines",         left: "27%", top: "45%" },
+  { city: "Gand",             left: "20%", top: "47%" },
 ];
 
 export function HeroPremium({ primaryHref, secondaryHref }) {
@@ -94,15 +96,15 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
             </div>
           ))}
 
-          {/* Texte ancré en haut à gauche */}
-          <div className="relative z-10 flex h-full items-start">
-            <div className="w-full max-w-xl px-10 pt-10 xl:px-14 xl:pt-12">
+          {/* Texte — badge en haut, titre+CTAs en bas */}
+          <div className="relative z-10 flex h-full">
+            <div className="flex h-full w-full max-w-[520px] flex-col justify-between px-10 py-10 xl:px-14 xl:py-12">
               <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} />
             </div>
           </div>
 
-          {/* Badge en bas à droite */}
-          <div className="absolute bottom-5 right-8 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+          {/* Badge en bas à droite — remonté pour être visible dès le chargement */}
+          <div className="absolute bottom-[14%] right-8 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
             Belgique · Hub international
           </div>
         </div>
@@ -147,42 +149,46 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
   );
 }
 
-/* Contenu desktop — compact pour tenir dans la fenêtre au chargement */
+/* Contenu desktop — badge en haut, titre majestueux + CTAs en bas */
 function HeroContentDesktop({ primaryHref, secondaryHref }) {
   return (
-    <div>
-      <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.14] bg-white/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#9dd4d0] backdrop-blur-sm">
+    <>
+      {/* Badge ancré en haut */}
+      <div className="inline-flex items-center gap-2 self-start rounded-full border border-white/[0.14] bg-white/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#9dd4d0] backdrop-blur-sm">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
         Belgique · Métiers en pénurie · Recrutement international
       </div>
 
-      <h1 className="font-heading mt-5 text-[clamp(1.9rem,2.8vw,3rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
-        Employeurs belges.<br />
-        <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
-        Recrutement ciblé.
-      </h1>
+      {/* Titre + description + CTAs ancrés en bas */}
+      <div>
+        <h1 className="font-heading text-[clamp(2.4rem,3.8vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
+          Employeurs belges.<br />
+          <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
+          Recrutement ciblé.
+        </h1>
 
-      <p className="mt-4 text-[0.95rem] leading-relaxed text-white/[0.62]">
-        La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
-      </p>
+        <p className="mt-5 text-[1rem] leading-relaxed text-white/[0.62]">
+          La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
+        </p>
 
-      <div className="mt-6 flex gap-3">
-        <Link
-          href={primaryHref}
-          className="inline-flex h-12 items-center justify-center rounded-xl px-7 text-sm font-bold text-white shadow-[0_12px_32px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5"
-          style={{ background: EMPLOYER.primary }}
-        >
-          Je recrute
-        </Link>
-        <Link
-          href={secondaryHref}
-          className="inline-flex h-12 items-center justify-center rounded-xl px-7 text-sm font-bold text-white shadow-[0_12px_32px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5"
-          style={{ background: TALENT.primary }}
-        >
-          Je postule
-        </Link>
+        <div className="mt-7 flex gap-3">
+          <Link
+            href={primaryHref}
+            className="inline-flex h-13 items-center justify-center rounded-xl px-8 text-[0.95rem] font-bold text-white shadow-[0_14px_36px_rgba(23,58,138,0.42)] transition duration-200 hover:-translate-y-0.5"
+            style={{ background: EMPLOYER.primary }}
+          >
+            Je recrute
+          </Link>
+          <Link
+            href={secondaryHref}
+            className="inline-flex h-13 items-center justify-center rounded-xl px-8 text-[0.95rem] font-bold text-white shadow-[0_14px_36px_rgba(89,185,177,0.36)] transition duration-200 hover:-translate-y-0.5"
+            style={{ background: TALENT.primary }}
+          >
+            Je postule
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
