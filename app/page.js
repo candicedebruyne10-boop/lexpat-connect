@@ -2,7 +2,6 @@ import {
   HeroPremium,
   DualEntry,
   ShortageJobsQuickLink,
-  SecurityComplianceTeaser,
   HowItWorksPremium,
   JobSectors,
   LexpatStrip,
@@ -28,8 +27,6 @@ export default function HomePage() {
       <DualEntry />
 
       <ShortageJobsQuickLink />
-
-      <SecurityComplianceTeaser />
 
       {/* Section 3 — Comment ça marche : 3 étapes, zéro jargon */}
       <HowItWorksPremium />
