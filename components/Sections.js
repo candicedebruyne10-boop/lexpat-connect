@@ -57,13 +57,40 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
-  { city: "Bruxelles",        left: "27%", top: "50%" },
-  { city: "Anvers",           left: "25%", top: "40%" },
-  { city: "Liège",            left: "36%", top: "53%" },
-  { city: "Mons",             left: "20%", top: "57%" },
-  { city: "Malines",         left: "27%", top: "45%" },
-  { city: "Gand",             left: "20%", top: "47%" },
+  { city: "Bruxelles", left: "27%", top: "50%", hub: true  },
+  { city: "Anvers",    left: "25%", top: "40%", hub: false },
+  { city: "Liège",     left: "36%", top: "53%", hub: false },
+  { city: "Mons",      left: "20%", top: "57%", hub: false },
+  { city: "Malines",   left: "27%", top: "45%", hub: false },
+  { city: "Gand",      left: "20%", top: "47%", hub: false },
 ];
+
+function CityDot({ left, top, hub }) {
+  return (
+    <div className="pointer-events-none absolute" style={{ left, top }}>
+      {hub ? (
+        /* Bruxelles — hub principal, halo renforcé */
+        <>
+          {/* Halo externe lent */}
+          <div className="absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/10 [animation-duration:3s]" />
+          {/* Anneau principal */}
+          <div className="absolute h-12 w-12 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25 [animation-duration:2s]" />
+          {/* Halo flou */}
+          <div className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/35 blur-[6px]" />
+          {/* Point central */}
+          <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_16px_6px_rgba(89,185,177,0.80)]" />
+        </>
+      ) : (
+        /* Villes secondaires — discret et élégant */
+        <>
+          <div className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/18 [animation-duration:2.5s]" />
+          <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/25 blur-[3px]" />
+          <div className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.55)]" />
+        </>
+      )}
+    </div>
+  );
+}
 
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
@@ -88,12 +115,8 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.20),transparent_70%)]" />
 
           {/* Points lumineux sur chaque ville */}
-          {CITY_DOTS.map(({ city, left, top }) => (
-            <div key={city} className="pointer-events-none absolute" style={{ left, top }}>
-              <div className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/20" />
-              <div className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/25 blur-sm" />
-              <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_10px_4px_rgba(89,185,177,0.70)]" />
-            </div>
+          {CITY_DOTS.map((dot) => (
+            <CityDot key={dot.city} {...dot} />
           ))}
 
           {/* Texte — badge en haut, titre+CTAs en bas */}
@@ -171,18 +194,18 @@ function HeroContentDesktop({ primaryHref, secondaryHref }) {
           La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
         </p>
 
-        <div className="mt-7 flex gap-3">
+        <div className="mt-7 flex gap-4">
           <Link
             href={primaryHref}
-            className="inline-flex h-13 items-center justify-center rounded-xl px-8 text-[0.95rem] font-bold text-white shadow-[0_14px_36px_rgba(23,58,138,0.42)] transition duration-200 hover:-translate-y-0.5"
-            style={{ background: EMPLOYER.primary }}
+            className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+            style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
           >
             Je recrute
           </Link>
           <Link
             href={secondaryHref}
-            className="inline-flex h-13 items-center justify-center rounded-xl px-8 text-[0.95rem] font-bold text-white shadow-[0_14px_36px_rgba(89,185,177,0.36)] transition duration-200 hover:-translate-y-0.5"
-            style={{ background: TALENT.primary }}
+            className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+            style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
           >
             Je postule
           </Link>
@@ -211,18 +234,18 @@ function HeroContent({ primaryHref, secondaryHref }) {
         La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
       </p>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-8 flex flex-col gap-4 sm:flex-row">
         <Link
           href={primaryHref}
-          className="inline-flex h-14 items-center justify-center rounded-2xl px-8 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5"
-          style={{ background: EMPLOYER.primary }}
+          className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+          style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
         >
           Je recrute
         </Link>
         <Link
           href={secondaryHref}
-          className="inline-flex h-14 items-center justify-center rounded-2xl px-8 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5"
-          style={{ background: TALENT.primary }}
+          className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+          style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
         >
           Je postule
         </Link>
