@@ -21,7 +21,9 @@ const navigation = [
   { href: '/employeurs', label: 'Employeurs' },
   { href: '/travailleurs', label: 'Talents' },
   { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
-  { href: '/permis-unique', label: 'Permis unique' }
+  { href: '/permis-unique', label: 'Permis unique' },
+  { href: '/offres-d-emploi', label: "Offres d'emploi" },
+  { href: '/candidatures', label: 'Candidatures' }
 ];
 
 const legalLinks = [
