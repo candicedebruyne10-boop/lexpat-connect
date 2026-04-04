@@ -57,12 +57,12 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
-  { city: "Bruxelles", left: "27%", top: "50%", hub: true  },
-  { city: "Anvers",    left: "25%", top: "40%", hub: false },
-  { city: "Liège",     left: "36%", top: "53%", hub: false },
-  { city: "Mons",      left: "20%", top: "57%", hub: false },
-  { city: "Malines",   left: "27%", top: "45%", hub: false },
-  { city: "Gand",      left: "20%", top: "47%", hub: false },
+  { city: "Bruxelles", left: "59%", top: "52%", hub: true  },
+  { city: "Anvers",    left: "58%", top: "34%", hub: false },
+  { city: "Liège",     left: "71%", top: "55%", hub: false },
+  { city: "Mons",      left: "52%", top: "66%", hub: false },
+  { city: "Malines",   left: "57%", top: "43%", hub: false },
+  { city: "Gand",      left: "49%", top: "46%", hub: false },
 ];
 
 function CityDot({ left, top, hub }) {
