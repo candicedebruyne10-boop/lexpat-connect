@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Manrope } from 'next/font/google';
 import { AuthProvider } from '../components/AuthProvider';
 import NavAuth, { NavAuthMobile } from '../components/NavAuth';
+import NavDropdown from '../components/NavDropdown';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -25,6 +26,17 @@ const navigation = [
   { href: '/offres-d-emploi', label: "Offres d'emploi" },
   { href: '/candidatures', label: 'Candidatures' }
 ];
+
+// Sous-menus par href d'onglet
+const navDropdowns = {
+  '/permis-unique': [
+    {
+      href: '/travailleurs-hautement-qualifies',
+      label: 'Travailleurs hautement qualifiés',
+      description: 'Seuils de salaire, Carte Bleue, procédure'
+    }
+  ]
+};
 
 const legalLinks = [
   { href: '/mentions-legales', label: 'Mentions légales' },
@@ -63,11 +75,20 @@ export default function RootLayout({ children }) {
 
                 <div className="hidden items-center gap-3 lg:flex">
                   <nav className="flex items-center gap-5 text-[13px] font-medium text-[#607086]">
-                    {navigation.map((item) => (
-                      <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1d3b8b]">
-                        {item.label}
-                      </Link>
-                    ))}
+                    {navigation.map((item) =>
+                      navDropdowns[item.href] ? (
+                        <NavDropdown
+                          key={item.href}
+                          href={item.href}
+                          label={item.label}
+                          items={navDropdowns[item.href]}
+                        />
+                      ) : (
+                        <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1d3b8b]">
+                          {item.label}
+                        </Link>
+                      )
+                    )}
                   </nav>
                   <div className="mx-1 h-5 w-px bg-[#e3eaf1]" />
                   {/* Boutons auth intelligents — connecté ou non */}
@@ -86,16 +107,26 @@ export default function RootLayout({ children }) {
                 </div>
               </div>
 
-              <nav className="mt-4 flex gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#cde2df] hover:text-[#57b7af]"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+              <nav className="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
+                {navigation.map((item) =>
+                  navDropdowns[item.href] ? (
+                    <NavDropdown
+                      key={item.href}
+                      href={item.href}
+                      label={item.label}
+                      items={navDropdowns[item.href]}
+                      mobile
+                    />
+                  ) : (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#cde2df] hover:text-[#57b7af]"
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                )}
               </nav>
             </div>
           </header>
