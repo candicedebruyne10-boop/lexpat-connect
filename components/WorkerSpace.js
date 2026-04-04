@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { useAuth } from "./AuthProvider";
+import { professionOptionsByRegion } from "../lib/professions";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
@@ -277,10 +278,6 @@ function ProfileView({ token }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Nom complet</span>
               <input className="field-input" value={values.full_name || ""} onChange={(e) => set("full_name", e.target.value)} placeholder="Prénom Nom" />
             </label>
-            <label className="md:col-span-2">
-              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Titre / Poste recherché *</span>
-              <input className="field-input" value={values.job_title || ""} onChange={(e) => set("job_title", e.target.value)} placeholder="Ex : Soudeur, Infirmier, Chauffeur SPL…" />
-            </label>
             <label>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(matching)</span></span>
               <select className="field-input" value={values.sector || ""} onChange={(e) => set("sector", e.target.value)}>
@@ -295,14 +292,51 @@ function ProfileView({ token }) {
               </select>
             </label>
             <label>
-              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée * <span className="text-[#57b7af]">(matching)</span></span>
-              <select className="field-input" value={values.region || ""} onChange={(e) => set("region", e.target.value)}>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région souhaitée * <span className="text-[#57B7AF]">(mise en relation)</span></span>
+              <select
+                className="field-input"
+                value={values.region || ""}
+                onChange={(e) => {
+                  set("region", e.target.value);
+                  set("job_title", ""); // reset métier quand région change
+                }}
+              >
                 <option value="" disabled>Sélectionnez une région</option>
                 <option>Bruxelles-Capitale</option>
                 <option>Wallonie</option>
                 <option>Flandre</option>
                 <option>Toute la Belgique</option>
               </select>
+            </label>
+
+            {/* ── Métier en pénurie — dynamique selon la région ── */}
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">
+                Métier en pénurie * <span className="text-[#57B7AF]">(mise en relation)</span>
+              </span>
+              {values.region && values.region !== "Toute la Belgique" ? (
+                <select
+                  className="field-input"
+                  value={values.job_title || ""}
+                  onChange={(e) => set("job_title", e.target.value)}
+                >
+                  <option value="" disabled>Sélectionnez votre métier</option>
+                  {(professionOptionsByRegion[values.region] || []).map((prof) => (
+                    <option key={prof} value={prof}>{prof}</option>
+                  ))}
+                </select>
+              ) : (
+                <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
+                  {values.region === "Toute la Belgique"
+                    ? "Choisissez une région précise pour voir les métiers disponibles"
+                    : "Sélectionnez d'abord une région pour voir les métiers en pénurie"}
+                </div>
+              )}
+              {values.region && values.region !== "Toute la Belgique" && (
+                <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
+                  Liste officielle des métiers en pénurie pour {values.region} — mise à jour 2026
+                </p>
+              )}
             </label>
             <label>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">Expérience</span>
