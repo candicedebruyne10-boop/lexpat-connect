@@ -220,7 +220,7 @@ function WorkerMatchesView({ token }) {
                 </span>
               </div>
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
-                Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span>
+                Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.
               </div>
             </article>
           ))}
