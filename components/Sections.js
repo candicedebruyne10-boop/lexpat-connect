@@ -67,10 +67,9 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
     <section className="relative overflow-hidden bg-[#060c26]">
 
-      {/* ══ DESKTOP : carte plein écran, texte par-dessus ══ */}
+      {/* ══ DESKTOP : carte pleine fenêtre, texte en haut à gauche ══ */}
       <div className="hidden lg:block">
-        <div className="relative mx-6 my-6 overflow-hidden rounded-[32px] min-h-[82vh] border border-[#59B9B1]/15 shadow-[0_0_60px_rgba(89,185,177,0.12)]">
-          {/* Image carte — pleine largeur */}
+        <div className="relative mx-5 mb-5 mt-4 overflow-hidden rounded-[28px] border border-[#59B9B1]/15 shadow-[0_0_60px_rgba(89,185,177,0.12)]" style={{ height: 'calc(100vh - 96px)' }}>
           <Image
             src="/hero-world-map_2.png"
             alt="Carte Belgique — connexions internationales"
@@ -80,15 +79,11 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
             className="object-cover object-[22%_45%]"
             sizes="100vw"
           />
-
-          {/* Voile sombre sur la gauche pour lisibilité du texte */}
-          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.96)_0%,rgba(6,12,38,0.85)_30%,rgba(6,12,38,0.50)_55%,rgba(6,12,38,0.10)_80%,transparent_100%)]" />
-          {/* Fondu haut et bas */}
-          <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.70),transparent)]" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(to_top,rgba(6,12,38,0.70),transparent)]" />
-
-          {/* Éclat teal sur la Belgique */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.22),transparent_70%)]" />
+          {/* Voile sombre à gauche */}
+          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.97)_0%,rgba(6,12,38,0.90)_28%,rgba(6,12,38,0.55)_52%,rgba(6,12,38,0.08)_78%,transparent_100%)]" />
+          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.65),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.65),transparent)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.20),transparent_70%)]" />
 
           {/* Points lumineux sur chaque ville */}
           {CITY_DOTS.map(({ city, left, top }) => (
@@ -99,10 +94,10 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
             </div>
           ))}
 
-          {/* Texte par-dessus, calé à gauche */}
-          <div className="relative z-10 flex h-full min-h-[82vh] items-center">
-            <div className="container-shell w-full max-w-2xl py-20">
-              <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
+          {/* Texte ancré en haut à gauche */}
+          <div className="relative z-10 flex h-full items-start">
+            <div className="w-full max-w-xl px-10 pt-10 xl:px-14 xl:pt-12">
+              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} />
             </div>
           </div>
 
@@ -152,42 +147,80 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
   );
 }
 
-/* Contenu textuel partagé mobile / desktop */
-function HeroContent({ primaryHref, secondaryHref }) {
+/* Contenu desktop — compact pour tenir dans la fenêtre au chargement */
+function HeroContentDesktop({ primaryHref, secondaryHref }) {
   return (
-    <div className="max-w-2xl xl:max-w-[52rem]">
-      <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
+    <div>
+      <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.14] bg-white/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#9dd4d0] backdrop-blur-sm">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
         Belgique · Métiers en pénurie · Recrutement international
       </div>
 
-      <h1 className="font-heading mt-8 text-[clamp(2.4rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
+      <h1 className="font-heading mt-5 text-[clamp(1.9rem,2.8vw,3rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
         Employeurs belges.<br />
         <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
         Recrutement ciblé.
       </h1>
 
-      <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
+      <p className="mt-4 text-[0.95rem] leading-relaxed text-white/[0.62]">
         La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
       </p>
 
-      <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+      <div className="mt-6 flex gap-3">
         <Link
           href={primaryHref}
-          className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(23,58,138,0.48)]"
+          className="inline-flex h-12 items-center justify-center rounded-xl px-7 text-sm font-bold text-white shadow-[0_12px_32px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5"
           style={{ background: EMPLOYER.primary }}
         >
           Je recrute
         </Link>
         <Link
           href={secondaryHref}
-          className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(89,185,177,0.42)]"
+          className="inline-flex h-12 items-center justify-center rounded-xl px-7 text-sm font-bold text-white shadow-[0_12px_32px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5"
           style={{ background: TALENT.primary }}
         >
           Je postule
         </Link>
       </div>
+    </div>
+  );
+}
 
+/* Contenu mobile */
+function HeroContent({ primaryHref, secondaryHref }) {
+  return (
+    <div className="max-w-2xl">
+      <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
+        Belgique · Métiers en pénurie · Recrutement international
+      </div>
+
+      <h1 className="font-heading mt-8 text-[clamp(2.2rem,7vw,3.4rem)] font-bold leading-[1.04] tracking-[-0.04em] text-white">
+        Employeurs belges.<br />
+        <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
+        Recrutement ciblé.
+      </h1>
+
+      <p className="mt-5 text-base leading-relaxed text-white/[0.62]">
+        La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
+      </p>
+
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Link
+          href={primaryHref}
+          className="inline-flex h-14 items-center justify-center rounded-2xl px-8 text-base font-bold text-white shadow-[0_18px_48px_rgba(23,58,138,0.38)] transition duration-200 hover:-translate-y-0.5"
+          style={{ background: EMPLOYER.primary }}
+        >
+          Je recrute
+        </Link>
+        <Link
+          href={secondaryHref}
+          className="inline-flex h-14 items-center justify-center rounded-2xl px-8 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5"
+          style={{ background: TALENT.primary }}
+        >
+          Je postule
+        </Link>
+      </div>
     </div>
   );
 }
