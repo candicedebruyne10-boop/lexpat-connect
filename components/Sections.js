@@ -222,7 +222,7 @@ export function DualEntry() {
             return (
               <article
                 key={card.title}
-                className="rounded-[32px] border bg-white p-8 shadow-[0_18px_52px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)] sm:p-10"
+                className="flex flex-col rounded-[32px] border bg-white p-8 shadow-[0_18px_52px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)] sm:p-10"
                 style={{
                   background: `linear-gradient(180deg, #ffffff 0%, ${card.colors.soft} 100%)`,
                   borderColor: card.colors.border
@@ -250,7 +250,7 @@ export function DualEntry() {
                 <p className="mt-4 max-w-xl text-sm leading-7 text-[#607086]">
                   {card.text}
                 </p>
-                <div className="mt-8">
+                <div className="mt-auto pt-8">
                   <Link
                     href={card.href}
                     className="inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
