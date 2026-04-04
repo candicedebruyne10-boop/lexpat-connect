@@ -19,18 +19,18 @@ export async function GET(request) {
 
     if (error) throw error;
 
-    const profiles = (data || []).map((p) => ({
-      id: p.id,
-      fullName:    p.full_name   || "Nom non renseigné",
-      jobTitle:    p.job_title   || "Poste non renseigné",
-      sector:      p.sector      || "Non renseigné",
-      region:      normalizeRegion(p.region),
-      experience:  p.experience  || "Non renseignée",
-      languages:   Array.isArray(p.languages)
-                     ? p.languages.join(", ")
-                     : (p.languages || "Non renseignées"),
-      status:      p.profile_visibility,
-      updatedAt:   p.updated_at,
+    // Profils anonymisés : aucune donnée identifiante n'est exposée.
+    // L'objectif est d'inciter les employeurs à déposer une offre pour être mis en relation.
+    const profiles = (data || []).map((p, i) => ({
+      id:         p.id,
+      index:      i + 1,
+      sector:     p.sector     || "Non renseigné",
+      region:     normalizeRegion(p.region),
+      experience: p.experience || "Non renseignée",
+      languages:  Array.isArray(p.languages)
+                    ? p.languages.join(", ")
+                    : (p.languages || "Non renseignées"),
+      updatedAt:  p.updated_at,
     }));
 
     return NextResponse.json({
