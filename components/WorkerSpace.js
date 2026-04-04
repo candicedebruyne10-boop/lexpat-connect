@@ -173,6 +173,7 @@ function DashboardView({ token, onNavigate }) {
 function WorkerMatchesView({ token }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [acting, setActing] = useState(null);
 
   useEffect(() => {
     if (!token) return;
@@ -181,6 +182,27 @@ function WorkerMatchesView({ token }) {
       .then((d) => { setMatches(d.matches || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [token]);
+
+  // Travailleur clique "Je suis intéressé"
+  // new → reviewed | interested (employeur déjà intéressé) → contacted (match confirmé)
+  const handleInterest = async (matchId, currentStatus) => {
+    setActing(matchId);
+    const nextStatus = currentStatus === "interested" ? "contacted" : "reviewed";
+    try {
+      const res = await fetch("/api/matches", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ matchId, status: nextStatus }),
+      });
+      if (res.ok) {
+        setMatches((prev) =>
+          prev.map((m) => m.id === matchId ? { ...m, status: nextStatus } : m)
+        );
+      }
+    } finally {
+      setActing(null);
+    }
+  };
 
   const scoreColor = (score) => {
     if (score >= 80) return "bg-[#eef9f1] text-[#2f9d57]";
@@ -221,6 +243,52 @@ function WorkerMatchesView({ token }) {
               </div>
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
                 Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.
+              </div>
+
+              {/* ── Bouton d'intérêt travailleur ── */}
+              <div className="mt-4">
+                {match.status === "contacted" ? (
+                  /* Match confirmé des deux côtés */
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 rounded-[16px] bg-[#eef9f1] px-4 py-2.5 text-sm font-semibold text-[#2f9d57]">
+                      <span>✓</span> Match confirmé — les coordonnées employeur sont débloquées
+                    </div>
+                    <a
+                      href="/messagerie"
+                      className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2]"
+                    >
+                      Ouvrir la messagerie →
+                    </a>
+                  </div>
+                ) : match.status === "interested" ? (
+                  /* L'employeur a déjà manifesté son intérêt */
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded-[16px] border border-[#1E3A78]/20 bg-[#eef1fb] px-4 py-2.5 text-xs text-[#33566b]">
+                      ✦ Cet employeur est intéressé par votre profil
+                    </div>
+                    <button
+                      onClick={() => handleInterest(match.id, match.status)}
+                      disabled={acting === match.id}
+                      className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2] disabled:opacity-60"
+                    >
+                      {acting === match.id ? "…" : "Confirmer mon intérêt → Match confirmé"}
+                    </button>
+                  </div>
+                ) : match.status === "reviewed" ? (
+                  /* Travailleur a déjà cliqué, en attente de l'employeur */
+                  <div className="rounded-[16px] border border-[#a8d9d4] bg-[#eaf4f3] px-4 py-2.5 text-xs text-[#5f7086]">
+                    En attente de la réponse de l'employeur…
+                  </div>
+                ) : (
+                  /* Statut new / par défaut */
+                  <button
+                    onClick={() => handleInterest(match.id, match.status)}
+                    disabled={acting === match.id}
+                    className="flex w-full items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2] disabled:opacity-60"
+                  >
+                    {acting === match.id ? "…" : "Je suis intéressé(e) →"}
+                  </button>
+                )}
               </div>
             </article>
           ))}
