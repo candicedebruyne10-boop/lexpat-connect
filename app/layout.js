@@ -30,6 +30,7 @@ const navigation = [
   { href: '/employeurs',   label: 'Employeurs',   color: 'blue'  },
   { href: '/travailleurs', label: 'Travailleurs',  color: 'teal'  },
   { href: '/permis-unique', label: 'Immigration',  color: 'slate' },
+  { href: '/messagerie',   label: 'Messagerie',   color: 'blue'  },
   { href: '/accompagnement-juridique', label: 'Cabinet LEXPAT' },
 ];
 

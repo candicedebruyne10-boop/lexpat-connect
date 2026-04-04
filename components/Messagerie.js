@@ -1,0 +1,1431 @@
+"use client";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LEXPAT Connect — Module Messagerie MVP
+   Architecture : double-intérêt → chat, inspiré Tinder / LinkedIn Recruiter
+   Supabase-ready : toutes les structures suivent le schéma SQL défini.
+   AI-ready      : hooks / events prévus pour résumé, suggestions, scoring.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Palette ────────────────────────────────────────────────────────────── */
+const C = {
+  dark:    "#1E3A78",
+  mid:     "#204E97",
+  light:   "#eef1fb",
+  border:  "#c5d4f3",
+  teal:    "#57B7AF",
+  tealSoft:"#eaf4f3",
+  red:     "#B5121B",
+  ink:     "#222222",
+  muted:   "#607086",
+  line:    "#e3eaf1",
+  surface: "#f8fafb",
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOCK DATA — Supabase-ready schema
+   Tables : conversations, messages, conversation_actions
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Status workflow */
+const STATUS = {
+  MATCH_CONFIRMED:    "match_confirmed",
+  FIRST_MSG_SENT:     "first_message_sent",
+  DISCUSSION_ACTIVE:  "discussion_active",
+  INTERVIEW_REQUESTED:"interview_requested",
+  LEGAL_REVIEW:       "legal_review_needed",
+  CLOSED:             "closed",
+};
+
+const STATUS_LABEL = {
+  match_confirmed:     { label: "Match confirmé",      color: C.teal,  bg: C.tealSoft },
+  first_message_sent:  { label: "Premier contact",     color: C.mid,   bg: C.light    },
+  discussion_active:   { label: "En discussion",       color: C.dark,  bg: C.light    },
+  interview_requested: { label: "Entretien demandé",   color: "#7c3aed", bg: "#f5f3ff" },
+  legal_review_needed: { label: "Permis requis",       color: C.red,   bg: "#fff0f0"  },
+  closed:              { label: "Clôturé",             color: C.muted, bg: "#f1f5f9"  },
+};
+
+/* mock_conversations — table: conversations */
+const MOCK_CONVERSATIONS = [
+  {
+    id: "conv_001",
+    match_id: "match_001",
+    employer_id: "emp_001",
+    worker_id: "wrk_001",
+    status: STATUS.DISCUSSION_ACTIVE,
+    unread: 2,
+    created_at: "2025-03-10T09:00:00Z",
+    // denormalized for UI
+    employer: {
+      id: "emp_001",
+      name: "Groep Maes",
+      logo: null,
+      initials: "GM",
+      color: C.dark,
+    },
+    worker: {
+      id: "wrk_001",
+      name: "Idriss Benali",
+      avatar: null,
+      initials: "IB",
+      color: C.teal,
+    },
+    job_title: "Conducteur d'engins",
+    region: "Flandre-Orientale",
+    compatibility_score: 94,
+    last_message: "Merci, je suis disponible sous 30 jours et mobile en Flandre.",
+    last_message_at: "2025-03-12T14:32:00Z",
+    last_sender: "worker",
+    actions: {
+      legal_review_needed: false,
+      interview_requested: false,
+      archived: false,
+    },
+  },
+  {
+    id: "conv_002",
+    match_id: "match_002",
+    employer_id: "emp_002",
+    worker_id: "wrk_002",
+    status: STATUS.INTERVIEW_REQUESTED,
+    unread: 0,
+    created_at: "2025-03-08T10:00:00Z",
+    employer: {
+      id: "emp_002",
+      name: "AZ Sint-Lucas",
+      logo: null,
+      initials: "AZ",
+      color: "#1a6b5c",
+    },
+    worker: {
+      id: "wrk_002",
+      name: "Amara Diallo",
+      avatar: null,
+      initials: "AD",
+      color: C.teal,
+    },
+    job_title: "Infirmière praticienne",
+    region: "Bruxelles-Capitale",
+    compatibility_score: 88,
+    last_message: "Nous aimerions vous rencontrer la semaine prochaine si possible.",
+    last_message_at: "2025-03-11T16:45:00Z",
+    last_sender: "employer",
+    actions: {
+      legal_review_needed: false,
+      interview_requested: true,
+      archived: false,
+    },
+  },
+  {
+    id: "conv_003",
+    match_id: "match_003",
+    employer_id: "emp_003",
+    worker_id: "wrk_003",
+    status: STATUS.LEGAL_REVIEW,
+    unread: 1,
+    created_at: "2025-03-05T08:30:00Z",
+    employer: {
+      id: "emp_003",
+      name: "UCB Pharma",
+      logo: null,
+      initials: "UC",
+      color: "#7c3aed",
+    },
+    worker: {
+      id: "wrk_003",
+      name: "Leila Mansouri",
+      avatar: null,
+      initials: "LM",
+      color: C.teal,
+    },
+    job_title: "Spécialiste Biotech",
+    region: "Liège",
+    compatibility_score: 91,
+    last_message: "Votre profil est excellent. Quelle est votre situation administrative actuelle ?",
+    last_message_at: "2025-03-10T11:20:00Z",
+    last_sender: "employer",
+    actions: {
+      legal_review_needed: true,
+      interview_requested: false,
+      archived: false,
+    },
+  },
+  {
+    id: "conv_004",
+    match_id: "match_004",
+    employer_id: "emp_004",
+    worker_id: "wrk_004",
+    status: STATUS.FIRST_MSG_SENT,
+    unread: 0,
+    created_at: "2025-03-13T07:00:00Z",
+    employer: {
+      id: "emp_004",
+      name: "Engie Belgium",
+      logo: null,
+      initials: "EN",
+      color: "#0e6cb6",
+    },
+    worker: {
+      id: "wrk_004",
+      name: "Mohamed Traoré",
+      avatar: null,
+      initials: "MT",
+      color: C.teal,
+    },
+    job_title: "Technicien électrique",
+    region: "Gand",
+    compatibility_score: 86,
+    last_message: "Bonjour, votre profil nous intéresse pour le poste de Technicien électrique.",
+    last_message_at: "2025-03-13T09:15:00Z",
+    last_sender: "employer",
+    actions: {
+      legal_review_needed: false,
+      interview_requested: false,
+      archived: false,
+    },
+  },
+  {
+    id: "conv_005",
+    match_id: "match_005",
+    employer_id: "emp_005",
+    worker_id: "wrk_005",
+    status: STATUS.MATCH_CONFIRMED,
+    unread: 0,
+    created_at: "2025-03-14T13:00:00Z",
+    employer: {
+      id: "emp_005",
+      name: "VIB Research",
+      logo: null,
+      initials: "VR",
+      color: "#0a4f3f",
+    },
+    worker: {
+      id: "wrk_005",
+      name: "Femi Okonkwo",
+      avatar: null,
+      initials: "FO",
+      color: C.teal,
+    },
+    job_title: "Data Scientist",
+    region: "Anvers",
+    compatibility_score: 97,
+    last_message: "",
+    last_message_at: "2025-03-14T13:00:00Z",
+    last_sender: null,
+    actions: {
+      legal_review_needed: false,
+      interview_requested: false,
+      archived: false,
+    },
+  },
+];
+
+/* mock_messages — table: messages */
+const MOCK_MESSAGES = {
+  conv_001: [
+    {
+      id: "msg_001_01",
+      conversation_id: "conv_001",
+      sender_type: "employer",
+      sender_id: "emp_001",
+      content: "Bonjour Idriss, votre profil nous intéresse pour le poste de Conducteur d'engins. Vous semblez avoir exactement l'expérience que nous recherchons.",
+      read: true,
+      created_at: "2025-03-10T09:15:00Z",
+    },
+    {
+      id: "msg_001_02",
+      conversation_id: "conv_001",
+      sender_type: "worker",
+      sender_id: "wrk_001",
+      content: "Bonjour, merci pour votre message. Je suis effectivement spécialisé dans la conduite d'engins de terrassement et de levage. Pouvez-vous me donner plus de détails sur le poste ?",
+      read: true,
+      created_at: "2025-03-10T11:02:00Z",
+    },
+    {
+      id: "msg_001_03",
+      conversation_id: "conv_001",
+      sender_type: "employer",
+      sender_id: "emp_001",
+      content: "Bien sûr ! Il s'agit d'un chantier de construction résidentielle à Gand, démarrage prévu début avril. Le contrat est en CDI avec une période d'essai de 3 mois. Le salaire est conforme à la CP 124.",
+      read: true,
+      created_at: "2025-03-11T08:30:00Z",
+    },
+    {
+      id: "msg_001_04",
+      conversation_id: "conv_001",
+      sender_type: "worker",
+      sender_id: "wrk_001",
+      content: "Merci, je suis disponible sous 30 jours et mobile en Flandre.",
+      read: false,
+      created_at: "2025-03-12T14:32:00Z",
+    },
+  ],
+  conv_002: [
+    {
+      id: "msg_002_01",
+      conversation_id: "conv_002",
+      sender_type: "employer",
+      sender_id: "emp_002",
+      content: "Bonjour Amara, nous avons consulté votre profil avec attention. Votre expérience en soins intensifs correspond exactement à nos besoins au service cardiologie.",
+      read: true,
+      created_at: "2025-03-08T10:20:00Z",
+    },
+    {
+      id: "msg_002_02",
+      conversation_id: "conv_002",
+      sender_type: "worker",
+      sender_id: "wrk_002",
+      content: "Merci pour votre intérêt. Je suis diplômée infirmière depuis 6 ans, dont 4 en cardiologie. Je serais ravie d'en savoir plus sur le poste.",
+      read: true,
+      created_at: "2025-03-08T14:45:00Z",
+    },
+    {
+      id: "msg_002_03",
+      conversation_id: "conv_002",
+      sender_type: "employer",
+      sender_id: "emp_002",
+      content: "Parfait. Nous proposons un poste à temps plein en soins intensifs cardiologiques, avec une équipe de 12 infirmiers. Les horaires sont en 3×8. Êtes-vous disponible pour un entretien ?",
+      read: true,
+      created_at: "2025-03-10T09:00:00Z",
+    },
+    {
+      id: "msg_002_04",
+      conversation_id: "conv_002",
+      sender_type: "worker",
+      sender_id: "wrk_002",
+      content: "Oui, je suis disponible en semaine à partir de 14h. Quel est le processus de recrutement ?",
+      read: true,
+      created_at: "2025-03-10T16:10:00Z",
+    },
+    {
+      id: "msg_002_05",
+      conversation_id: "conv_002",
+      sender_type: "employer",
+      sender_id: "emp_002",
+      content: "Nous aimerions vous rencontrer la semaine prochaine si possible.",
+      read: true,
+      created_at: "2025-03-11T16:45:00Z",
+    },
+  ],
+  conv_003: [
+    {
+      id: "msg_003_01",
+      conversation_id: "conv_003",
+      sender_type: "employer",
+      sender_id: "emp_003",
+      content: "Bonjour Leila, votre expertise en biotechnologies moléculaires correspond parfaitement à notre pipeline R&D. Nous développons actuellement un projet en phase 2.",
+      read: true,
+      created_at: "2025-03-05T09:00:00Z",
+    },
+    {
+      id: "msg_003_02",
+      conversation_id: "conv_003",
+      sender_type: "worker",
+      sender_id: "wrk_003",
+      content: "Bonjour, c'est très intéressant ! J'ai 7 ans d'expérience en biotechnologie et j'ai participé à 3 études cliniques de phase 2. Le poste est basé sur quel site ?",
+      read: true,
+      created_at: "2025-03-05T14:20:00Z",
+    },
+    {
+      id: "msg_003_03",
+      conversation_id: "conv_003",
+      sender_type: "employer",
+      sender_id: "emp_003",
+      content: "Notre site principal est à Liège, avec possibilité de télétravail partiel. Votre profil est excellent. Quelle est votre situation administrative actuelle ?",
+      read: false,
+      created_at: "2025-03-10T11:20:00Z",
+    },
+  ],
+  conv_004: [
+    {
+      id: "msg_004_01",
+      conversation_id: "conv_004",
+      sender_type: "employer",
+      sender_id: "emp_004",
+      content: "Bonjour, votre profil nous intéresse pour le poste de Technicien électrique. Vos certifications AREI correspondent à nos exigences de sécurité.",
+      read: true,
+      created_at: "2025-03-13T09:15:00Z",
+    },
+  ],
+  conv_005: [],
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function formatTime(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return d.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+  if (days === 1) return "Hier";
+  if (days < 7) return d.toLocaleDateString("fr-BE", { weekday: "short" });
+  return d.toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit" });
+}
+
+function formatTimestamp(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+}
+
+function Avatar({ initials, color, size = 40 }) {
+  return (
+    <div
+      className="flex shrink-0 items-center justify-center rounded-full font-heading font-bold text-white"
+      style={{
+        width: size,
+        height: size,
+        background: color,
+        fontSize: size * 0.35,
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ICONS
+   ══════════════════════════════════════════════════════════════════════════ */
+function IconSearch() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="8.5" cy="8.5" r="5.5" />
+      <path d="M13 13l3.5 3.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconSend() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="2">
+      <path d="M22 2L11 13" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22 2L15 22l-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconPaperclip() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="1.8">
+      <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconCheck() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5" stroke="currentColor" strokeWidth="2">
+      <path d="M3 8l4 4 6-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconCheckDouble() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5" stroke="currentColor" strokeWidth="2">
+      <path d="M2 10l4 4 6-7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7 10l4 4 6-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconBriefcase() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <path d="M8 7V5.5A1.5 1.5 0 019.5 4h5A1.5 1.5 0 0116 5.5V7" strokeLinecap="round" />
+      <rect x="4" y="8" width="16" height="11" rx="1.5" />
+      <path d="M4 12h16" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconScale() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 3v18M3 6l4.5 9H3m-1-9h9m9 0l-4.5 9h4.5M15 6h9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconMapPin() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" strokeLinecap="round" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  );
+}
+function IconStar() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+function IconSparkle() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 3v2M12 19v2M3 12H5M19 12h2M5.64 5.64l1.41 1.41M16.95 16.95l1.41 1.41M5.64 18.36l1.41-1.41M16.95 7.05l1.41-1.41M12 8a4 4 0 100 8 4 4 0 000-8z" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconX() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="2">
+      <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconCalendar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconArrowRight() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="2">
+      <path d="M4 10h12M11 6l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PANEL GAUCHE — ConversationList
+   ══════════════════════════════════════════════════════════════════════════ */
+function ConversationList({ conversations, activeId, onSelect }) {
+  const [search, setSearch] = useState("");
+
+  const filtered = conversations.filter((c) => {
+    const q = search.toLowerCase();
+    return (
+      c.worker.name.toLowerCase().includes(q) ||
+      c.employer.name.toLowerCase().includes(q) ||
+      c.job_title.toLowerCase().includes(q)
+    );
+  });
+
+  return (
+    <aside
+      className="flex h-full w-[300px] shrink-0 flex-col border-r"
+      style={{ borderColor: C.line, background: "#fff" }}
+    >
+      {/* Header */}
+      <div className="border-b px-4 py-4" style={{ borderColor: C.line }}>
+        <h2
+          className="font-heading text-[15px] font-bold tracking-tight"
+          style={{ color: C.dark }}
+        >
+          Messagerie
+        </h2>
+        <p className="mt-0.5 text-xs" style={{ color: C.muted }}>
+          {conversations.filter((c) => c.unread > 0).length} message(s) non lu(s)
+        </p>
+        {/* Search */}
+        <div
+          className="mt-3 flex items-center gap-2 rounded-xl px-3 py-2"
+          style={{ background: C.surface, border: `1.5px solid ${C.line}` }}
+        >
+          <span style={{ color: C.muted }}>
+            <IconSearch />
+          </span>
+          <input
+            type="text"
+            placeholder="Rechercher…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-transparent text-[13px] outline-none"
+            style={{ color: C.ink, fontFamily: "var(--font-open-sans)" }}
+          />
+        </div>
+      </div>
+
+      {/* List */}
+      <div className="flex-1 overflow-y-auto">
+        {filtered.length === 0 && (
+          <div className="px-4 py-8 text-center text-sm" style={{ color: C.muted }}>
+            Aucune conversation trouvée
+          </div>
+        )}
+        {filtered.map((conv) => (
+          <ConversationItem
+            key={conv.id}
+            conv={conv}
+            active={conv.id === activeId}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    </aside>
+  );
+}
+
+function ConversationItem({ conv, active, onSelect }) {
+  const statusInfo = STATUS_LABEL[conv.status] || STATUS_LABEL.match_confirmed;
+
+  return (
+    <button
+      onClick={() => onSelect(conv.id)}
+      className="w-full text-left transition-colors duration-150"
+      style={{
+        background: active ? C.light : "transparent",
+        borderLeft: active ? `3px solid ${C.dark}` : "3px solid transparent",
+      }}
+    >
+      <div className="flex items-start gap-3 px-4 py-3.5">
+        {/* Avatars stacked */}
+        <div className="relative shrink-0" style={{ width: 44, height: 44 }}>
+          <Avatar initials={conv.employer.initials} color={conv.employer.color} size={36} />
+          <div className="absolute -bottom-1 -right-1">
+            <Avatar initials={conv.worker.initials} color={conv.worker.color} size={24} />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-1">
+            <div className="min-w-0">
+              <p
+                className="truncate font-heading text-[13px] font-semibold leading-tight"
+                style={{ color: C.dark }}
+              >
+                {conv.employer.name}
+              </p>
+              <p className="truncate text-[11px]" style={{ color: C.muted }}>
+                {conv.worker.name} · {conv.job_title}
+              </p>
+            </div>
+            <span className="shrink-0 text-[10px]" style={{ color: C.muted }}>
+              {formatTime(conv.last_message_at)}
+            </span>
+          </div>
+
+          {/* Last message */}
+          <p
+            className="mt-1 line-clamp-1 text-[12px]"
+            style={{
+              color: conv.unread > 0 ? C.ink : C.muted,
+              fontWeight: conv.unread > 0 ? 600 : 400,
+            }}
+          >
+            {conv.last_message || "Match confirmé — démarrez la conversation"}
+          </p>
+
+          {/* Footer: status + unread badge */}
+          <div className="mt-1.5 flex items-center justify-between">
+            <span
+              className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+              style={{
+                color: statusInfo.color,
+                background: statusInfo.bg,
+              }}
+            >
+              {statusInfo.label}
+            </span>
+            {conv.unread > 0 && (
+              <span
+                className="flex h-4.5 w-4.5 min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
+                style={{ background: C.dark, minWidth: 18, height: 18 }}
+              >
+                {conv.unread}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ZONE CENTRALE — ChatWindow
+   ══════════════════════════════════════════════════════════════════════════ */
+function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview }) {
+  const [input, setInput] = useState("");
+  const bottomRef = useRef(null);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    onSendMessage(trimmed);
+    setInput("");
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  if (!conversation) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center" style={{ background: C.surface }}>
+        <div
+          className="flex h-16 w-16 items-center justify-center rounded-2xl"
+          style={{ background: C.light }}
+        >
+          <span style={{ color: C.dark, fontSize: 32 }}>💬</span>
+        </div>
+        <p className="mt-4 font-heading text-base font-semibold" style={{ color: C.dark }}>
+          Sélectionnez une conversation
+        </p>
+        <p className="mt-1 text-sm" style={{ color: C.muted }}>
+          Vos échanges apparaîtront ici
+        </p>
+      </div>
+    );
+  }
+
+  const isNewMatch = conversation.status === STATUS.MATCH_CONFIRMED && messages.length === 0;
+
+  return (
+    <div className="flex flex-1 flex-col overflow-hidden" style={{ background: C.surface }}>
+      {/* Chat header */}
+      <div
+        className="flex shrink-0 items-center gap-3 border-b px-6 py-4"
+        style={{ background: "#fff", borderColor: C.line }}
+      >
+        <div className="relative" style={{ width: 48, height: 40 }}>
+          <Avatar initials={conversation.employer.initials} color={conversation.employer.color} size={40} />
+          <div className="absolute -bottom-1 -right-1">
+            <Avatar initials={conversation.worker.initials} color={conversation.worker.color} size={26} />
+          </div>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-heading text-[15px] font-bold leading-tight" style={{ color: C.dark }}>
+            {conversation.employer.name} × {conversation.worker.name}
+          </p>
+          <p className="text-[12px]" style={{ color: C.muted }}>
+            {conversation.job_title} · {conversation.region}
+          </p>
+        </div>
+        {/* Score badge */}
+        <div
+          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ background: C.tealSoft, color: C.teal }}
+        >
+          <IconStar />
+          <span className="font-heading text-[13px] font-bold">
+            {conversation.compatibility_score}%
+          </span>
+        </div>
+      </div>
+
+      {/* New match banner */}
+      {isNewMatch && (
+        <div
+          className="mx-4 mt-4 flex shrink-0 items-center gap-3 rounded-2xl px-4 py-3"
+          style={{ background: C.light, border: `1.5px solid ${C.border}` }}
+        >
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+            style={{ background: C.dark }}
+          >
+            <span className="text-base text-white">✦</span>
+          </div>
+          <div>
+            <p className="font-heading text-[13px] font-bold" style={{ color: C.dark }}>
+              Match confirmé !
+            </p>
+            <p className="text-[12px]" style={{ color: C.muted }}>
+              Les deux parties ont exprimé leur intérêt. Démarrez la conversation.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+        {messages.length === 0 && !isNewMatch && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-sm" style={{ color: C.muted }}>
+              Aucun message pour l'instant
+            </p>
+          </div>
+        )}
+
+        {/* AI Summary Hook — prévu pour résumé automatique */}
+        {messages.length >= 3 && (
+          <AISummaryBar conversation={conversation} messages={messages} />
+        )}
+
+        <div className="flex flex-col gap-3">
+          {messages.map((msg) => (
+            <MessageBubble key={msg.id} msg={msg} conversation={conversation} />
+          ))}
+        </div>
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input area */}
+      <div
+        className="shrink-0 border-t px-4 py-3"
+        style={{ background: "#fff", borderColor: C.line }}
+      >
+        {/* AI suggestion hook — espace pour suggestions IA futures */}
+        <AISuggestionHook conversation={conversation} onSelect={setInput} />
+
+        <div
+          className="flex items-end gap-2 rounded-2xl px-4 py-3"
+          style={{ border: `1.5px solid ${C.border}`, background: "#fff" }}
+        >
+          {/* Paperclip — disabled, prévu pour pièces jointes */}
+          <button
+            disabled
+            title="Pièces jointes (bientôt disponible)"
+            className="mb-0.5 shrink-0 opacity-30"
+            style={{ color: C.muted, cursor: "not-allowed" }}
+          >
+            <IconPaperclip />
+          </button>
+
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Écrivez votre message… (Entrée pour envoyer)"
+            rows={1}
+            className="flex-1 resize-none bg-transparent text-[14px] leading-relaxed outline-none"
+            style={{
+              color: C.ink,
+              fontFamily: "var(--font-open-sans)",
+              maxHeight: 120,
+              overflowY: "auto",
+            }}
+          />
+
+          <button
+            onClick={handleSend}
+            disabled={!input.trim()}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-150"
+            style={{
+              background: input.trim() ? C.dark : C.line,
+              color: input.trim() ? "#fff" : C.muted,
+            }}
+          >
+            <IconSend />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MessageBubble({ msg, conversation }) {
+  const isEmployer = msg.sender_type === "employer";
+
+  return (
+    <div className={`flex items-end gap-2 ${isEmployer ? "flex-row-reverse" : "flex-row"}`}>
+      <Avatar
+        initials={isEmployer ? conversation.employer.initials : conversation.worker.initials}
+        color={isEmployer ? conversation.employer.color : conversation.worker.color}
+        size={28}
+      />
+      <div
+        className={`flex max-w-[68%] flex-col ${isEmployer ? "items-end" : "items-start"}`}
+      >
+        <div
+          className="rounded-2xl px-4 py-2.5 text-[14px] leading-relaxed"
+          style={
+            isEmployer
+              ? { background: C.dark, color: "#fff", borderBottomRightRadius: 4 }
+              : { background: "#fff", color: C.ink, border: `1px solid ${C.line}`, borderBottomLeftRadius: 4 }
+          }
+        >
+          {msg.content}
+        </div>
+        <div
+          className="mt-1 flex items-center gap-1 px-1 text-[10px]"
+          style={{ color: C.muted }}
+        >
+          <span>{formatTimestamp(msg.created_at)}</span>
+          {isEmployer && (
+            <span style={{ color: msg.read ? C.teal : C.muted }}>
+              {msg.read ? <IconCheckDouble /> : <IconCheck />}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── AI Hooks (UI stubs — ready for backend) ──────────────────────────── */
+
+/**
+ * AI_HOOK: conversation_summary
+ * Trigger: messages.length >= 3
+ * Future: POST /api/ai/summarize { messages } → { summary, key_points, permit_flag }
+ */
+function AISummaryBar({ conversation, messages }) {
+  const [open, setOpen] = useState(false);
+  // AI_EVENT: permit_detection — scan messages for permit keywords
+  const hasPermitKeywords = messages.some((m) =>
+    /permis|titre de séjour|autorisation|visa|document/i.test(m.content)
+  );
+
+  return (
+    <div
+      className="mb-4 flex shrink-0 items-center justify-between rounded-xl px-4 py-2.5"
+      style={{ background: C.light, border: `1px solid ${C.border}` }}
+    >
+      <div className="flex items-center gap-2">
+        <span style={{ color: C.dark }}>
+          <IconSparkle />
+        </span>
+        <span className="text-[12px] font-semibold" style={{ color: C.dark }}>
+          {hasPermitKeywords
+            ? "⚠️ Besoin de permis détecté dans la conversation"
+            : "Résumé IA disponible"}
+        </span>
+      </div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-[11px] font-bold underline"
+        style={{ color: C.mid }}
+      >
+        {open ? "Masquer" : "Voir"}
+      </button>
+      {open && (
+        <div className="absolute left-0 right-0 top-full z-10 mx-4 mt-1 rounded-xl p-3 text-[12px] shadow-soft"
+          style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted }}>
+          <em>Résumé IA — bientôt disponible (hook prêt pour intégration LLM)</em>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * AI_HOOK: reply_suggestions
+ * Trigger: last message from other party
+ * Future: POST /api/ai/suggest-reply { context, last_message } → string[]
+ */
+function AISuggestionHook({ conversation, onSelect }) {
+  // Static suggestions based on status — à remplacer par appel LLM
+  const suggestions = {
+    [STATUS.FIRST_MSG_SENT]: ["Merci pour votre message, je suis intéressé(e).", "Pouvez-vous m'en dire plus sur le poste ?"],
+    [STATUS.DISCUSSION_ACTIVE]: ["Je suis disponible pour un entretien.", "Quelles sont les prochaines étapes ?"],
+    [STATUS.INTERVIEW_REQUESTED]: ["Mardi ou jeudi me convient.", "Quel format d'entretien prévoyez-vous ?"],
+    [STATUS.LEGAL_REVIEW]: ["J'ai besoin d'un accompagnement pour mon permis de travail.", "Mes documents sont en cours de traitement."],
+  };
+
+  const convSuggestions = suggestions[conversation?.status];
+  if (!convSuggestions) return null;
+
+  return (
+    <div className="mb-2 flex flex-wrap gap-1.5">
+      {convSuggestions.map((s, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect(s)}
+          className="rounded-full border px-3 py-1 text-[11px] font-medium transition-colors hover:bg-opacity-80"
+          style={{
+            borderColor: C.border,
+            color: C.mid,
+            background: C.light,
+          }}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PANNEAU DROIT — ContextPanel
+   ══════════════════════════════════════════════════════════════════════════ */
+function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat }) {
+  if (!conversation) {
+    return (
+      <aside
+        className="flex h-full w-[280px] shrink-0 flex-col border-l"
+        style={{ borderColor: C.line, background: "#fff" }}
+      >
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-sm" style={{ color: C.muted }}>
+            Sélectionnez une conversation
+          </p>
+        </div>
+      </aside>
+    );
+  }
+
+  const statusInfo = STATUS_LABEL[conversation.status];
+  const permitNeeded = conversation.actions.legal_review_needed;
+
+  return (
+    <aside
+      className="flex h-full w-[280px] shrink-0 flex-col overflow-y-auto border-l"
+      style={{ borderColor: C.line, background: "#fff" }}
+    >
+      {/* Fiche poste */}
+      <div className="border-b px-5 py-5" style={{ borderColor: C.line }}>
+        <p
+          className="font-heading text-[11px] font-bold uppercase tracking-widest"
+          style={{ color: C.teal }}
+        >
+          Contexte du match
+        </p>
+
+        <h3 className="mt-2 font-heading text-[16px] font-bold leading-tight" style={{ color: C.dark }}>
+          {conversation.job_title}
+        </h3>
+
+        <div className="mt-3 flex flex-col gap-2">
+          <InfoRow icon={<IconBriefcase />} label="Entreprise" value={conversation.employer.name} />
+          <InfoRow icon={<IconMapPin />} label="Région" value={conversation.region} />
+          <InfoRow
+            icon={<IconStar />}
+            label="Compatibilité"
+            value={
+              <span className="font-bold" style={{ color: C.teal }}>
+                {conversation.compatibility_score}%
+              </span>
+            }
+          />
+        </div>
+      </div>
+
+      {/* Statut discussion */}
+      <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
+        <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
+          Statut
+        </p>
+        <div
+          className="flex items-center gap-2 rounded-xl px-3 py-2"
+          style={{ background: statusInfo.bg }}
+        >
+          <div
+            className="h-2 w-2 rounded-full"
+            style={{ background: statusInfo.color }}
+          />
+          <span className="text-[13px] font-semibold" style={{ color: statusInfo.color }}>
+            {statusInfo.label}
+          </span>
+        </div>
+
+        {/* Status actions */}
+        <div className="mt-3 flex flex-col gap-2">
+          {conversation.status !== STATUS.INTERVIEW_REQUESTED &&
+            conversation.status !== STATUS.CLOSED && (
+              <button
+                onClick={() => onUpdateStatus(conversation.id, STATUS.INTERVIEW_REQUESTED)}
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-semibold transition-colors hover:opacity-90"
+                style={{
+                  background: C.light,
+                  color: C.dark,
+                  border: `1px solid ${C.border}`,
+                }}
+              >
+                <IconCalendar />
+                Proposer un entretien
+              </button>
+            )}
+          {conversation.status === STATUS.INTERVIEW_REQUESTED && (
+            <div
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-semibold"
+              style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}
+            >
+              <IconCheck />
+              Entretien demandé
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Permis unique */}
+      <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
+        <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
+          Permis unique
+        </p>
+        <div
+          className="flex items-center gap-2 rounded-xl px-3 py-2"
+          style={{
+            background: permitNeeded ? "#fff0f0" : C.surface,
+            border: `1px solid ${permitNeeded ? "#fecaca" : C.line}`,
+          }}
+        >
+          <IconScale />
+          <span
+            className="text-[12px] font-semibold"
+            style={{ color: permitNeeded ? C.red : C.muted }}
+          >
+            {permitNeeded ? "⚠️ Vérification requise" : "À évaluer"}
+          </span>
+        </div>
+
+        {!permitNeeded && (
+          <button
+            onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
+            className="mt-2 w-full rounded-xl px-3 py-2 text-[11px] font-semibold transition-colors"
+            style={{
+              background: "#fff0f0",
+              color: C.red,
+              border: `1px solid #fecaca`,
+            }}
+          >
+            Signaler besoin permis
+          </button>
+        )}
+      </div>
+
+      {/* Scoring comportemental hook */}
+      <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
+        <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
+          Scoring
+          <span
+            className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px]"
+            style={{ background: C.light, color: C.mid }}
+          >
+            AI-READY
+          </span>
+        </p>
+        {/* AI_HOOK: behavioral_scoring — POST /api/ai/score-conversation */}
+        <div className="flex flex-col gap-2">
+          <ScoreBar label="Réactivité" value={82} color={C.teal} />
+          <ScoreBar label="Qualité échange" value={91} color={C.mid} />
+          <ScoreBar label="Probabilité closing" value={74} color={C.dark} />
+        </div>
+      </div>
+
+      {/* CTA LEXPAT */}
+      <div className="sticky bottom-0 px-5 py-4" style={{ background: "#fff" }}>
+        <button
+          onClick={() => onRequestLexpat(conversation)}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 font-heading text-[14px] font-bold text-white shadow-blue transition-all duration-150 hover:opacity-90 active:scale-[0.98]"
+          style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
+        >
+          <IconScale />
+          Demander accompagnement LEXPAT
+        </button>
+        <p className="mt-2 text-center text-[10px]" style={{ color: C.muted }}>
+          Cabinet juridique spécialisé en immigration
+        </p>
+      </div>
+    </aside>
+  );
+}
+
+function InfoRow({ icon, label, value }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="mt-0.5 shrink-0" style={{ color: C.muted }}>
+        {icon}
+      </span>
+      <div>
+        <p className="text-[10px] uppercase tracking-wide" style={{ color: C.muted }}>
+          {label}
+        </p>
+        <p className="text-[13px] font-semibold" style={{ color: C.ink }}>
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ScoreBar({ label, value, color }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-[11px]" style={{ color: C.muted }}>
+          {label}
+        </span>
+        <span className="font-heading text-[11px] font-bold" style={{ color }}>
+          {value}%
+        </span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: C.line }}>
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${value}%`, background: color }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODAL — Demander accompagnement LEXPAT
+   ══════════════════════════════════════════════════════════════════════════ */
+function LexpatModal({ conversation, onClose }) {
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ message: "", urgency: "normal" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: POST /api/lexpat/request { conversation_id, message, urgency }
+    setSent(true);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(6,12,38,0.6)", backdropFilter: "blur(4px)" }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className="relative w-full max-w-md overflow-hidden rounded-3xl shadow-[0_32px_80px_rgba(15,23,42,0.28)]"
+        style={{ background: "#fff" }}
+      >
+        {/* Header */}
+        <div
+          className="px-7 py-6"
+          style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
+        >
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-white/60 hover:text-white"
+          >
+            <IconX />
+          </button>
+          <div
+            className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl"
+            style={{ background: "rgba(255,255,255,0.15)" }}
+          >
+            <IconScale />
+          </div>
+          <h3 className="font-heading text-[18px] font-bold text-white">
+            Accompagnement juridique
+          </h3>
+          <p className="mt-1 text-[13px] text-white/70">
+            Cabinet LEXPAT — Experts en droit de l'immigration
+          </p>
+        </div>
+
+        {sent ? (
+          <div className="px-7 py-8 text-center">
+            <div
+              className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl"
+              style={{ background: C.tealSoft }}
+            >
+              <span className="text-2xl">✓</span>
+            </div>
+            <h4 className="font-heading text-[16px] font-bold" style={{ color: C.dark }}>
+              Demande envoyée
+            </h4>
+            <p className="mt-2 text-sm" style={{ color: C.muted }}>
+              Notre équipe juridique vous contactera sous 24h ouvrables.
+            </p>
+            <button
+              onClick={onClose}
+              className="mt-6 w-full rounded-2xl py-3 font-heading text-[14px] font-bold text-white"
+              style={{ background: C.dark }}
+            >
+              Fermer
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="px-7 py-6">
+            {/* Poste concerné */}
+            {conversation && (
+              <div
+                className="mb-4 flex items-center gap-3 rounded-xl px-4 py-3"
+                style={{ background: C.light }}
+              >
+                <IconBriefcase />
+                <div>
+                  <p className="text-[11px]" style={{ color: C.muted }}>
+                    Dossier concerné
+                  </p>
+                  <p className="font-heading text-[13px] font-bold" style={{ color: C.dark }}>
+                    {conversation.job_title} · {conversation.employer.name}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Urgency */}
+            <div className="mb-4">
+              <label className="mb-1.5 block font-heading text-[12px] font-bold uppercase tracking-wide" style={{ color: C.muted }}>
+                Niveau d'urgence
+              </label>
+              <div className="flex gap-2">
+                {[
+                  { v: "normal", l: "Normal" },
+                  { v: "urgent", l: "Urgent" },
+                  { v: "critical", l: "Critique" },
+                ].map(({ v, l }) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, urgency: v }))}
+                    className="flex-1 rounded-xl py-2 text-[12px] font-semibold transition-colors"
+                    style={
+                      form.urgency === v
+                        ? { background: C.dark, color: "#fff" }
+                        : { background: C.light, color: C.muted, border: `1px solid ${C.line}` }
+                    }
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="mb-5">
+              <label className="mb-1.5 block font-heading text-[12px] font-bold uppercase tracking-wide" style={{ color: C.muted }}>
+                Contexte / précisions
+              </label>
+              <textarea
+                rows={3}
+                value={form.message}
+                onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                placeholder="Expliquez la situation (nationalité, poste, région…)"
+                className="w-full resize-none rounded-xl px-4 py-3 text-[13px] outline-none"
+                style={{
+                  border: `1.5px solid ${C.border}`,
+                  color: C.ink,
+                  background: C.surface,
+                  fontFamily: "var(--font-open-sans)",
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-heading text-[14px] font-bold text-white shadow-blue transition-all hover:opacity-90"
+              style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
+            >
+              Envoyer la demande
+              <IconArrowRight />
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ROOT — MessagerieApp
+   ══════════════════════════════════════════════════════════════════════════ */
+export default function MessagerieApp() {
+  const [conversations, setConversations] = useState(MOCK_CONVERSATIONS);
+  const [messages, setMessages] = useState(MOCK_MESSAGES);
+  const [activeId, setActiveId] = useState(MOCK_CONVERSATIONS[0].id);
+  const [lexpatModal, setLexpatModal] = useState(null); // conversation | null
+
+  const activeConversation = conversations.find((c) => c.id === activeId) || null;
+  const activeMessages = activeId ? (messages[activeId] || []) : [];
+
+  /* Mark as read on select */
+  const handleSelect = useCallback((id) => {
+    setActiveId(id);
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c))
+    );
+  }, []);
+
+  /* Send message */
+  const handleSendMessage = useCallback(
+    (content) => {
+      if (!activeId) return;
+
+      const newMsg = {
+        id: `msg_${activeId}_${Date.now()}`,
+        conversation_id: activeId,
+        sender_type: "employer", // current user perspective
+        sender_id: activeConversation?.employer_id,
+        content,
+        read: false,
+        created_at: new Date().toISOString(),
+      };
+
+      setMessages((prev) => ({
+        ...prev,
+        [activeId]: [...(prev[activeId] || []), newMsg],
+      }));
+
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === activeId
+            ? {
+                ...c,
+                last_message: content,
+                last_message_at: newMsg.created_at,
+                last_sender: "employer",
+                status:
+                  c.status === STATUS.MATCH_CONFIRMED
+                    ? STATUS.FIRST_MSG_SENT
+                    : c.status === STATUS.FIRST_MSG_SENT
+                    ? STATUS.DISCUSSION_ACTIVE
+                    : c.status,
+              }
+            : c
+        )
+      );
+
+      // AI_EVENT: on_message_sent — hook pour scoring comportemental
+      // triggerEvent('message_sent', { conversation_id: activeId, content });
+    },
+    [activeId, activeConversation]
+  );
+
+  /* Update status */
+  const handleUpdateStatus = useCallback((convId, newStatus, actionOverrides = {}) => {
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === convId
+          ? {
+              ...c,
+              status: newStatus,
+              actions: { ...c.actions, ...actionOverrides },
+            }
+          : c
+      )
+    );
+  }, []);
+
+  return (
+    <div
+      className="flex overflow-hidden"
+      style={{ height: "calc(100vh - 72px)", background: C.surface }}
+    >
+      {/* Colonne gauche */}
+      <ConversationList
+        conversations={conversations}
+        activeId={activeId}
+        onSelect={handleSelect}
+      />
+
+      {/* Zone centrale */}
+      <ChatWindow
+        conversation={activeConversation}
+        messages={activeMessages}
+        onSendMessage={handleSendMessage}
+        onRequestInterview={() =>
+          handleUpdateStatus(activeId, STATUS.INTERVIEW_REQUESTED, {
+            interview_requested: true,
+          })
+        }
+      />
+
+      {/* Panneau droit */}
+      <ContextPanel
+        conversation={activeConversation}
+        onUpdateStatus={handleUpdateStatus}
+        onRequestLexpat={(conv) => setLexpatModal(conv)}
+      />
+
+      {/* Modal accompagnement */}
+      {lexpatModal && (
+        <LexpatModal
+          conversation={lexpatModal}
+          onClose={() => setLexpatModal(null)}
+        />
+      )}
+    </div>
+  );
+}
