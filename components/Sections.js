@@ -228,22 +228,6 @@ export function DualEntry() {
                   borderColor: card.colors.border
                 }}
               >
-                <div
-                  className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border"
-                  style={{ background: card.colors.soft, borderColor: card.colors.border, color: card.colors.primary }}
-                >
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div
-                  className="mt-5 inline-flex rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
-                  style={{
-                    background: card.colors.soft,
-                    border: `1px solid ${card.colors.border}`,
-                    color: card.colors.primary
-                  }}
-                >
-                  {card.title}
-                </div>
                 <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78] sm:text-[2rem]">
                   {card.title}
                 </h3>
