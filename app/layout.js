@@ -129,9 +129,13 @@ export default function RootLayout({ children }) {
                       sizes="56px"
                     />
                   </span>
-                  <span>
-                    <span className="block text-lg font-extrabold tracking-[0.12em] text-[#1E3A78]">LEXPAT</span>
-                    <span className="block text-sm text-[#6d7b8d]">Connect</span>
+                  <span className="leading-none">
+                    <span className="block text-[2rem] font-black tracking-[0.04em] text-[#1E2F86] sm:text-[2.35rem]">
+                      LEXPAT
+                    </span>
+                    <span className="mt-1 block text-[1.55rem] font-light tracking-[-0.03em] text-[#7CCDC7] sm:text-[1.95rem]">
+                      Connect
+                    </span>
                   </span>
                 </Link>
 
@@ -207,9 +211,9 @@ export default function RootLayout({ children }) {
                     <span className="relative inline-flex h-12 w-12 overflow-hidden rounded-[18px] border border-[#d9e9f1] bg-white shadow-[0_6px_16px_rgba(17,39,87,0.08)]">
                       <Image src="/logo-lexpat-connect.png" alt="Logo LEXPAT Connect" fill className="object-cover" sizes="48px" />
                     </span>
-                    <div>
-                      <p className="text-sm font-extrabold tracking-[0.18em] text-[#1E3A78]">LEXPAT</p>
-                      <p className="text-sm text-[#6d7b8d]">Connect</p>
+                    <div className="leading-none">
+                      <p className="text-xl font-black tracking-[0.06em] text-[#1E2F86]">LEXPAT</p>
+                      <p className="mt-1 text-lg font-light tracking-[-0.02em] text-[#7CCDC7]">Connect</p>
                     </div>
                   </div>
                   <p className="max-w-md text-sm leading-7 text-[#607086]">
