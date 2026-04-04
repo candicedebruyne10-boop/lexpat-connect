@@ -41,8 +41,22 @@ export default function AuthForm({ mode = 'login' }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const next = new URLSearchParams(window.location.search).get('next') || '';
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next') || '';
     setNextPath(next);
+
+    // Messages entrants depuis d'autres pages
+    const msg = params.get('message');
+    const err = params.get('error');
+    if (msg === 'compte_cree') {
+      setMessage('Votre compte a été créé. Connectez-vous maintenant avec vos identifiants.');
+    }
+    if (err === 'lien_invalide') {
+      setError('Ce lien de confirmation a expiré ou est invalide. Connectez-vous directement.');
+    }
+    if (err === 'session_invalide' || err === 'session_manquante') {
+      setError('Session expirée. Veuillez vous reconnecter.');
+    }
   }, []);
 
   function getSafeRedirect(fallback) {
@@ -113,7 +127,9 @@ export default function AuthForm({ mode = 'login' }) {
           return;
         }
 
-        setMessage('Votre compte a été créé ! Un email de confirmation vous a été envoyé. Cliquez sur le lien dans cet email pour accéder à votre espace — pensez à vérifier vos spams.');
+        // Pas de session = email déjà utilisé ou confirmation requise
+        // On redirige vers /connexion avec un message clair
+        router.push('/connexion?message=compte_cree');
         return;
       }
 
