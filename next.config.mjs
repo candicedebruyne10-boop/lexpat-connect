@@ -4,6 +4,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/offres d'emploi",
+        destination: "/offres-d-emploi",
+        permanent: true
+      },
+      {
         source: '/liste-metiers-penurie',
         destination: '/metiers-en-penurie',
         permanent: true
