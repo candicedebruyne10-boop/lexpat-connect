@@ -30,7 +30,8 @@ const legalLinks = [
   { href: '/cookies', label: 'Cookies' },
   { href: '/conditions-utilisation', label: 'Conditions d’utilisation' },
   { href: '/securite-conformite', label: 'Sécurité & conformité' },
-  { href: '/retours-test', label: 'Retours testeurs' }
+  { href: '/retours-test', label: 'Retours testeurs' },
+  { href: '/admin', label: 'Admin' }
 ];
 
 export default function RootLayout({ children }) {
@@ -104,8 +105,8 @@ export default function RootLayout({ children }) {
               <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.9fr]">
                 <div className="space-y-5">
                   <div className="flex items-center gap-3">
-                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#eef7fb_0%,#dff4f1_100%)] text-sm font-bold tracking-[0.24em] text-[#1d3b8b]">
-                      LC
+                    <span className="relative inline-flex h-12 w-12 overflow-hidden rounded-[18px] border border-[#d9e9f1] bg-white shadow-[0_6px_16px_rgba(17,39,87,0.08)]">
+                      <Image src="/logo-lexpat-connect.png" alt="Logo LEXPAT Connect" fill className="object-cover" sizes="48px" />
                     </span>
                     <div>
                       <p className="text-sm font-extrabold tracking-[0.18em] text-[#1d3b8b]">LEXPAT</p>
@@ -152,12 +153,9 @@ export default function RootLayout({ children }) {
                   <p className="mt-4 text-sm leading-7 text-[#607086]">
                     Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement.
                   </p>
-                  <div className="mt-5 flex flex-col gap-3">
+                  <div className="mt-5">
                     <Link href="/accompagnement-juridique" className="secondary-button">
                       Voir l'accompagnement
-                    </Link>
-                    <Link href="/contact" className="ghost-link">
-                      Parler à LEXPAT
                     </Link>
                   </div>
                 </div>
