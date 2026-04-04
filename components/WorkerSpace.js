@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { useAuth } from "./AuthProvider";
 
@@ -615,8 +616,8 @@ export default function WorkerSpace() {
         <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:items-start">
           <aside className="rounded-[32px] border border-[#e4edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-7 xl:sticky xl:top-8">
             <div className="flex items-center gap-4 rounded-[24px] border border-[#edf2f7] bg-[#fbfdff] p-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-[linear-gradient(135deg,#eaf4ff_0%,#d8f1ed_100%)] text-xl font-semibold text-[#1d3b8b]">
-                LC
+              <div className="relative flex h-16 w-16 overflow-hidden rounded-[20px] border border-[#d9e9f1] bg-white shadow-[0_4px_12px_rgba(29,59,139,0.08)]">
+                <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="64px" />
               </div>
               <div>
                 <p className="text-lg font-semibold text-[#17345d]">Profil travailleur</p>
