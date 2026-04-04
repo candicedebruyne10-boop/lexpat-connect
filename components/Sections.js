@@ -421,10 +421,10 @@ export function JobSectors() {
             Métiers en pénurie
           </p>
           <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-            Les profils les plus recherchés actuellement en Belgique
+            Les métiers les plus recherchés en Belgique
           </h2>
           <p className="mx-auto mt-4 text-base leading-7 text-[#607086]">
-            Des fonctions prioritaires pour accélérer les recrutements et donner plus de visibilité aux profils internationaux.
+            Ces fonctions figurent sur les listes officielles régionales et ouvrent la voie à un recrutement international plus simple.
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">

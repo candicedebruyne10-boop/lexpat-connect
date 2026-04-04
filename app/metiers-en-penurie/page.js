@@ -41,9 +41,9 @@ export default function MetiersPage() {
         }
         description="Consultez directement les professions classées par Bruxelles, Wallonie et Flandre. Base LEXPAT Connect mise à jour en continu."
         primaryHref="#liste-regionale"
-        primaryLabel="Voir les profils disponibles"
-        secondaryHref="/employeurs"
-        secondaryLabel="Je recrute"
+        primaryLabel="Consulter les métiers"
+        secondaryHref="/base-de-profils"
+        secondaryLabel="Voir les candidats"
 stats={[
           { value: "3", label: "Régions" },
           { value: "2026", label: "Base active" },

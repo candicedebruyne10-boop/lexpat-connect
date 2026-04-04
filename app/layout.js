@@ -46,7 +46,7 @@ const navDropdowns = {
       },
       {
         href: '/base-de-profils',
-        label: 'Profils disponibles',
+        label: 'Candidats disponibles',
         description: 'Parcourez les candidats internationaux',
         icon: 'search',
       },
@@ -231,7 +231,7 @@ export default function RootLayout({ children }) {
                   <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">Employeurs</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
                     <Link href="/employeurs" className="block transition hover:text-[#1E3A78]">Je recrute</Link>
-                    <Link href="/base-de-profils" className="block transition hover:text-[#1E3A78]">Profils disponibles</Link>
+                    <Link href="/base-de-profils" className="block transition hover:text-[#1E3A78]">Candidats disponibles</Link>
                     <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Métiers en pénurie</Link>
                   </div>
                   <p className="mt-6 font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">Travailleurs</p>
@@ -246,8 +246,7 @@ export default function RootLayout({ children }) {
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
                     <Link href="/employeurs" className="block transition hover:text-[#1E3A78]">Déposer un besoin de recrutement</Link>
                     <Link href="/travailleurs" className="block transition hover:text-[#1E3A78]">Rendre mon profil visible</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Explorer les métiers en pénurie</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Guide métiers en pénurie</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Métiers en pénurie</Link>
                     <Link href="/permis-unique" className="block transition hover:text-[#1E3A78]">Comprendre le permis unique</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1E3A78]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1E3A78]">Créer un compte</Link>
