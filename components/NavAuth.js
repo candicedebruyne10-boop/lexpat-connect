@@ -24,9 +24,9 @@ export default function NavAuth() {
   if (user) {
     const role      = user.user_metadata?.role || 'worker';
     const spacePath = role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace';
+    const spaceLabel = role === 'employer' ? 'Mon espace employeur' : 'Mon espace travailleur';
     const fullName  = user.user_metadata?.full_name || '';
     const parts     = fullName.trim().split(' ').filter(Boolean);
-    const firstName = parts[0] || '';
     const initials  = parts.length >= 2
       ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
       : (parts[0]?.[0] || user.email?.[0] || '?').toUpperCase();
@@ -38,11 +38,10 @@ export default function NavAuth() {
           href={spacePath}
           className="flex items-center gap-2 rounded-2xl border border-[#d9e9f1] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1d3b8b] shadow-[0_4px_12px_rgba(29,59,139,0.08)] transition hover:shadow-[0_6px_18px_rgba(29,59,139,0.13)] hover:-translate-y-px"
         >
-          <span className="relative flex h-7 w-7 shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white">
-            <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="28px" />
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1d3b8b,#57b7af)] text-[11px] font-bold text-white">
+            {initials}
           </span>
-          <span className="max-w-[90px] truncate">{firstName || 'Mon espace'}</span>
-          {firstName && <><span className="text-[#9db5c8]">·</span><span className="whitespace-nowrap text-[#57b7af]">Mon espace</span></>}
+          <span className="whitespace-nowrap">{spaceLabel}</span>
         </Link>
 
         {/* Déconnexion */}
@@ -87,7 +86,6 @@ export function NavAuthMobile() {
     const spacePath = role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace';
     const fullName  = user.user_metadata?.full_name || '';
     const parts     = fullName.trim().split(' ').filter(Boolean);
-    const firstName = parts[0] || '';
     const initials  = parts.length >= 2
       ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
       : (parts[0]?.[0] || user.email?.[0] || '?').toUpperCase();
@@ -98,10 +96,10 @@ export function NavAuthMobile() {
           href={spacePath}
           className="flex items-center gap-2 rounded-2xl border border-[#d9e9f1] bg-white px-3 py-2 text-sm font-semibold text-[#1d3b8b] shadow-sm"
         >
-          <span className="relative flex h-6 w-6 shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white">
-            <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="24px" />
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1d3b8b,#57b7af)] text-[10px] font-bold text-white">
+            {initials}
           </span>
-          <span className="max-w-[80px] truncate">{firstName || 'Espace'}</span>
+          <span className="max-w-[80px] truncate">Espace</span>
         </Link>
         <button
           onClick={handleSignOut}
