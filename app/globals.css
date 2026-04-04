@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════════════════════
+   DESIGN SYSTEM — LEXPAT Connect
+   Palette officielle :
+     Bleu foncé principal  : #1E3A78
+     Bleu moyen secondaire : #204E97
+     Rouge juridique        : #B5121B
+     Gris texte premium     : #222222
+     Turquoise talents      : #57B7AF
+     Blanc                  : #FFFFFF
+   Typographie :
+     Titres / CTAs  → Montserrat (var(--font-montserrat))
+     Corps / légal  → Open Sans  (var(--font-open-sans))
+═══════════════════════════════════════════════════════ */
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -10,14 +24,21 @@
 
   body {
     background: #f8fafb;
-    color: #17345d;
+    color: #222222;
+    font-family: var(--font-open-sans), "Open Sans", ui-sans-serif, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Titres : Montserrat */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-montserrat), "Montserrat", ui-sans-serif, sans-serif;
+    color: #1E3A78;
+  }
+
   ::selection {
     background: #d8f1ed;
-    color: #080f2e;
+    color: #1E3A78;
   }
 
   * {
@@ -39,43 +60,102 @@
     padding-inline: 1rem;
   }
 
-  /* ── Section typography (used by legacy pages) ── */
+  /* ── Typographie sections ── */
+  .section-kicker {
+    display: inline-block;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #57B7AF;
+  }
+
   .section-title {
     max-width: 50rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
     font-size: 2rem;
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.04em;
-    color: #080f2e;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #1E3A78;
   }
 
   .section-copy {
     margin-top: 1rem;
     max-width: 44rem;
+    font-family: var(--font-open-sans), "Open Sans", sans-serif;
     font-size: 1rem;
     line-height: 1.8rem;
-    color: #5f7086;
+    color: #607086;
   }
 
-  /* ── Buttons ── */
+  /* ── Boutons employeurs (bleu) ── */
+  .employer-button {
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: #1E3A78;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    box-shadow: 0 12px 32px rgba(30, 58, 120, 0.26);
+  }
+  .employer-button:hover {
+    background: #163068;
+    box-shadow: 0 16px 40px rgba(30, 58, 120, 0.36);
+    transform: translateY(-1px);
+  }
+
+  /* ── Boutons talents (turquoise) ── */
+  .talent-button {
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: #57B7AF;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    box-shadow: 0 12px 32px rgba(87, 183, 175, 0.26);
+  }
+  .talent-button:hover {
+    background: #4aa9a2;
+    box-shadow: 0 16px 40px rgba(87, 183, 175, 0.36);
+    transform: translateY(-1px);
+  }
+
+  /* ── Alias legacy (compatibilité pages existantes) ── */
   .primary-button {
     display: inline-flex;
     min-height: 3.25rem;
     align-items: center;
     justify-content: center;
     border-radius: 1rem;
-    background: #57b7af;
-    padding: 0.9rem 1.5rem;
+    background: #57B7AF;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
     font-size: 0.95rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #ffffff;
     transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-    box-shadow: 0 16px 36px rgba(87, 183, 175, 0.26);
+    box-shadow: 0 12px 32px rgba(87, 183, 175, 0.26);
   }
-
   .primary-button:hover {
-    background: #4ba8a1;
-    box-shadow: 0 20px 44px rgba(87, 183, 175, 0.36);
+    background: #4aa9a2;
+    box-shadow: 0 16px 40px rgba(87, 183, 175, 0.36);
+    transform: translateY(-1px);
   }
 
   .secondary-button {
@@ -84,52 +164,69 @@
     align-items: center;
     justify-content: center;
     border-radius: 1rem;
-    border: 1px solid #d6dfef;
+    border: 1.5px solid #c5d4f3;
     background: #ffffff;
-    padding: 0.9rem 1.5rem;
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
     font-size: 0.95rem;
-    font-weight: 700;
-    color: #1d3b8b;
-    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    font-weight: 600;
+    color: #1E3A78;
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
   }
-
   .secondary-button:hover {
-    border-color: #a8b8d8;
-    background: #f4f8ff;
-    box-shadow: 0 8px 20px rgba(29, 59, 139, 0.1);
+    border-color: #8aaae0;
+    background: #f4f7ff;
+    box-shadow: 0 8px 20px rgba(30, 58, 120, 0.1);
+    transform: translateY(-1px);
   }
 
   .ghost-link {
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
     font-size: 0.95rem;
-    font-weight: 700;
-    color: #1d3b8b;
+    font-weight: 600;
+    color: #1E3A78;
     transition: color 160ms ease;
   }
-
   .ghost-link:hover {
-    color: #57b7af;
+    color: #57B7AF;
   }
 
   /* ── Form fields ── */
   .field-input {
     width: 100%;
-    border-radius: 1rem;
-    border: 1px solid #dbe5ee;
+    border-radius: 0.875rem;
+    border: 1.5px solid #dbe5ee;
     background: #ffffff;
     padding: 0.9rem 1rem;
+    font-family: var(--font-open-sans), "Open Sans", sans-serif;
     font-size: 0.95rem;
-    color: #17345d;
+    color: #222222;
     outline: none;
     transition: border-color 160ms ease, box-shadow 160ms ease;
   }
-
   .field-input::placeholder {
-    color: #7a899d;
+    color: #8a9bb0;
+  }
+  .field-input:focus {
+    border-color: #57B7AF;
+    box-shadow: 0 0 0 4px rgba(87, 183, 175, 0.12);
   }
 
-  .field-input:focus {
-    border-color: #57b7af;
-    box-shadow: 0 0 0 4px rgba(216, 241, 237, 0.9);
+  /* ── Badge / kicker pill ── */
+  .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    border: 1px solid #c5d4f3;
+    background: #eef1fb;
+    padding: 0.375rem 0.875rem;
+    font-family: var(--font-montserrat), "Montserrat", sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #1E3A78;
   }
 }
 
@@ -138,7 +235,6 @@
     .container-shell {
       padding-inline: 1.5rem;
     }
-
     .section-title {
       font-size: 2.5rem;
     }

@@ -11,20 +11,20 @@ const regionStyles = {
   bruxelles: {
     soft: "bg-[#eef4ff]",
     border: "border-[rgba(23,58,138,0.18)]",
-    text: "text-[#173A8A]",
+    text: "text-[#1E3A78]",
     dot: "bg-[#173A8A]"
   },
   wallonie: {
     soft: "bg-[#ecfaf8]",
     border: "border-[rgba(89,185,177,0.22)]",
-    text: "text-[#2f9f97]",
-    dot: "bg-[#59B9B1]"
+    text: "text-[#57B7AF]",
+    dot: "bg-[#57B7AF]"
   },
   flandre: {
-    soft: "bg-[#f3efff]",
-    border: "border-[rgba(98,84,183,0.18)]",
-    text: "text-[#6254B7]",
-    dot: "bg-[#6254B7]"
+    soft: "bg-[#eef1fb]",
+    border: "border-[rgba(30,58,120,0.18)]",
+    text: "text-[#204E97]",
+    dot: "bg-[#204E97]"
   }
 };
 
@@ -41,9 +41,9 @@ export default function MetiersPage() {
         }
         description="Consultez directement les professions classées par Bruxelles, Wallonie et Flandre. Base LEXPAT Connect mise à jour en continu."
         primaryHref="#liste-regionale"
-        primaryLabel="Voir la liste"
+        primaryLabel="Voir les profils disponibles"
         secondaryHref="/employeurs"
-        secondaryLabel="Parler de mon recrutement"
+        secondaryLabel="Je recrute"
         note="Cette page présente strictement les professions reprises dans votre base régionale LEXPAT Connect, organisée pour une lecture rapide côté employeur."
         stats={[
           { value: "3", label: "Régions" },
@@ -96,7 +96,7 @@ export default function MetiersPage() {
                     <span className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${style.soft} ${style.border} ${style.text}`}>
                       {region.label}
                     </span>
-                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#15306f] md:text-3xl">
+                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#1E3A78] md:text-3xl">
                       {region.label}
                     </h2>
                     <p className="mt-2 max-w-3xl text-sm leading-7 text-[#607089]">{region.intro}</p>
@@ -112,7 +112,7 @@ export default function MetiersPage() {
                       key={`${region.id}-${group.title}`}
                       className={`rounded-[26px] border p-5 ${style.soft} ${style.border}`}
                     >
-                      <h3 className="text-lg font-semibold text-[#173A8A]">{group.title}</h3>
+                      <h3 className="text-lg font-semibold text-[#1E3A78]">{group.title}</h3>
                       <ul className="mt-4 space-y-3">
                         {group.jobs.map((job) => (
                           <li key={job} className="flex items-start gap-3 text-sm leading-6 text-[#334155]">
@@ -135,7 +135,7 @@ export default function MetiersPage() {
         title="Vous voulez vérifier rapidement si votre poste peut s’inscrire dans un recrutement hors UE ?"
         text="LEXPAT Connect vous aide à qualifier le besoin. Le cabinet LEXPAT intervient ensuite sur le juridique si nécessaire."
         primaryHref="/employeurs"
-        primaryLabel="Parler de mon besoin"
+        primaryLabel="Je recrute"
         secondaryHref="/contact"
         secondaryLabel="Poser une question"
       />

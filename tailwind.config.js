@@ -7,42 +7,44 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: "#0f172a",
-        slate: {
-          DEFAULT: "#475569",
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155"
-        },
-        line: "#dbe4f0",
+        /* ── Palette officielle LEXPAT Connect ── */
         brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfd3fb",
-          300: "#95b8f6",
-          600: "#1d4ed8",
-          700: "#1d3b8b",
-          800: "#162d6b",
-          900: "#0f1f4f"
+          dark:   "#1E3A78",   // Bleu foncé principal (employeurs)
+          mid:    "#204E97",   // Bleu moyen secondaire
+          light:  "#eef1fb",   // Fond cards bleu
+          border: "#c5d4f3",   // Bordure bleue
+          /* Aliases legacy (ne pas utiliser dans nouveaux composants) */
+          700:    "#1E3A78",
+          800:    "#162d6b",
+        },
+        talent: {
+          DEFAULT: "#57B7AF",  // Turquoise talents CTA
+          light:   "#eaf4f3",  // Fond turquoise doux
+          border:  "#cde2df",  // Bordure turquoise
+          dark:    "#4aa9a2",  // Hover
         },
         accent: {
-          sand: "#f3efe7",
-          gold: "#b6925b"
-        }
+          red:  "#B5121B",     // Rouge juridique / alertes
+        },
+        ink:    "#222222",     // Gris texte premium
+        muted:  "#607086",     // Texte secondaire
+        line:   "#e3eaf1",     // Bordure neutre
+        surface:"#f8fafb",     // Fond body
       },
       fontFamily: {
-        sans: ["var(--font-manrope)", "ui-sans-serif", "system-ui", "sans-serif"]
+        /* Montserrat = titres H1/H2/H3, CTAs, labels nav */
+        heading: ["var(--font-montserrat)", "Montserrat", "sans-serif"],
+        /* Open Sans = corps texte, formulaires, mentions légales */
+        sans:    ["var(--font-open-sans)", "Open Sans", "sans-serif"],
       },
       boxShadow: {
         card: "0 24px 80px rgba(15, 23, 42, 0.08)",
-        soft: "0 12px 40px rgba(15, 23, 42, 0.06)"
+        soft: "0 12px 40px rgba(15, 23, 42, 0.06)",
+        blue: "0 16px 40px rgba(30, 58, 120, 0.22)",
+        teal: "0 16px 40px rgba(87, 183, 175, 0.26)",
       },
       backgroundImage: {
-        hero: "radial-gradient(circle at top left, rgba(29, 78, 216, 0.18), transparent 32%), linear-gradient(135deg, #0f1f4f 0%, #162d6b 52%, #1d3b8b 100%)"
+        hero: "linear-gradient(135deg, #0d1e45 0%, #1E3A78 60%, #204E97 100%)"
       }
     }
   },

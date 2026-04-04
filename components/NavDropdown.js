@@ -12,14 +12,14 @@ import Link from 'next/link';
 const palette = {
   blue: {
     dot:        'bg-[#1d3b8b]',
-    navText:    'text-[#1d3b8b]',
-    navHover:   'hover:text-[#1d3b8b]',
+    navText:    'text-[#1E3A78]',
+    navHover:   'hover:text-[#1E3A78]',
     stripe:     'bg-[#1d3b8b]',
     iconBg:     'bg-[#eef1fb]',
-    iconColor:  'text-[#1d3b8b]',
+    iconColor:  'text-[#1E3A78]',
     iconHoverBg:'group-hover:bg-[#1d3b8b]',
     itemHoverBg:'hover:bg-[#f5f7fd]',
-    subChip:    'border-[#c5d4f3] bg-[#f0f4fd] text-[#1d3b8b] hover:border-[#1d3b8b]',
+    subChip:    'border-[#c5d4f3] bg-[#f0f4fd] text-[#1E3A78] hover:border-[#1d3b8b]',
   },
   teal: {
     dot:        'bg-[#57b7af]',
@@ -27,7 +27,7 @@ const palette = {
     navHover:   'hover:text-[#57b7af]',
     stripe:     'bg-[#57b7af]',
     iconBg:     'bg-[#eaf4f3]',
-    iconColor:  'text-[#57b7af]',
+    iconColor:  'text-[#57B7AF]',
     iconHoverBg:'group-hover:bg-[#57b7af]',
     itemHoverBg:'hover:bg-[#f4fbfa]',
     subChip:    'border-[#cde2df] bg-[#f0faf9] text-[#57b7af] hover:border-[#57b7af]',
@@ -35,7 +35,7 @@ const palette = {
   slate: {
     dot:        'bg-[#8a9bb0]',
     navText:    'text-[#607086]',
-    navHover:   'hover:text-[#1d3b8b]',
+    navHover:   'hover:text-[#1E3A78]',
     stripe:     'bg-[#8a9bb0]',
     iconBg:     'bg-[#f0f4f8]',
     iconColor:  'text-[#607086]',
@@ -148,7 +148,7 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
                   <NavIcon name={item.icon || (i === 0 ? 'arrow' : 'star')} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-semibold text-[#1d3b8b]">{item.label}</p>
+                  <p className="text-[13px] font-semibold text-[#1E3A78]">{item.label}</p>
                   {item.description && (
                     <p className="mt-0.5 text-[12px] leading-5 text-[#8a9bb0]">{item.description}</p>
                   )}

@@ -10,7 +10,7 @@ const employerBenefits = [
   },
   {
     title: "Touchez des talents internationaux ciblés",
-    text: "La plateforme met en avant des profils alignés avec les métiers en pénurie en Belgique."
+    text: "La plateforme met en relation des profils qualifiés disponibles dans les métiers en pénurie en Belgique."
   },
   {
     title: "Accélérez la mise en relation",
@@ -24,7 +24,7 @@ const employerSteps = [
     text: "Vous indiquez le métier recherché, la région, le contrat et les compétences attendues."
   },
   {
-    title: "Le matching devient plus simple",
+    title: "La mise en relation devient plus simple",
     text: "Votre recherche gagne en lisibilité et peut être rapprochée de talents internationaux pertinents."
   },
   {
@@ -107,13 +107,13 @@ export default function EmployeursPage() {
         <BulletList items={employerBenefits} />
         <div className="mt-8 rounded-[28px] border border-[#dce7ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Avant de recruter hors UE</p>
-          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#1d3b8b]">
+          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#1E3A78]">
             Vérifiez d’abord si votre fonction figure parmi les métiers en pénurie
           </h3>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5d6e83]">
             Notre guide vous aide à comprendre la logique régionale, l’impact potentiel sur le permis unique et les secteurs les plus porteurs.
           </p>
-          <Link href="/metiers-en-penurie" className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]">
+          <Link href="/metiers-en-penurie" className="mt-5 inline-flex text-sm font-semibold text-[#1E3A78] transition hover:text-[#57b7af]">
             Lire le guide métiers en pénurie
           </Link>
         </div>
@@ -136,7 +136,7 @@ export default function EmployeursPage() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace entreprise</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Un espace plus proche d'une vraie plateforme de recrutement</h3>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1E3A78]">Un espace plus proche d'une vraie plateforme de recrutement</h3>
             <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
               Tableau de bord, informations entreprise, offres en cours et suivi des opportunités : la logique est déjà posée.
             </p>
@@ -186,7 +186,7 @@ export default function EmployeursPage() {
       </Section>
 
       <CtaBanner
-        title="Une fois le match validé, le juridique peut prendre le relais"
+        title="Une fois la mise en relation engagée, le juridique peut prendre le relais"
         text="Permis unique, droit au travail, immigration économique : le cabinet LEXPAT intervient ensuite seulement si le recrutement le nécessite."
         primaryHref="/accompagnement-juridique"
         primaryLabel="Voir le relais juridique"

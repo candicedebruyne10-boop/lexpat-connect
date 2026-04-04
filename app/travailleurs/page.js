@@ -124,7 +124,7 @@ export default function TravailleursPage() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace candidat</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Une vraie base d'espace personnel</h3>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1E3A78]">Une vraie base d'espace personnel</h3>
             <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
               Tableau de bord, profil, CV et progression : la structure est déjà pensée pour vous aider à mieux présenter votre parcours.
             </p>

@@ -42,7 +42,7 @@ export async function GET(request) {
       const workerIds = [...new Set(matches.map((match) => match.worker_profile_id))];
       const { data: workers } = await supabase
         .from("worker_profiles")
-        .select("id, full_name, job_title, sector, region, experience, languages, profile_visibility")
+        .select("id, full_name, job_title:target_job, sector:target_sector, region:preferred_region, experience:experience_level, languages, profile_visibility")
         .in("id", workerIds);
 
       return NextResponse.json({

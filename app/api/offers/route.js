@@ -84,7 +84,7 @@ export async function POST(request) {
 async function runMatchingForOffer(supabase, offer) {
   const { data: workers, error: workersError } = await supabase
     .from("worker_profiles")
-    .select("id, full_name, job_title, sector, region, experience, profile_visibility")
+    .select("id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility")
     .neq("profile_visibility", "hidden");
 
   if (workersError || !workers?.length) return;
@@ -93,7 +93,12 @@ async function runMatchingForOffer(supabase, offer) {
     .map((worker) => ({
       job_offer_id: offer.id,
       worker_profile_id: worker.id,
-      score: computeMatchScore(worker, {
+      score: computeMatchScore({
+        profile_visibility: worker.profile_visibility,
+        sector: worker.target_sector,
+        region: worker.preferred_region,
+        experience: worker.experience_level
+      }, {
         sector: offer.sector,
         region: normalizeRegion(offer.region)
       }),

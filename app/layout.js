@@ -1,28 +1,36 @@
 import './globals.css';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Manrope } from 'next/font/google';
+import { Montserrat, Open_Sans } from 'next/font/google';
 import { AuthProvider } from '../components/AuthProvider';
 import NavAuth, { NavAuthMobile } from '../components/NavAuth';
 import NavDropdown from '../components/NavDropdown';
 
-const manrope = Manrope({
+const montserrat = Montserrat({
   subsets: ['latin'],
-  variable: '--font-manrope'
+  variable: '--font-montserrat',
+  display: 'swap',
+});
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  variable: '--font-open-sans',
+  display: 'swap',
 });
 
 export const metadata = {
   title: 'LEXPAT Connect',
   description:
-    'Plateforme de mise en relation entre employeurs belges et talents internationaux dans les métiers en pénurie.'
+    'La plateforme de mise en relation ciblée entre employeurs belges et talents internationaux qualifiés dans les métiers en pénurie.'
 };
 
-// Onglets principaux — 4 entrées claires
+// Onglets principaux — 5 entrées claires (charte LEXPAT Connect)
 const navigation = [
   { href: '/', label: 'Accueil' },
-  { href: '/employeurs', label: 'Employeurs', color: 'blue' },
-  { href: '/travailleurs', label: 'Talents',    color: 'teal' },
-  { href: '/permis-unique', label: 'Immigration', color: 'slate' },
+  { href: '/employeurs',   label: 'Employeurs',   color: 'blue'  },
+  { href: '/travailleurs', label: 'Travailleurs',  color: 'teal'  },
+  { href: '/permis-unique', label: 'Immigration',  color: 'slate' },
+  { href: '/accompagnement-juridique', label: 'Cabinet LEXPAT' },
 ];
 
 // Sous-menus complets avec couleur + icône
@@ -32,14 +40,14 @@ const navDropdowns = {
     items: [
       {
         href: '/employeurs',
-        label: 'Comment ça marche',
-        description: 'La plateforme pour les recruteurs belges',
+        label: 'Je recrute',
+        description: 'Déposez votre besoin de recrutement',
         icon: 'arrow',
       },
       {
         href: '/base-de-profils',
-        label: 'Base de profils talents',
-        description: 'Parcourez les candidats internationaux disponibles',
+        label: 'Profils disponibles',
+        description: 'Parcourez les candidats internationaux',
         icon: 'search',
       },
     ],
@@ -49,14 +57,14 @@ const navDropdowns = {
     items: [
       {
         href: '/travailleurs',
-        label: 'Rendre mon profil visible',
-        description: 'Être repéré par des employeurs belges',
+        label: 'Je postule',
+        description: 'Rendez votre profil visible aux employeurs belges',
         icon: 'star',
       },
       {
         href: '/offres-d-emploi',
         label: "Offres d'emploi",
-        description: 'Parcourez les offres disponibles en Belgique',
+        description: 'Consultez les postes ouverts en Belgique',
         icon: 'doc',
       },
     ],
@@ -79,8 +87,14 @@ const navDropdowns = {
       {
         href: '/metiers-en-penurie',
         label: 'Métiers en pénurie',
-        description: 'Liste des métiers ouvrant droit au permis',
+        description: 'Professions ouvrant droit au permis unique',
         icon: 'pin',
+      },
+      {
+        href: '/securite-conformite',
+        label: 'Conformité & sécurité',
+        description: 'RGPD, données personnelles, sécurisation',
+        icon: 'globe',
       },
     ],
   },
@@ -98,7 +112,7 @@ const legalLinks = [
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={manrope.variable}>
+    <html lang="fr" className={`${montserrat.variable} ${openSans.variable}`}>
       <body className="font-sans">
         <AuthProvider>
         <div className="shell">
@@ -116,7 +130,7 @@ export default function RootLayout({ children }) {
                     />
                   </span>
                   <span>
-                    <span className="block text-lg font-extrabold tracking-[0.12em] text-[#1d3b8b]">LEXPAT</span>
+                    <span className="block text-lg font-extrabold tracking-[0.12em] text-[#1E3A78]">LEXPAT</span>
                     <span className="block text-sm text-[#6d7b8d]">Connect</span>
                   </span>
                 </Link>
@@ -134,7 +148,7 @@ export default function RootLayout({ children }) {
                           color={dd.color}
                         />
                       ) : (
-                        <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1d3b8b]">
+                        <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1E3A78]">
                           {item.label}
                         </Link>
                       );
@@ -147,7 +161,7 @@ export default function RootLayout({ children }) {
 
                 <div className="flex items-center gap-3 lg:hidden">
                   <NavAuthMobile />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-[#c8d8ee] bg-white text-[#1d3b8b] shadow-[0_8px_20px_rgba(29,59,139,0.06)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-[#c8d8ee] bg-white text-[#1E3A78] shadow-[0_8px_20px_rgba(29,59,139,0.06)]">
                     <span className="flex flex-col gap-1">
                       <span className="block h-0.5 w-5 rounded-full bg-current" />
                       <span className="block h-0.5 w-5 rounded-full bg-current" />
@@ -194,7 +208,7 @@ export default function RootLayout({ children }) {
                       <Image src="/logo-lexpat-connect.png" alt="Logo LEXPAT Connect" fill className="object-cover" sizes="48px" />
                     </span>
                     <div>
-                      <p className="text-sm font-extrabold tracking-[0.18em] text-[#1d3b8b]">LEXPAT</p>
+                      <p className="text-sm font-extrabold tracking-[0.18em] text-[#1E3A78]">LEXPAT</p>
                       <p className="text-sm text-[#6d7b8d]">Connect</p>
                     </div>
                   </div>
@@ -202,7 +216,7 @@ export default function RootLayout({ children }) {
                     Une plateforme pensée pour connecter les employeurs belges aux talents internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible.
                   </p>
                   <div className="rounded-[28px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086] shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
-                    <p className="font-semibold text-[#1d3b8b]">Après la mise en relation</p>
+                    <p className="font-semibold text-[#1E3A78]">Après la mise en relation</p>
                     <p className="mt-2 leading-7">
                       Si un recrutement suppose un permis unique ou une question d'immigration économique, le cabinet LEXPAT peut ensuite prendre le relais.
                     </p>
@@ -210,34 +224,34 @@ export default function RootLayout({ children }) {
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1d3b8b]">Employeurs</p>
+                  <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">Employeurs</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Comment ça marche</Link>
-                    <Link href="/base-de-profils" className="block transition hover:text-[#1d3b8b]">Base de profils talents</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Métiers en pénurie</Link>
+                    <Link href="/employeurs" className="block transition hover:text-[#1E3A78]">Je recrute</Link>
+                    <Link href="/base-de-profils" className="block transition hover:text-[#1E3A78]">Profils disponibles</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Métiers en pénurie</Link>
                   </div>
-                  <p className="mt-6 text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Talents</p>
+                  <p className="mt-6 font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">Travailleurs</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    <Link href="/travailleurs" className="block transition hover:text-[#57b7af]">Rendre mon profil visible</Link>
-                    <Link href="/offres-d-emploi" className="block transition hover:text-[#57b7af]">Offres d'emploi</Link>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Actions rapides</p>
-                  <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Déposer un besoin de recrutement</Link>
-                    <Link href="/travailleurs" className="block transition hover:text-[#1d3b8b]">Rendre mon profil visible</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Explorer les métiers en pénurie</Link>
-                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Guide métiers en pénurie</Link>
-                    <Link href="/permis-unique" className="block transition hover:text-[#1d3b8b]">Comprendre le permis unique</Link>
-                    <Link href="/connexion" className="block transition hover:text-[#1d3b8b]">Se connecter</Link>
-                    <Link href="/inscription" className="block transition hover:text-[#1d3b8b]">Créer un compte</Link>
+                    <Link href="/travailleurs" className="block transition hover:text-[#57B7AF]">Je postule</Link>
+                    <Link href="/offres-d-emploi" className="block transition hover:text-[#57B7AF]">Offres d'emploi</Link>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Cabinet LEXPAT</p>
+                  <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">Actions rapides</p>
+                  <div className="mt-4 space-y-3 text-sm text-[#607086]">
+                    <Link href="/employeurs" className="block transition hover:text-[#1E3A78]">Déposer un besoin de recrutement</Link>
+                    <Link href="/travailleurs" className="block transition hover:text-[#1E3A78]">Rendre mon profil visible</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Explorer les métiers en pénurie</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1E3A78]">Guide métiers en pénurie</Link>
+                    <Link href="/permis-unique" className="block transition hover:text-[#1E3A78]">Comprendre le permis unique</Link>
+                    <Link href="/connexion" className="block transition hover:text-[#1E3A78]">Se connecter</Link>
+                    <Link href="/inscription" className="block transition hover:text-[#1E3A78]">Créer un compte</Link>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">Cabinet LEXPAT</p>
                   <p className="mt-4 text-sm leading-7 text-[#607086]">
                     Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement.
                   </p>
@@ -259,7 +273,7 @@ export default function RootLayout({ children }) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="inline-flex rounded-full border border-transparent px-3 py-1.5 transition hover:border-[#dce7ef] hover:bg-white hover:text-[#1d3b8b]"
+                      className="inline-flex rounded-full border border-transparent px-3 py-1.5 transition hover:border-[#dce7ef] hover:bg-white hover:text-[#1E3A78]"
                     >
                       {item.label}
                     </Link>

@@ -4,18 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+/* ── Palette officielle LEXPAT Connect ── */
 const EMPLOYER = {
-  primary: "#173A8A",
-  secondary: "#2E5AA2",
-  soft: "#EEF4FF",
-  border: "rgba(23,58,138,0.18)"
+  primary:   "#1E3A78",   // Bleu foncé principal
+  secondary: "#204E97",   // Bleu moyen
+  soft:      "#eef1fb",   // Fond doux
+  border:    "rgba(30,58,120,0.16)"
 };
 
 const TALENT = {
-  primary: "#59B9B1",
-  secondary: "#6EC9C1",
-  soft: "#ECFAF8",
-  border: "rgba(89,185,177,0.22)"
+  primary:   "#57B7AF",   // Turquoise talents
+  secondary: "#4aa9a2",   // Hover
+  soft:      "#eaf4f3",   // Fond doux
+  border:    "rgba(87,183,175,0.22)"
 };
 
 function BriefcaseIcon({ className = "h-5 w-5" }) {
@@ -149,18 +150,18 @@ function HeroContent({ primaryHref, secondaryHref }) {
   return (
     <div className="max-w-2xl xl:max-w-[52rem]">
       <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#59B9B1]" />
-        Belgique · Métiers en pénurie · Matching international
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
+        Belgique · Métiers en pénurie · Recrutement international
       </div>
 
-      <h1 className="mt-8 text-[clamp(2.4rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
+      <h1 className="font-heading mt-8 text-[clamp(2.4rem,5.8vw,5.6rem)] font-bold leading-[1.02] tracking-[-0.048em] text-white">
         Employeurs belges.<br />
-        <span className="text-[#5ec9c1]">Talents internationaux.</span><br />
-        Match direct.
+        <span className="text-[#57B7AF]">Talents internationaux.</span><br />
+        Recrutement ciblé.
       </h1>
 
       <p className="mt-6 max-w-xl text-base leading-relaxed text-white/[0.62] sm:text-lg">
-        La plateforme qui connecte les entreprises belges aux profils qualifiés dans les métiers en pénurie — de façon claire, rapide et ciblée.
+        La plateforme de mise en relation ciblée entre employeurs belges et talents internationaux qualifiés dans les métiers en pénurie.
       </p>
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -176,12 +177,12 @@ function HeroContent({ primaryHref, secondaryHref }) {
           className="inline-flex min-h-[3.75rem] items-center justify-center rounded-2xl px-8 py-4 text-base font-bold text-white shadow-[0_18px_48px_rgba(89,185,177,0.32)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_56px_rgba(89,185,177,0.42)]"
           style={{ background: TALENT.primary }}
         >
-          Je me fais repérer
+          Je postule
         </Link>
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
-        {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Permis unique"].map((tag) => (
+        {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Recrutement sécurisé"].map((tag) => (
           <span
             key={tag}
             className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.07] px-3.5 py-1.5 text-xs font-semibold text-white/[0.55] backdrop-blur-sm"
@@ -220,7 +221,7 @@ export function DualEntry() {
           <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
             Deux parcours
           </p>
-          <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
             Choisissez votre entrée
           </h2>
         </div>
@@ -253,10 +254,10 @@ export function DualEntry() {
                 >
                   {card.title}
                 </div>
-                <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#080f2e] sm:text-[2rem]">
+                <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78] sm:text-[2rem]">
                   {card.title}
                 </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-[#5d6e83]">
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[#607086]">
                   {card.text}
                 </p>
                 <div className="mt-8">
@@ -292,10 +293,10 @@ export function ShortageJobsQuickLink() {
             <p className="inline-flex rounded-full bg-[#e9f8f5] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
               Guide employeur
             </p>
-            <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#080f2e] sm:text-3xl">
+            <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78] sm:text-3xl">
               Comprenez quels métiers en pénurie comptent vraiment pour votre recrutement
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
+            <p className="mt-3 text-sm leading-7 text-[#607086]">
               Une page unique vous aide à lire les listes régionales officielles, à comprendre leur impact sur le permis unique et à repérer les secteurs les plus porteurs.
             </p>
           </div>
@@ -328,20 +329,20 @@ export function SecurityComplianceTeaser() {
               Sécurité & conformité
               </p>
               <h2 className="mt-4 max-w-3xl text-2xl font-bold tracking-[-0.04em] text-[#0f214b] sm:text-3xl">
-                Une architecture conçue pour séparer le matching professionnel du traitement juridique
+                Une architecture conçue pour séparer le mise en relation professionnelle du traitement juridique
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5d6e83] sm:text-[0.98rem]">
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#607086] sm:text-[0.98rem]">
                 Données hébergées en Europe, partage limité avant mise en relation et relais juridique distinct uniquement quand le recrutement l’exige.
               </p>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                <span className="inline-flex rounded-full border border-[rgba(23,58,138,0.16)] bg-[#eef4ff] px-3.5 py-1.5 text-xs font-semibold text-[#173A8A]">
+                <span className="inline-flex rounded-full border border-[rgba(23,58,138,0.16)] bg-[#eef4ff] px-3.5 py-1.5 text-xs font-semibold text-[#1E3A78]">
                   Hébergement UE
                 </span>
                 <span className="inline-flex rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-3.5 py-1.5 text-xs font-semibold text-[#2f9f97]">
                   Consentement avant transfert
                 </span>
-                <span className="inline-flex rounded-full border border-[rgba(39,79,150,0.16)] bg-[#f4f7fe] px-3.5 py-1.5 text-xs font-semibold text-[#274f96]">
+                <span className="inline-flex rounded-full border border-[rgba(39,79,150,0.16)] bg-[#f4f7fe] px-3.5 py-1.5 text-xs font-semibold text-[#204E97]">
                   Relais juridique séparé
                 </span>
               </div>
@@ -350,7 +351,7 @@ export function SecurityComplianceTeaser() {
             <div className="mt-6 flex-shrink-0 lg:mt-0">
               <Link
                 href="/securite-conformite"
-                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-[#d6dfef] bg-white px-7 py-4 text-base font-semibold text-[#173A8A] shadow-[0_12px_28px_rgba(23,58,138,0.08)] transition hover:-translate-y-0.5 hover:border-[#b7c8e3] hover:bg-[#f5f9ff]"
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-[#d6dfef] bg-white px-7 py-4 text-base font-semibold text-[#1E3A78] shadow-[0_12px_28px_rgba(23,58,138,0.08)] transition hover:-translate-y-0.5 hover:border-[#b7c8e3] hover:bg-[#f5f9ff]"
               >
                 Comprendre notre architecture RGPD
               </Link>
@@ -395,7 +396,7 @@ export function HowItWorksPremium() {
             <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
               3 étapes
             </p>
-            <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
+            <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
               Comment ça marche
             </h2>
           </div>
@@ -418,8 +419,8 @@ export function HowItWorksPremium() {
                     {step.num}
                   </span>
                 </div>
-                <h3 className="mt-5 text-xl font-bold tracking-tight text-[#080f2e]">{step.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{step.text}</p>
+                <h3 className="mt-5 text-xl font-bold tracking-tight text-[#1E3A78]">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[#607086]">{step.text}</p>
               </article>
             ))}
           </div>
@@ -445,10 +446,10 @@ export function JobSectors() {
           <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
             Métiers en pénurie
           </p>
-          <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#080f2e] sm:text-4xl">
+          <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
             Les profils les plus recherchés actuellement en Belgique
           </h2>
-          <p className="mx-auto mt-4 text-base leading-7 text-[#5d6e83]">
+          <p className="mx-auto mt-4 text-base leading-7 text-[#607086]">
             Des fonctions prioritaires pour accélérer les recrutements et donner plus de visibilité aux profils internationaux.
           </p>
         </div>
@@ -469,7 +470,7 @@ export function JobSectors() {
               >
                 {job.region}
               </span>
-              <h3 className="mt-5 text-lg font-bold leading-snug tracking-tight text-[#080f2e]">
+              <h3 className="mt-5 text-lg font-bold leading-snug tracking-tight text-[#1E3A78]">
                 {job.label}
               </h3>
             </article>
@@ -507,7 +508,7 @@ export function LexpatStrip() {
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#57b7af]">
                 Cabinet LEXPAT — Relais juridique
               </p>
-              <p className="mt-2 max-w-2xl text-base font-bold leading-snug text-[#080f2e]">
+              <p className="mt-2 max-w-2xl text-base font-bold leading-snug text-[#1E3A78]">
                 Sécurisation juridique après mise en relation
               </p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b7b8f]">
@@ -710,7 +711,7 @@ export function CardGrid({ items, columns = 3 }) {
             </p>
           ) : null}
           <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
+          <p className="mt-3 text-sm leading-7 text-[#607086]">{item.text}</p>
           {item.link ? (
             <Link href={item.link.href} className="mt-5 inline-flex text-sm font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]">
               {item.link.label}
@@ -731,7 +732,7 @@ export function Steps({ items }) {
             0{index + 1}
           </div>
           <h3 className="mt-5 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
+          <p className="mt-3 text-sm leading-7 text-[#607086]">{item.text}</p>
         </article>
       ))}
     </div>
@@ -747,7 +748,7 @@ export function BulletList({ items }) {
             <span className="mt-1 inline-flex h-3.5 w-3.5 rounded-full bg-[#57b7af]" />
             <div>
               <h3 className="text-lg font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{item.text}</p>
+              <p className="mt-3 text-sm leading-7 text-[#607086]">{item.text}</p>
             </div>
           </div>
         </article>
@@ -765,7 +766,7 @@ export function Faq({ items }) {
             <span>{item.question}</span>
             <span className="mt-1 text-[#57b7af] transition group-open:rotate-45">+</span>
           </summary>
-          <p className="mt-4 max-w-4xl text-sm leading-7 text-[#5d6e83]">{item.answer}</p>
+          <p className="mt-4 max-w-4xl text-sm leading-7 text-[#607086]">{item.answer}</p>
         </details>
       ))}
     </div>
@@ -821,7 +822,7 @@ export function FormCard({ title, intro, fields, buttonLabel }) {
           Formulaire
         </p>
         <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b] sm:text-3xl">{title}</h2>
-        <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{intro}</p>
+        <p className="mt-3 text-sm leading-7 text-[#607086]">{intro}</p>
       </div>
       <form className="grid gap-5 md:grid-cols-2">
         {visibleFields.map((field) => {
@@ -909,7 +910,7 @@ export function CtaBanner({
               Passerelle LEXPAT
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">{title}</h2>
-            <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#5d6e83]">{text}</p>
+            <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#607086]">{text}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href={primaryHref}
