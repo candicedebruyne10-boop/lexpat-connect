@@ -57,7 +57,7 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
-  { city: "Bruxelles", left: "44%", top: "41%", hub: true  },
+  { city: "Bruxelles", left: "51%", top: "44%", hub: true  },
 ];
 
 function CityDot({ left, top, hub }) {
