@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
+import { useAuth } from "./AuthProvider";
 
 const sidebarItems = [
   { id: "dashboard", label: "Tableau de bord" },
@@ -561,9 +562,10 @@ function MatchesView({ token }) {
 
 export default function EmployerSpace() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [authChecked, setAuthChecked] = useState(false);
-  const [token, setToken] = useState(null);
+  const { user, session, loading } = useAuth();
   const router = useRouter();
+
+  const token = session?.access_token ?? null;
 
   // useMemo MUST be before any conditional return (Rules of Hooks)
   const completion = useMemo(() => {
@@ -572,16 +574,14 @@ export default function EmployerSpace() {
     return 44;
   }, [activeTab]);
 
+  // Redirection si non connecté (après chargement)
   useEffect(() => {
-    let supabase;
-    try { supabase = getSupabaseBrowserClient(); } catch { router.replace("/connexion"); return; }
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) { router.replace("/connexion"); }
-      else { setToken(data.session.access_token); setAuthChecked(true); }
-    });
-  }, [router]);
+    if (!loading && !session) {
+      router.replace("/connexion");
+    }
+  }, [loading, session, router]);
 
-  if (!authChecked) {
+  if (loading || !session) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" />

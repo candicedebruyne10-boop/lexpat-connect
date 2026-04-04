@@ -2,6 +2,8 @@ import './globals.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Manrope } from 'next/font/google';
+import { AuthProvider } from '../components/AuthProvider';
+import NavAuth, { NavAuthMobile } from '../components/NavAuth';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -35,6 +37,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr" className={manrope.variable}>
       <body className="font-sans">
+        <AuthProvider>
         <div className="shell">
           <header className="sticky top-0 z-40 border-b border-[#edf1f5] bg-white/92 backdrop-blur-xl">
             <div className="container-shell py-5">
@@ -63,18 +66,12 @@ export default function RootLayout({ children }) {
                       </Link>
                     ))}
                   </nav>
-                  <Link href="/connexion" className="secondary-button">
-                    Se connecter
-                  </Link>
-                  <Link href="/inscription" className="primary-button">
-                    Créer un compte
-                  </Link>
+                  {/* Boutons auth intelligents — connecté ou non */}
+                  <NavAuth />
                 </div>
 
                 <div className="flex items-center gap-3 lg:hidden">
-                  <Link href="/connexion" className="secondary-button">
-                    Connexion
-                  </Link>
+                  <NavAuthMobile />
                   <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-[#c8d8ee] bg-white text-[#1d3b8b] shadow-[0_8px_20px_rgba(29,59,139,0.06)]">
                     <span className="flex flex-col gap-1">
                       <span className="block h-0.5 w-5 rounded-full bg-current" />
@@ -186,6 +183,7 @@ export default function RootLayout({ children }) {
             </div>
           </footer>
         </div>
+        </AuthProvider>
       </body>
     </html>
   );
