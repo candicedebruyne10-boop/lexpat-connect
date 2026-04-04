@@ -340,22 +340,22 @@ export function SecurityComplianceTeaser() {
 const HOW_IT_WORKS = [
   {
     num: "01",
-    title: "Déposer un besoin ou un profil",
-    text: "Employeurs et travailleurs renseignent l’essentiel, sans parcours complexe.",
+    title: "Vous publiez votre besoin ou votre profil",
+    text: "Quelques minutes suffisent. Employeurs et travailleurs renseignent l’essentiel — pas plus.",
     accent: EMPLOYER,
     iconIndex: 0
   },
   {
     num: "02",
-    title: "Entrer en relation",
-    text: "La plateforme facilite une mise en relation rapide et lisible.",
+    title: "Vous entrez en contact",
+    text: "Employeur et travailleur se retrouvent directement. Pas d’intermédiaire, pas de délai inutile.",
     accent: TALENT,
     iconIndex: 1
   },
   {
     num: "03",
-    title: "Sécuriser le juridique si nécessaire",
-    text: "LEXPAT intervient ensuite uniquement quand le recrutement l’exige.",
+    title: "On s’occupe des démarches si besoin",
+    text: "Permis de travail, titre de séjour, paperasse administrative — LEXPAT prend le relais si le dossier le demande.",
     accent: EMPLOYER,
     iconIndex: 2
   }
@@ -480,13 +480,13 @@ export function LexpatStrip() {
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#57b7af]">
-                Cabinet LEXPAT — Relais juridique
+                Cabinet LEXPAT
               </p>
               <p className="mt-2 max-w-2xl text-base font-bold leading-snug text-[#1E3A78]">
-                Sécurisation juridique après mise en relation
+                On gère les démarches quand le recrutement le demande
               </p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b7b8f]">
-                Une fois le matching validé, le cabinet LEXPAT prend le relais pour sécuriser le permis unique, l'immigration économique et le droit au travail.
+                Permis de travail, titre de séjour, questions d'immigration — le cabinet LEXPAT intervient si votre situation le nécessite, pas avant.
               </p>
             </div>
           </div>
