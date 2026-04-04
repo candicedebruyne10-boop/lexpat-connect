@@ -63,60 +63,53 @@ const CITY_DOTS = [
   { city: "Mons",      left: "20%", top: "57%" },
 ];
 
-function MapCard({ sizes }) {
-  return (
-    <div className="relative h-full w-full overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18),0_0_0_1px_rgba(89,185,177,0.10)]">
-      <Image
-        src="/hero-world-map_2.png"
-        alt="Carte Belgique — connexions internationales"
-        fill
-        priority
-        quality={90}
-        className="object-cover object-[22%_45%]"
-        sizes={sizes}
-      />
-      {/* Fondu haut */}
-      <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.90),transparent)]" />
-      {/* Fondu bas */}
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.80),transparent)]" />
-      {/* Éclat lumineux sur la Belgique */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_28%_50%,rgba(89,185,177,0.28),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_65%_45%,rgba(29,59,139,0.18),transparent_80%)]" />
-
-      {/* Points lumineux sur chaque ville */}
-      {CITY_DOTS.map(({ city, left, top }) => (
-        <div key={city} className="pointer-events-none absolute" style={{ left, top }}>
-          <div className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25" />
-          <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/30 blur-sm" />
-          <div className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.65)]" />
-        </div>
-      ))}
-
-      {/* Badge flottant */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
-        Belgique · Hub international
-      </div>
-    </div>
-  );
-}
-
 export function HeroPremium({ primaryHref, secondaryHref }) {
   return (
     <section className="relative overflow-hidden bg-[#060c26]">
 
-      {/* ══ DESKTOP : deux colonnes — texte gauche, carte droite ══ */}
-      <div className="hidden lg:flex lg:min-h-[84vh] lg:items-center">
-        {/* Lueur décorative derrière le texte */}
-        <div className="pointer-events-none absolute left-0 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1d3b8b]/20 blur-3xl" />
+      {/* ══ DESKTOP : carte plein écran, texte par-dessus ══ */}
+      <div className="hidden lg:block">
+        <div className="relative mx-6 my-6 overflow-hidden rounded-[32px] min-h-[82vh] border border-[#59B9B1]/15 shadow-[0_0_60px_rgba(89,185,177,0.12)]">
+          {/* Image carte — pleine largeur */}
+          <Image
+            src="/hero-world-map_2.png"
+            alt="Carte Belgique — connexions internationales"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-[22%_45%]"
+            sizes="100vw"
+          />
 
-        {/* Colonne texte */}
-        <div className="relative z-10 flex-1 py-20 pl-8 pr-10 xl:pl-16">
-          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
-        </div>
+          {/* Voile sombre sur la gauche pour lisibilité du texte */}
+          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.96)_0%,rgba(6,12,38,0.85)_30%,rgba(6,12,38,0.50)_55%,rgba(6,12,38,0.10)_80%,transparent_100%)]" />
+          {/* Fondu haut et bas */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.70),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(to_top,rgba(6,12,38,0.70),transparent)]" />
 
-        {/* Colonne carte */}
-        <div className="relative z-10 w-[48%] self-stretch py-10 pr-8 xl:pr-14">
-          <MapCard sizes="48vw" />
+          {/* Éclat teal sur la Belgique */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.22),transparent_70%)]" />
+
+          {/* Points lumineux sur chaque ville */}
+          {CITY_DOTS.map(({ city, left, top }) => (
+            <div key={city} className="pointer-events-none absolute" style={{ left, top }}>
+              <div className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/20" />
+              <div className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/25 blur-sm" />
+              <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_10px_4px_rgba(89,185,177,0.70)]" />
+            </div>
+          ))}
+
+          {/* Texte par-dessus, calé à gauche */}
+          <div className="relative z-10 flex h-full min-h-[82vh] items-center">
+            <div className="container-shell w-full max-w-2xl py-20">
+              <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
+            </div>
+          </div>
+
+          {/* Badge en bas à droite */}
+          <div className="absolute bottom-5 right-8 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+            Belgique · Hub international
+          </div>
         </div>
       </div>
 
@@ -126,8 +119,32 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
           <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
         </div>
-        <div className="mx-4 mb-10 h-56">
-          <MapCard sizes="100vw" />
+
+        {/* Carte mobile */}
+        <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18)]">
+          <Image
+            src="/hero-world-map_2.png"
+            alt="Carte Belgique — connexions internationales"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-[22%_45%]"
+            sizes="100vw"
+          />
+          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.95),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.85),transparent)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_28%_50%,rgba(89,185,177,0.28),transparent_70%)]" />
+
+          {CITY_DOTS.map(({ city, left, top }) => (
+            <div key={city} className="pointer-events-none absolute" style={{ left, top }}>
+              <div className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25" />
+              <div className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.65)]" />
+            </div>
+          ))}
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+            Belgique · Hub international
+          </div>
         </div>
       </div>
 
