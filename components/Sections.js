@@ -81,11 +81,11 @@ function CityDot({ left, top, hub }) {
           <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_16px_6px_rgba(89,185,177,0.80)]" />
         </>
       ) : (
-        /* Villes secondaires — discret et élégant */
+        /* Villes secondaires — lisibles, cohérentes avec le réseau */
         <>
-          <div className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/18 [animation-duration:2.5s]" />
-          <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/25 blur-[3px]" />
-          <div className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.55)]" />
+          <div className="absolute h-11 w-11 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/28 [animation-duration:2.5s]" />
+          <div className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/32 blur-[4px]" />
+          <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_12px_4px_rgba(89,185,177,0.68)]" />
         </>
       )}
     </div>
@@ -155,11 +155,8 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.85),transparent)]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_28%_50%,rgba(89,185,177,0.28),transparent_70%)]" />
 
-          {CITY_DOTS.map(({ city, left, top }) => (
-            <div key={city} className="pointer-events-none absolute" style={{ left, top }}>
-              <div className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25" />
-              <div className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.65)]" />
-            </div>
+          {CITY_DOTS.map((dot) => (
+            <CityDot key={dot.city} {...dot} />
           ))}
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
@@ -197,14 +194,14 @@ function HeroContentDesktop({ primaryHref, secondaryHref }) {
         <div className="mt-7 flex gap-4">
           <Link
             href={primaryHref}
-            className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+            className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
           >
             Je recrute
           </Link>
           <Link
             href={secondaryHref}
-            className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+            className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
           >
             Je postule
@@ -237,14 +234,14 @@ function HeroContent({ primaryHref, secondaryHref }) {
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
         <Link
           href={primaryHref}
-          className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
         >
           Je recrute
         </Link>
         <Link
           href={secondaryHref}
-          className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl px-9 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
         >
           Je postule
