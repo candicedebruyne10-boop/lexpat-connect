@@ -58,11 +58,6 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
   { city: "Bruxelles", left: "44%", top: "41%", hub: true  },
-  { city: "Anvers",    left: "42%", top: "25%", hub: false },
-  { city: "Liège",     left: "59%", top: "44%", hub: false },
-  { city: "Mons",      left: "41%", top: "50%", hub: false },
-  { city: "Malines",   left: "50%", top: "34%", hub: false },
-  { city: "Gand",      left: "40%", top: "34%", hub: false },
 ];
 
 function CityDot({ left, top, hub }) {
