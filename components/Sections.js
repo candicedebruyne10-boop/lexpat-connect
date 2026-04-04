@@ -181,16 +181,6 @@ function HeroContent({ primaryHref, secondaryHref }) {
         </Link>
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        {["Bruxelles", "Wallonie", "Flandre", "Immigration économique", "Recrutement sécurisé"].map((tag) => (
-          <span
-            key={tag}
-            className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.07] px-3.5 py-1.5 text-xs font-semibold text-white/[0.55] backdrop-blur-sm"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }

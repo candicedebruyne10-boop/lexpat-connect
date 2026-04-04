@@ -129,11 +129,11 @@ export default function RootLayout({ children }) {
                       sizes="56px"
                     />
                   </span>
-                  <span className="leading-none">
-                    <span className="block text-[2rem] font-black tracking-[0.04em] text-[#1E2F86] sm:text-[2.35rem]">
+                  <span className="leading-tight">
+                    <span className="block text-base font-extrabold tracking-[0.12em] text-[#1E3A78]">
                       LEXPAT
                     </span>
-                    <span className="mt-1 block text-[1.55rem] font-light tracking-[-0.03em] text-[#7CCDC7] sm:text-[1.95rem]">
+                    <span className="block text-[0.78rem] font-normal tracking-[0.04em] text-[#6d7b8d]">
                       Connect
                     </span>
                   </span>
