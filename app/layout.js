@@ -17,25 +17,73 @@ export const metadata = {
     'Plateforme de mise en relation entre employeurs belges et talents internationaux dans les métiers en pénurie.'
 };
 
+// Onglets principaux — 4 entrées claires
 const navigation = [
   { href: '/', label: 'Accueil' },
-  { href: '/employeurs', label: 'Employeurs' },
-  { href: '/travailleurs', label: 'Talents' },
-  { href: '/metiers-en-penurie', label: 'Métiers en pénurie' },
-  { href: '/permis-unique', label: 'Permis unique' },
-  { href: '/offres-d-emploi', label: "Offres d'emploi" },
-  { href: '/candidatures', label: 'Candidatures' }
+  { href: '/employeurs', label: 'Employeurs', color: 'blue' },
+  { href: '/travailleurs', label: 'Talents',    color: 'teal' },
+  { href: '/permis-unique', label: 'Immigration', color: 'slate' },
 ];
 
-// Sous-menus par href d'onglet
+// Sous-menus complets avec couleur + icône
 const navDropdowns = {
-  '/permis-unique': [
-    {
-      href: '/travailleurs-hautement-qualifies',
-      label: 'Travailleurs hautement qualifiés',
-      description: 'Seuils de salaire, Carte Bleue, procédure'
-    }
-  ]
+  '/employeurs': {
+    color: 'blue',
+    items: [
+      {
+        href: '/employeurs',
+        label: 'Comment ça marche',
+        description: 'La plateforme pour les recruteurs belges',
+        icon: 'arrow',
+      },
+      {
+        href: '/base-de-profils',
+        label: 'Base de profils talents',
+        description: 'Parcourez les candidats internationaux disponibles',
+        icon: 'search',
+      },
+    ],
+  },
+  '/travailleurs': {
+    color: 'teal',
+    items: [
+      {
+        href: '/travailleurs',
+        label: 'Rendre mon profil visible',
+        description: 'Être repéré par des employeurs belges',
+        icon: 'star',
+      },
+      {
+        href: '/offres-d-emploi',
+        label: "Offres d'emploi",
+        description: 'Parcourez les offres disponibles en Belgique',
+        icon: 'doc',
+      },
+    ],
+  },
+  '/permis-unique': {
+    color: 'slate',
+    items: [
+      {
+        href: '/permis-unique',
+        label: 'Guide permis unique',
+        description: 'Conditions, procédure, types de permis',
+        icon: 'doc',
+      },
+      {
+        href: '/travailleurs-hautement-qualifies',
+        label: 'Travailleurs hautement qualifiés',
+        description: 'Seuils de salaire, Carte Bleue Européenne',
+        icon: 'star',
+      },
+      {
+        href: '/metiers-en-penurie',
+        label: 'Métiers en pénurie',
+        description: 'Liste des métiers ouvrant droit au permis',
+        icon: 'pin',
+      },
+    ],
+  },
 };
 
 const legalLinks = [
@@ -75,20 +123,22 @@ export default function RootLayout({ children }) {
 
                 <div className="hidden items-center gap-3 lg:flex">
                   <nav className="flex items-center gap-5 text-[13px] font-medium text-[#607086]">
-                    {navigation.map((item) =>
-                      navDropdowns[item.href] ? (
+                    {navigation.map((item) => {
+                      const dd = navDropdowns[item.href];
+                      return dd ? (
                         <NavDropdown
                           key={item.href}
                           href={item.href}
                           label={item.label}
-                          items={navDropdowns[item.href]}
+                          items={dd.items}
+                          color={dd.color}
                         />
                       ) : (
                         <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1d3b8b]">
                           {item.label}
                         </Link>
-                      )
-                    )}
+                      );
+                    })}
                   </nav>
                   <div className="mx-1 h-5 w-px bg-[#e3eaf1]" />
                   {/* Boutons auth intelligents — connecté ou non */}
@@ -108,13 +158,15 @@ export default function RootLayout({ children }) {
               </div>
 
               <nav className="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
-                {navigation.map((item) =>
-                  navDropdowns[item.href] ? (
+                {navigation.map((item) => {
+                  const dd = navDropdowns[item.href];
+                  return dd ? (
                     <NavDropdown
                       key={item.href}
                       href={item.href}
                       label={item.label}
-                      items={navDropdowns[item.href]}
+                      items={dd.items}
+                      color={dd.color}
                       mobile
                     />
                   ) : (
@@ -125,8 +177,8 @@ export default function RootLayout({ children }) {
                     >
                       {item.label}
                     </Link>
-                  )
-                )}
+                  );
+                })}
               </nav>
             </div>
           </header>
@@ -158,13 +210,16 @@ export default function RootLayout({ children }) {
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Plateforme</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1d3b8b]">Employeurs</p>
                   <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                    {navigation.map((item) => (
-                      <Link key={item.href} href={item.href} className="block transition hover:text-[#1d3b8b]">
-                        {item.label}
-                      </Link>
-                    ))}
+                    <Link href="/employeurs" className="block transition hover:text-[#1d3b8b]">Comment ça marche</Link>
+                    <Link href="/base-de-profils" className="block transition hover:text-[#1d3b8b]">Base de profils talents</Link>
+                    <Link href="/metiers-en-penurie" className="block transition hover:text-[#1d3b8b]">Métiers en pénurie</Link>
+                  </div>
+                  <p className="mt-6 text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Talents</p>
+                  <div className="mt-4 space-y-3 text-sm text-[#607086]">
+                    <Link href="/travailleurs" className="block transition hover:text-[#57b7af]">Rendre mon profil visible</Link>
+                    <Link href="/offres-d-emploi" className="block transition hover:text-[#57b7af]">Offres d'emploi</Link>
                   </div>
                 </div>
 
