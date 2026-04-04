@@ -58,14 +58,15 @@ export default function RootLayout({ children }) {
                   </span>
                 </Link>
 
-                <div className="hidden items-center gap-4 lg:flex">
-                  <nav className="flex items-center gap-6 text-sm font-medium text-[#607086]">
+                <div className="hidden items-center gap-3 lg:flex">
+                  <nav className="flex items-center gap-5 text-[13px] font-medium text-[#607086]">
                     {navigation.map((item) => (
-                      <Link key={item.href} href={item.href} className="transition hover:text-[#1d3b8b]">
+                      <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-[#1d3b8b]">
                         {item.label}
                       </Link>
                     ))}
                   </nav>
+                  <div className="mx-1 h-5 w-px bg-[#e3eaf1]" />
                   {/* Boutons auth intelligents — connecté ou non */}
                   <NavAuth />
                 </div>

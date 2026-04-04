@@ -30,8 +30,11 @@ export default function AuthForm({ mode = 'login' }) {
   }, []);
 
   const [role, setRole] = useState('worker');
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [companyName, setCompanyName] = useState('');
+  // fullName calculé depuis prénom + nom
+  const fullName = `${firstName} ${lastName}`.trim();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -195,12 +198,28 @@ export default function AuthForm({ mode = 'login' }) {
         ) : null}
 
         {isSignup ? (
-          <label className="md:col-span-2">
-            <span className="mb-2 block text-sm font-semibold text-[#17345d]">
-              {role === 'worker' ? 'Nom complet' : 'Nom du contact'}
-            </span>
-            <input className="field-input" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder={role === 'worker' ? 'Prénom Nom' : 'Prénom Nom'} />
-          </label>
+          <>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Prénom</span>
+              <input
+                className="field-input"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Prénom"
+                required
+              />
+            </label>
+            <label>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Nom</span>
+              <input
+                className="field-input"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Nom de famille"
+                required
+              />
+            </label>
+          </>
         ) : null}
 
         {isSignup && role === 'employer' ? (
