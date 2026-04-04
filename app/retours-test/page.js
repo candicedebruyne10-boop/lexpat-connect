@@ -30,7 +30,6 @@ export default function RetoursTestPage() {
         primaryLabel="Envoyer un retour"
         secondaryHref="/"
         secondaryLabel="Revenir à l'accueil"
-        note="Chaque retour est enregistré de façon structurée pour faciliter vos arbitrages de correction."
       />
 
       <Section

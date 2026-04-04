@@ -79,8 +79,7 @@ export default function TravailleursPage() {
         primaryLabel="Créer mon profil"
         secondaryHref="/metiers-en-penurie"
         secondaryLabel="Voir les métiers recherchés"
-        note="Le rôle du cabinet LEXPAT n'intervient qu'après la mise en relation, si une question juridique apparaît."
-        stats={[
+stats={[
           { value: "Profil", label: "Une présentation plus claire de votre parcours professionnel" },
           { value: "Belgique", label: "Une visibilité pensée pour les employeurs belges" },
           { value: "Opportunités", label: "Plus de chances de déclencher une prise de contact sérieuse" }

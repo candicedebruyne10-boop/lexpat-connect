@@ -61,8 +61,7 @@ export default function AccompagnementPage() {
         primaryLabel="Prendre contact"
         secondaryHref="/"
         secondaryLabel="Revenir à la plateforme"
-        note="Le juridique n'est pas l'entrée principale du site. Il intervient au moment utile, lorsque le dossier l'exige réellement."
-        stats={[
+stats={[
           { value: "Permis unique", label: "Pour sécuriser un recrutement qui a déjà pris forme" },
           { value: "Travail et séjour", label: "Pour clarifier une situation administrative concrète" },
           { value: "Belgique", label: "Avec une lecture attentive du cadre régional applicable" }

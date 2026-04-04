@@ -196,8 +196,7 @@ export default function PermisUniquePage() {
         primaryLabel="Parler à un avocat"
         secondaryHref="/metiers-en-penurie"
         secondaryLabel="Voir les métiers en pénurie"
-        note="Objectif : aller droit au but, sans jargon inutile."
-        stats={[
+stats={[
           { value: "UE + Belgique", label: "Un cadre partagé entre règles européennes, État fédéral et régions" },
           { value: "Régions", label: "La partie travail dépend de la région compétente" },
           { value: "Contrôle", label: "L'employeur doit vérifier le droit au travail avant l'occupation" }

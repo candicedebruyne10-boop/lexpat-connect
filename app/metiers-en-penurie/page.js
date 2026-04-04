@@ -44,8 +44,7 @@ export default function MetiersPage() {
         primaryLabel="Voir les profils disponibles"
         secondaryHref="/employeurs"
         secondaryLabel="Je recrute"
-        note="Cette page présente strictement les professions reprises dans votre base régionale LEXPAT Connect, organisée pour une lecture rapide côté employeur."
-        stats={[
+stats={[
           { value: "3", label: "Régions" },
           { value: "2026", label: "Base active" },
           { value: "Maj", label: "Mise à jour continue" }

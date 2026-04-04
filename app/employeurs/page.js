@@ -79,8 +79,7 @@ export default function EmployeursPage() {
         primaryLabel="Déposer un besoin"
         secondaryHref="/travailleurs"
         secondaryLabel="Voir le parcours travailleurs"
-        note="Le juridique n'intervient qu'après la mise en relation, si le recrutement le nécessite."
-        stats={[
+stats={[
           { value: "Poste", label: "Un besoin mieux structuré et immédiatement compréhensible" },
           { value: "Belgique", label: "Une approche pensée pour les métiers en pénurie et les réalités régionales" },
           { value: "Contact", label: "Une mise en relation plus rapide avec des travailleurs pertinents" }

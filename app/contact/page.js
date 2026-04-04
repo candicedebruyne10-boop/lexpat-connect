@@ -32,7 +32,6 @@ export default function ContactPage() {
         primaryLabel="Poser ma question"
         secondaryHref="/"
         secondaryLabel="Revenir à l'accueil"
-        note="La prise de contact reste simple : on commence par votre besoin, puis on vous oriente vers la bonne suite."
       />
 
       <Section
