@@ -219,15 +219,26 @@ export default function HistoireFondatricePage() {
         muted
       >
         <div className="mx-auto max-w-5xl rounded-[34px] border border-[#e5edf4] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-8 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-10">
-          <p className="text-base leading-8 text-[#4f6178] sm:text-lg">
-            Maître Candice Debruyne tient d’abord à remercier <strong className="text-[#1E3A78]">Etienne</strong>, son mentor et son amoureux, qui a fait germer ce projet dans son esprit et grâce à qui elle a osé y croire pleinement.
-          </p>
-          <p className="text-base leading-8 text-[#4f6178] sm:text-lg">
-            Maître Candice Debruyne tient à remercier <strong className="text-[#1E3A78]">Maître Zahra Yakoubi Kichaoui</strong>, dont l’aide précieuse a été déterminante, et sans qui cette plateforme n’aurait pas vu le jour.
-          </p>
-          <p className="mt-5 text-base leading-8 text-[#4f6178] sm:text-lg">
-            Elle remercie également <strong className="text-[#1E3A78]">Margaux Leguellec</strong>, qui l’a accompagnée avec rigueur, enthousiasme et détermination vers l’éclosion de ce projet qu’elle rêvait de faire naître depuis plus de cinq ans.
-          </p>
+          <ul className="space-y-5 text-base leading-8 text-[#4f6178] sm:text-lg">
+            <li className="flex gap-4">
+              <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#B5121B]" />
+              <span>
+                Je remercie d’abord <strong className="text-[#1E3A78]">Etienne</strong>, mon mentor et mon amoureux, qui a fait germer ce projet dans mon esprit et grâce à qui j’ai osé y croire pleinement.
+              </span>
+            </li>
+            <li className="flex gap-4">
+              <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#204E97]" />
+              <span>
+                Je remercie profondément <strong className="text-[#1E3A78]">Maître Zahra Yakoubi Kichaoui</strong>, dont l’aide précieuse a été déterminante, et sans qui cette plateforme n’aurait pas vu le jour.
+              </span>
+            </li>
+            <li className="flex gap-4">
+              <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#57B7AF]" />
+              <span>
+                Je remercie également <strong className="text-[#1E3A78]">Margaux Leguellec</strong>, qui m’a accompagnée avec rigueur, enthousiasme et détermination vers l’éclosion de ce projet dont je rêvais depuis plus de cinq ans.
+              </span>
+            </li>
+          </ul>
         </div>
       </Section>
 
