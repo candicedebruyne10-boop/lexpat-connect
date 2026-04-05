@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useAuth } from "./AuthProvider";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LEXPAT Connect — Module Messagerie MVP
@@ -1312,81 +1313,202 @@ function LexpatModal({ conversation, onClose }) {
    ROOT — MessagerieApp
    ══════════════════════════════════════════════════════════════════════════ */
 export default function MessagerieApp() {
-  const [conversations, setConversations] = useState(MOCK_CONVERSATIONS);
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
-  const [activeId, setActiveId] = useState(MOCK_CONVERSATIONS[0].id);
-  const [lexpatModal, setLexpatModal] = useState(null); // conversation | null
+  const { session, loading: authLoading } = useAuth();
+  const token = session?.access_token;
+
+  const [conversations, setConversations] = useState([]);
+  const [messages, setMessages] = useState({});       // { conversation_id: Message[] }
+  const [activeId, setActiveId] = useState(null);
+  const [loadingConvs, setLoadingConvs] = useState(true);
+  const [loadingMsgs, setLoadingMsgs] = useState(false);
+  const [lexpatModal, setLexpatModal] = useState(null);
 
   const activeConversation = conversations.find((c) => c.id === activeId) || null;
   const activeMessages = activeId ? (messages[activeId] || []) : [];
 
-  /* Mark as read on select */
-  const handleSelect = useCallback((id) => {
-    setActiveId(id);
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c))
-    );
-  }, []);
+  /* ── Charger les conversations réelles depuis Supabase ── */
+  useEffect(() => {
+    if (!token) return;
+    setLoadingConvs(true);
+    fetch("/api/conversations", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        const convs = d.conversations || [];
+        setConversations(convs);
+        if (convs.length > 0) setActiveId(convs[0].id);
+      })
+      .catch(console.error)
+      .finally(() => setLoadingConvs(false));
+  }, [token]);
 
-  /* Send message */
+  /* ── Charger les messages quand on change de conversation ── */
+  useEffect(() => {
+    if (!activeId || !token || messages[activeId]) return;
+    setLoadingMsgs(true);
+    fetch(`/api/messages?conversation_id=${activeId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        setMessages((prev) => ({ ...prev, [activeId]: d.messages || [] }));
+      })
+      .catch(console.error)
+      .finally(() => setLoadingMsgs(false));
+  }, [activeId, token]);
+
+  /* ── Sélectionner une conversation + marquer comme lu ── */
+  const handleSelect = useCallback(
+    (id) => {
+      setActiveId(id);
+      setConversations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c))
+      );
+      // Forcer le rechargement des messages si pas encore chargés
+      if (!messages[id]) {
+        setMessages((prev) => ({ ...prev })); // force re-run of effect
+      }
+    },
+    [messages]
+  );
+
+  /* ── Envoyer un message ── */
   const handleSendMessage = useCallback(
-    (content) => {
-      if (!activeId) return;
+    async (content) => {
+      if (!activeId || !token) return;
 
-      const newMsg = {
-        id: `msg_${activeId}_${Date.now()}`,
+      // Optimiste : affichage immédiat
+      const tempMsg = {
+        id: `temp_${Date.now()}`,
         conversation_id: activeId,
-        sender_type: "employer", // current user perspective
-        sender_id: activeConversation?.employer_id,
+        sender_type: "employer",
+        sender_id: activeConversation?.employer?.id || "",
         content,
         read: false,
         created_at: new Date().toISOString(),
       };
-
       setMessages((prev) => ({
         ...prev,
-        [activeId]: [...(prev[activeId] || []), newMsg],
+        [activeId]: [...(prev[activeId] || []), tempMsg],
       }));
 
-      setConversations((prev) =>
-        prev.map((c) =>
-          c.id === activeId
-            ? {
-                ...c,
-                last_message: content,
-                last_message_at: newMsg.created_at,
-                last_sender: "employer",
-                status:
-                  c.status === STATUS.MATCH_CONFIRMED
-                    ? STATUS.FIRST_MSG_SENT
-                    : c.status === STATUS.FIRST_MSG_SENT
-                    ? STATUS.DISCUSSION_ACTIVE
-                    : c.status,
-              }
-            : c
-        )
-      );
+      try {
+        const res = await fetch("/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ conversation_id: activeId, content }),
+        });
+        const data = await res.json();
+        if (data.message) {
+          // Remplacer le message temporaire par le vrai
+          setMessages((prev) => ({
+            ...prev,
+            [activeId]: (prev[activeId] || []).map((m) =>
+              m.id === tempMsg.id ? data.message : m
+            ),
+          }));
+          // Mettre à jour le dernier message dans la liste
+          setConversations((prev) =>
+            prev.map((c) =>
+              c.id === activeId
+                ? {
+                    ...c,
+                    last_message: content,
+                    last_message_at: data.message.created_at,
+                    last_sender: "employer",
+                    status:
+                      c.status === STATUS.MATCH_CONFIRMED
+                        ? STATUS.FIRST_MSG_SENT
+                        : c.status === STATUS.FIRST_MSG_SENT
+                        ? STATUS.DISCUSSION_ACTIVE
+                        : c.status,
+                  }
+                : c
+            )
+          );
+        }
+      } catch (err) {
+        // Retirer le message temporaire en cas d'erreur
+        setMessages((prev) => ({
+          ...prev,
+          [activeId]: (prev[activeId] || []).filter((m) => m.id !== tempMsg.id),
+        }));
+      }
 
       // AI_EVENT: on_message_sent — hook pour scoring comportemental
       // triggerEvent('message_sent', { conversation_id: activeId, content });
     },
-    [activeId, activeConversation]
+    [activeId, token, activeConversation]
   );
 
-  /* Update status */
-  const handleUpdateStatus = useCallback((convId, newStatus, actionOverrides = {}) => {
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id === convId
-          ? {
-              ...c,
-              status: newStatus,
-              actions: { ...c.actions, ...actionOverrides },
-            }
-          : c
-      )
+  /* ── Mettre à jour le statut ── */
+  const handleUpdateStatus = useCallback(
+    async (convId, newStatus, actionOverrides = {}) => {
+      // Optimiste
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === convId
+            ? { ...c, status: newStatus, actions: { ...c.actions, ...actionOverrides } }
+            : c
+        )
+      );
+      if (token) {
+        await fetch("/api/conversations", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            conversation_id: convId,
+            status: newStatus,
+            actions: Object.keys(actionOverrides).length > 0 ? actionOverrides : undefined,
+          }),
+        }).catch(console.error);
+      }
+    },
+    [token]
+  );
+
+  /* ── État de chargement ── */
+  if (authLoading || loadingConvs) {
+    return (
+      <div
+        className="flex items-center justify-center"
+        style={{ height: "calc(100vh - 72px)", background: C.surface }}
+      >
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"
+          style={{ borderColor: C.border, borderTopColor: "transparent" }}
+        />
+      </div>
     );
-  }, []);
+  }
+
+  /* ── Pas connecté ── */
+  if (!token) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center gap-4"
+        style={{ height: "calc(100vh - 72px)", background: C.surface }}
+      >
+        <p className="font-heading text-base font-semibold" style={{ color: C.dark }}>
+          Connectez-vous pour accéder à votre messagerie
+        </p>
+        <a
+          href="/connexion"
+          className="rounded-2xl px-6 py-3 font-heading text-sm font-bold text-white"
+          style={{ background: C.dark }}
+        >
+          Se connecter
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div
