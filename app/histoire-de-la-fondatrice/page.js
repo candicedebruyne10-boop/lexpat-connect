@@ -92,33 +92,33 @@ export default function HistoireFondatricePage() {
                 <div className="absolute -right-16 top-8 h-56 w-56 rounded-full bg-[#57b7af]/12 blur-3xl" />
                 <div className="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-[#ffffff]/8 blur-3xl" />
                 <div className="absolute right-10 top-10 h-24 w-24 rounded-full border border-white/10 bg-white/8 blur-2xl" />
-                <div className="relative mx-auto flex h-full max-w-md flex-col justify-between rounded-[34px] border border-white/12 bg-white/8 p-6 backdrop-blur-sm sm:p-8">
+                <div className="relative mx-auto flex h-full max-w-md flex-col justify-between p-2 sm:p-4">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#a9ece7]">
                       Fondatrice
                     </p>
                     <div className="mt-6">
-                      <div className="relative overflow-hidden rounded-[32px] border border-white/16 bg-white/10 shadow-[0_18px_40px_rgba(0,0,0,0.16)]">
-                        <div className="relative aspect-[4/5] w-full">
+                      <div className="relative overflow-hidden rounded-[28px] shadow-[0_18px_40px_rgba(0,0,0,0.16)]">
+                        <div className="relative mx-auto aspect-[4/5] w-full max-w-[320px] sm:max-w-[340px]">
                           <Image
                             src="/candice-profile.png"
                             alt="Maître Candice Debruyne"
                             fill
                             priority
-                            className="object-cover object-[50%_22%] scale-[1.04]"
-                            sizes="(min-width: 1024px) 420px, 100vw"
+                            className="object-cover object-[50%_22%] scale-[1.02]"
+                            sizes="(min-width: 1024px) 340px, 70vw"
                           />
                         </div>
                         <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(8,20,52,0.34),transparent)]" />
                         <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(to_top,rgba(5,15,40,0.96)_0%,rgba(5,15,40,0.86)_42%,rgba(5,15,40,0.18)_100%)] px-5 pb-5 pt-14">
-                          <div className="rounded-[22px] border border-white/10 bg-[rgba(6,16,42,0.56)] px-4 py-4 backdrop-blur-md">
+                          <div className="px-1 py-1">
                             <p className="text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-white">
                               Maître Candice Debruyne
                             </p>
                             <p className="mt-2 text-sm leading-7 text-white/88">
-                            Avocate en immigration économique
-                            <br />
-                            Fondatrice de LEXPAT Connect
+                              Avocate en immigration économique
+                              <br />
+                              Fondatrice de LEXPAT Connect
                             </p>
                           </div>
                         </div>
