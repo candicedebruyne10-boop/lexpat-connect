@@ -13,7 +13,7 @@ export async function GET(request) {
 
     const { data, error } = await supabase
       .from("worker_profiles")
-      .select("id, full_name, job_title, sector, region, experience, languages, profile_visibility, updated_at")
+      .select("id, full_name, target_job, target_sector, preferred_region, experience_level, languages, profile_visibility, updated_at")
       .eq("profile_visibility", "visible")
       .order("updated_at", { ascending: false });
 
@@ -24,9 +24,10 @@ export async function GET(request) {
     const profiles = (data || []).map((p, i) => ({
       id:         p.id,
       index:      i + 1,
-      sector:     p.sector     || "Non renseigné",
-      region:     normalizeRegion(p.region),
-      experience: p.experience || "Non renseignée",
+      jobTitle:   p.target_job || "Métier non renseigné",
+      sector:     p.target_sector || "Non renseigné",
+      region:     normalizeRegion(p.preferred_region),
+      experience: p.experience_level || "Non renseignée",
       languages:  Array.isArray(p.languages)
                     ? p.languages.join(", ")
                     : (p.languages || "Non renseignées"),

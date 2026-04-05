@@ -259,8 +259,14 @@ export default function RootLayout({ children }) {
                   <p className="mt-4 text-sm leading-7 text-[#607086]">
                     Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement.
                   </p>
-                  <div className="mt-5">
-                    <Link href="/accompagnement-juridique" className="secondary-button">
+                  <div className="mt-5 flex flex-col gap-3">
+                    <Link
+                      href="/histoire-de-la-fondatrice"
+                      className="inline-flex min-h-[3.15rem] items-center justify-center rounded-2xl border border-[#cfdcf0] bg-[linear-gradient(180deg,#ffffff_0%,#f6f9ff_100%)] px-5 py-3 text-sm font-bold text-[#1E3A78] shadow-[0_10px_24px_rgba(30,58,120,0.08)] transition hover:-translate-y-0.5 hover:border-[#b9cdea] hover:text-[#204E97] hover:shadow-[0_14px_28px_rgba(30,58,120,0.12)]"
+                    >
+                      L’histoire de la fondatrice
+                    </Link>
+                    <Link href="/accompagnement-juridique" className="secondary-button text-center">
                       Voir l'accompagnement
                     </Link>
                   </div>
