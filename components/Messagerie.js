@@ -606,7 +606,7 @@ function MessageBubble({ msg, conversation }) {
           style={
             isEmployer
               ? { background: C.dark, color: "#fff", borderBottomRightRadius: 4 }
-              : { background: "#fff", color: C.ink, border: `1px solid ${C.line}`, borderBottomLeftRadius: 4 }
+              : { background: C.tealSoft, color: C.ink, border: `1px solid rgba(87,183,175,0.28)`, borderBottomLeftRadius: 4 }
           }
         >
           {msg.content}
