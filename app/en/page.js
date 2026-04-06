@@ -3,6 +3,7 @@ import {
   DualEntry,
   ShortageJobsQuickLink,
   HowItWorksPremium,
+  PresentationVideoSection,
   JobSectors,
   LexpatStrip,
   CtaBannerDark
@@ -25,6 +26,7 @@ export default function HomePageEn() {
       <DualEntry locale="en" />
       <ShortageJobsQuickLink locale="en" />
       <HowItWorksPremium locale="en" />
+      <PresentationVideoSection locale="en" />
       <JobSectors locale="en" />
       <LexpatStrip locale="en" />
       <CtaBannerDark

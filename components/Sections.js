@@ -538,17 +538,17 @@ export function HowItWorksPremium({ locale = "fr" }) {
   );
 }
 
-export function PresentationVideoSection() {
+export function PresentationVideoSection({ locale = "fr" }) {
   return (
     <section className="py-2 sm:py-4 lg:py-6">
       <div className="container-shell">
         <div className="mx-auto max-w-2xl">
           <div className="mb-6 text-center">
             <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
-              Présentation
+              {locale === "en" ? "Presentation" : "Présentation"}
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-              Découvrez LEXPAT Connect en images
+              {locale === "en" ? "Discover LEXPAT Connect in video" : "Découvrez LEXPAT Connect en images"}
             </h2>
           </div>
 
@@ -561,8 +561,8 @@ export function PresentationVideoSection() {
                 playsInline
                 poster="/presentation-lexpat-connect-poster.png"
               >
-                <source src="/presentation-lexpat-connect.mp4" type="video/mp4" />
-                Votre navigateur ne prend pas en charge la lecture vidéo.
+                <source src={locale === "en" ? "/presentation-lexpat-connect-en.mp4" : "/presentation-lexpat-connect.mp4"} type="video/mp4" />
+                {locale === "en" ? "Your browser does not support video playback." : "Votre navigateur ne prend pas en charge la lecture vidéo."}
               </video>
             </div>
           </div>
