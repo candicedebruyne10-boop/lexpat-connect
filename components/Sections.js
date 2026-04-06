@@ -559,6 +559,7 @@ export function PresentationVideoSection() {
                 controls
                 preload="metadata"
                 playsInline
+                poster="/presentation-lexpat-connect-poster.png"
               >
                 <source src="/presentation-lexpat-connect.mp4" type="video/mp4" />
                 Votre navigateur ne prend pas en charge la lecture vidéo.
