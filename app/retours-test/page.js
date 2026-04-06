@@ -2,10 +2,10 @@ import { Hero, Section } from "../../components/Sections";
 import TestFeedbackForm from "../../components/TestFeedbackForm";
 
 const useCases = [
-  "Signaler un bug qui bloque un parcours",
-  "Noter un manque de clarté sur une page",
-  "Remonter une difficulté mobile ou navigateur",
-  "Partager une suggestion simple d'amélioration"
+  "Signaler un bug ou un blocage",
+  "Dire qu'une page n'est pas claire",
+  "Partager une idée simple d'amélioration",
+  "Nous aider à rendre la plateforme plus utile"
 ];
 
 export const metadata = {
@@ -18,14 +18,14 @@ export default function RetoursTestPage() {
   return (
     <>
       <Hero
-        badge="Test produit"
+        badge="Vos retours"
         title={
           <>
-            Centraliser les retours de test
-            <span className="block text-[#57b7af]">de Margaux et Zahra</span>
+            Aidez-nous à améliorer
+            <span className="block text-[#57b7af]">LEXPAT Connect</span>
           </>
         }
-        description="Un outil simple pour partager rapidement un bug, une incompréhension ou une idée d’amélioration pendant les tests du site."
+        description="Vous avez repéré un bug, une incompréhension ou simplement une idée utile ? Partagez-la ici en quelques lignes. Chaque retour nous aide à rendre la plateforme plus claire, plus fluide et plus humaine."
         primaryHref="#formulaire-retour"
         primaryLabel="Envoyer un retour"
         secondaryHref="/"
@@ -34,7 +34,7 @@ export default function RetoursTestPage() {
 
       <Section
         title="Quand utiliser cette page"
-        intro="Cette page sert à capter vite les retours utiles pendant les tests utilisateurs, sans passer par des messages éparpillés."
+        intro="Cette page est ouverte à toute personne qui teste le site ou qui souhaite nous faire un retour utile, sans passer par des messages dispersés."
         kicker="Usage conseillé"
       >
         <div className="grid gap-4 md:grid-cols-2">
@@ -50,8 +50,8 @@ export default function RetoursTestPage() {
       </Section>
 
       <Section
-        title="Partager un retour structuré"
-        intro="Choisissez la page testée, décrivez ce que vous avez observé et indiquez l’impact réel sur le parcours."
+        title="Partager un retour en quelques instants"
+        intro="Pas besoin de remplir un long formulaire. Indiquez simplement la page concernée, ce que vous avez remarqué et, si vous le souhaitez, votre idée d'amélioration."
         kicker="Formulaire"
         muted
       >

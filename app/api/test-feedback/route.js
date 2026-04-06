@@ -55,21 +55,21 @@ export async function POST(request) {
     const body = await request.json();
 
     const payload = {
-      tester_name: body.tester_name?.trim() || "",
+      tester_name: body.tester_name?.trim() || "Visiteur",
       page_label: body.page_label?.trim() || "",
-      feedback_type: body.feedback_type?.trim() || "",
-      priority: body.priority?.trim() || "",
+      feedback_type: body.feedback_type?.trim() || "Suggestion",
+      priority: body.priority?.trim() || "À améliorer",
       device: body.device?.trim() || "",
       browser: body.browser?.trim() || "",
-      summary: body.summary?.trim() || "",
+      summary: body.summary?.trim() || body.details?.trim().slice(0, 120) || "",
       details: body.details?.trim() || "",
       expected_result: body.expected_result?.trim() || "",
       suggested_fix: body.suggested_fix?.trim() || ""
     };
 
-    if (!required(payload.tester_name) || !required(payload.page_label) || !required(payload.feedback_type) || !required(payload.priority) || !required(payload.summary) || !required(payload.details)) {
+    if (!required(payload.page_label) || !required(payload.feedback_type) || !required(payload.priority) || !required(payload.summary) || !required(payload.details)) {
       return NextResponse.json(
-        { error: "Merci de compléter au minimum le testeur, la page, le type, la priorité, le résumé et l'observation." },
+        { error: "Merci de compléter au minimum la page concernée et votre retour." },
         { status: 400 }
       );
     }
