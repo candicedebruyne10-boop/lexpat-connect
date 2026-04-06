@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function EspaceTravailleurPage() {
-  return <WorkerSpace />;
+  return <WorkerSpace locale="fr" />;
 }

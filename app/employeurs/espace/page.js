@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function EspaceEmployeurPage() {
-  return <EmployerSpace />;
+  return <EmployerSpace locale="fr" />;
 }

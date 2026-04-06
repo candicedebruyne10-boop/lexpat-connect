@@ -13,12 +13,23 @@ import {
   sectorOptions
 } from "../lib/professions";
 
-const sidebarItems = [
-  { id: "dashboard", label: "Tableau de bord" },
-  { id: "company", label: "Mon entreprise" },
-  { id: "offers", label: "Mes offres" },
-  { id: "matches", label: "Profils matchés" }
-];
+function getSidebarItems(locale) {
+  if (locale === "en") {
+    return [
+      { id: "dashboard", label: "Dashboard" },
+      { id: "company", label: "My company" },
+      { id: "offers", label: "My openings" },
+      { id: "matches", label: "Matched profiles" }
+    ];
+  }
+
+  return [
+    { id: "dashboard", label: "Tableau de bord" },
+    { id: "company", label: "Mon entreprise" },
+    { id: "offers", label: "Mes offres" },
+    { id: "matches", label: "Profils matchés" }
+  ];
+}
 
 const toneClasses = {
   blue: "bg-[#eef5ff] text-[#1d3b8b]",
@@ -27,32 +38,63 @@ const toneClasses = {
   green: "bg-[#eef9f1] text-[#2f9d57]"
 };
 
-const companyFields = [
-  { name: "companyName", label: "Nom de l'entreprise", placeholder: "Raison sociale" },
-  {
-    name: "sector",
-    label: "Secteur principal",
-    type: "select",
-    options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Autre"]
-  },
-  { name: "contactName", label: "Personne de contact", placeholder: "Prénom Nom" },
-  { name: "email", label: "Email professionnel", type: "email", placeholder: "contact@entreprise.be" },
-  { name: "phone", label: "Téléphone", placeholder: "+32 ..." },
-  { name: "website", label: "Site internet", placeholder: "https://..." },
-  {
-    name: "region",
-    label: "Région principale",
-    type: "select",
-    options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Plusieurs régions"]
-  },
-  {
-    name: "description",
-    label: "Description de l'entreprise",
-    type: "textarea",
-    placeholder: "Présentez brièvement l'activité, la taille et le contexte de l'entreprise.",
-    wide: true
+function getCompanyFields(locale) {
+  if (locale === "en") {
+    return [
+      { name: "companyName", label: "Company name", placeholder: "Legal entity name" },
+      {
+        name: "sector",
+        label: "Main sector",
+        type: "select",
+        options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Autre"]
+      },
+      { name: "contactName", label: "Contact person", placeholder: "First name Last name" },
+      { name: "email", label: "Business email", type: "email", placeholder: "contact@company.be" },
+      { name: "phone", label: "Phone", placeholder: "+32 ..." },
+      { name: "website", label: "Website", placeholder: "https://..." },
+      {
+        name: "region",
+        label: "Main region",
+        type: "select",
+        options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Plusieurs régions"]
+      },
+      {
+        name: "description",
+        label: "Company description",
+        type: "textarea",
+        placeholder: "Briefly present the activity, size and hiring context of the company.",
+        wide: true
+      }
+    ];
   }
-];
+
+  return [
+    { name: "companyName", label: "Nom de l'entreprise", placeholder: "Raison sociale" },
+    {
+      name: "sector",
+      label: "Secteur principal",
+      type: "select",
+      options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Autre"]
+    },
+    { name: "contactName", label: "Personne de contact", placeholder: "Prénom Nom" },
+    { name: "email", label: "Email professionnel", type: "email", placeholder: "contact@entreprise.be" },
+    { name: "phone", label: "Téléphone", placeholder: "+32 ..." },
+    { name: "website", label: "Site internet", placeholder: "https://..." },
+    {
+      name: "region",
+      label: "Région principale",
+      type: "select",
+      options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Plusieurs régions"]
+    },
+    {
+      name: "description",
+      label: "Description de l'entreprise",
+      type: "textarea",
+      placeholder: "Présentez brièvement l'activité, la taille et le contexte de l'entreprise.",
+      wide: true
+    }
+  ];
+}
 
 function Field({ field, value, onChange }) {
   const base = "field-input";
@@ -80,8 +122,9 @@ function Field({ field, value, onChange }) {
   );
 }
 
-function DashboardView({ token, onNavigate }) {
+function DashboardView({ token, onNavigate, locale }) {
   const [stats, setStats] = useState({ offers: 0, matches: 0 });
+  const isEn = locale === "en";
 
   useEffect(() => {
     if (!token) return;
@@ -97,10 +140,10 @@ function DashboardView({ token, onNavigate }) {
   }, [token]);
 
   const displayStats = [
-    { label: "Offres publiées", value: stats.offers, tone: "blue" },
-    { label: "Profils matchés", value: stats.matches, tone: "teal" },
-    { label: "Dossiers à clarifier", value: 0, tone: "amber" },
-    { label: "Recrutements finalisés", value: 0, tone: "green" }
+    { label: isEn ? "Published openings" : "Offres publiées", value: stats.offers, tone: "blue" },
+    { label: isEn ? "Matched profiles" : "Profils matchés", value: stats.matches, tone: "teal" },
+    { label: isEn ? "Files to clarify" : "Dossiers à clarifier", value: 0, tone: "amber" },
+    { label: isEn ? "Completed hires" : "Recrutements finalisés", value: 0, tone: "green" }
   ];
 
   return (
@@ -108,14 +151,16 @@ function DashboardView({ token, onNavigate }) {
       <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace employeur</p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Tableau de bord recrutement</h1>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "Employer space" : "Espace employeur"}</p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Recruitment dashboard" : "Tableau de bord recrutement"}</h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5f7086]">
-              Suivez vos offres publiées et les profils matchés automatiquement par le moteur LEXPAT Connect.
+              {isEn
+                ? "Track your published openings and the profiles automatically matched by the LEXPAT Connect engine."
+                : "Suivez vos offres publiées et les profils matchés automatiquement par le moteur LEXPAT Connect."}
             </p>
           </div>
           <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            Matching : <span className="font-semibold text-[#1d3b8b]">actif</span>
+            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{isEn ? "active" : "actif"}</span>
           </div>
         </div>
       </section>
@@ -125,7 +170,7 @@ function DashboardView({ token, onNavigate }) {
           <article
             key={item.label}
             className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] cursor-pointer transition hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
-            onClick={() => item.label === "Profils matchés" ? onNavigate("matches") : item.label === "Offres publiées" ? onNavigate("offers") : null}
+            onClick={() => item.label === (isEn ? "Matched profiles" : "Profils matchés") ? onNavigate("matches") : item.label === (isEn ? "Published openings" : "Offres publiées") ? onNavigate("offers") : null}
           >
             <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-semibold ${toneClasses[item.tone]}`}>
               {item.value}
@@ -136,19 +181,21 @@ function DashboardView({ token, onNavigate }) {
       </section>
 
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Relais juridique</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Legal support" : "Relais juridique"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
-          Quand un recrutement avance vers un permis unique ou une situation d'immigration économique, le cabinet LEXPAT intervient dans un périmètre séparé de la plateforme.
+          {isEn
+            ? "When a recruitment process moves into single permit or economic immigration territory, LEXPAT Law Firm steps in separately from the platform."
+            : "Quand un recrutement avance vers un permis unique ou une situation d'immigration économique, le cabinet LEXPAT intervient dans un périmètre séparé de la plateforme."}
         </p>
         <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
-          Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné.
+          {isEn ? "Each opening can trigger an automated legal review as soon as a foreign profile is shortlisted." : "Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné."}
         </div>
       </section>
     </div>
   );
 }
 
-function CompanyView({ token }) {
+function CompanyView({ token, locale }) {
   const [values, setValues] = useState({
     companyName: "",
     sector: "",
@@ -163,6 +210,7 @@ function CompanyView({ token }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const isEn = locale === "en";
 
   const updateValue = useCallback((key, value) => {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -187,7 +235,7 @@ function CompanyView({ token }) {
         }
       })
       .catch(() => {
-        setError("Impossible de charger la fiche entreprise.");
+        setError(isEn ? "Unable to load the company profile." : "Impossible de charger la fiche entreprise.");
       })
       .finally(() => setLoading(false));
   }, [token]);
@@ -210,10 +258,10 @@ function CompanyView({ token }) {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || "Impossible d'enregistrer l'entreprise.");
+        throw new Error(data.error || (isEn ? "Unable to save the company profile." : "Impossible d'enregistrer l'entreprise."));
       }
 
-      setMessage(`Fiche entreprise enregistrée. Complétude : ${data.completion}%`);
+      setMessage(isEn ? `Company profile saved. Completion: ${data.completion}%` : `Fiche entreprise enregistrée. Complétude : ${data.completion}%`);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -224,15 +272,15 @@ function CompanyView({ token }) {
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mon entreprise</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Structurer votre fiche employeur</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Centralisez les éléments qui permettent de présenter votre entreprise, votre contexte de recrutement et vos critères de sélection de manière plus sérieuse.</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My company" : "Mon entreprise"}</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Structure your employer profile" : "Structurer votre fiche employeur"}</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">{isEn ? "Centralise the information that helps present your company, your hiring context and your selection criteria in a stronger way." : "Centralisez les éléments qui permettent de présenter votre entreprise, votre contexte de recrutement et vos critères de sélection de manière plus sérieuse."}</p>
       </section>
 
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Informations entreprise</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Company information" : "Informations entreprise"}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
-          Cette fiche structure votre présence employeur et sert de base aux prochains recrutements publiés sur la plateforme.
+          {isEn ? "This profile structures your employer presence and becomes the foundation for future openings published on the platform." : "Cette fiche structure votre présence employeur et sert de base aux prochains recrutements publiés sur la plateforme."}
         </p>
 
         {loading ? (
@@ -242,7 +290,7 @@ function CompanyView({ token }) {
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 space-y-6">
             <div className="grid gap-5 md:grid-cols-2">
-              {companyFields.map((field) => (
+              {getCompanyFields(locale).map((field) => (
                 <Field key={field.name} field={field} value={values[field.name] || ""} onChange={updateValue} />
               ))}
             </div>
@@ -261,7 +309,7 @@ function CompanyView({ token }) {
 
             <div className="flex justify-end">
               <button disabled={saving} className="primary-button disabled:cursor-not-allowed disabled:opacity-70">
-                {saving ? "Enregistrement…" : "Enregistrer l'entreprise"}
+                {saving ? (isEn ? "Saving…" : "Enregistrement…") : isEn ? "Save company profile" : "Enregistrer l'entreprise"}
               </button>
             </div>
           </form>
@@ -271,13 +319,14 @@ function CompanyView({ token }) {
   );
 }
 
-function CreateOfferForm({ onSuccess, token }) {
+function CreateOfferForm({ onSuccess, token, locale }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [values, setValues] = useState({
     title: "", profession: "", otherProfession: "", sector: "", region: "", contract: "", urgency: "", email: "", description: ""
   });
+  const isEn = locale === "en";
 
   function set(key, value) {
     setValues((prev) => {
@@ -334,7 +383,7 @@ function CreateOfferForm({ onSuccess, token }) {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi.");
+      if (!res.ok) throw new Error(data.error || (isEn ? "Error while sending the opening." : "Erreur lors de l'envoi."));
 
       setValues({ title: "", profession: "", otherProfession: "", sector: "", region: "", contract: "", urgency: "", email: "", description: "" });
       setOpen(false);
@@ -349,12 +398,12 @@ function CreateOfferForm({ onSuccess, token }) {
   if (!open) {
     return (
       <section className="rounded-[30px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-6 sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">Créer une nouvelle offre</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Create a new opening" : "Créer une nouvelle offre"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
-          Déposez votre besoin de recrutement. Il sera transmis directement à LEXPAT Connect pour traitement et mise en relation.
+          {isEn ? "Submit your hiring need. It will be sent directly to LEXPAT Connect for review and matching." : "Déposez votre besoin de recrutement. Il sera transmis directement à LEXPAT Connect pour traitement et mise en relation."}
         </p>
         <button onClick={() => setOpen(true)} className="primary-button mt-5">
-          Ajouter une offre
+          {isEn ? "Add an opening" : "Ajouter une offre"}
         </button>
       </section>
     );
@@ -364,8 +413,8 @@ function CreateOfferForm({ onSuccess, token }) {
     <section className="rounded-[30px] border border-[#d4e2f4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Nouvelle offre</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#1d3b8b]">Décrivez votre besoin de recrutement</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "New opening" : "Nouvelle offre"}</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Describe your hiring need" : "Décrivez votre besoin de recrutement"}</h2>
         </div>
         <button
           onClick={() => { setOpen(false); setError(""); }}
@@ -380,7 +429,7 @@ function CreateOfferForm({ onSuccess, token }) {
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(utilisé pour le matching)</span></span>
           <select className="field-input" required value={values.sector} onChange={(e) => set("sector", e.target.value)}>
-            <option value="" disabled>Sélectionnez un secteur</option>
+            <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
             {sectorOptions.map((option) => (
               <option key={option} value={option}>{option}</option>
             ))}
@@ -388,19 +437,19 @@ function CreateOfferForm({ onSuccess, token }) {
         </label>
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Région *</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Region" : "Région"} *</span>
           <RegionSelector
             value={parseRegionSelection(values.region)}
             onChange={(nextRegions) => set("region", nextRegions)}
-            helperText="Sélectionnez une, deux ou trois régions selon votre besoin de recrutement."
+            helperText={isEn ? "Select one, two or three regions depending on your hiring scope." : "Sélectionnez une, deux ou trois régions selon votre besoin de recrutement."}
           />
         </label>
 
         <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Métier recherché *</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Target role" : "Métier recherché"} *</span>
           {values.region ? (
             <select className="field-input" required value={values.profession} onChange={(e) => set("profession", e.target.value)}>
-              <option value="" disabled>Sélectionnez le métier visé</option>
+              <option value="" disabled>{isEn ? "Select the target role" : "Sélectionnez le métier visé"}</option>
               {getProfessionGroupsForRegions(values.region).map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.options.map((profession) => (
@@ -411,31 +460,31 @@ function CreateOfferForm({ onSuccess, token }) {
             </select>
           ) : (
             <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
-              Sélectionnez d'abord une région pour choisir un métier
+              {isEn ? "Select a region first to choose a role" : "Sélectionnez d'abord une région pour choisir un métier"}
             </div>
           )}
           {parseRegionSelection(values.region).length === 1 ? (
             <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
-              Liste officielle des métiers en pénurie pour {parseRegionSelection(values.region)[0]} — mise à jour 2026
+              {isEn ? `Official shortage occupation list for ${parseRegionSelection(values.region)[0]} — updated 2026` : `Liste officielle des métiers en pénurie pour ${parseRegionSelection(values.region)[0]} — mise à jour 2026`}
             </p>
           ) : values.region ? (
             <p className="mt-1.5 text-[11px] text-[#8a9bb0]">
-              Liste consolidée des métiers en pénurie 2026 pour les régions sélectionnées.
+              {isEn ? "Consolidated 2026 shortage occupation list for the selected regions." : "Liste consolidée des métiers en pénurie 2026 pour les régions sélectionnées."}
             </p>
           ) : null}
         </label>
 
         {values.profession === "Autre profession" ? (
           <label className="md:col-span-2">
-            <span className="mb-2 block text-sm font-semibold text-[#17345d]">Autre profession / précision *</span>
-            <input className="field-input" type="text" placeholder="Précisez l'intitulé exact du poste" required value={values.otherProfession} onChange={(e) => set("otherProfession", e.target.value)} />
+            <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Other role / details" : "Autre profession / précision"} *</span>
+            <input className="field-input" type="text" placeholder={isEn ? "Specify the exact job title" : "Précisez l'intitulé exact du poste"} required value={values.otherProfession} onChange={(e) => set("otherProfession", e.target.value)} />
           </label>
         ) : null}
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Type de contrat</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Contract type" : "Type de contrat"}</span>
           <select className="field-input" value={values.contract} onChange={(e) => set("contract", e.target.value)}>
-            <option value="" disabled>Sélectionnez un type</option>
+            <option value="" disabled>{isEn ? "Select a type" : "Sélectionnez un type"}</option>
             <option>CDI</option>
             <option>CDD</option>
             <option>Intérim</option>
@@ -445,9 +494,9 @@ function CreateOfferForm({ onSuccess, token }) {
         </label>
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Niveau d'urgence</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Urgency level" : "Niveau d'urgence"}</span>
           <select className="field-input" value={values.urgency} onChange={(e) => set("urgency", e.target.value)}>
-            <option value="" disabled>Sélectionnez un niveau</option>
+            <option value="" disabled>{isEn ? "Select a level" : "Sélectionnez un niveau"}</option>
             <option>Normal</option>
             <option>Urgent</option>
             <option>Très urgent</option>
@@ -455,11 +504,11 @@ function CreateOfferForm({ onSuccess, token }) {
         </label>
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Email de contact *</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Contact email" : "Email de contact"} *</span>
           <input
             className="field-input"
             type="email"
-            placeholder="contact@entreprise.be"
+            placeholder={isEn ? "contact@company.be" : "contact@entreprise.be"}
             required
             value={values.email}
             onChange={(e) => set("email", e.target.value)}
@@ -467,10 +516,10 @@ function CreateOfferForm({ onSuccess, token }) {
         </label>
 
         <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Description du besoin</span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Opening summary" : "Description du besoin"}</span>
           <textarea
             className="field-input min-h-[8rem]"
-            placeholder="Compétences attendues, expérience, contexte, disponibilité souhaitée…"
+            placeholder={isEn ? "Expected skills, experience, context, preferred timing…" : "Compétences attendues, expérience, contexte, disponibilité souhaitée…"}
             rows={5}
             value={values.description}
             onChange={(e) => set("description", e.target.value)}
@@ -484,12 +533,12 @@ function CreateOfferForm({ onSuccess, token }) {
         )}
 
         <div className="md:col-span-2 rounded-[18px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-3 text-sm text-[#4e6380]">
-          Intitulé retenu pour le matching : <span className="font-semibold text-[#1d3b8b]">{values.profession === "Autre profession" ? values.otherProfession || "À préciser" : values.profession || "Non sélectionné"}</span>
+          {isEn ? "Role used for matching:" : "Intitulé retenu pour le matching :"} <span className="font-semibold text-[#1d3b8b]">{values.profession === "Autre profession" ? values.otherProfession || (isEn ? "To be specified" : "À préciser") : values.profession || (isEn ? "Not selected" : "Non sélectionné")}</span>
         </div>
 
         <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm leading-6 text-[#6b7b8f]">
-            Votre offre sera transmise à LEXPAT Connect. Vous recevrez une confirmation par email.
+            {isEn ? "Your opening will be sent to LEXPAT Connect. You will receive a confirmation by email." : "Votre offre sera transmise à LEXPAT Connect. Vous recevrez une confirmation par email."}
           </p>
           <div className="flex gap-3">
             <button
@@ -497,10 +546,10 @@ function CreateOfferForm({ onSuccess, token }) {
               onClick={() => { setOpen(false); setError(""); }}
               className="secondary-button"
             >
-              Annuler
+              {isEn ? "Cancel" : "Annuler"}
             </button>
             <button type="submit" disabled={loading} className="primary-button disabled:cursor-not-allowed disabled:opacity-70">
-              {loading ? "Envoi…" : "Soumettre l'offre"}
+              {loading ? (isEn ? "Sending…" : "Envoi…") : isEn ? "Submit opening" : "Soumettre l'offre"}
             </button>
           </div>
         </div>
@@ -509,9 +558,10 @@ function CreateOfferForm({ onSuccess, token }) {
   );
 }
 
-function OffersView({ token }) {
+function OffersView({ token, locale }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [offers, setOffers] = useState([]);
+  const isEn = locale === "en";
 
   const refreshOffers = useCallback(() => {
     if (!token) return;
@@ -526,9 +576,9 @@ function OffersView({ token }) {
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Mes offres</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Préparer et suivre vos besoins de recrutement</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">Déposez vos offres directement depuis cet espace. Chaque besoin sera transmis à LEXPAT Connect pour traitement et mise en relation.</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My openings" : "Mes offres"}</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Create and manage your hiring needs" : "Préparer et suivre vos besoins de recrutement"}</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">{isEn ? "Submit your openings directly from this space. Each need is sent to LEXPAT Connect for review and matching." : "Déposez vos offres directement depuis cet espace. Chaque besoin sera transmis à LEXPAT Connect pour traitement et mise en relation."}</p>
       </section>
 
       {successMsg && (
@@ -549,7 +599,7 @@ function OffersView({ token }) {
                   </p>
                 </div>
                 <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">
-                  {offer.status === "published" ? "Publiée" : offer.status === "draft" ? "Brouillon" : offer.status}
+                  {offer.status === "published" ? (isEn ? "Published" : "Publiée") : offer.status === "draft" ? (isEn ? "Draft" : "Brouillon") : offer.status}
                 </span>
               </div>
             </article>
@@ -559,17 +609,19 @@ function OffersView({ token }) {
 
       <CreateOfferForm
         token={token}
-        onSuccess={() => { setSuccessMsg("Offre enregistrée et publiée."); refreshOffers(); }}
+        locale={locale}
+        onSuccess={() => { setSuccessMsg(isEn ? "Opening saved and published." : "Offre enregistrée et publiée."); refreshOffers(); }}
       />
     </div>
   );
 }
 
-function MatchesView({ token }) {
+function MatchesView({ token, locale }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null); // matchId en cours
   const [openingChat, setOpeningChat] = useState(null); // matchId en cours d'ouverture
+  const isEn = locale === "en";
 
   const handleOpenMessagerie = async (matchId) => {
     setOpeningChat(matchId);
@@ -582,11 +634,11 @@ function MatchesView({ token }) {
       const data = await response.json();
       const conversationId = data?.conversation?.id;
       window.location.href = conversationId
-        ? `/messagerie?conversation=${conversationId}`
-        : "/messagerie";
+        ? `${isEn ? "/en" : ""}/messagerie?conversation=${conversationId}`
+        : `${isEn ? "/en" : ""}/messagerie`;
     } catch (e) {
       console.error(e);
-      window.location.href = "/messagerie";
+      window.location.href = `${isEn ? "/en" : ""}/messagerie`;
     }
   };
 
@@ -629,9 +681,9 @@ function MatchesView({ token }) {
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Matching</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">Profils matchés à vos offres</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Profiles matched to your openings" : "Profils matchés à vos offres"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
-          Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les données identifiantes ne sont partagées qu'après validation du match.
+          {isEn ? "The LEXPAT Connect engine automatically compares your openings with available worker profiles. Identifying details are only shared after the match is confirmed." : "Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les données identifiantes ne sont partagées qu'après validation du match."}
         </p>
       </section>
 
@@ -639,7 +691,7 @@ function MatchesView({ token }) {
         <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" /></div>
       ) : matches.length === 0 ? (
         <div className="rounded-[28px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-8 text-center text-sm text-[#5f7086]">
-          Aucun match pour l'instant. Publiez une offre avec un secteur pour déclencher le matching automatique.
+          {isEn ? "No matches yet. Publish an opening with a sector to trigger automatic matching." : "Aucun match pour l'instant. Publiez une offre avec un secteur pour déclencher le matching automatique."}
         </div>
       ) : (
         <div className="grid gap-5 lg:grid-cols-2">
@@ -649,7 +701,7 @@ function MatchesView({ token }) {
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#57b7af]">{match.offer?.title}</p>
                   <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#1d3b8b]">
-                    {match.worker?.job_title || "Profil en cours de complétion"}
+                    {match.worker?.job_title || (isEn ? "Profile being completed" : "Profil en cours de complétion")}
                   </h2>
                   <p className="mt-1 text-sm text-[#5f7086]">
                     {[match.worker?.sector, match.worker?.region, match.worker?.experience].filter(Boolean).join(" · ")}
@@ -661,8 +713,8 @@ function MatchesView({ token }) {
               </div>
               <div className="mt-4 rounded-[20px] border border-[#ebf0f6] bg-[#f9fbfd] px-4 py-3 text-xs text-[#5f7086]">
                 {match.status?.toLowerCase() === "contacted"
-                  ? <>Statut : <span className="font-semibold text-[#2f9d57]">Match confirmé</span> — Les coordonnées sont débloquées.</>
-                  : <>Statut : <span className="font-semibold capitalize">{match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.</>
+                  ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— contact details are unlocked." : "— Les coordonnées sont débloquées."}</>
+                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status}</span> {isEn ? "— the worker's details will become available once contact is confirmed." : "— Les coordonnées du profil seront accessibles après confirmation du contact."}</>
                 }
               </div>
 
@@ -672,34 +724,34 @@ function MatchesView({ token }) {
                   /* Match confirmé des deux côtés */
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 rounded-[16px] bg-[#eef9f1] px-4 py-2.5 text-sm font-semibold text-[#2f9d57]">
-                      <span>✓</span> Match confirmé — les coordonnées sont débloquées
+                      <span>✓</span> {isEn ? "Confirmed match — contact details are unlocked" : "Match confirmé — les coordonnées sont débloquées"}
                     </div>
                     <button
                       onClick={() => handleOpenMessagerie(match.id)}
                       disabled={openingChat === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#1E3A78] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#162d6b] disabled:opacity-60"
                     >
-                      {openingChat === match.id ? "Ouverture…" : "Ouvrir la messagerie →"}
+                      {openingChat === match.id ? (isEn ? "Opening…" : "Ouverture…") : isEn ? "Open chat →" : "Ouvrir la messagerie →"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "reviewed" ? (
                   /* Le travailleur a déjà manifesté son intérêt */
                   <div className="flex flex-col gap-2">
                     <div className="rounded-[16px] border border-[#57b7af]/30 bg-[#eaf4f3] px-4 py-2.5 text-xs text-[#33566b]">
-                      ✦ Ce candidat est intéressé par votre offre
+                      ✦ {isEn ? "This candidate is interested in your opening" : "Ce candidat est intéressé par votre offre"}
                     </div>
                     <button
                       onClick={() => handleInterest(match.id, match.status)}
                       disabled={acting === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#1E3A78] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#162d6b] disabled:opacity-60"
                     >
-                      {acting === match.id ? "…" : "Confirmer mon intérêt → Match confirmé"}
+                      {acting === match.id ? "…" : isEn ? "Confirm my interest → confirm the match" : "Confirmer mon intérêt → Match confirmé"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "interested" ? (
                   /* Employeur a déjà cliqué, en attente du candidat */
                   <div className="rounded-[16px] border border-[#c5d4f3] bg-[#eef1fb] px-4 py-2.5 text-xs text-[#5f7086]">
-                    En attente de la réponse du candidat…
+                    {isEn ? "Waiting for the candidate's response…" : "En attente de la réponse du candidat…"}
                   </div>
                 ) : (
                   /* Statut new / par défaut */
@@ -708,7 +760,7 @@ function MatchesView({ token }) {
                     disabled={acting === match.id}
                     className="flex w-full items-center justify-center gap-2 rounded-[16px] bg-[#1E3A78] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#162d6b] disabled:opacity-60"
                   >
-                    {acting === match.id ? "…" : "Intéressé par ce profil →"}
+                    {acting === match.id ? "…" : isEn ? "Interested in this profile →" : "Intéressé par ce profil →"}
                   </button>
                 )}
               </div>
@@ -720,10 +772,12 @@ function MatchesView({ token }) {
   );
 }
 
-export default function EmployerSpace() {
+export default function EmployerSpace({ locale = "fr" }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const { user, session, loading } = useAuth();
   const router = useRouter();
+  const isEn = locale === "en";
+  const sidebarItems = getSidebarItems(locale);
 
   const token = session?.access_token ?? null;
 
@@ -737,9 +791,9 @@ export default function EmployerSpace() {
   // Redirection si non connecté (après chargement)
   useEffect(() => {
     if (!loading && !session) {
-      router.replace("/connexion");
+      router.replace(isEn ? "/en/connexion" : "/connexion");
     }
-  }, [loading, session, router]);
+  }, [loading, session, router, isEn]);
 
   if (loading || !session) {
     return (
@@ -759,8 +813,8 @@ export default function EmployerSpace() {
                 <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="64px" />
               </div>
               <div>
-                <p className="text-lg font-semibold text-[#17345d]">Profil employeur</p>
-                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">Entreprise</span>
+                <p className="text-lg font-semibold text-[#17345d]">{isEn ? "Employer profile" : "Profil employeur"}</p>
+                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">{isEn ? "Company" : "Entreprise"}</span>
               </div>
             </div>
 
@@ -782,20 +836,20 @@ export default function EmployerSpace() {
             </nav>
 
             <div className="mt-8 rounded-[24px] border border-[#e7eef5] bg-[#f9fbfd] p-5">
-              <p className="text-sm font-semibold text-[#17345d]">Complétude de l'espace</p>
+              <p className="text-sm font-semibold text-[#17345d]">{isEn ? "Space completion" : "Complétude de l'espace"}</p>
               <p className="mt-2 text-3xl font-semibold tracking-tight text-[#d94b4b]">{completion}%</p>
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e3eaf1]">
                 <div className="h-full rounded-full bg-[linear-gradient(90deg,#57b7af_0%,#1d3b8b_100%)]" style={{ width: `${completion}%` }} />
               </div>
-              <p className="mt-4 text-sm leading-7 text-[#6d7d91]">Complétez la fiche entreprise et préparez vos offres pour rendre vos recrutements plus lisibles et plus crédibles.</p>
+              <p className="mt-4 text-sm leading-7 text-[#6d7d91]">{isEn ? "Complete your company profile and prepare your openings to make your hiring process clearer and more credible." : "Complétez la fiche entreprise et préparez vos offres pour rendre vos recrutements plus lisibles et plus crédibles."}</p>
             </div>
           </aside>
 
           <div>
-            {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} /> : null}
-            {activeTab === "company" ? <CompanyView token={token} /> : null}
-            {activeTab === "offers" ? <OffersView token={token} /> : null}
-            {activeTab === "matches" ? <MatchesView token={token} /> : null}
+            {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} locale={locale} /> : null}
+            {activeTab === "company" ? <CompanyView token={token} locale={locale} /> : null}
+            {activeTab === "offers" ? <OffersView token={token} locale={locale} /> : null}
+            {activeTab === "matches" ? <MatchesView token={token} locale={locale} /> : null}
           </div>
         </div>
       </div>
