@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -20,7 +21,8 @@ function getSidebarItems(locale) {
       { id: "dashboard", label: "Dashboard" },
       { id: "matches", label: "My matches" },
       { id: "profile", label: "My profile" },
-      { id: "cv", label: "My CV" }
+      { id: "cv", label: "My CV" },
+      { id: "messaging", label: "Messaging", href: "/en/messagerie" }
     ];
   }
 
@@ -28,7 +30,8 @@ function getSidebarItems(locale) {
     { id: "dashboard", label: "Tableau de bord" },
     { id: "matches", label: "Mes matchs" },
     { id: "profile", label: "Mon profil" },
-    { id: "cv", label: "Mon CV" }
+    { id: "cv", label: "Mon CV" },
+    { id: "messaging", label: "Messagerie", href: "/messagerie" }
   ];
 }
 
@@ -915,18 +918,29 @@ export default function WorkerSpace({ locale = "fr" }) {
 
             <nav className="mt-6 space-y-2">
               {sidebarItems.map((item) => (
-                <button
+                item.href ? (
+                <Link
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex w-full items-center justify-between rounded-[20px] px-4 py-3 text-left text-sm font-semibold transition ${
-                    activeTab === item.id
-                      ? "bg-[#eef5ff] text-[#1d3b8b] shadow-[inset_0_0_0_1px_rgba(160,184,216,0.45)]"
-                      : "text-[#5f7086] hover:bg-[#f8fbff] hover:text-[#1d3b8b]"
-                  }`}
+                  href={item.href}
+                  className="flex w-full items-center justify-between rounded-[20px] px-4 py-3 text-left text-sm font-semibold text-[#5f7086] transition hover:bg-[#f8fbff] hover:text-[#1d3b8b]"
                 >
                   <span>{item.label}</span>
                   <span className="text-[#8ea1bb]">›</span>
-                </button>
+                </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`flex w-full items-center justify-between rounded-[20px] px-4 py-3 text-left text-sm font-semibold transition ${
+                      activeTab === item.id
+                        ? "bg-[#eef5ff] text-[#1d3b8b] shadow-[inset_0_0_0_1px_rgba(160,184,216,0.45)]"
+                        : "text-[#5f7086] hover:bg-[#f8fbff] hover:text-[#1d3b8b]"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <span className="text-[#8ea1bb]">›</span>
+                  </button>
+                )
               ))}
             </nav>
 

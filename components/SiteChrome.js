@@ -21,9 +21,7 @@ export default function SiteChrome({ children }) {
     { href: "/", label: copy.nav.home },
     { href: "/employeurs", label: copy.nav.employers, color: "blue" },
     { href: "/travailleurs", label: copy.nav.workers, color: "teal" },
-    { href: "/permis-unique", label: copy.nav.immigration, color: "slate" },
-    { href: "/messagerie", label: copy.nav.messaging, color: "blue" },
-    { href: "/accompagnement-juridique", label: copy.nav.cabinet }
+    { href: "/permis-unique", label: copy.nav.immigration, color: "slate" }
   ];
 
   const navDropdowns = {
