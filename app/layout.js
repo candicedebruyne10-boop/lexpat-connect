@@ -245,7 +245,7 @@ export default function RootLayout({ children }) {
                     <Link href="/permis-unique" className="block transition hover:text-[#1E3A78]">Comprendre le permis unique</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1E3A78]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1E3A78]">Créer un compte</Link>
-                    <Link href="/histoire-de-la-fondatrice" className="block text-xs font-medium text-[#7a889b] transition hover:text-[#204E97]">
+                    <Link href="/histoire-de-la-fondatrice" className="block text-sm text-[#607086] transition hover:text-[#204E97]">
                       L’histoire de la fondatrice
                     </Link>
                   </div>
