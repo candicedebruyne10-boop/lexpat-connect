@@ -96,7 +96,11 @@ export default function BaseDeProfilsPage() {
       router.push("/connexion?next=/base-de-profils");
       return;
     }
-    fetch("/api/member/profiles")
+    fetch("/api/member/profiles", {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
