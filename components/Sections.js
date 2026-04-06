@@ -548,7 +548,7 @@ export function PresentationVideoSection({ locale = "fr" }) {
               {locale === "en" ? "Presentation" : "Présentation"}
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-              {locale === "en" ? "Discover LEXPAT Connect in video" : "Découvrez LEXPAT Connect en images"}
+              {locale === "en" ? "Emily guides you through LEXPAT Connect" : "Emily vous guide sur LEXPAT Connect"}
             </h2>
           </div>
 
