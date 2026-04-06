@@ -60,44 +60,44 @@ const advantages = [
 
 const faqItems = [
   {
-    q: "Un employeur peut-il embaucher un travailleur étranger sans demander de permis ?",
-    a: "Oui, certains étrangers bénéficient d'une autorisation de travail « de plein droit » : leur carte de séjour porte la mention « MARCHÉ DU TRAVAIL : ILLIMITÉ ». C'est le cas des citoyens UE, des réfugiés reconnus, des bénéficiaires du regroupement familial ou des étudiants (limités à 20 h/semaine en période scolaire). L'employeur doit néanmoins vérifier le titre de séjour et déclarer l'entrée et la sortie du travailleur."
+    question: "Un employeur peut-il embaucher un travailleur étranger sans demander de permis ?",
+    answer: "Oui, certains étrangers bénéficient d'une autorisation de travail « de plein droit » : leur carte de séjour porte la mention « MARCHÉ DU TRAVAIL : ILLIMITÉ ». C'est le cas des citoyens UE, des réfugiés reconnus, des bénéficiaires du regroupement familial ou des étudiants (limités à 20 h/semaine en période scolaire). L'employeur doit néanmoins vérifier le titre de séjour et déclarer l'entrée et la sortie du travailleur."
   },
   {
-    q: "Qu'est-ce que le Permis Unique et qui doit le demander ?",
-    a: "Le Permis Unique combine l'autorisation de séjour (État fédéral) et l'autorisation de travail (Régions) en une seule démarche. C'est toujours l'employeur (ou son mandataire) qui introduit la demande en ligne via la plateforme singlepermit, au nom du candidat."
+    question: "Qu'est-ce que le Permis Unique et qui doit le demander ?",
+    answer: "Le Permis Unique combine l'autorisation de séjour (État fédéral) et l'autorisation de travail (Régions) en une seule démarche. C'est toujours l'employeur (ou son mandataire) qui introduit la demande en ligne via la plateforme singlepermit, au nom du candidat."
   },
   {
-    q: "Le candidat doit-il obligatoirement se trouver à l'étranger lors de la demande ?",
-    a: "Pas nécessairement. Il doit être soit dans son pays d'origine, soit déjà en Belgique avec un titre de séjour valide (visa court séjour, carte A). Les documents précaires comme l'Attestation d'Immatriculation (carte orange) ne permettent généralement pas d'introduire la demande depuis la Belgique."
+    question: "Le candidat doit-il obligatoirement se trouver à l'étranger lors de la demande ?",
+    answer: "Pas nécessairement. Il doit être soit dans son pays d'origine, soit déjà en Belgique avec un titre de séjour valide (visa court séjour, carte A). Les documents précaires comme l'Attestation d'Immatriculation (carte orange) ne permettent généralement pas d'introduire la demande depuis la Belgique."
   },
   {
-    q: "Faut-il toujours prouver qu'il n'y a pas de candidat local disponible ?",
-    a: "En règle générale oui, via la publication d'une offre chez Actiris, le Forem ou le VDAB. Mais le personnel hautement qualifié bénéficie d'une dispense totale de cet examen du marché de l'emploi, tout comme la direction, les sportifs professionnels, les chercheurs ou les artistes."
+    question: "Faut-il toujours prouver qu'il n'y a pas de candidat local disponible ?",
+    answer: "En règle générale oui, via la publication d'une offre chez Actiris, le Forem ou le VDAB. Mais le personnel hautement qualifié bénéficie d'une dispense totale de cet examen du marché de l'emploi, tout comme la direction, les sportifs professionnels, les chercheurs ou les artistes."
   },
   {
-    q: "Quel est le salaire minimum pour embaucher sous Permis Unique ?",
-    a: "La rémunération doit être au moins équivalente au RMMMG, fixé à 2 111,48 €/mois depuis le 1er février 2025, même à temps partiel. Pour les profils dispensés de l'examen du marché, des seuils salariaux bien plus élevés s'appliquent selon la Région (voir les conditions par région ci-dessus)."
+    question: "Quel est le salaire minimum pour embaucher sous Permis Unique ?",
+    answer: "La rémunération doit être au moins équivalente au RMMMG, fixé à 2 111,48 €/mois depuis le 1er février 2025, même à temps partiel. Pour les profils dispensés de l'examen du marché, des seuils salariaux bien plus élevés s'appliquent selon la Région (voir les conditions par région ci-dessus)."
   },
   {
-    q: "Quelle est la durée de validité du Permis Unique ?",
-    a: "En règle générale, la durée correspond à celle du contrat de travail, avec un maximum de 1 an. Cette limite peut aller jusqu'à 3 ans pour le personnel hautement qualifié, les détenteurs d'une Carte Bleue, les dirigeants ou les travailleurs en transfert intra-groupe."
+    question: "Quelle est la durée de validité du Permis Unique ?",
+    answer: "En règle générale, la durée correspond à celle du contrat de travail, avec un maximum de 1 an. Cette limite peut aller jusqu'à 3 ans pour le personnel hautement qualifié, les détenteurs d'une Carte Bleue, les dirigeants ou les travailleurs en transfert intra-groupe."
   },
   {
-    q: "Un travailleur sous Permis Unique peut-il changer d'employeur ou exercer une activité complémentaire ?",
-    a: "Par défaut, l'accès au marché est limité à un employeur et une fonction précise. Toutefois, en Région wallonne, certains profils hautement qualifiés peuvent exercer une activité complémentaire sans autorisation. Pour la Carte Bleue, un changement d'employeur après 12 mois est possible sur simple notification, en Wallonie et à Bruxelles."
+    question: "Un travailleur sous Permis Unique peut-il changer d'employeur ou exercer une activité complémentaire ?",
+    answer: "Par défaut, l'accès au marché est limité à un employeur et une fonction précise. Toutefois, en Région wallonne, certains profils hautement qualifiés peuvent exercer une activité complémentaire sans autorisation. Pour la Carte Bleue, un changement d'employeur après 12 mois est possible sur simple notification, en Wallonie et à Bruxelles."
   },
   {
-    q: "Que doit faire l'employeur lorsque le contrat se termine ?",
-    a: "Il a l'obligation formelle de communiquer la fin de l'occupation à l'autorité régionale compétente. Le droit de séjour du travailleur reste en principe valable 90 jours après la fin de l'autorisation de travail, sauf décision de retrait."
+    question: "Que doit faire l'employeur lorsque le contrat se termine ?",
+    answer: "Il a l'obligation formelle de communiquer la fin de l'occupation à l'autorité régionale compétente. Le droit de séjour du travailleur reste en principe valable 90 jours après la fin de l'autorisation de travail, sauf décision de retrait."
   },
   {
-    q: "Que se passe-t-il si la carte expire pendant l'examen du renouvellement ?",
-    a: "L'employeur doit introduire la demande de renouvellement au plus tard deux mois avant l'expiration. Si le permis expire pendant le traitement mais que la demande a été déclarée recevable, la commune délivre une Annexe 49 (autorisation provisoire). Sa validité est admise dans les faits par les Régions pour continuer l'occupation."
+    question: "Que se passe-t-il si la carte expire pendant l'examen du renouvellement ?",
+    answer: "L'employeur doit introduire la demande de renouvellement au plus tard deux mois avant l'expiration. Si le permis expire pendant le traitement mais que la demande a été déclarée recevable, la commune délivre une Annexe 49 (autorisation provisoire). Sa validité est admise dans les faits par les Régions pour continuer l'occupation."
   },
   {
-    q: "Comment un travailleur peut-il obtenir un accès illimité au marché du travail ?",
-    a: "Après 4 ans de travail sous autorisation limitée (ou 30 mois à Bruxelles sous condition de 10 ans de séjour ininterrompu), le travailleur peut demander lui-même une admission au travail pour durée illimitée auprès de sa Région de domicile. Une fois obtenu, son accès au marché ne dépend plus d'aucun employeur."
+    question: "Comment un travailleur peut-il obtenir un accès illimité au marché du travail ?",
+    answer: "Après 4 ans de travail sous autorisation limitée (ou 30 mois à Bruxelles sous condition de 10 ans de séjour ininterrompu), le travailleur peut demander lui-même une admission au travail pour durée illimitée auprès de sa Région de domicile. Une fois obtenu, son accès au marché ne dépend plus d'aucun employeur."
   }
 ];
 
