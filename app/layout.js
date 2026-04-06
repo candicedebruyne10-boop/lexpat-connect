@@ -220,12 +220,6 @@ export default function RootLayout({ children }) {
                   <p className="max-w-md text-sm leading-7 text-[#607086]">
                     Une plateforme pensée pour connecter les employeurs belges aux travailleurs internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible.
                   </p>
-                  <div className="rounded-[28px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086] shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
-                    <p className="font-semibold text-[#1E3A78]">Après la mise en relation</p>
-                    <p className="mt-2 leading-7">
-                      Si un recrutement suppose un permis unique ou une question d'immigration économique, le cabinet LEXPAT peut ensuite prendre le relais.
-                    </p>
-                  </div>
                 </div>
 
                 <div>
@@ -251,6 +245,9 @@ export default function RootLayout({ children }) {
                     <Link href="/permis-unique" className="block transition hover:text-[#1E3A78]">Comprendre le permis unique</Link>
                     <Link href="/connexion" className="block transition hover:text-[#1E3A78]">Se connecter</Link>
                     <Link href="/inscription" className="block transition hover:text-[#1E3A78]">Créer un compte</Link>
+                    <Link href="/histoire-de-la-fondatrice" className="block text-xs font-medium text-[#7a889b] transition hover:text-[#204E97]">
+                      L’histoire de la fondatrice
+                    </Link>
                   </div>
                 </div>
 
@@ -259,13 +256,7 @@ export default function RootLayout({ children }) {
                   <p className="mt-4 text-sm leading-7 text-[#607086]">
                     Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement.
                   </p>
-                  <div className="mt-5 flex flex-col gap-3">
-                    <Link
-                      href="/histoire-de-la-fondatrice"
-                      className="inline-flex min-h-[3.15rem] items-center justify-center rounded-2xl border border-[#cfdcf0] bg-[linear-gradient(180deg,#ffffff_0%,#f6f9ff_100%)] px-5 py-3 text-sm font-bold text-[#1E3A78] shadow-[0_10px_24px_rgba(30,58,120,0.08)] transition hover:-translate-y-0.5 hover:border-[#b9cdea] hover:text-[#204E97] hover:shadow-[0_14px_28px_rgba(30,58,120,0.12)]"
-                    >
-                      L’histoire de la fondatrice
-                    </Link>
+                  <div className="mt-5">
                     <Link href="/accompagnement-juridique" className="secondary-button text-center">
                       Voir l'accompagnement
                     </Link>

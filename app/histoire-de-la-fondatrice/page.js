@@ -88,58 +88,51 @@ export default function HistoireFondatricePage() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden bg-[linear-gradient(160deg,#0f2458_0%,#1E3A78_58%,#204E97_100%)] p-8 sm:p-10 lg:p-12">
-                <div className="absolute -right-16 top-8 h-56 w-56 rounded-full bg-[#57b7af]/12 blur-3xl" />
-                <div className="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-[#ffffff]/8 blur-3xl" />
-                <div className="absolute right-10 top-10 h-24 w-24 rounded-full border border-white/10 bg-white/8 blur-2xl" />
-                <div className="relative mx-auto flex h-full max-w-md flex-col justify-between p-2 sm:p-4">
+              <div className="relative overflow-hidden bg-[linear-gradient(180deg,#fbfdff_0%,#f4f8fc_100%)] p-8 sm:p-10 lg:p-12">
+                <div className="absolute -right-12 top-6 h-40 w-40 rounded-full bg-[#dfe9f8] blur-3xl" />
+                <div className="absolute -left-10 bottom-6 h-36 w-36 rounded-full bg-[#e4f5f2] blur-3xl" />
+                <div className="relative mx-auto flex h-full max-w-md flex-col justify-between">
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#a9ece7]">
-                      Fondatrice
-                    </p>
-                    <div className="mt-6">
-                      <div className="relative overflow-hidden rounded-[28px] shadow-[0_18px_40px_rgba(0,0,0,0.16)]">
-                        <div className="relative mx-auto aspect-[4/5] w-full max-w-[320px] sm:max-w-[340px]">
+                    <div>
+                      <div className="relative overflow-hidden rounded-[30px] bg-white shadow-[0_18px_46px_rgba(20,45,88,0.10)]">
+                        <div className="relative mx-auto aspect-[4/5] w-full max-w-[300px] sm:max-w-[320px]">
                           <Image
                             src="/candice-profile.png"
                             alt="Maître Candice Debruyne"
                             fill
                             priority
-                            className="object-cover object-[50%_22%] scale-[1.02]"
-                            sizes="(min-width: 1024px) 340px, 70vw"
+                            className="object-cover object-[50%_20%]"
+                            sizes="(min-width: 1024px) 320px, 70vw"
                           />
                         </div>
-                        <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(8,20,52,0.34),transparent)]" />
-                        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(to_top,rgba(5,15,40,0.96)_0%,rgba(5,15,40,0.86)_42%,rgba(5,15,40,0.18)_100%)] px-5 pb-5 pt-14">
-                          <div className="px-1 py-1">
-                            <p className="text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-white">
-                              Maître Candice Debruyne
-                            </p>
-                            <p className="mt-2 text-sm leading-7 text-white/88">
-                              Avocate en immigration économique
-                              <br />
-                              Fondatrice de LEXPAT Connect
-                            </p>
-                          </div>
-                        </div>
+                      </div>
+                      <div className="mt-5 px-1">
+                        <p className="text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-[#1E3A78]">
+                          Maître Candice Debruyne
+                        </p>
+                        <p className="mt-2 text-sm leading-7 text-[#607086]">
+                          Avocate en immigration économique
+                          <br />
+                          Fondatrice de LEXPAT Connect
+                        </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 space-y-4 rounded-[26px] border border-white/12 bg-[rgba(255,255,255,0.11)] p-5 text-sm leading-7 text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                    <div className="flex items-center justify-between gap-4 rounded-[20px] border border-white/12 bg-[rgba(255,255,255,0.06)] px-4 py-3">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a9ece7]">
+                  <div className="mt-8 space-y-4 rounded-[26px] border border-[#dde7f0] bg-white p-5 text-sm leading-7 text-[#4f6178] shadow-[0_14px_32px_rgba(20,45,88,0.06)]">
+                    <div className="flex items-center justify-between gap-4 rounded-[20px] border border-[#e6edf5] bg-[#f8fbff] px-4 py-3">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#204E97]">
                         Signature
                       </span>
-                      <span className="text-xs font-medium text-white/82">
+                      <span className="text-xs font-medium text-[#6f8198]">
                         Immigration économique · Belgique
                       </span>
                     </div>
-                    <p className="text-[15px] leading-8 text-white/92">
+                    <p className="text-[15px] leading-8 text-[#4f6178]">
                       Une approche née du terrain : écouter les employeurs, comprendre les blocages concrets et rendre enfin visibles les talents internationaux capables d’y répondre.
                     </p>
-                    <div className="rounded-[20px] border border-white/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.04)_100%)] px-4 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.12)]">
-                      <p className="text-[1.05rem] font-semibold tracking-[-0.02em] leading-8 text-white">
+                    <div className="rounded-[20px] border border-[#e3eaf2] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f8fc_100%)] px-4 py-4">
+                      <p className="text-[1.05rem] font-semibold tracking-[-0.02em] leading-8 text-[#1E3A78]">
                         Recruter plus juste. Sécuriser au bon moment. Donner une vraie place à la confiance.
                       </p>
                     </div>
