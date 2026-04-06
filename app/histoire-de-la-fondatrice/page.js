@@ -61,10 +61,10 @@ export default function HistoireFondatricePage() {
     <>
       <section className="pb-12 pt-8 sm:pb-16 lg:pb-20 lg:pt-12">
         <div className="container-shell">
-          <div className="overflow-hidden rounded-[38px] border border-[#dfe8ef] bg-white shadow-[0_20px_70px_rgba(30,52,94,0.08)]">
+          <div className="overflow-hidden rounded-[38px] border border-[#dfe8ef] bg-[linear-gradient(180deg,#ffffff_0%,#f9fbff_100%)] shadow-[0_20px_70px_rgba(30,52,94,0.08)]">
             <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
-                <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(32,78,151,0.16),transparent_62%)]" />
+              <div className="relative overflow-hidden px-6 py-10 sm:px-8 lg:px-12 lg:py-16">
+                <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(32,78,151,0.12),transparent_62%)]" />
                 <div className="relative max-w-2xl">
                   <p className="inline-flex items-center rounded-full border border-[#d9e5f3] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#204E97]">
                     L’histoire de la fondatrice
@@ -88,39 +88,37 @@ export default function HistoireFondatricePage() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden bg-[linear-gradient(180deg,#fbfdff_0%,#f4f8fc_100%)] p-8 sm:p-10 lg:p-12">
-                <div className="absolute -right-12 top-6 h-40 w-40 rounded-full bg-[#dfe9f8] blur-3xl" />
-                <div className="absolute -left-10 bottom-6 h-36 w-36 rounded-full bg-[#e4f5f2] blur-3xl" />
-                <div className="relative mx-auto flex h-full max-w-md flex-col justify-between">
-                  <div>
-                    <div>
-                      <div className="relative overflow-hidden rounded-[30px] bg-white shadow-[0_18px_46px_rgba(20,45,88,0.10)]">
-                        <div className="relative mx-auto aspect-[4/5] w-full max-w-[300px] sm:max-w-[320px]">
-                          <Image
-                            src="/candice-profile.png"
-                            alt="Maître Candice Debruyne"
-                            fill
-                            priority
-                            className="object-cover object-[50%_20%]"
-                            sizes="(min-width: 1024px) 320px, 70vw"
-                          />
-                        </div>
-                      </div>
-                      <div className="mt-5 px-1">
-                        <p className="text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-[#1E3A78]">
-                          Maître Candice Debruyne
-                        </p>
-                        <p className="mt-2 text-sm leading-7 text-[#607086]">
-                          Avocate en immigration économique
-                          <br />
-                          Fondatrice de LEXPAT Connect
-                        </p>
-                      </div>
-                    </div>
+              <div className="relative overflow-hidden px-6 py-10 sm:px-8 lg:px-10 lg:py-16">
+                <div className="absolute right-[-8%] top-[16%] h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(87,183,175,0.18),rgba(87,183,175,0))]" />
+                <div className="absolute left-[12%] top-[8%] h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(32,78,151,0.12),rgba(32,78,151,0))]" />
+                <div className="relative mx-auto max-w-[360px]">
+                  <div className="relative mx-auto w-[78%] min-w-[250px] max-w-[300px]">
+                    <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-[32px] bg-[linear-gradient(180deg,rgba(32,78,151,0.08),rgba(87,183,175,0.12))]" />
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-white shadow-[0_28px_60px_rgba(20,45,88,0.16)]">
+                    <Image
+                      src="/candice-profile.png"
+                      alt="Maître Candice Debruyne"
+                      fill
+                      priority
+                      className="object-cover object-[50%_18%]"
+                      sizes="(min-width: 1024px) 300px, 62vw"
+                    />
+                  </div>
                   </div>
 
-                  <div className="mt-8 space-y-4 rounded-[26px] border border-[#dde7f0] bg-white p-5 text-sm leading-7 text-[#4f6178] shadow-[0_14px_32px_rgba(20,45,88,0.06)]">
-                    <div className="flex items-center justify-between gap-4 rounded-[20px] border border-[#e6edf5] bg-[#f8fbff] px-4 py-3">
+                  <div className="mx-auto mt-8 max-w-[360px] text-center">
+                    <p className="text-[1.85rem] font-semibold leading-tight tracking-[-0.03em] text-[#1E3A78]">
+                      Maître Candice Debruyne
+                    </p>
+                    <p className="mt-3 text-sm leading-7 text-[#607086]">
+                      Avocate en immigration économique
+                      <br />
+                      Fondatrice de LEXPAT Connect
+                    </p>
+                  </div>
+
+                  <div className="mx-auto mt-8 max-w-[360px] space-y-4 rounded-[24px] border border-[#e6edf5] bg-white/90 p-5 text-sm leading-7 text-[#4f6178] shadow-[0_10px_24px_rgba(20,45,88,0.04)] backdrop-blur-sm">
+                    <div className="flex items-center justify-between gap-4 rounded-[18px] bg-[#f7faff] px-4 py-3">
                       <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#204E97]">
                         Signature
                       </span>
@@ -131,8 +129,8 @@ export default function HistoireFondatricePage() {
                     <p className="text-[15px] leading-8 text-[#4f6178]">
                       Une approche née du terrain : écouter les employeurs, comprendre les blocages concrets et rendre enfin visibles les talents internationaux capables d’y répondre.
                     </p>
-                    <div className="rounded-[20px] border border-[#e3eaf2] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f8fc_100%)] px-4 py-4">
-                      <p className="text-[1.05rem] font-semibold tracking-[-0.02em] leading-8 text-[#1E3A78]">
+                    <div className="rounded-[18px] bg-[#f3f7fc] px-4 py-4">
+                      <p className="text-[1.05rem] font-semibold leading-8 tracking-[-0.02em] text-[#1E3A78]">
                         Recruter plus juste. Sécuriser au bon moment. Donner une vraie place à la confiance.
                       </p>
                     </div>
