@@ -371,8 +371,43 @@ const permitDurationCards = [
   }
 ];
 
-export default function MemberLockedPermitContent() {
+export default function MemberLockedPermitContent({ locale = "fr" }) {
   const [status, setStatus] = useState("loading");
+  const copy = locale === "en"
+    ? {
+        memberContent: "Member content",
+        unlocked: "Unlocked content",
+        title: "Work permit exemptions",
+        intro: "A members-only extension that goes deeper into exemptions, residence documents and situations where a person may already work in Belgium without automatically starting again from a single permit procedure.",
+        reserved: "Members only",
+        unlockTitle: "Unlock the full reading",
+        unlockText: "The member content goes further than the public page: it classifies exemptions by residence logic, highlights practical limits and gives a first useful reading before any legal analysis.",
+        unlockList: [
+          "Cases without a residence title",
+          "Unlimited and limited residence statuses",
+          "Temporary and precarious statuses",
+          "Regional labour market test exemptions"
+        ],
+        becomeMember: "Become a member",
+        signIn: "Sign in"
+      }
+    : {
+        memberContent: "Contenu membre",
+        unlocked: "Contenu débloqué",
+        title: "Dispenses de permis de travail",
+        intro: "Un complément réservé aux membres pour aller plus loin sur les dispenses, les titres de séjour et les situations qui permettent déjà de travailler en Belgique sans repartir automatiquement sur un permis unique.",
+        reserved: "Réservé aux membres",
+        unlockTitle: "Débloquez la lecture complète",
+        unlockText: "Le contenu membre va plus loin que la page publique : il classe les dispenses par familles de séjour, attire l’attention sur les limites et apporte un premier niveau de lecture utile avant l’analyse juridique.",
+        unlockList: [
+          "Cas sans titre de séjour",
+          "Séjours illimités et séjours limités",
+          "Séjours temporaires et précaires",
+          "Dispenses régionales de l’examen du marché de l’emploi"
+        ],
+        becomeMember: "Devenir membre",
+        signIn: "Se connecter"
+      };
 
   useEffect(() => {
     let mounted = true;
@@ -410,20 +445,20 @@ export default function MemberLockedPermitContent() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <p className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
                 <LockIcon />
-                Contenu membre
+                {copy.memberContent}
               </p>
               {status === "member" ? (
                 <p className="inline-flex items-center gap-2 rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
                   <span className="h-2 w-2 rounded-full bg-[#59B9B1]" />
-                  Contenu débloqué
+                  {copy.unlocked}
                 </p>
               ) : null}
             </div>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">
-              Dispenses de permis de travail
+              {copy.title}
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-[#607086] sm:text-base">
-              Un complément réservé aux membres pour aller plus loin sur les dispenses, les titres de séjour et les situations qui permettent déjà de travailler en Belgique sans repartir automatiquement sur un permis unique.
+              {copy.intro}
             </p>
           </div>
 
@@ -450,26 +485,25 @@ export default function MemberLockedPermitContent() {
               <div className="rounded-[30px] border border-[rgba(89,185,177,0.22)] bg-[linear-gradient(180deg,#ffffff_0%,#f4fbfa_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7">
                 <p className="inline-flex items-center gap-2 rounded-full bg-[#ecfaf8] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
                   <LockIcon />
-                  Réservé aux membres
+                  {copy.reserved}
                 </p>
                 <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b]">
-                  Débloquez la lecture complète
+                  {copy.unlockTitle}
                 </h3>
                 <p className="mt-4 text-sm leading-7 text-[#607086]">
-                  Le contenu membre va plus loin que la page publique : il classe les dispenses par familles de séjour, attire l’attention sur les limites et apporte un premier niveau de lecture utile avant l’analyse juridique.
+                  {copy.unlockText}
                 </p>
                 <ul className="mt-5 space-y-3 text-sm leading-7 text-[#607086]">
-                  <li>Cas sans titre de séjour</li>
-                  <li>Séjours illimités et séjours limités</li>
-                  <li>Séjours temporaires et précaires</li>
-                  <li>Dispenses régionales de l’examen du marché de l’emploi</li>
+                  {copy.unlockList.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
                 </ul>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Link href="/inscription?next=/permis-unique%23contenu-membre" className="primary-button">
-                    Devenir membre
+                  <Link href={`${locale === "en" ? "/en" : ""}/inscription?next=${locale === "en" ? "/en/permis-unique%23contenu-membre" : "/permis-unique%23contenu-membre"}`} className="primary-button">
+                    {copy.becomeMember}
                   </Link>
-                  <Link href="/connexion?next=/permis-unique%23contenu-membre" className="secondary-button">
-                    Se connecter
+                  <Link href={`${locale === "en" ? "/en" : ""}/connexion?next=${locale === "en" ? "/en/permis-unique%23contenu-membre" : "/permis-unique%23contenu-membre"}`} className="secondary-button">
+                    {copy.signIn}
                   </Link>
                 </div>
               </div>

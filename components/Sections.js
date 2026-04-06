@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { localizeHref } from "../lib/i18n";
 
 /* ── Palette officielle LEXPAT Connect ── */
 const EMPLOYER = {
@@ -87,7 +88,28 @@ function CityDot({ left, top, hub }) {
   );
 }
 
-export function HeroPremium({ primaryHref, secondaryHref }) {
+export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        badge: "Belgium · shortage occupations · international recruitment",
+        title1: "Belgian employers.",
+        title2: "International workers.",
+        title3: "Targeted recruitment.",
+        desc: "The platform for targeted matching between Belgian employers and qualified international workers in shortage occupations.",
+        primary: "I am hiring",
+        secondary: "I am applying",
+        hub: "Belgium · International hub"
+      }
+    : {
+        badge: "Belgique · Métiers en pénurie · Recrutement international",
+        title1: "Employeurs belges.",
+        title2: "Travailleurs internationaux.",
+        title3: "Recrutement ciblé.",
+        desc: "La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.",
+        primary: "Je recrute",
+        secondary: "Je postule",
+        hub: "Belgique · Hub international"
+      };
   return (
     <section className="relative overflow-hidden bg-[#060c26]">
 
@@ -117,13 +139,13 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           {/* Texte — badge en haut, titre+CTAs en bas */}
           <div className="relative z-10 flex h-full">
             <div className="flex h-full w-full max-w-[520px] flex-col justify-between px-10 py-10 xl:px-14 xl:py-12">
-              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} />
+              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} />
             </div>
           </div>
 
           {/* Badge en bas à droite — remonté pour être visible dès le chargement */}
           <div className="absolute bottom-[14%] right-8 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
-            Belgique · Hub international
+            {copy.hub}
           </div>
         </div>
       </div>
@@ -132,7 +154,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
       <div className="lg:hidden">
         <div className="relative px-6 pb-8 pt-12">
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
-          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} />
+          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} />
         </div>
 
         {/* Carte mobile */}
@@ -155,7 +177,7 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
           ))}
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
-            Belgique · Hub international
+            {copy.hub}
           </div>
         </div>
       </div>
@@ -165,25 +187,25 @@ export function HeroPremium({ primaryHref, secondaryHref }) {
 }
 
 /* Contenu desktop — badge en haut, titre majestueux + CTAs en bas */
-function HeroContentDesktop({ primaryHref, secondaryHref }) {
+function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
   return (
     <>
       {/* Badge ancré en haut */}
       <div className="inline-flex items-center gap-2 self-start rounded-full border border-white/[0.14] bg-white/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#9dd4d0] backdrop-blur-sm">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
-        Belgique · Métiers en pénurie · Recrutement international
+        {copy.badge}
       </div>
 
       {/* Titre + description + CTAs ancrés en bas */}
       <div>
         <h1 className="font-heading text-[clamp(2.4rem,3.8vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
-          Employeurs belges.<br />
-          <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
-          Recrutement ciblé.
+          {copy.title1}<br />
+          <span className="text-[#57B7AF]">{copy.title2}</span><br />
+          {copy.title3}
         </h1>
 
         <p className="mt-5 text-[1rem] leading-relaxed text-white/[0.62]">
-          La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
+          {copy.desc}
         </p>
 
         <div className="mt-7 flex gap-4">
@@ -192,14 +214,14 @@ function HeroContentDesktop({ primaryHref, secondaryHref }) {
             className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
           >
-            Je recrute
+            {copy.primary}
           </Link>
           <Link
             href={secondaryHref}
             className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
           >
-            Je postule
+            {copy.secondary}
           </Link>
         </div>
       </div>
@@ -208,22 +230,22 @@ function HeroContentDesktop({ primaryHref, secondaryHref }) {
 }
 
 /* Contenu mobile */
-function HeroContent({ primaryHref, secondaryHref }) {
+function HeroContent({ primaryHref, secondaryHref, copy }) {
   return (
     <div className="max-w-2xl">
       <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
-        Belgique · Métiers en pénurie · Recrutement international
+        {copy.badge}
       </div>
 
       <h1 className="font-heading mt-8 text-[clamp(2.2rem,7vw,3.4rem)] font-bold leading-[1.04] tracking-[-0.04em] text-white">
-        Employeurs belges.<br />
-        <span className="text-[#57B7AF]">Travailleurs internationaux.</span><br />
-        Recrutement ciblé.
+        {copy.title1}<br />
+        <span className="text-[#57B7AF]">{copy.title2}</span><br />
+        {copy.title3}
       </h1>
 
       <p className="mt-5 text-base leading-relaxed text-white/[0.62]">
-        La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.
+        {copy.desc}
       </p>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -232,14 +254,14 @@ function HeroContent({ primaryHref, secondaryHref }) {
           className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
         >
-          Je recrute
+          {copy.primary}
         </Link>
         <Link
           href={secondaryHref}
           className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
         >
-          Je postule
+          {copy.secondary}
         </Link>
       </div>
     </div>
@@ -264,21 +286,41 @@ const ENTRY_CARDS = [
   }
 ];
 
-export function DualEntry() {
+export function DualEntry({ locale = "fr" }) {
+  const cards = locale === "en"
+    ? [
+        {
+          icon: BriefcaseIcon,
+          title: "I have a position to fill",
+          text: "Are you looking for a qualified profile in a shortage occupation? Submit your hiring need and access international candidates ready to move to Belgium.",
+          href: "/employeurs",
+          cta: "View employer space",
+          colors: EMPLOYER
+        },
+        {
+          icon: TalentIcon,
+          title: "I am looking for a job in Belgium",
+          text: "Do you have experience in a shortage occupation and want to work in Belgium? Create your profile and get noticed by Belgian employers.",
+          href: "/travailleurs",
+          cta: "View worker space",
+          colors: TALENT
+        }
+      ]
+    : ENTRY_CARDS;
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="container-shell">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
-            Deux parcours
+            {locale === "en" ? "Two paths" : "Deux parcours"}
           </p>
           <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-            Choisissez votre entrée
+            {locale === "en" ? "Choose your entry point" : "Choisissez votre entrée"}
           </h2>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {ENTRY_CARDS.map((card) => {
+          {cards.map((card) => {
             const Icon = card.icon;
             return (
               <article
@@ -297,7 +339,7 @@ export function DualEntry() {
                 </p>
                 <div className="mt-auto pt-8">
                   <Link
-                    href={card.href}
+                    href={localizeHref(card.href, locale)}
                     className="inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
                     style={{
                       background: card.colors.primary,
@@ -319,31 +361,37 @@ export function DualEntry() {
   );
 }
 
-export function ShortageJobsQuickLink() {
+export function ShortageJobsQuickLink({ locale = "fr" }) {
   return (
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="container-shell">
         <div className="rounded-[32px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f4fbfa_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
           <div className="max-w-2xl">
             <p className="inline-flex rounded-full bg-[#e9f8f5] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-              Guide employeur
+              {locale === "en" ? "Employer guide" : "Guide employeur"}
             </p>
             <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78] sm:text-3xl">
-              Comprenez quels métiers en pénurie comptent vraiment pour votre recrutement
+              {locale === "en"
+                ? "Understand which shortage occupations really matter for your recruitment"
+                : "Comprenez quels métiers en pénurie comptent vraiment pour votre recrutement"}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#607086]">
-              Une page unique vous aide à lire les listes régionales officielles, à comprendre leur impact sur le permis unique et à repérer les secteurs les plus porteurs.
+              {locale === "en"
+                ? "A single page helps you read the official regional lists, understand their impact on the single permit and spot the most promising sectors."
+                : "Une page unique vous aide à lire les listes régionales officielles, à comprendre leur impact sur le permis unique et à repérer les secteurs les plus porteurs."}
             </p>
           </div>
           <div className="mt-6 flex-shrink-0 lg:mt-0">
             <Link
-              href="/metiers-en-penurie"
+              href={localizeHref("/metiers-en-penurie", locale)}
               className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374]"
             >
-              Lire le guide métiers en pénurie
+              {locale === "en" ? "Read the shortage occupations guide" : "Lire le guide métiers en pénurie"}
             </Link>
             <p className="mt-3 text-xs leading-6 text-[#6c7b8f]">
-              Idéal pour vérifier rapidement si votre poste peut s’appuyer sur une liste régionale officielle.
+              {locale === "en"
+                ? "Ideal for quickly checking whether your position can rely on an official regional shortage list."
+                : "Idéal pour vérifier rapidement si votre poste peut s’appuyer sur une liste régionale officielle."}
             </p>
           </div>
         </div>
@@ -385,7 +433,7 @@ export function SecurityComplianceTeaser() {
 
             <div className="mt-6 flex-shrink-0 lg:mt-0">
               <Link
-                href="/securite-conformite"
+                href={localizeHref("/securite-conformite", locale)}
                 className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-[#d6dfef] bg-white px-7 py-4 text-base font-semibold text-[#1E3A78] shadow-[0_12px_28px_rgba(23,58,138,0.08)] transition hover:-translate-y-0.5 hover:border-[#b7c8e3] hover:bg-[#f5f9ff]"
               >
                 Comprendre notre architecture RGPD
@@ -422,22 +470,47 @@ const HOW_IT_WORKS = [
   }
 ];
 
-export function HowItWorksPremium() {
+export function HowItWorksPremium({ locale = "fr" }) {
+  const steps = locale === "en"
+    ? [
+        {
+          num: "01",
+          title: "You publish your need or your profile",
+          text: "A few minutes are enough. Employers and workers provide the essentials — nothing more.",
+          accent: EMPLOYER,
+          iconIndex: 0
+        },
+        {
+          num: "02",
+          title: "You get in touch",
+          text: "Employer and worker can connect directly. No intermediary, no unnecessary delay.",
+          accent: TALENT,
+          iconIndex: 1
+        },
+        {
+          num: "03",
+          title: "We handle the formalities if needed",
+          text: "Work permits, residence status and administrative paperwork — LEXPAT takes over if the case requires it.",
+          accent: EMPLOYER,
+          iconIndex: 2
+        }
+      ]
+    : HOW_IT_WORKS;
   return (
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="container-shell">
         <div className="overflow-hidden rounded-[40px] border border-[#e2ecf4] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-10 lg:p-14">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-[#f8fbff] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
-              3 étapes
+              {locale === "en" ? "3 steps" : "3 étapes"}
             </p>
             <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-              Comment ça marche
+              {locale === "en" ? "How it works" : "Comment ça marche"}
             </h2>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            {HOW_IT_WORKS.map((step) => (
+            {steps.map((step) => (
               <article
                 key={step.num}
                 className="rounded-[30px] border bg-white p-7 text-left shadow-[0_14px_36px_rgba(15,23,42,0.04)]"
@@ -473,23 +546,34 @@ const JOB_SECTORS = [
   { id: "biotech", label: "Biotech Specialist", region: "Liège", color: EMPLOYER }
 ];
 
-export function JobSectors() {
+export function JobSectors({ locale = "fr" } = {}) {
+  const jobs = locale === "en"
+    ? [
+        { id: "software", label: "Software Engineer", region: "Brussels", color: EMPLOYER },
+        { id: "nurse", label: "Nurse", region: "Wallonia", color: TALENT },
+        { id: "electrician", label: "Electrician", region: "Flanders", color: EMPLOYER },
+        { id: "data", label: "Data Scientist", region: "Antwerp", color: TALENT },
+        { id: "biotech", label: "Biotech Specialist", region: "Liège", color: EMPLOYER }
+      ]
+    : JOB_SECTORS;
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="container-shell">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
-            Métiers en pénurie
+            {locale === "en" ? "Shortage occupations" : "Métiers en pénurie"}
           </p>
           <h2 className="mx-auto mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
-            Les métiers les plus recherchés en Belgique
+            {locale === "en" ? "The most in-demand occupations in Belgium" : "Les métiers les plus recherchés en Belgique"}
           </h2>
           <p className="mx-auto mt-4 text-base leading-7 text-[#607086]">
-            Ces fonctions figurent sur les listes officielles régionales et ouvrent la voie à un recrutement international plus simple.
+            {locale === "en"
+              ? "These roles appear on the official regional lists and can support simpler international recruitment."
+              : "Ces fonctions figurent sur les listes officielles régionales et ouvrent la voie à un recrutement international plus simple."}
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
-          {JOB_SECTORS.map((job) => (
+          {jobs.map((job) => (
             <article
               key={job.id}
               className="rounded-[28px] border bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(15,23,42,0.09)]"
@@ -514,10 +598,10 @@ export function JobSectors() {
 
         <div className="mt-10 text-center">
           <Link
-            href="/metiers-en-penurie"
+            href={localizeHref("/metiers-en-penurie", locale)}
             className="inline-flex items-center gap-2 rounded-2xl border border-[#d4dff2] bg-white px-7 py-3.5 text-sm font-bold text-[#1d3b8b] shadow-[0_8px_24px_rgba(29,59,139,0.08)] transition hover:border-[#9cb2da] hover:bg-[#f8fbff] hover:shadow-[0_12px_32px_rgba(29,59,139,0.14)]"
           >
-            Voir tous les métiers en pénurie <span aria-hidden="true">→</span>
+            {locale === "en" ? "See all shortage occupations" : "Voir tous les métiers en pénurie"} <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
@@ -529,7 +613,7 @@ export function JobSectors() {
    LEXPAT RELAY — Section 5
    Discreet, premium, strategic — appears AFTER the match
    ───────────────────────────────────────────────────────────────────────────── */
-export function LexpatStrip() {
+export function LexpatStrip({ locale = "fr" }) {
   return (
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="container-shell">
@@ -541,13 +625,15 @@ export function LexpatStrip() {
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#57b7af]">
-                Cabinet LEXPAT
+                {locale === "en" ? "LEXPAT Law Firm" : "Cabinet LEXPAT"}
               </p>
               <p className="mt-2 max-w-2xl text-base font-bold leading-snug text-[#1E3A78]">
-                On gère les démarches quand le recrutement le demande
+                {locale === "en" ? "We handle the formalities when the recruitment requires it" : "On gère les démarches quand le recrutement le demande"}
               </p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b7b8f]">
-                Permis de travail, titre de séjour, questions d'immigration — le cabinet LEXPAT intervient si votre situation le nécessite, pas avant.
+                {locale === "en"
+                  ? "Work permits, residence status and immigration questions — the LEXPAT law firm steps in if your situation requires it, not before."
+                  : "Permis de travail, titre de séjour, questions d'immigration — le cabinet LEXPAT intervient si votre situation le nécessite, pas avant."}
               </p>
             </div>
           </div>
@@ -556,7 +642,7 @@ export function LexpatStrip() {
               href="/accompagnement-juridique"
               className="inline-flex items-center gap-2 whitespace-nowrap rounded-[14px] border border-[#d2dff4] bg-white px-5 py-3 text-sm font-bold text-[#1d3b8b] transition hover:border-[#a8bbdd] hover:bg-[#f4f8ff]"
             >
-              En savoir plus <span aria-hidden="true">→</span>
+              {locale === "en" ? "Learn more" : "En savoir plus"} <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
@@ -569,7 +655,7 @@ export function LexpatStrip() {
    CTA BANNER DARK — Section 6
    Strong dark conversion block, dual CTAs, full impact
    ───────────────────────────────────────────────────────────────────────────── */
-export function CtaBannerDark({ primaryHref, secondaryHref }) {
+export function CtaBannerDark({ primaryHref, secondaryHref, locale = "fr" }) {
   return (
     <section className="py-16 sm:py-20 lg:py-24">
       <div className="container-shell">
@@ -584,15 +670,17 @@ export function CtaBannerDark({ primaryHref, secondaryHref }) {
           <div className="relative">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.06] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[#57b7af]" />
-              Passez à l'action
+              {locale === "en" ? "Take action" : "Passez à l'action"}
             </p>
 
             <h2 className="mx-auto mt-7 max-w-3xl text-3xl font-bold leading-[1.06] tracking-[-0.04em] text-white sm:text-4xl lg:text-5xl">
-              Passez à l'action maintenant
+              {locale === "en" ? "Take action now" : "Passez à l'action maintenant"}
             </h2>
 
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/[0.55] sm:text-lg">
-              Recrutez plus vite ou rendez votre profil visible auprès des employeurs belges.
+              {locale === "en"
+                ? "Hire faster or make your profile visible to Belgian employers."
+                : "Recrutez plus vite ou rendez votre profil visible auprès des employeurs belges."}
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -604,7 +692,7 @@ export function CtaBannerDark({ primaryHref, secondaryHref }) {
                   boxShadow: "0 16px 48px rgba(23,58,138,0.32)"
                 }}
               >
-                Recruter maintenant
+                {locale === "en" ? "Start hiring" : "Recruter maintenant"}
               </Link>
               <Link
                 href={secondaryHref}
@@ -614,7 +702,7 @@ export function CtaBannerDark({ primaryHref, secondaryHref }) {
                   boxShadow: "0 16px 48px rgba(89,185,177,0.28)"
                 }}
               >
-                Déposer mon profil
+                {locale === "en" ? "Submit my profile" : "Déposer mon profil"}
               </Link>
             </div>
           </div>

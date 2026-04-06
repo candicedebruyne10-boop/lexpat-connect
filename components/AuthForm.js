@@ -4,21 +4,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { getSupabaseBrowserClient } from '../lib/supabase/client';
+import { localizeHref } from '../lib/i18n';
 
-const roleOptions = [
-  {
-    value: 'worker',
-    label: 'Travailleur',
-    description: 'Créer un profil, compléter son CV et suivre sa visibilité.'
-  },
-  {
-    value: 'employer',
-    label: 'Employeur',
-    description: 'Structurer son entreprise, ses offres et ses besoins de recrutement.'
-  }
-];
-
-export default function AuthForm({ mode = 'login' }) {
+export default function AuthForm({ mode = 'login', locale = 'fr' }) {
   const isSignup = mode === 'signup';
   const router = useRouter();
   const supabase = useMemo(() => {
@@ -41,6 +29,31 @@ export default function AuthForm({ mode = 'login' }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [nextPath, setNextPath] = useState('');
+  const roleOptions = locale === 'en'
+    ? [
+        {
+          value: 'worker',
+          label: 'Worker',
+          description: 'Create a profile, complete your CV and track your visibility.'
+        },
+        {
+          value: 'employer',
+          label: 'Employer',
+          description: 'Structure your company, your openings and your hiring needs.'
+        }
+      ]
+    : [
+        {
+          value: 'worker',
+          label: 'Travailleur',
+          description: 'Créer un profil, compléter son CV et suivre sa visibilité.'
+        },
+        {
+          value: 'employer',
+          label: 'Employeur',
+          description: 'Structurer son entreprise, ses offres et ses besoins de recrutement.'
+        }
+      ];
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -52,15 +65,15 @@ export default function AuthForm({ mode = 'login' }) {
     const msg = params.get('message');
     const err = params.get('error');
     if (msg === 'compte_cree') {
-      setMessage('Votre compte a été créé. Connectez-vous maintenant avec vos identifiants.');
+      setMessage(locale === 'en' ? 'Your account has been created. Sign in now with your credentials.' : 'Votre compte a été créé. Connectez-vous maintenant avec vos identifiants.');
     }
     if (err === 'lien_invalide') {
-      setError('Ce lien de confirmation a expiré ou est invalide. Connectez-vous directement.');
+      setError(locale === 'en' ? 'This confirmation link has expired or is invalid. Please sign in directly.' : 'Ce lien de confirmation a expiré ou est invalide. Connectez-vous directement.');
     }
     if (err === 'session_invalide' || err === 'session_manquante') {
-      setError('Session expirée. Veuillez vous reconnecter.');
+      setError(locale === 'en' ? 'Session expired. Please sign in again.' : 'Session expirée. Veuillez vous reconnecter.');
     }
-  }, []);
+  }, [locale]);
 
   function getSafeRedirect(fallback) {
     const next = nextPath;
@@ -88,7 +101,7 @@ export default function AuthForm({ mode = 'login' }) {
     const payload = await response.json();
 
     if (!response.ok) {
-      throw new Error(payload.error || 'Impossible de préparer votre espace.');
+      throw new Error(payload.error || (locale === 'en' ? 'Unable to prepare your space.' : 'Impossible de préparer votre espace.'));
     }
 
     return payload.redirectTo;
@@ -102,7 +115,7 @@ export default function AuthForm({ mode = 'login' }) {
 
     try {
       if (!supabase) {
-        throw new Error('Supabase n’est pas encore configuré dans cet environnement.');
+        throw new Error(locale === 'en' ? 'Supabase is not configured in this environment yet.' : 'Supabase n’est pas encore configuré dans cet environnement.');
       }
 
       if (isSignup) {
@@ -132,7 +145,7 @@ export default function AuthForm({ mode = 'login' }) {
 
         // Pas de session = email déjà utilisé ou confirmation requise
         // On redirige vers /connexion avec un message clair
-        router.push('/connexion?message=compte_cree');
+        router.push(`${locale === 'en' ? '/en' : ''}/connexion?message=compte_cree`);
         return;
       }
 
@@ -151,7 +164,7 @@ export default function AuthForm({ mode = 'login' }) {
       router.push(target);
       router.refresh();
     } catch (err) {
-      setError(err.message || 'Une erreur est survenue.');
+      setError(err.message || (locale === 'en' ? 'An error occurred.' : 'Une erreur est survenue.'));
     } finally {
       setLoading(false);
     }
@@ -161,22 +174,28 @@ export default function AuthForm({ mode = 'login' }) {
     <div className="rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-8 max-w-2xl">
         <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-          {isSignup ? 'Inscription' : 'Connexion'}
+          {isSignup ? (locale === 'en' ? 'Sign up' : 'Inscription') : (locale === 'en' ? 'Sign in' : 'Connexion')}
         </p>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">
-          {isSignup ? 'Créer votre accès LEXPAT Connect' : 'Se connecter à LEXPAT Connect'}
+          {isSignup
+            ? (locale === 'en' ? 'Create your LEXPAT Connect access' : 'Créer votre accès LEXPAT Connect')
+            : (locale === 'en' ? 'Sign in to LEXPAT Connect' : 'Se connecter à LEXPAT Connect')}
         </h1>
         <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
           {isSignup
-            ? 'Choisissez votre parcours et créez votre accès pour préparer votre espace candidat ou employeur.'
-            : 'Accédez à votre espace pour retrouver votre profil, vos offres et vos informations enregistrées.'}
+            ? (locale === 'en'
+              ? 'Choose your path and create your access to prepare your candidate or employer space.'
+              : 'Choisissez votre parcours et créez votre accès pour préparer votre espace candidat ou employeur.')
+            : (locale === 'en'
+              ? 'Access your space to find your profile, your openings and your saved information.'
+              : 'Accédez à votre espace pour retrouver votre profil, vos offres et vos informations enregistrées.')}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
         {isSignup ? (
           <div className="md:col-span-2">
-            <span className="mb-2 block text-sm font-semibold text-[#17345d]">Je m’inscris en tant que</span>
+            <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'I am signing up as' : 'Je m’inscris en tant que'}</span>
             <div className="grid gap-3 md:grid-cols-2">
               {roleOptions.map((option) => (
                 <button
@@ -200,22 +219,22 @@ export default function AuthForm({ mode = 'login' }) {
         {isSignup ? (
           <>
             <label>
-              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Prénom</span>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'First name' : 'Prénom'}</span>
               <input
                 className="field-input"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Prénom"
+                placeholder={locale === 'en' ? 'First name' : 'Prénom'}
                 required
               />
             </label>
             <label>
-              <span className="mb-2 block text-sm font-semibold text-[#17345d]">Nom</span>
+              <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'Last name' : 'Nom'}</span>
               <input
                 className="field-input"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Nom de famille"
+                placeholder={locale === 'en' ? 'Last name' : 'Nom de famille'}
                 required
               />
             </label>
@@ -224,19 +243,26 @@ export default function AuthForm({ mode = 'login' }) {
 
         {isSignup && role === 'employer' ? (
           <label className="md:col-span-2">
-            <span className="mb-2 block text-sm font-semibold text-[#17345d]">Entreprise</span>
-            <input className="field-input" value={companyName} onChange={(event) => setCompanyName(event.target.value)} placeholder="Nom de l'entreprise" />
+            <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'Company' : 'Entreprise'}</span>
+            <input className="field-input" value={companyName} onChange={(event) => setCompanyName(event.target.value)} placeholder={locale === 'en' ? 'Company name' : "Nom de l'entreprise"} />
           </label>
         ) : null}
 
         <label>
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Email</span>
-          <input className="field-input" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="votre.email@example.com" required />
+          <input
+            className="field-input"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={locale === 'en' ? 'your.email@example.com' : 'votre.email@example.com'}
+            required
+          />
         </label>
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Mot de passe</span>
-          <input className="field-input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Minimum 6 caractères" required />
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'Password' : 'Mot de passe'}</span>
+          <input className="field-input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={locale === 'en' ? 'Minimum 6 characters' : 'Minimum 6 caractères'} required />
         </label>
 
         {(error || message) ? (
@@ -247,12 +273,14 @@ export default function AuthForm({ mode = 'login' }) {
 
         <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button disabled={loading} className="primary-button disabled:cursor-not-allowed disabled:opacity-70">
-            {loading ? 'Chargement...' : isSignup ? 'Créer mon compte' : 'Se connecter'}
+            {loading ? (locale === 'en' ? 'Loading...' : 'Chargement...') : isSignup ? (locale === 'en' ? 'Create my account' : 'Créer mon compte') : (locale === 'en' ? 'Sign in' : 'Se connecter')}
           </button>
           <p className="text-sm text-[#607086]">
-            {isSignup ? 'Vous avez déjà un compte ? ' : 'Vous n’avez pas encore de compte ? '}
-            <Link href={isSignup ? '/connexion' : '/inscription'} className="font-semibold text-[#1d3b8b] hover:text-[#57b7af]">
-              {isSignup ? 'Se connecter' : 'Créer un compte'}
+            {isSignup
+              ? (locale === 'en' ? 'Already have an account? ' : 'Vous avez déjà un compte ? ')
+              : (locale === 'en' ? 'Don’t have an account yet? ' : 'Vous n’avez pas encore de compte ? ')}
+            <Link href={localizeHref(isSignup ? '/connexion' : '/inscription', locale)} className="font-semibold text-[#1d3b8b] hover:text-[#57b7af]">
+              {isSignup ? (locale === 'en' ? 'Sign in' : 'Se connecter') : (locale === 'en' ? 'Create an account' : 'Créer un compte')}
             </Link>
           </p>
         </div>

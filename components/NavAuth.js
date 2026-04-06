@@ -1,17 +1,20 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
+import { detectLocaleFromPathname, localizeHref, siteCopy } from '../lib/i18n';
 
 export default function NavAuth() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname() || "/";
+  const locale = detectLocaleFromPathname(pathname);
+  const copy = siteCopy[locale];
 
   async function handleSignOut() {
     await signOut();
-    router.push('/');
+    router.push(localizeHref('/', locale));
     router.refresh();
   }
 
@@ -23,8 +26,8 @@ export default function NavAuth() {
   // Utilisateur connecté
   if (user) {
     const role      = user.user_metadata?.role || 'worker';
-    const spacePath = role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace';
-    const spaceLabel = role === 'employer' ? 'Mon espace employeur' : 'Mon espace travailleur';
+    const spacePath = localizeHref(role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace', locale);
+    const spaceLabel = role === 'employer' ? copy.auth.employerSpace : copy.auth.workerSpace;
     const fullName  = user.user_metadata?.full_name || '';
     const parts     = fullName.trim().split(' ').filter(Boolean);
     const initials  = parts.length >= 2
@@ -49,7 +52,7 @@ export default function NavAuth() {
           onClick={handleSignOut}
           className="whitespace-nowrap rounded-2xl border border-[#e8edf3] bg-white px-3.5 py-2 text-[13px] font-medium text-[#6d7b8d] transition hover:border-[#f2c4c4] hover:text-[#a33f3f]"
         >
-          Déconnexion
+          {copy.auth.signOut}
         </button>
       </div>
     );
@@ -58,11 +61,11 @@ export default function NavAuth() {
   // Utilisateur non connecté
   return (
     <div className="hidden items-center gap-4 lg:flex">
-      <Link href="/connexion" className="secondary-button">
-        Se connecter
+      <Link href={localizeHref("/connexion", locale)} className="secondary-button">
+        {copy.auth.signIn}
       </Link>
-      <Link href="/inscription" className="primary-button">
-        Créer un compte
+      <Link href={localizeHref("/inscription", locale)} className="primary-button">
+        {copy.auth.createAccount}
       </Link>
     </div>
   );
@@ -72,10 +75,13 @@ export default function NavAuth() {
 export function NavAuthMobile() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname() || "/";
+  const locale = detectLocaleFromPathname(pathname);
+  const copy = siteCopy[locale];
 
   async function handleSignOut() {
     await signOut();
-    router.push('/');
+    router.push(localizeHref('/', locale));
     router.refresh();
   }
 
@@ -83,7 +89,7 @@ export function NavAuthMobile() {
 
   if (user) {
     const role      = user.user_metadata?.role || 'worker';
-    const spacePath = role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace';
+    const spacePath = localizeHref(role === 'employer' ? '/employeurs/espace' : '/travailleurs/espace', locale);
     const fullName  = user.user_metadata?.full_name || '';
     const parts     = fullName.trim().split(' ').filter(Boolean);
     const initials  = parts.length >= 2
@@ -99,7 +105,7 @@ export function NavAuthMobile() {
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1d3b8b,#57b7af)] text-[10px] font-bold text-white">
             {initials}
           </span>
-          <span className="max-w-[80px] truncate">Espace</span>
+          <span className="max-w-[80px] truncate">{copy.auth.mobileSpace}</span>
         </Link>
         <button
           onClick={handleSignOut}
@@ -112,8 +118,8 @@ export function NavAuthMobile() {
   }
 
   return (
-    <Link href="/connexion" className="secondary-button">
-      Connexion
+    <Link href={localizeHref("/connexion", locale)} className="secondary-button">
+      {copy.auth.signIn}
     </Link>
   );
 }

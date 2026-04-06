@@ -1,87 +1,163 @@
 "use client";
 
-const blocks = [
-  {
-    step: "Bloc 1",
-    eyebrow: "Front public",
-    title: "Point d'entrée unique",
-    accent: "blue",
-    description:
-      "LEXPAT Connect concentre les formulaires et parcours de départ dans une interface unique, claire et orientée matching.",
-    items: [
-      "CTA employeurs",
-      "CTA travailleurs",
-      "Formulaires simples",
-      "Point d'entrée unique"
-    ]
+const copy = {
+  fr: {
+    blocks: [
+      {
+        step: "Bloc 1",
+        eyebrow: "Front public",
+        title: "Point d'entrée unique",
+        accent: "blue",
+        description:
+          "LEXPAT Connect concentre les formulaires et parcours de départ dans une interface unique, claire et orientée matching.",
+        items: ["CTA employeurs", "CTA travailleurs", "Formulaires simples", "Point d'entrée unique"]
+      },
+      {
+        step: "Bloc 2",
+        eyebrow: "Base de données européenne",
+        title: "Infrastructure UE maîtrisée",
+        accent: "blue",
+        description:
+          "Les données de matching sont hébergées en Europe sur une infrastructure pensée pour le contrôle d'accès et la conformité.",
+        items: ["Supabase Europe (Francfort)", "Hébergement UE", "Chiffrement", "Accès contrôlé"]
+      },
+      {
+        step: "Bloc 3",
+        eyebrow: "Moteur de matching",
+        title: "Règles métier et compatibilité",
+        accent: "teal",
+        description:
+          "Le matching croise les besoins employeurs et les profils travailleurs sans exposer immédiatement les données identifiantes.",
+        items: ["Score de compatibilité", "Matching métier", "Langues et mobilité", "Priorité permis unique"]
+      },
+      {
+        step: "Bloc 4",
+        eyebrow: "Mise en relation",
+        title: "Contact limité et consenti",
+        accent: "teal",
+        description:
+          "Une fois le match validé, la plateforme encadre le partage d'information dans une logique de minimisation et de consentement.",
+        items: ["Validation du match", "Partage limité des données", "Consentement préalable", "Minimisation RGPD"]
+      },
+      {
+        step: "Bloc 5",
+        eyebrow: "Cabinet LEXPAT — relais juridique séparé",
+        title: "Périmètre juridique distinct",
+        accent: "legal",
+        description:
+          "Lorsque le recrutement avance vers un permis unique ou une question d'immigration économique, le cabinet LEXPAT intervient dans un cadre séparé.",
+        items: [
+          "Permis unique",
+          "Immigration économique",
+          "Suivi dossier",
+          "Infrastructure dédiée",
+          "Secret professionnel",
+          "Responsable de traitement distinct"
+        ]
+      }
+    ],
+    benefits: [
+      "Données hébergées en Europe",
+      "Séparation claire des traitements",
+      "Matching avant divulgation",
+      "Consentement avant transfert",
+      "Relais juridique activé uniquement si nécessaire"
+    ],
+    heroBadge: "Sécurité & conformité",
+    heroTitle: "Comment LEXPAT Connect sépare le matching professionnel du traitement juridique",
+    heroText:
+      "Une architecture pensée pour protéger les données, clarifier les rôles et sécuriser le parcours entre mise en relation et accompagnement juridique.",
+    overview: "Vue d’ensemble",
+    whyPageTitle: "Pourquoi cette page ?",
+    whyPageText:
+      "Montrer que le matching et le traitement juridique n’obéissent pas au même périmètre de données renforce la confiance des employeurs comme des travailleurs.",
+    benefitsBadge: "Bénéfices",
+    benefitsTitle: "Pourquoi cette architecture protège employeurs et travailleurs",
+    benefitsText:
+      "La plateforme limite les transferts, sépare les rôles et active l’intervention du cabinet uniquement lorsque la relation avance vers un recrutement réel.",
+    legalBoxTitle: "Séparation RGPD garantie",
+    legalBoxText:
+      "Le traitement juridique opère dans un périmètre distinct de la plateforme de matching, avec secret professionnel, infrastructure dédiée et base légale propre au cabinet."
   },
-  {
-    step: "Bloc 2",
-    eyebrow: "Base de données européenne",
-    title: "Infrastructure UE maîtrisée",
-    accent: "blue",
-    description:
-      "Les données de matching sont hébergées en Europe sur une infrastructure pensée pour le contrôle d'accès et la conformité.",
-    items: [
-      "Supabase Europe (Francfort)",
-      "Hébergement UE",
-      "Chiffrement",
-      "Accès contrôlé"
-    ]
-  },
-  {
-    step: "Bloc 3",
-    eyebrow: "Moteur de matching",
-    title: "Règles métier et compatibilité",
-    accent: "teal",
-    description:
-      "Le matching croise les besoins employeurs et les profils travailleurs sans exposer immédiatement les données identifiantes.",
-    items: [
-      "Score de compatibilité",
-      "Matching métier",
-      "Langues et mobilité",
-      "Priorité permis unique"
-    ]
-  },
-  {
-    step: "Bloc 4",
-    eyebrow: "Mise en relation",
-    title: "Contact limité et consenti",
-    accent: "teal",
-    description:
-      "Une fois le match validé, la plateforme encadre le partage d'information dans une logique de minimisation et de consentement.",
-    items: [
-      "Validation du match",
-      "Partage limité des données",
-      "Consentement préalable",
-      "Minimisation RGPD"
-    ]
-  },
-  {
-    step: "Bloc 5",
-    eyebrow: "Cabinet LEXPAT — relais juridique séparé",
-    title: "Périmètre juridique distinct",
-    accent: "legal",
-    description:
-      "Lorsque le recrutement avance vers un permis unique ou une question d'immigration économique, le cabinet LEXPAT intervient dans un cadre séparé.",
-    items: [
-      "Permis unique",
-      "Immigration économique",
-      "Suivi dossier",
-      "Infrastructure dédiée",
-      "Secret professionnel",
-      "Responsable de traitement distinct"
-    ]
+  en: {
+    blocks: [
+      {
+        step: "Block 1",
+        eyebrow: "Public front-end",
+        title: "A single entry point",
+        accent: "blue",
+        description:
+          "LEXPAT Connect brings initial forms and user journeys together in one clear, matching-focused interface.",
+        items: ["Employer CTAs", "Worker CTAs", "Simple forms", "Single entry point"]
+      },
+      {
+        step: "Block 2",
+        eyebrow: "European database",
+        title: "Controlled EU infrastructure",
+        accent: "blue",
+        description:
+          "Matching data is hosted in Europe on an infrastructure designed for access control, stability and compliance.",
+        items: ["Supabase Europe (Frankfurt)", "EU hosting", "Encryption", "Controlled access"]
+      },
+      {
+        step: "Block 3",
+        eyebrow: "Matching engine",
+        title: "Business rules and compatibility",
+        accent: "teal",
+        description:
+          "The platform compares employer needs and worker profiles without exposing identifying information too early.",
+        items: ["Compatibility score", "Occupation matching", "Languages and mobility", "Single permit priority"]
+      },
+      {
+        step: "Block 4",
+        eyebrow: "Introductions",
+        title: "Limited, consent-based contact",
+        accent: "teal",
+        description:
+          "Once a match is validated, information sharing is framed by data minimization and prior consent.",
+        items: ["Match validation", "Limited data sharing", "Prior consent", "GDPR minimization"]
+      },
+      {
+        step: "Block 5",
+        eyebrow: "LEXPAT law firm — separate legal relay",
+        title: "A distinct legal perimeter",
+        accent: "legal",
+        description:
+          "When a recruitment moves toward a single permit or an economic immigration issue, the LEXPAT law firm intervenes in a separate legal framework.",
+        items: [
+          "Single permit",
+          "Economic immigration",
+          "Case follow-up",
+          "Dedicated infrastructure",
+          "Professional secrecy",
+          "Separate data controller"
+        ]
+      }
+    ],
+    benefits: [
+      "Data hosted in Europe",
+      "Clear separation of processing",
+      "Matching before disclosure",
+      "Consent before any transfer",
+      "Legal relay activated only when needed"
+    ],
+    heroBadge: "Security & compliance",
+    heroTitle: "How LEXPAT Connect separates professional matching from legal processing",
+    heroText:
+      "An architecture designed to protect data, clarify roles and secure the path between matching and legal support.",
+    overview: "Overview",
+    whyPageTitle: "Why this page?",
+    whyPageText:
+      "Showing that matching and legal processing do not operate on the same data perimeter helps build trust for both employers and workers.",
+    benefitsBadge: "Benefits",
+    benefitsTitle: "Why this architecture protects both employers and workers",
+    benefitsText:
+      "The platform limits transfers, separates roles and activates the law firm only when a relationship moves toward a real recruitment process.",
+    legalBoxTitle: "Clear GDPR separation",
+    legalBoxText:
+      "Legal processing operates in a perimeter distinct from the matching platform, with professional secrecy, dedicated infrastructure and its own legal basis."
   }
-];
-
-const benefits = [
-  "Données hébergées en Europe",
-  "Séparation claire des traitements",
-  "Matching avant divulgation",
-  "Consentement avant transfert",
-  "Relais juridique activé uniquement si nécessaire"
-];
+};
 
 function FlowIcon({ accent = "blue" }) {
   const accentMap = {
@@ -99,7 +175,7 @@ function FlowIcon({ accent = "blue" }) {
   );
 }
 
-function BlockCard({ block, index, isLast }) {
+function BlockCard({ block, isLast, legalBoxTitle, legalBoxText }) {
   const styles = {
     blue: {
       wrap: "border-[rgba(23,58,138,0.16)] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]",
@@ -162,9 +238,9 @@ function BlockCard({ block, index, isLast }) {
 
           {block.accent === "legal" ? (
             <div className="mt-7 rounded-[26px] border border-[rgba(39,79,150,0.16)] bg-white/70 p-6 text-sm leading-7 text-[#385172]">
-              <p className="font-semibold text-[#173A8A]">Séparation RGPD garantie</p>
+              <p className="font-semibold text-[#173A8A]">{legalBoxTitle}</p>
               <p className="mt-2">
-                Le traitement juridique opère dans un périmètre distinct de la plateforme de matching, avec secret professionnel, infrastructure dédiée et base légale propre au cabinet.
+                {legalBoxText}
               </p>
             </div>
           ) : null}
@@ -174,7 +250,10 @@ function BlockCard({ block, index, isLast }) {
   );
 }
 
-export default function SecurityComplianceSection() {
+export default function SecurityComplianceSection({ locale = "fr" }) {
+  const current = copy[locale] || copy.fr;
+  const blocks = current.blocks;
+  const benefits = current.benefits;
   return (
     <section className="pb-16 pt-8 sm:pb-20 lg:pb-24 lg:pt-12">
       <div className="container-shell">
@@ -184,20 +263,20 @@ export default function SecurityComplianceSection() {
 
           <div className="relative max-w-4xl">
             <p className="inline-flex items-center rounded-full border border-[#d8e7e5] bg-[#f6fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#255c8f]">
-              Sécurité & conformité
+              {current.heroBadge}
             </p>
             <h1 className="mt-6 text-4xl font-semibold leading-[1.04] tracking-[-0.05em] text-[#173A8A] sm:text-5xl lg:text-6xl">
-              Comment LEXPAT Connect sépare le matching professionnel du traitement juridique
+              {current.heroTitle}
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[#55677f] sm:text-lg">
-              Une architecture pensée pour protéger les données, clarifier les rôles et sécuriser le parcours entre mise en relation et accompagnement juridique.
+              {current.heroText}
             </p>
           </div>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start">
           <aside className="rounded-[28px] border border-[#e4edf4] bg-white p-6 shadow-[0_12px_30px_rgba(24,53,101,0.05)] lg:sticky lg:top-28">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Vue d’ensemble</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">{current.overview}</p>
             <nav className="mt-5 space-y-2">
               {blocks.map((block) => (
                 <a
@@ -211,9 +290,9 @@ export default function SecurityComplianceSection() {
             </nav>
 
             <div className="mt-6 rounded-[22px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086]">
-              <p className="font-semibold text-[#1d3b8b]">Pourquoi cette page ?</p>
+              <p className="font-semibold text-[#1d3b8b]">{current.whyPageTitle}</p>
               <p className="mt-2 leading-7">
-                Montrer que le matching et le traitement juridique n’obéissent pas au même périmètre de données renforce la confiance des employeurs comme des travailleurs.
+                {current.whyPageText}
               </p>
             </div>
           </aside>
@@ -221,20 +300,25 @@ export default function SecurityComplianceSection() {
           <div className="space-y-6">
             {blocks.map((block, index) => (
               <div key={block.step} id={block.step.toLowerCase().replace(/\s+/g, "-")} className="scroll-mt-28">
-                <BlockCard block={block} index={index} isLast={index === blocks.length - 1} />
+                <BlockCard
+                  block={block}
+                  isLast={index === blocks.length - 1}
+                  legalBoxTitle={current.legalBoxTitle}
+                  legalBoxText={current.legalBoxText}
+                />
               </div>
             ))}
 
             <section className="overflow-hidden rounded-[34px] border border-[#d8e7e5] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-8 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-10">
               <div className="max-w-3xl">
                 <p className="inline-flex rounded-full border border-[#d7ece8] bg-[#ecfaf8] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
-                  Bénéfices
+                  {current.benefitsBadge}
                 </p>
                 <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#14315f] sm:text-[2.2rem]">
-                  Pourquoi cette architecture protège employeurs et travailleurs
+                  {current.benefitsTitle}
                 </h2>
                 <p className="mt-4 text-base leading-8 text-[#55677f]">
-                  La plateforme limite les transferts, sépare les rôles et active l’intervention du cabinet uniquement lorsque la relation avance vers un recrutement réel.
+                  {current.benefitsText}
                 </p>
               </div>
 

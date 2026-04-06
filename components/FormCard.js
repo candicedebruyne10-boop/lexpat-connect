@@ -34,7 +34,8 @@ export default function FormCard({
   fields,
   buttonLabel,
   formType,
-  successMessage = "Votre demande a bien été envoyée."
+  successMessage = "Votre demande a bien été envoyée.",
+  locale = "fr"
 }) {
   const [values, setValues] = useState({});
   const [status, setStatus] = useState({ type: "idle", message: "" });
@@ -136,7 +137,7 @@ export default function FormCard({
     <div className="rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-8 max-w-2xl">
         <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-          Formulaire
+          {locale === "en" ? "Form" : "Formulaire"}
         </p>
         <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b] sm:text-3xl">{title}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5d6e83]">{intro}</p>
@@ -146,7 +147,7 @@ export default function FormCard({
           const fieldKey = getFieldKey(field);
           const options = field.type === "select" ? resolveSelectOptions(field, values) : [];
           const placeholder = field.type === "select" && field.optionsMap && !values[field.optionsByField]
-            ? "Choisissez d'abord une région"
+            ? (locale === "en" ? "Choose a region first" : "Choisissez d'abord une région")
             : field.placeholder;
 
           return (
@@ -165,6 +166,7 @@ export default function FormCard({
                   value={values[fieldKey] || []}
                   onChange={(nextValue) => handleChange(field, nextValue)}
                   helperText={field.helperText}
+                  locale={locale}
                 />
               ) : field.type === "select" ? (
                 <select
@@ -215,14 +217,16 @@ export default function FormCard({
           ) : null}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-sm leading-7 text-[#66768b]">
-              Les demandes sont envoyées directement à votre adresse de réception via Resend dès que la configuration d'envoi est complétée.
+              {locale === "en"
+                ? "Submissions are sent directly to your receiving address via Resend as soon as the sending configuration is completed."
+                : "Les demandes sont envoyées directement à votre adresse de réception via Resend dès que la configuration d'envoi est complétée."}
             </p>
             <button
               type="submit"
               disabled={isSubmitting}
               className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.28)] transition hover:bg-[#4aa9a2] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Envoi en cours..." : buttonLabel}
+              {isSubmitting ? (locale === "en" ? "Sending..." : "Envoi en cours...") : buttonLabel}
             </button>
           </div>
         </div>
