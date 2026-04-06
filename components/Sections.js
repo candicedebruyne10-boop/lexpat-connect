@@ -542,7 +542,7 @@ export function PresentationVideoSection() {
   return (
     <section className="py-2 sm:py-4 lg:py-6">
       <div className="container-shell">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-2xl">
           <div className="mb-6 text-center">
             <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
               Présentation
@@ -552,10 +552,10 @@ export function PresentationVideoSection() {
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-[28px] border border-[#dfe9f2] bg-white p-2.5 shadow-[0_16px_42px_rgba(15,23,42,0.06)] sm:p-3">
-            <div className="overflow-hidden rounded-[20px] bg-[#07112f]">
+          <div className="overflow-hidden rounded-[24px] border border-[#dfe9f2] bg-white p-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:p-2.5">
+            <div className="overflow-hidden rounded-[18px] bg-[#07112f]">
               <video
-                className="mx-auto block h-auto w-full max-w-[760px]"
+                className="mx-auto block h-auto w-full max-w-[320px] sm:max-w-[360px] lg:max-w-[400px]"
                 controls
                 preload="metadata"
                 playsInline
