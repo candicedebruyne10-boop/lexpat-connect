@@ -538,6 +538,39 @@ export function HowItWorksPremium({ locale = "fr" }) {
   );
 }
 
+export function PresentationVideoSection() {
+  return (
+    <section className="py-2 sm:py-4 lg:py-6">
+      <div className="container-shell">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-6 text-center">
+            <p className="inline-flex items-center rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
+              Présentation
+            </p>
+            <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
+              Découvrez LEXPAT Connect en images
+            </h2>
+          </div>
+
+          <div className="overflow-hidden rounded-[32px] border border-[#dfe9f2] bg-white p-3 shadow-[0_20px_60px_rgba(15,23,42,0.06)] sm:p-4">
+            <div className="overflow-hidden rounded-[24px] bg-[#07112f]">
+              <video
+                className="block h-auto w-full"
+                controls
+                preload="metadata"
+                playsInline
+              >
+                <source src="/presentation-lexpat-connect.mp4" type="video/mp4" />
+                Votre navigateur ne prend pas en charge la lecture vidéo.
+              </video>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const JOB_SECTORS = [
   { id: "software", label: "Software Engineer", region: "Bruxelles", color: EMPLOYER },
   { id: "infirmier", label: "Infirmier", region: "Wallonie", color: TALENT },
