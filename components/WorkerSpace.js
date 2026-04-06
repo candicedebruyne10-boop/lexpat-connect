@@ -174,6 +174,26 @@ function WorkerMatchesView({ token }) {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
+  const [openingChat, setOpeningChat] = useState(null);
+
+  const handleOpenMessagerie = async (matchId) => {
+    setOpeningChat(matchId);
+    try {
+      const response = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ match_id: matchId }),
+      });
+      const data = await response.json();
+      const conversationId = data?.conversation?.id;
+      window.location.href = conversationId
+        ? `/messagerie?conversation=${conversationId}`
+        : "/messagerie";
+    } catch (e) {
+      console.error(e);
+      window.location.href = "/messagerie";
+    }
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -242,25 +262,29 @@ function WorkerMatchesView({ token }) {
                 </span>
               </div>
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
-                Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.
+                {match.status?.toLowerCase() === "contacted"
+                  ? <>Statut : <span className="font-semibold text-[#2f9d57]">Match confirmé</span> — Les coordonnées sont débloquées.</>
+                  : <>Statut : <span className="font-semibold capitalize">{match.status === "pending" ? "En attente de validation" : match.status}</span> — Les coordonnées du profil seront accessibles après confirmation du contact.</>
+                }
               </div>
 
               {/* ── Bouton d'intérêt travailleur ── */}
               <div className="mt-4">
-                {match.status === "contacted" ? (
+                {match.status?.toLowerCase() === "contacted" ? (
                   /* Match confirmé des deux côtés */
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 rounded-[16px] bg-[#eef9f1] px-4 py-2.5 text-sm font-semibold text-[#2f9d57]">
                       <span>✓</span> Match confirmé — les coordonnées employeur sont débloquées
                     </div>
-                    <a
-                      href="/messagerie"
-                      className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2]"
+                    <button
+                      onClick={() => handleOpenMessagerie(match.id)}
+                      disabled={openingChat === match.id}
+                      className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2] disabled:opacity-60"
                     >
-                      Ouvrir la messagerie →
-                    </a>
+                      {openingChat === match.id ? "Ouverture…" : "Ouvrir la messagerie →"}
+                    </button>
                   </div>
-                ) : match.status === "interested" ? (
+                ) : match.status?.toLowerCase() === "interested" ? (
                   /* L'employeur a déjà manifesté son intérêt */
                   <div className="flex flex-col gap-2">
                     <div className="rounded-[16px] border border-[#1E3A78]/20 bg-[#eef1fb] px-4 py-2.5 text-xs text-[#33566b]">
@@ -274,7 +298,7 @@ function WorkerMatchesView({ token }) {
                       {acting === match.id ? "…" : "Confirmer mon intérêt → Match confirmé"}
                     </button>
                   </div>
-                ) : match.status === "reviewed" ? (
+                ) : match.status?.toLowerCase() === "reviewed" ? (
                   /* Travailleur a déjà cliqué, en attente de l'employeur */
                   <div className="rounded-[16px] border border-[#a8d9d4] bg-[#eaf4f3] px-4 py-2.5 text-xs text-[#5f7086]">
                     En attente de la réponse de l'employeur…
