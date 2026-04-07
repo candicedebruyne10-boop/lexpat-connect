@@ -68,11 +68,13 @@ function CityDot({ left, top, hub }) {
         /* Bruxelles — hub principal, halo renforcé */
         <>
           {/* Halo externe lent */}
-          <div className="absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/10 [animation-duration:3s]" />
+          <div className="absolute h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/10 [animation-duration:3s]" />
           {/* Anneau principal */}
-          <div className="absolute h-12 w-12 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25 [animation-duration:2s]" />
+          <div className="absolute h-16 w-16 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/24 [animation-duration:2s]" />
           {/* Halo flou */}
-          <div className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/35 blur-[6px]" />
+          <div className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/28 blur-[8px]" />
+          {/* Anneau fixe pour stabiliser le rendu */}
+          <div className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#9de8e2]/45 bg-[#0b234a]/18" />
           {/* Point central */}
           <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_16px_6px_rgba(89,185,177,0.80)]" />
         </>
