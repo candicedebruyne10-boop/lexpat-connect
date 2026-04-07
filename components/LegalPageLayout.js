@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 
 function renderBody(body) {
   if (typeof body === "string") {
@@ -52,8 +53,12 @@ export default function LegalPageLayout({ title, intro, sections, lastUpdated = 
               <p className="mt-2 leading-7">
                 Pour toute demande liée aux données, au fonctionnement de la plateforme ou au relais juridique, vous pouvez nous écrire.
               </p>
-              <Link href="/contact" className="mt-4 inline-flex font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]">
-                Contacter LEXPAT Connect
+              <Link
+                href="/contact"
+                onClick={() => track("Legal Contact CTA Clicked", { cta: "Contacter LEXPAT", location: "legal-sidebar" })}
+                className="mt-4 inline-flex font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]"
+              >
+                Contacter LEXPAT
               </Link>
             </div>
           </aside>

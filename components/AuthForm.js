@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { track } from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { getSupabaseBrowserClient } from '../lib/supabase/client';
@@ -279,7 +280,17 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
             {isSignup
               ? (locale === 'en' ? 'Already have an account? ' : 'Vous avez déjà un compte ? ')
               : (locale === 'en' ? 'Don’t have an account yet? ' : 'Vous n’avez pas encore de compte ? ')}
-            <Link href={localizeHref(isSignup ? '/connexion' : '/inscription', locale)} className="font-semibold text-[#1d3b8b] hover:text-[#57b7af]">
+            <Link
+              href={localizeHref(isSignup ? '/connexion' : '/inscription', locale)}
+              className="font-semibold text-[#1d3b8b] hover:text-[#57b7af]"
+              onClick={() =>
+                track('Auth Secondary CTA Clicked', {
+                  cta: isSignup ? (locale === 'en' ? 'Sign in' : 'Se connecter') : (locale === 'en' ? 'Create an account' : 'Créer un compte'),
+                  mode,
+                  locale
+                })
+              }
+            >
               {isSignup ? (locale === 'en' ? 'Sign in' : 'Se connecter') : (locale === 'en' ? 'Create an account' : 'Créer un compte')}
             </Link>
           </p>

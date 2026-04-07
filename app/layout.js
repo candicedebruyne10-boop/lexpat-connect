@@ -1,5 +1,6 @@
 import './globals.css';
 import { Montserrat, Open_Sans } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { AuthProvider } from '../components/AuthProvider';
 import SiteChrome from '../components/SiteChrome';
 import CookieBanner from '../components/CookieBanner';
@@ -17,9 +18,9 @@ const openSans = Open_Sans({
 });
 
 export const metadata = {
-  title: 'LEXPAT Connect',
+  title: 'LEXPAT',
   description:
-    'La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.'
+    "Cabinet d'avocats en droit des etrangers en Belgique."
 };
 
 export default function RootLayout({ children }) {
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <SiteChrome>{children}</SiteChrome>
           <CookieBanner />
+          <Analytics />
         </AuthProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { track } from "@vercel/analytics";
 import { useMemo, useState } from "react";
 import { localizeHref } from "../lib/i18n";
 
@@ -213,6 +214,7 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
         <div className="mt-7 flex gap-4">
           <Link
             href={primaryHref}
+            onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
             className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
           >
@@ -220,6 +222,7 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
           </Link>
           <Link
             href={secondaryHref}
+            onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
             className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
           >
@@ -253,6 +256,7 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
         <Link
           href={primaryHref}
+          onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
           className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
         >
@@ -260,6 +264,7 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
         </Link>
         <Link
           href={secondaryHref}
+          onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
           className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
           style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
         >
@@ -748,6 +753,489 @@ export function CtaBannerDark({ primaryHref, secondaryHref, locale = "fr" }) {
   );
 }
 
+const CABINET_SERVICES = {
+  fr: [
+    {
+      kicker: "Immigration economique",
+      title: "Permis unique",
+      text: "Analyse de faisabilite, checklist documentaire et pilotage du dossier jusqu'a la decision.",
+      href: "/permis-unique",
+      accent: EMPLOYER.primary
+    },
+    {
+      kicker: "Installation en Belgique",
+      title: "Visa rentier",
+      text: "Structuration du dossier et accompagnement pour les personnes qui souhaitent s'etablir durablement en Belgique.",
+      href: "/accompagnement-juridique",
+      accent: "#204E97"
+    },
+    {
+      kicker: "Vie familiale",
+      title: "Regroupement familial",
+      text: "Strategie, pieces a reunir et suivi rigoureux pour des demandes familiales solides.",
+      href: "/contact",
+      accent: TALENT.primary
+    },
+    {
+      kicker: "Ancrage durable",
+      title: "Nationalite belge",
+      text: "Vision claire des conditions, calendrier realiste et parcours securise vers la nationalite.",
+      href: "/contact",
+      accent: "#B5121B"
+    }
+  ],
+  en: [
+    {
+      kicker: "Economic immigration",
+      title: "Single permit",
+      text: "Feasibility assessment, document checklist and end-to-end file management until decision.",
+      href: "/en/permis-unique",
+      accent: EMPLOYER.primary
+    },
+    {
+      kicker: "Settling in Belgium",
+      title: "Passive income visa",
+      text: "Case structuring and legal guidance for people planning a long-term move to Belgium.",
+      href: "/en/accompagnement-juridique",
+      accent: "#204E97"
+    },
+    {
+      kicker: "Family life",
+      title: "Family reunification",
+      text: "Strategy, supporting documents and rigorous follow-up for strong family-based applications.",
+      href: "/en/contact",
+      accent: TALENT.primary
+    },
+    {
+      kicker: "Long-term anchoring",
+      title: "Belgian nationality",
+      text: "Clear eligibility reading, realistic timing and a secure path toward nationality.",
+      href: "/en/contact",
+      accent: "#B5121B"
+    }
+  ]
+};
+
+const CABINET_METHOD = {
+  fr: [
+    "Confirmer la faisabilite du projet",
+    "Construire une strategie globale",
+    "Fournir une checklist claire",
+    "Structurer le depot du dossier",
+    "Assurer le suivi jusqu'a la decision"
+  ],
+  en: [
+    "Confirm the feasibility of the project",
+    "Build an overall legal strategy",
+    "Provide a clear checklist",
+    "Structure the filing properly",
+    "Monitor the case until decision"
+  ]
+};
+
+const CABINET_TESTIMONIALS = {
+  fr: [
+    {
+      name: "Simon N.",
+      role: "Comptable et gerant",
+      text: "Une approche tres structuree, un suivi rassurant et une vraie maitrise des procedures."
+    },
+    {
+      name: "Moncef B.",
+      role: "CEO",
+      text: "Le dossier a ete pris en main avec rigueur et clarte. On sait exactement ou l'on va."
+    },
+    {
+      name: "Sal. B.",
+      role: "Client prive",
+      text: "Le cabinet donne le sentiment d'etre accompagne du debut a la fin, sans zones grises."
+    }
+  ],
+  en: [
+    {
+      name: "Simon N.",
+      role: "Accountant and manager",
+      text: "A very structured approach, reassuring follow-up and a real command of the procedures."
+    },
+    {
+      name: "Moncef B.",
+      role: "CEO",
+      text: "The case was handled with rigor and clarity. You always know where things stand."
+    },
+    {
+      name: "Sal. B.",
+      role: "Private client",
+      text: "The firm makes you feel supported from beginning to end, without grey areas."
+    }
+  ]
+};
+
+export function CabinetHero({ locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        badge: "LEXPAT law firm",
+        title: "Immigration law guidance in Belgium, built on clarity and compliance.",
+        text:
+          "LEXPAT supports single permit, family reunification, nationality and related immigration procedures with a rigorous legal method and a reassuring client experience.",
+        primary: "Book an appointment",
+        secondary: "Contact the firm",
+        trust: "Economic immigration, family cases and employer compliance",
+        stats: [
+          { value: "25+", label: "Years of combined experience" },
+          { value: "4", label: "Working languages" },
+          { value: "1000+", label: "Cases handled" }
+        ]
+      }
+    : {
+        badge: "Cabinet d'avocats LEXPAT",
+        title: "Le droit des etrangers en Belgique, avec une approche claire, rigoureuse et humaine.",
+        text:
+          "LEXPAT accompagne les demandes de permis unique, regroupement familial, nationalite belge et autres procedures d'immigration avec une methode juridique exigeante et un suivi rassurant.",
+        primary: "Prendre un rendez-vous",
+        secondary: "Contacter le cabinet",
+        trust: "Immigration economique, dossiers familiaux et conformite employeurs",
+        stats: [
+          { value: "25+", label: "Annees d'experience cumulees" },
+          { value: "4", label: "Langues de travail" },
+          { value: "1000+", label: "Dossiers traites" }
+        ]
+      };
+
+  return (
+    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#08112f_0%,#10255b_55%,#173a8a_100%)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(87,183,175,0.22),transparent_34%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(181,18,27,0.18),transparent_28%)]" />
+      <div className="container-shell relative py-14 sm:py-18 lg:py-24">
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <div>
+            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9dd4d0] backdrop-blur-sm">
+              {copy.badge}
+            </p>
+            <h1 className="mt-6 max-w-4xl text-4xl font-bold leading-[1.02] tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+              {copy.title}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
+              {copy.text}
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href={localizeHref("/contact", locale)}
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#B5121B] px-7 py-4 text-base font-bold text-white shadow-[0_16px_40px_rgba(181,18,27,0.24)] transition hover:-translate-y-0.5 hover:bg-[#991219]"
+              >
+                {copy.primary}
+              </Link>
+              <Link
+                href={localizeHref("/accompagnement-juridique", locale)}
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-white/15 bg-white/10 px-7 py-4 text-base font-bold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/16"
+              >
+                {copy.secondary}
+              </Link>
+            </div>
+            <p className="mt-5 text-sm leading-7 text-[#d6deee]">
+              {copy.trust}
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -left-4 -top-4 h-24 w-24 rounded-full bg-[#57B7AF]/25 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[36px] border border-white/10 bg-white shadow-[0_24px_80px_rgba(5,15,43,0.28)]">
+              <div className="grid gap-0 md:grid-cols-[0.9fr_1.1fr] lg:grid-cols-1 xl:grid-cols-[0.9fr_1.1fr]">
+                <div className="relative min-h-[280px] bg-[#e8edf5]">
+                  <Image
+                    src="/candice-profile.png"
+                    alt="Portrait de la fondatrice LEXPAT"
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1280px) 320px, (min-width: 1024px) 420px, 100vw"
+                  />
+                </div>
+                <div className="p-7 sm:p-8">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
+                    {locale === "en" ? "Why clients come to LEXPAT" : "Pourquoi les clients viennent chez LEXPAT"}
+                  </p>
+                  <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78]">
+                    {locale === "en" ? "A strategic legal partner, not vague advice." : "Un partenaire juridique strategique, pas un conseil vague."}
+                  </h2>
+                  <p className="mt-4 text-sm leading-7 text-[#607086]">
+                    {locale === "en"
+                      ? "The objective is simple: make the case readable, complete and defensible from the start."
+                      : "L'objectif est simple : rendre le dossier lisible, complet et defensable des le depart."}
+                  </p>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-1">
+                    {copy.stats.map((item) => (
+                      <div key={item.label} className="rounded-[22px] border border-[#e5edf4] bg-[#f8fbff] px-4 py-4">
+                        <p className="text-2xl font-bold text-[#1E3A78]">{item.value}</p>
+                        <p className="mt-1 text-xs leading-5 text-[#607086]">{item.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CabinetServices({ locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        kicker: "Services",
+        title: "The main legal paths handled by the firm",
+        intro:
+          "The current public site highlights a focused offer: high-stakes immigration procedures, employer support and long-term settlement matters."
+      }
+    : {
+        kicker: "Services",
+        title: "Les principales demarches traitees par le cabinet",
+        intro:
+          "Le site actuel met en avant une offre concentree sur les procedures d'immigration a fort enjeu, l'accompagnement des employeurs et les dossiers d'installation durable."
+      };
+  const services = CABINET_SERVICES[locale];
+
+  return (
+    <section className="py-16 sm:py-20 lg:py-24">
+      <div className="container-shell">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <p className="inline-flex rounded-full border border-[#dce5f0] bg-white px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
+            {copy.kicker}
+          </p>
+          <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
+            {copy.title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#607086]">
+            {copy.intro}
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {services.map((service) => (
+            <article
+              key={service.title}
+              className="rounded-[32px] border bg-white p-8 shadow-[0_18px_52px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)]"
+              style={{ borderColor: `${service.accent}22` }}
+            >
+              <span
+                className="inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em]"
+                style={{ background: `${service.accent}14`, color: service.accent }}
+              >
+                {service.kicker}
+              </span>
+              <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78]">
+                {service.title}
+              </h3>
+              <p className="mt-4 text-sm leading-7 text-[#607086]">
+                {service.text}
+              </p>
+              <Link
+                href={service.href}
+                className="mt-7 inline-flex min-h-[3.25rem] items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+                style={{ background: service.accent, boxShadow: `0 14px 34px ${service.accent}33` }}
+              >
+                {locale === "en" ? "Explore this path" : "Explorer cette demarche"}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CabinetMethod({ locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        kicker: "Reliability and compliance",
+        title: "A method designed to make each procedure readable and secure",
+        intro:
+          "The current LEXPAT positioning is clear: strong files, controlled process, pragmatic legal strategy."
+      }
+    : {
+        kicker: "Fiabilite et conformite",
+        title: "Une methode pensee pour rendre chaque procedure lisible et securisee",
+        intro:
+          "Le positionnement actuel de LEXPAT est tres clair : des dossiers solides, un process maitrise et une strategie juridique pragmatique."
+      };
+
+  const items = CABINET_METHOD[locale];
+
+  return (
+    <section className="py-4 sm:py-6 lg:py-8">
+      <div className="container-shell">
+        <div className="overflow-hidden rounded-[38px] border border-[#dce4ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-10 lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 lg:p-14">
+          <div>
+            <p className="inline-flex rounded-full border border-[#d7e8e6] bg-[#f6fbfb] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#57B7AF]">
+              {copy.kicker}
+            </p>
+            <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
+              {copy.title}
+            </h2>
+            <p className="mt-4 max-w-xl text-base leading-7 text-[#607086]">
+              {copy.intro}
+            </p>
+            <div className="mt-8 rounded-[28px] bg-[#0b173d] p-6 text-white">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0]">
+                {locale === "en" ? "Firm promise" : "Promesse cabinet"}
+              </p>
+              <p className="mt-3 text-lg font-bold leading-8">
+                {locale === "en"
+                  ? "You are not left alone with an unclear process. Each next step is made explicit."
+                  : "Vous n'etes pas laisse seul face a une procedure floue. Chaque prochaine etape est rendue explicite."}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:mt-0">
+            {items.map((item, index) => (
+              <article key={item} className="flex items-start gap-4 rounded-[26px] border border-[#e3ebf4] bg-white px-5 py-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+                <div className="inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-[#eef4ff] text-sm font-bold text-[#1E3A78]">
+                  0{index + 1}
+                </div>
+                <p className="pt-1 text-sm leading-7 text-[#32445e]">
+                  {item}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CabinetProof({ locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        kicker: "Trust signals",
+        title: "A more institutional page rhythm, closer to the live site",
+        intro:
+          "We keep the current blue and turquoise identity while moving the homepage toward a law-firm tone: credibility, testimonials and human presence."
+      }
+    : {
+        kicker: "Reassurance",
+        title: "Un rythme de page plus institutionnel, plus proche du site en ligne",
+        intro:
+          "On conserve l'identite bleue et turquoise existante, tout en faisant evoluer l'accueil vers un ton cabinet : credibilite, temoignages et presence humaine."
+      };
+
+  const testimonials = CABINET_TESTIMONIALS[locale];
+
+  return (
+    <section className="py-16 sm:py-20 lg:py-24">
+      <div className="container-shell">
+        <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="rounded-[34px] border border-[#e3ebf4] bg-white p-8 shadow-[0_18px_52px_rgba(15,23,42,0.05)] sm:p-10">
+            <p className="inline-flex rounded-full border border-[#dce5f0] bg-[#f8fbff] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#5a6f8d]">
+              {copy.kicker}
+            </p>
+            <h2 className="mt-4 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
+              {copy.title}
+            </h2>
+            <p className="mt-4 text-base leading-7 text-[#607086]">
+              {copy.intro}
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+              <div className="rounded-[24px] bg-[#f8fbff] px-5 py-5">
+                <p className="text-2xl font-bold text-[#1E3A78]">25+</p>
+                <p className="mt-2 text-sm leading-6 text-[#607086]">
+                  {locale === "en" ? "Years of experience highlighted on the public site" : "Annees d'experience mises en avant sur le site public"}
+                </p>
+              </div>
+              <div className="rounded-[24px] bg-[#eefaf8] px-5 py-5">
+                <p className="text-2xl font-bold text-[#57B7AF]">4</p>
+                <p className="mt-2 text-sm leading-6 text-[#607086]">
+                  {locale === "en" ? "Working languages for an international audience" : "Langues de travail pour une clientele internationale"}
+                </p>
+              </div>
+              <div className="rounded-[24px] bg-[#fff5f5] px-5 py-5">
+                <p className="text-2xl font-bold text-[#B5121B]">1000+</p>
+                <p className="mt-2 text-sm leading-6 text-[#607086]">
+                  {locale === "en" ? "Successful cases highlighted as social proof" : "Dossiers reussis mis en avant comme preuve sociale"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-5">
+            {testimonials.map((item) => (
+              <article key={item.name} className="rounded-[30px] border border-[#e5edf4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+                <p className="text-lg leading-8 text-[#32445e]">
+                  "{item.text}"
+                </p>
+                <div className="mt-5 flex items-center justify-between gap-4 border-t border-[#edf2f7] pt-5">
+                  <div>
+                    <p className="text-sm font-bold text-[#1E3A78]">{item.name}</p>
+                    <p className="text-sm text-[#607086]">{item.role}</p>
+                  </div>
+                  <span className="rounded-full bg-[#f4f7fe] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#204E97]">
+                    {locale === "en" ? "Client feedback" : "Retour client"}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CabinetCta({ locale = "fr" }) {
+  const copy = locale === "en"
+    ? {
+        title: "Need to move forward on a procedure in Belgium?",
+        text: "The homepage now reflects a clearer cabinet positioning. The next step is a conversion-oriented contact flow.",
+        primary: "Book an appointment",
+        secondary: "View legal support"
+      }
+    : {
+        title: "Vous avez besoin d'avancer sur une procedure en Belgique ?",
+        text: "L'accueil reflète maintenant un positionnement cabinet plus lisible. La prochaine etape naturelle est un parcours de contact plus convertissant.",
+        primary: "Prendre un rendez-vous",
+        secondary: "Voir l'accompagnement juridique"
+      };
+
+  return (
+    <section className="py-16 sm:py-20 lg:py-24">
+      <div className="container-shell">
+        <div className="relative overflow-hidden rounded-[40px] border border-[#0f2458] bg-[linear-gradient(135deg,#08112f_0%,#10255b_50%,#173a8a_100%)] p-10 sm:p-14 lg:p-16">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(87,183,175,0.24),transparent_34%)]" />
+          <div className="pointer-events-none absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#B5121B]/20 blur-3xl" />
+          <div className="relative mx-auto max-w-3xl text-center">
+            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9dd4d0]">
+              {locale === "en" ? "Next step" : "Prochaine etape"}
+            </p>
+            <h2 className="mt-5 text-3xl font-bold leading-[1.06] tracking-[-0.04em] text-white sm:text-4xl lg:text-5xl">
+              {copy.title}
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-white/70">
+              {copy.text}
+            </p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href={localizeHref("/contact", locale)}
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#B5121B] px-8 py-4 text-base font-bold text-white shadow-[0_16px_44px_rgba(181,18,27,0.28)] transition hover:-translate-y-0.5 hover:bg-[#991219]"
+              >
+                {copy.primary}
+              </Link>
+              <Link
+                href={localizeHref("/accompagnement-juridique", locale)}
+                className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-white/15 bg-white/10 px-8 py-4 text-base font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/16"
+              >
+                {copy.secondary}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    LEGACY COMPONENTS — kept for other pages
    ───────────────────────────────────────────────────────────────────────────── */
@@ -797,10 +1285,18 @@ export function Hero({
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href={primaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.28)] transition hover:bg-[#4aa9a2] sm:w-auto">
+              <Link
+                href={primaryHref}
+                onClick={() => track("Hero CTA Clicked", { cta: primaryLabel, destination: primaryHref })}
+                className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#57b7af] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(87,183,175,0.28)] transition hover:bg-[#4aa9a2] sm:w-auto"
+              >
                 {primaryLabel}
               </Link>
-              <Link href={secondaryHref} className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl border border-[#d4dff2] bg-white px-7 py-4 text-base font-semibold text-[#1d3b8b] transition hover:border-[#9cb2da] hover:bg-[#f8fbff] sm:w-auto">
+              <Link
+                href={secondaryHref}
+                onClick={() => track("Hero CTA Clicked", { cta: secondaryLabel, destination: secondaryHref })}
+                className="inline-flex min-h-14 w-full items-center justify-center rounded-2xl border border-[#d4dff2] bg-white px-7 py-4 text-base font-semibold text-[#1d3b8b] transition hover:border-[#9cb2da] hover:bg-[#f8fbff] sm:w-auto"
+              >
                 {secondaryLabel}
               </Link>
             </div>

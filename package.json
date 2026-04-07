@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.100.1",
+    "@vercel/analytics": "^2.0.1",
     "next": "15.5.14",
     "pptxgenjs": "^4.0.1",
     "react": "19.1.0",

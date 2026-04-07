@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 import { useAuth } from "../../components/AuthProvider";
 import { useRouter } from "next/navigation";
 
@@ -72,6 +73,7 @@ function ProfileCard({ profile }) {
       <div className="mt-auto pt-2 border-t border-[#f0f4f8]">
         <Link
           href="/employeurs"
+          onClick={() => track("Employer CTA Clicked", { cta: "Être mis en relation", location: "profile-card" })}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d3b8b] px-4 py-2.5 text-[12px] font-semibold text-white transition hover:bg-[#163175]"
         >
           <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5"><path d="M7 1l1.5 4H13l-3.5 2.5 1.5 4L7 9l-4 2.5 1.5-4L1 5h4.5L7 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
@@ -159,6 +161,7 @@ export default function BaseDeProfilsPage() {
         </div>
         <Link
           href="/employeurs"
+          onClick={() => track("Employer CTA Clicked", { cta: "Déposer une offre", location: "base-de-profils-banner" })}
           className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#1d3b8b] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.22)] transition hover:bg-[#163175] hover:-translate-y-0.5"
         >
           Déposer une offre
