@@ -33,11 +33,11 @@ const copy = {
       {
         step: "Bloc 4",
         eyebrow: "Mise en relation",
-        title: "Contact limité et consenti",
+        title: "Contact progressif et encadré",
         accent: "teal",
         description:
-          "Une fois le match validé, la plateforme encadre le partage d'information dans une logique de minimisation et de consentement.",
-        items: ["Validation du match", "Partage limité des données", "Consentement préalable", "Minimisation RGPD"]
+          "La plateforme limite d'abord l'exposition des données puis encadre les informations partagées selon le stade réel de la relation entre employeur et travailleur.",
+        items: ["Validation du match", "Partage limité des données", "Exposition progressive", "Minimisation RGPD"]
       },
       {
         step: "Bloc 5",
@@ -60,7 +60,7 @@ const copy = {
       "Données hébergées en Europe",
       "Séparation claire des traitements",
       "Matching avant divulgation",
-      "Consentement avant transfert",
+      "Partage graduel des informations",
       "Relais juridique activé uniquement si nécessaire"
     ],
     heroBadge: "Sécurité & conformité",
@@ -74,10 +74,10 @@ const copy = {
     benefitsBadge: "Bénéfices",
     benefitsTitle: "Pourquoi cette architecture protège employeurs et travailleurs",
     benefitsText:
-      "La plateforme limite les transferts, sépare les rôles et active l’intervention du cabinet uniquement lorsque la relation avance vers un recrutement réel.",
+      "La plateforme limite les transferts, sépare les rôles et n'active l'intervention du cabinet que lorsque la relation avance vers un recrutement réel.",
     legalBoxTitle: "Séparation RGPD garantie",
     legalBoxText:
-      "Le traitement juridique opère dans un périmètre distinct de la plateforme de matching, avec secret professionnel, infrastructure dédiée et base légale propre au cabinet."
+      "Le traitement juridique opere dans un perimetre distinct de la plateforme de matching, avec secret professionnel, infrastructure dediee et base legale propre au cabinet. Cette page presente l'architecture cible et les principes d'organisation, sans se substituer aux documents juridiques detailes."
   },
   en: {
     blocks: [
@@ -111,11 +111,11 @@ const copy = {
       {
         step: "Block 4",
         eyebrow: "Introductions",
-        title: "Limited, consent-based contact",
+        title: "Progressive and framed contact",
         accent: "teal",
         description:
-          "Once a match is validated, information sharing is framed by data minimization and prior consent.",
-        items: ["Match validation", "Limited data sharing", "Prior consent", "GDPR minimization"]
+          "The platform first limits exposure, then frames what is shared according to the actual stage of the relationship between employer and worker.",
+        items: ["Match validation", "Limited data sharing", "Progressive exposure", "GDPR minimization"]
       },
       {
         step: "Block 5",
@@ -138,7 +138,7 @@ const copy = {
       "Data hosted in Europe",
       "Clear separation of processing",
       "Matching before disclosure",
-      "Consent before any transfer",
+      "Progressive information sharing",
       "Legal relay activated only when needed"
     ],
     heroBadge: "Security & compliance",
@@ -152,10 +152,10 @@ const copy = {
     benefitsBadge: "Benefits",
     benefitsTitle: "Why this architecture protects both employers and workers",
     benefitsText:
-      "The platform limits transfers, separates roles and activates the law firm only when a relationship moves toward a real recruitment process.",
+      "The platform limits transfers, separates roles and only activates the law firm when a relationship moves toward a real recruitment process.",
     legalBoxTitle: "Clear GDPR separation",
     legalBoxText:
-      "Legal processing operates in a perimeter distinct from the matching platform, with professional secrecy, dedicated infrastructure and its own legal basis."
+      "Legal processing operates in a perimeter distinct from the matching platform, with professional secrecy, dedicated infrastructure and its own legal basis. This page presents the intended operating model and core principles, but does not replace the detailed legal documents."
   }
 };
 

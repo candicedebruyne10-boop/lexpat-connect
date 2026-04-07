@@ -23,6 +23,21 @@ const sections = [
     )
   },
   {
+    id: "controller",
+    eyebrow: "Data controller",
+    title: "Who decides how data is processed?",
+    body: (
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          For processing related to the matching platform, website forms, user accounts, applications, messaging and tester feedback, the data controller is <strong className="text-[#1d3b8b]">LEXPAT SRL</strong>, through LEXPAT Connect.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          When a matter moves into a separate legal support workflow, the LEXPAT law firm acts within a distinct framework, with its own purposes, obligations and, where applicable, its own legal basis.
+        </p>
+      </>
+    )
+  },
+  {
     id: "data",
     eyebrow: "Collected data",
     title: "What data may be collected?",
@@ -36,6 +51,9 @@ const sections = [
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           For contact forms and email exchanges: name, email address, phone number, message content, exchange history and information useful to handling the request.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          For website use: technical data strictly necessary to operate the service, session information, cookie preferences and, if you allow them, non-essential audience measurement data.
         </p>
       </>
     )
@@ -52,6 +70,9 @@ const sections = [
         <p className="text-base leading-8 text-[#5c6e84]">
           When necessary after a match, some information may also be used to route a matter to the LEXPAT law firm in connection with a single permit, right to work or economic immigration.
         </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Website forms may also trigger an email sent to the LEXPAT Connect contact mailbox so requests can be handled more quickly.
+        </p>
       </>
     )
   },
@@ -60,9 +81,14 @@ const sections = [
     eyebrow: "Legal basis",
     title: "Legal basis for processing",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Depending on the situation, processing is based on pre-contractual steps, the legitimate interest of LEXPAT Connect in organizing matching, compliance with legal obligations, or consent where required.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Depending on the situation, processing is based on pre-contractual steps, the legitimate interest of LEXPAT Connect in organizing matching, compliance with legal obligations, or consent where required.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Non-essential cookies or audience measurement tools rely on your choice. Core platform processing mainly relies on pre-contractual steps, legitimate operational interests and, where required by law, legal obligations.
+        </p>
+      </>
     )
   },
   {
@@ -70,9 +96,17 @@ const sections = [
     eyebrow: "Retention",
     title: "How long do we keep data?",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Data is kept for as long as necessary to operate the platform, follow introductions and manage requests. It may then be deleted, anonymized or archived when no longer useful or where a legal obligation requires limited retention.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Data is not kept indefinitely. It is reviewed by category and may be deleted, anonymized or archived when no longer useful, or where a legal obligation requires a specific retention period.
+        </p>
+        <ul className="mt-4 space-y-3 text-base leading-8 text-[#5c6e84]">
+          <li>Contact forms and inbound requests: up to 24 months after the last useful exchange.</li>
+          <li>Worker and employer profiles: for as long as the account remains active, then review or deletion after a prolonged period of inactivity.</li>
+          <li>Applications, matching records and messaging: during the active relationship, then archiving or deletion depending on operational need and legal obligations.</li>
+          <li>Tester feedback: short product-work retention, in principle up to 12 months unless a longer follow-up is needed.</li>
+        </ul>
+      </>
     )
   },
   {
@@ -80,9 +114,14 @@ const sections = [
     eyebrow: "Access",
     title: "Who can access the data?",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Data is accessible only to authorized persons within LEXPAT Connect and, when necessary, to the LEXPAT law firm. Matching naturally involves the transfer of relevant information between employers and workers, strictly to the extent useful for the connection.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Data is accessible only to authorized persons within LEXPAT Connect and, when necessary, to the LEXPAT law firm. Matching naturally involves the transfer of relevant information between employers and workers, strictly to the extent useful for the connection.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Some directories shown to members are intentionally anonymized or partially masked until a more advanced relationship is justified.
+        </p>
+      </>
     )
   },
   {
@@ -95,7 +134,7 @@ const sections = [
           The site is deployed on Vercel. Some data or technical metadata may therefore transit through or be hosted on this infrastructure. The platform may also rely on Supabase for authentication, database and application storage.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Where processing involves service providers located outside the European Union, we seek to frame such transfers using appropriate safeguards provided for by the GDPR.
+          The site may also use Resend for certain transactional emails or notifications. Where processing involves service providers located outside the European Union, we seek to frame such transfers using appropriate safeguards provided for by the GDPR.
         </p>
       </>
     )
@@ -123,6 +162,9 @@ const sections = [
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
           For any question about your personal data or to exercise your rights, you may write to: <strong className="text-[#1d3b8b]">lexpat@lexpat.be</strong>.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          You may also ask for more detail about retention logic, subprocessors used and the point at which a matter moves from the platform to the law firm.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           This policy is interpreted in accordance with Belgian law and the GDPR framework applicable in the European Union.
