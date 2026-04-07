@@ -20,18 +20,18 @@ const statusClasses = {
   hired: "bg-[#eef9f1] text-[#2f9d57]"
 };
 
-function formatDate(value) {
-  if (!value) return "Non renseignée";
-  return new Intl.DateTimeFormat("fr-BE", {
+function formatDate(value, locale = "fr") {
+  if (!value) return locale === "en" ? "Not provided" : "Non renseignée";
+  return new Intl.DateTimeFormat(locale === "en" ? "en-BE" : "fr-BE", {
     day: "2-digit",
     month: "short",
     year: "numeric"
   }).format(new Date(value));
 }
 
-function formatValue(key, value) {
-  if (key === "createdAt") return formatDate(value);
-  return value || "Non renseigné";
+function formatValue(key, value, locale = "fr") {
+  if (key === "createdAt") return formatDate(value, locale);
+  return value || (locale === "en" ? "Not provided" : "Non renseigné");
 }
 
 export default function MemberDataShell({
@@ -42,8 +42,10 @@ export default function MemberDataShell({
   loginPath,
   summaryCards,
   columns,
-  emptyLabel
+  emptyLabel,
+  locale = "fr"
 }) {
+  const isEn = locale === "en";
   const { user, session, loading } = useAuth();
   const [query, setQuery] = useState("");
   const [data, setData] = useState({ summary: {}, rows: [] });
@@ -73,7 +75,7 @@ export default function MemberDataShell({
         const payload = await response.json();
 
         if (!response.ok) {
-          throw new Error(payload.error || "Impossible de charger les données.");
+          throw new Error(payload.error || (isEn ? "Unable to load the data." : "Impossible de charger les données."));
         }
 
         if (!cancelled) {
@@ -81,7 +83,7 @@ export default function MemberDataShell({
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err.message || "Impossible de charger les données.");
+          setError(err.message || (isEn ? "Unable to load the data." : "Impossible de charger les données."));
         }
       } finally {
         if (!cancelled) {
@@ -120,17 +122,17 @@ export default function MemberDataShell({
       <div className="container-shell py-16">
         <section className="mx-auto max-w-3xl rounded-[34px] border border-[#e5edf4] bg-white p-8 text-center shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-10">
           <p className="inline-flex rounded-full bg-[#eef4ff] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#173a8a]">
-            Accès membre
+            {isEn ? "Member access" : "Accès membre"}
           </p>
           <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#173a8a] sm:text-4xl">
-            Connexion requise
+            {isEn ? "Sign-in required" : "Connexion requise"}
           </h1>
           <p className="mt-4 text-sm leading-7 text-[#607086]">
-            Cette page est réservée aux membres connectés de LEXPAT Connect.
+            {isEn ? "This page is reserved for signed-in members." : "Cette page est réservée aux membres connectés de LEXPAT."}
           </p>
           <div className="mt-8">
-            <Link href={`/connexion?next=${loginPath}`} className="primary-button">
-              Se connecter
+            <Link href={`${isEn ? "/en" : ""}/connexion?next=${loginPath}`} className="primary-button">
+              {isEn ? "Sign in" : "Se connecter"}
             </Link>
           </div>
         </section>
@@ -166,16 +168,16 @@ export default function MemberDataShell({
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-[#173a8a]">{emptyLabel}</h2>
             <p className="mt-2 text-sm leading-7 text-[#607086]">
-              Utilisez cette vue pour parcourir rapidement les données disponibles dans l’espace membre.
+              {isEn ? "Use this view to quickly browse the data available in the member area." : "Utilisez cette vue pour parcourir rapidement les données disponibles dans l’espace membre."}
             </p>
           </div>
-          <label className="block min-w-[280px]">
-            <span className="sr-only">Rechercher</span>
+          <label className="block w-full min-w-0 lg:min-w-[280px]">
+            <span className="sr-only">{isEn ? "Search" : "Rechercher"}</span>
             <input
               className="field-input"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Rechercher..."
+              placeholder={isEn ? "Search..." : "Rechercher..."}
             />
           </label>
         </div>
@@ -188,7 +190,7 @@ export default function MemberDataShell({
 
         {!error && !filteredRows.length ? (
           <div className="mt-6 rounded-[28px] border border-dashed border-[#d9e4ee] bg-[#fbfdff] px-6 py-12 text-center text-sm leading-7 text-[#6d7b8d]">
-            Aucun élément à afficher pour l’instant.
+            {isEn ? "No items to display yet." : "Aucun élément à afficher pour l’instant."}
           </div>
         ) : null}
 
@@ -203,7 +205,7 @@ export default function MemberDataShell({
               {filteredRows.map((row) => (
                 <article key={row.id} className="grid gap-3 px-6 py-5 lg:items-center lg:gap-4" style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}>
                   {columns.map((column) => {
-                    const value = formatValue(column.key, row[column.key]);
+                    const value = formatValue(column.key, row[column.key], locale);
                     const isStatus = column.key === "status";
                     return (
                       <div key={column.key} className={column.primary ? "" : "text-sm text-[#334155]"}>
@@ -211,7 +213,7 @@ export default function MemberDataShell({
                           <>
                             <p className="text-base font-semibold text-[#173a8a]">{value}</p>
                             {column.secondaryKey ? (
-                              <p className="mt-1 text-sm text-[#6d7b8d]">{formatValue(column.secondaryKey, row[column.secondaryKey])}</p>
+                              <p className="mt-1 text-sm text-[#6d7b8d]">{formatValue(column.secondaryKey, row[column.secondaryKey], locale)}</p>
                             ) : null}
                           </>
                         ) : isStatus ? (

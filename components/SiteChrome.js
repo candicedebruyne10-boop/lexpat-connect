@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import NavAuth, { NavAuthMobile } from "./NavAuth";
 import NavDropdown from "./NavDropdown";
 import {
   detectLocaleFromPathname,
@@ -19,72 +18,46 @@ export default function SiteChrome({ children }) {
 
   const navigation = [
     { href: "/", label: copy.nav.home },
-    { href: "/employeurs", label: copy.nav.employers, color: "blue" },
-    { href: "/travailleurs", label: copy.nav.workers, color: "teal" },
-    { href: "/permis-unique", label: copy.nav.immigration, color: "slate" }
+    { href: "/histoire-de-la-fondatrice", label: copy.nav.about },
+    { href: "/permis-unique", label: copy.nav.services, color: "blue" },
+    { href: "/accompagnement-juridique", label: copy.nav.legalSupport },
+    { href: "/contact", label: copy.nav.contact }
   ];
 
   const navDropdowns = {
-    "/employeurs": {
-      color: "blue",
-      items: [
-        {
-          href: "/employeurs",
-          label: copy.nav.recruit,
-          description: locale === "en" ? "Submit your hiring need" : "Déposez votre besoin de recrutement",
-          icon: "arrow"
-        },
-        {
-          href: "/base-de-profils",
-          label: copy.nav.candidates,
-          description: locale === "en" ? "Browse international candidates" : "Parcourez les candidats internationaux",
-          icon: "search"
-        }
-      ]
-    },
-    "/travailleurs": {
-      color: "teal",
-      items: [
-        {
-          href: "/travailleurs",
-          label: copy.nav.apply,
-          description: locale === "en" ? "Make your profile visible to Belgian employers" : "Rendez votre profil visible aux employeurs belges",
-          icon: "star"
-        },
-        {
-          href: "/offres-d-emploi",
-          label: copy.nav.offers,
-          description: locale === "en" ? "Browse open positions in Belgium" : "Consultez les postes ouverts en Belgique",
-          icon: "doc"
-        }
-      ]
-    },
     "/permis-unique": {
-      color: "slate",
+      color: "blue",
       items: [
         {
           href: "/permis-unique",
           label: copy.nav.permitGuide,
-          description: locale === "en" ? "Conditions, procedure and permit types" : "Conditions, procédure, types de permis",
+          description: locale === "en" ? "Conditions, process and permit categories" : "Conditions, procédure et catégories de permis",
           icon: "doc"
         },
         {
           href: "/travailleurs-hautement-qualifies",
           label: copy.nav.hqWorkers,
-          description: locale === "en" ? "Salary thresholds and EU Blue Card" : "Seuils de salaire, Carte Bleue Européenne",
+          description: locale === "en" ? "Salary thresholds and EU Blue Card" : "Seuils salariaux et Carte bleue européenne",
           icon: "star"
-        },
+        }
+      ,
         {
           href: "/metiers-en-penurie",
           label: copy.nav.shortageJobs,
-          description: locale === "en" ? "Occupations that can support a single permit" : "Professions ouvrant droit au permis unique",
+          description: locale === "en" ? "Occupations opening faster international recruitment paths" : "Professions ouvrant des voies de recrutement international plus rapides",
           icon: "pin"
         },
         {
           href: "/securite-conformite",
           label: copy.nav.compliance,
-          description: locale === "en" ? "GDPR, personal data and process security" : "RGPD, données personnelles, sécurisation",
+          description: locale === "en" ? "GDPR, personal data and process security" : "RGPD, données personnelles et sécurité des processus",
           icon: "globe"
+        },
+        {
+          href: "/contact",
+          label: copy.nav.family,
+          description: locale === "en" ? "Contact the firm for family reunification and nationality matters" : "Contacter le cabinet pour le regroupement familial et la nationalité",
+          icon: "arrow"
         }
       ]
     }
@@ -103,29 +76,29 @@ export default function SiteChrome({ children }) {
   return (
     <div className="shell">
       <header className="sticky top-0 z-40 border-b border-[#edf1f5] bg-white/92 backdrop-blur-xl">
-        <div className="container-shell flex min-h-[72px] items-center lg:min-h-[88px]">
+        <div className="container-shell flex min-h-[72px] flex-col justify-center py-3 lg:min-h-[88px] lg:flex-row lg:items-center lg:py-0">
           <div className="flex w-full items-center justify-between gap-4">
             <Link href={localizeHref("/", locale)} className="flex items-center gap-3 lg:gap-4">
               <span className="relative inline-flex h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white shadow-[0_10px_24px_rgba(17,39,87,0.08)] lg:h-[72px] lg:w-[72px]">
                 <Image
                   src="/logo-lexpat-connect.png"
-                  alt="Logo LEXPAT Connect"
+                  alt="Logo LEXPAT"
                   fill
                   className="object-cover p-[5px]"
                   sizes="(min-width: 1024px) 72px, 56px"
                 />
               </span>
               <span className="leading-tight">
-                <span className="font-heading block text-[20px] font-bold tracking-[0.08em] text-[#1E3A78] lg:text-[24px]">
+                <span className="font-heading block text-[20px] font-bold tracking-[0.08em] text-[#1E3A78] lg:text-[25px]">
                   LEXPAT
                 </span>
-                <span className="block text-[15px] font-normal tracking-[0.03em] text-[#6d7b8d] lg:text-[18px]">
-                  Connect
+                <span className="block text-[13px] font-semibold uppercase tracking-[0.16em] text-[#B5121B] lg:text-[14px]">
+                  Cabinet d'avocats
                 </span>
               </span>
             </Link>
 
-            <div className="hidden items-center gap-3 lg:flex">
+            <div className="hidden items-center gap-4 lg:flex">
               <nav className="flex items-center gap-5 text-[13px] font-medium text-[#607086]">
                 {navigation.map((item) => {
                   const dd = navDropdowns[item.href];
@@ -158,8 +131,12 @@ export default function SiteChrome({ children }) {
                   {copy.language.en}
                 </Link>
               </div>
-              <div className="mx-1 h-5 w-px bg-[#e3eaf1]" />
-              <NavAuth />
+              <Link
+                href={localizeHref("/contact", locale)}
+                className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#B5121B] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_32px_rgba(181,18,27,0.2)] transition hover:-translate-y-0.5 hover:bg-[#991219]"
+              >
+                {locale === "en" ? "Book an appointment" : "Prendre un rendez-vous"}
+              </Link>
             </div>
 
             <div className="flex items-center gap-3 lg:hidden">
@@ -177,18 +154,16 @@ export default function SiteChrome({ children }) {
                   EN
                 </Link>
               </div>
-              <NavAuthMobile />
-              <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-[#c8d8ee] bg-white text-[#1E3A78] shadow-[0_8px_20px_rgba(29,59,139,0.06)]">
-                <span className="flex flex-col gap-1">
-                  <span className="block h-0.5 w-5 rounded-full bg-current" />
-                  <span className="block h-0.5 w-5 rounded-full bg-current" />
-                  <span className="block h-0.5 w-5 rounded-full bg-current" />
-                </span>
-              </div>
+              <Link
+                href={localizeHref("/contact", locale)}
+                className="inline-flex min-h-[2.75rem] items-center justify-center rounded-[16px] bg-[#B5121B] px-4 py-2 text-xs font-bold text-white shadow-[0_10px_24px_rgba(181,18,27,0.18)]"
+              >
+                {locale === "en" ? "Contact" : "Contact"}
+              </Link>
             </div>
           </div>
 
-          <nav className="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
+          <nav className="mt-4 flex w-full flex-wrap gap-2 overflow-x-auto pb-1 text-sm font-medium text-[#607086] lg:hidden">
             {navigation.map((item) => {
               const dd = navDropdowns[item.href];
               return dd ? (
@@ -204,7 +179,7 @@ export default function SiteChrome({ children }) {
                 <Link
                   key={item.href}
                   href={localizeHref(item.href, locale)}
-                  className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#cde2df] hover:text-[#57b7af]"
+                  className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-4 py-2 transition hover:border-[#d9c4c7] hover:text-[#B5121B]"
                 >
                   {item.label}
                 </Link>
@@ -222,11 +197,11 @@ export default function SiteChrome({ children }) {
             <div className="space-y-5">
               <div className="flex items-center gap-3">
                 <span className="relative inline-flex h-12 w-12 overflow-hidden rounded-[18px] border border-[#d9e9f1] bg-white shadow-[0_6px_16px_rgba(17,39,87,0.08)]">
-                  <Image src="/logo-lexpat-connect.png" alt="Logo LEXPAT Connect" fill className="object-cover" sizes="48px" />
+                  <Image src="/logo-lexpat-connect.png" alt="Logo LEXPAT" fill className="object-cover" sizes="48px" />
                 </span>
                 <div className="leading-none">
                   <p className="text-xl font-black tracking-[0.06em] text-[#1E2F86]">LEXPAT</p>
-                  <p className="mt-1 text-lg font-light tracking-[-0.02em] text-[#7CCDC7]">Connect</p>
+                  <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-[#B5121B]">Cabinet d'avocats</p>
                 </div>
               </div>
               <p className="max-w-md text-sm leading-7 text-[#607086]">
@@ -237,26 +212,24 @@ export default function SiteChrome({ children }) {
             <div>
               <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">{copy.footer.employers}</p>
               <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.recruit}</Link>
-                <Link href={localizeHref("/base-de-profils", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.availableCandidates}</Link>
+                <Link href={localizeHref("/histoire-de-la-fondatrice", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.recruit}</Link>
+                <Link href={localizeHref("/contact", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.availableCandidates}</Link>
                 <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.shortageJobs}</Link>
               </div>
               <p className="mt-6 font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">{copy.footer.workers}</p>
               <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#57B7AF]">{copy.footer.apply}</Link>
-                <Link href={localizeHref("/offres-d-emploi", locale)} className="block transition hover:text-[#57B7AF]">{copy.footer.offers}</Link>
+                <Link href={localizeHref("/permis-unique", locale)} className="block transition hover:text-[#57B7AF]">{copy.footer.apply}</Link>
+                <Link href={localizeHref("/contact", locale)} className="block transition hover:text-[#57B7AF]">{copy.footer.offers}</Link>
               </div>
             </div>
 
             <div>
               <p className="font-heading text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">{copy.footer.quickActions}</p>
               <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.postNeed}</Link>
-                <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.makeVisible}</Link>
+                <Link href={localizeHref("/contact", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.postNeed}</Link>
+                <Link href={localizeHref("/accompagnement-juridique", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.makeVisible}</Link>
                 <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.shortageJobs}</Link>
                 <Link href={localizeHref("/permis-unique", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.understandPermit}</Link>
-                <Link href={localizeHref("/connexion", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.signIn}</Link>
-                <Link href={localizeHref("/inscription", locale)} className="block transition hover:text-[#1E3A78]">{copy.footer.createAccount}</Link>
                 <Link href={localizeHref("/histoire-de-la-fondatrice", locale)} className="block text-sm text-[#607086] transition hover:text-[#204E97]">
                   {copy.footer.founderStory}
                 </Link>

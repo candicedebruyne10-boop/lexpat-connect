@@ -188,11 +188,18 @@ function IconArrowRight() {
     </svg>
   );
 }
+function IconArrowLeft() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="2">
+      <path d="M16 10H4M9 6l-4 4 4 4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 /* ══════════════════════════════════════════════════════════════════════════
    PANEL GAUCHE — ConversationList
    ══════════════════════════════════════════════════════════════════════════ */
-function ConversationList({ conversations, activeId, onSelect }) {
+function ConversationList({ conversations, activeId, onSelect, className = "w-full md:w-[300px]" }) {
   const [search, setSearch] = useState("");
 
   const filtered = conversations.filter((c) => {
@@ -206,7 +213,7 @@ function ConversationList({ conversations, activeId, onSelect }) {
 
   return (
     <aside
-      className="flex h-full w-[300px] shrink-0 flex-col border-r"
+      className={`flex h-full shrink-0 flex-col border-r ${className}`}
       style={{ borderColor: C.line, background: "#fff" }}
     >
       {/* Header */}
@@ -411,7 +418,7 @@ function StartConversationPanel({ matches, onStart, startingId }) {
 /* ══════════════════════════════════════════════════════════════════════════
    ZONE CENTRALE — ChatWindow
    ══════════════════════════════════════════════════════════════════════════ */
-function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview }) {
+function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview, onBack }) {
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
 
@@ -462,6 +469,17 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview 
         className="flex shrink-0 items-center gap-3 border-b px-6 py-4"
         style={{ background: "#fff", borderColor: C.line }}
       >
+        {onBack ? (
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border md:hidden"
+            style={{ borderColor: C.line, color: C.dark, background: C.surface }}
+            aria-label="Revenir aux conversations"
+          >
+            <IconArrowLeft />
+          </button>
+        ) : null}
         <div className="relative" style={{ width: 48, height: 40 }}>
           <Avatar initials={conversation.employer.initials} color={conversation.employer.color} size={40} />
           <div className="absolute -bottom-1 -right-1">
@@ -713,11 +731,11 @@ function AISuggestionHook({ conversation, onSelect }) {
 /* ══════════════════════════════════════════════════════════════════════════
    PANNEAU DROIT — ContextPanel
    ══════════════════════════════════════════════════════════════════════════ */
-function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat }) {
+function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className = "hidden md:flex md:w-[280px]" }) {
   if (!conversation) {
     return (
       <aside
-        className="flex h-full w-[280px] shrink-0 flex-col border-l"
+        className={`h-full shrink-0 flex-col border-l ${className}`}
         style={{ borderColor: C.line, background: "#fff" }}
       >
         <div className="flex flex-1 items-center justify-center">
@@ -734,7 +752,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat }) {
 
   return (
     <aside
-      className="flex h-full w-[280px] shrink-0 flex-col overflow-y-auto border-l"
+      className={`h-full shrink-0 flex-col overflow-y-auto border-l ${className}`}
       style={{ borderColor: C.line, background: "#fff" }}
     >
       {/* Fiche poste */}
@@ -1093,6 +1111,7 @@ export default function MessagerieApp() {
   const [starterMatches, setStarterMatches] = useState([]);
   const [startingConversationFor, setStartingConversationFor] = useState(null);
   const [requestedConversationId, setRequestedConversationId] = useState(null);
+  const [mobilePanel, setMobilePanel] = useState("list");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1102,6 +1121,12 @@ export default function MessagerieApp() {
 
   const activeConversation = conversations.find((c) => c.id === activeId) || null;
   const activeMessages = activeId ? (messages[activeId] || []) : [];
+
+  useEffect(() => {
+    if (activeId) {
+      setMobilePanel("chat");
+    }
+  }, [activeId]);
 
   /* ── Charger les conversations réelles depuis Supabase ── */
   useEffect(() => {
@@ -1165,6 +1190,7 @@ export default function MessagerieApp() {
   const handleSelect = useCallback(
     (id) => {
       setActiveId(id);
+      setMobilePanel("chat");
       setConversations((prev) =>
         prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c))
       );
@@ -1293,7 +1319,7 @@ export default function MessagerieApp() {
         });
 
         const data = await response.json();
-        if (data?.conversation) {
+      if (data?.conversation) {
           const nextConversationId = data.conversation.id;
           const refreshed = await fetch("/api/conversations", {
             headers: { Authorization: `Bearer ${token}` },
@@ -1301,6 +1327,7 @@ export default function MessagerieApp() {
           const nextConversations = refreshed.conversations || [];
           setConversations(nextConversations);
           setActiveId(nextConversationId);
+          setMobilePanel("chat");
           setStarterMatches((prev) => prev.filter((match) => match.id !== matchId));
         }
       } catch (error) {
@@ -1353,39 +1380,70 @@ export default function MessagerieApp() {
       className="flex overflow-hidden"
       style={{ height: "calc(100vh - 72px)", background: C.surface }}
     >
-      {/* Colonne gauche */}
-      <ConversationList
-        conversations={conversations}
-        activeId={activeId}
-        onSelect={handleSelect}
-      />
-
-      {/* Zone centrale */}
-      {conversations.length === 0 ? (
-        <StartConversationPanel
-          matches={starterMatches}
-          onStart={handleStartConversation}
-          startingId={startingConversationFor}
+      <div className="hidden h-full w-full md:flex">
+        <ConversationList
+          conversations={conversations}
+          activeId={activeId}
+          onSelect={handleSelect}
+          className="w-[300px]"
         />
-      ) : (
-        <ChatWindow
+
+        {conversations.length === 0 ? (
+          <StartConversationPanel
+            matches={starterMatches}
+            onStart={handleStartConversation}
+            startingId={startingConversationFor}
+          />
+        ) : (
+          <ChatWindow
+            conversation={activeConversation}
+            messages={activeMessages}
+            onSendMessage={handleSendMessage}
+            onRequestInterview={() =>
+              handleUpdateStatus(activeId, STATUS.INTERVIEW_REQUESTED, {
+                interview_requested: true,
+              })
+            }
+          />
+        )}
+
+        <ContextPanel
           conversation={activeConversation}
-          messages={activeMessages}
-          onSendMessage={handleSendMessage}
-          onRequestInterview={() =>
-            handleUpdateStatus(activeId, STATUS.INTERVIEW_REQUESTED, {
-              interview_requested: true,
-            })
-          }
+          onUpdateStatus={handleUpdateStatus}
+          onRequestLexpat={(conv) => setLexpatModal(conv)}
+          className="flex w-[280px]"
         />
-      )}
+      </div>
 
-      {/* Panneau droit */}
-      <ContextPanel
-        conversation={activeConversation}
-        onUpdateStatus={handleUpdateStatus}
-        onRequestLexpat={(conv) => setLexpatModal(conv)}
-      />
+      <div className="flex h-full w-full md:hidden">
+        {mobilePanel === "list" ? (
+          conversations.length === 0 ? (
+            <StartConversationPanel
+              matches={starterMatches}
+              onStart={handleStartConversation}
+              startingId={startingConversationFor}
+            />
+          ) : (
+            <ConversationList
+              conversations={conversations}
+              activeId={activeId}
+              onSelect={handleSelect}
+            />
+          )
+        ) : (
+          <ChatWindow
+            conversation={activeConversation}
+            messages={activeMessages}
+            onSendMessage={handleSendMessage}
+            onRequestInterview={() =>
+              handleUpdateStatus(activeId, STATUS.INTERVIEW_REQUESTED, {
+                interview_requested: true,
+              })
+            }
+            onBack={() => setMobilePanel("list")}
+          />
+        )}
+      </div>
 
       {/* Modal accompagnement */}
       {lexpatModal && (
