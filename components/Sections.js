@@ -58,7 +58,7 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
 const CITY_DOTS = [
-  { city: "Bruxelles", left: "50.1%", top: "46.0%", hub: true  },
+  { city: "Bruxelles", left: "51.1%", top: "45.7%", hub: true  },
 ];
 
 function CityDot({ left, top, hub }) {
@@ -119,16 +119,16 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
       <div className="hidden lg:block">
         <div className="relative mx-5 mb-5 mt-4 overflow-hidden rounded-[28px] border border-[#59B9B1]/15 shadow-[0_0_60px_rgba(89,185,177,0.12)]" style={{ height: 'calc(100vh - 96px)' }}>
           <Image
-            src="/hero-world-map_2.png"
-            alt="Carte Belgique — connexions internationales"
+            src="/hero-image.jpg"
+            alt="Carte mondiale et Belgique — connexions LEXPAT Connect"
             fill
             priority
-            quality={90}
-            className="object-cover object-[22%_45%]"
+            quality={84}
+            className="object-contain object-center bg-[#eef2f7]"
             sizes="100vw"
           />
           {/* Voile sombre à gauche */}
-          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.97)_0%,rgba(6,12,38,0.90)_28%,rgba(6,12,38,0.55)_52%,rgba(6,12,38,0.08)_78%,transparent_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.96)_0%,rgba(6,12,38,0.88)_24%,rgba(6,12,38,0.50)_46%,rgba(6,12,38,0.08)_70%,transparent_100%)]" />
           <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.65),transparent)]" />
           <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.65),transparent)]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.20),transparent_70%)]" />
@@ -162,12 +162,12 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
         {/* Carte mobile */}
         <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18)]">
           <Image
-            src="/hero-world-map_2.png"
-            alt="Carte Belgique — connexions internationales"
+            src="/hero-image.jpg"
+            alt="Carte mondiale et Belgique — connexions LEXPAT Connect"
             fill
             priority
-            quality={90}
-            className="object-cover object-[22%_45%]"
+            quality={84}
+            className="object-contain object-center bg-[#eef2f7]"
             sizes="100vw"
           />
           <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.95),transparent)]" />
