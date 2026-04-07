@@ -53,17 +53,17 @@ const sections = [
     title: "Consentement et gestion des préférences",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        Le site a vocation à intégrer un bandeau de gestion des cookies afin de permettre l’acceptation, le refus ou la personnalisation des préférences. Vous pouvez également configurer votre navigateur pour bloquer ou supprimer certains cookies, sous réserve que cela n’altère pas certaines fonctionnalités essentielles.
+        Le site intègre un bandeau de gestion des cookies afin de permettre l’acceptation, le refus ou la personnalisation des préférences non essentielles. Vous pouvez également configurer votre navigateur pour bloquer ou supprimer certains cookies, sous réserve que cela n’altère pas certaines fonctionnalités essentielles.
       </p>
     )
   },
   {
     id: "lien",
     eyebrow: "Évolution",
-    title: "Évolution future du bandeau cookies",
+    title: "Évolution de cette politique",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        Cette politique est conçue pour rester cohérente avec un futur bandeau cookies et un centre de préférences. Le contenu pourra être mis à jour si de nouveaux outils, prestataires ou mécanismes de consentement sont ajoutés au site.
+        Cette politique pourra être mise à jour si de nouveaux outils, prestataires ou mécanismes de consentement sont ajoutés au site.
       </p>
     )
   }

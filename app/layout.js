@@ -2,6 +2,7 @@ import './globals.css';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { AuthProvider } from '../components/AuthProvider';
 import SiteChrome from '../components/SiteChrome';
+import CookieBanner from '../components/CookieBanner';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       <body className="font-sans">
         <AuthProvider>
           <SiteChrome>{children}</SiteChrome>
+          <CookieBanner />
         </AuthProvider>
       </body>
     </html>

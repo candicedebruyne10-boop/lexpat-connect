@@ -53,17 +53,17 @@ const sections = [
     title: "Consent and preference management",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        The website is intended to include a cookie banner allowing you to accept, refuse or customize your preferences. You may also configure your browser to block or delete certain cookies, provided this does not impair essential features.
+        The website includes a cookie banner allowing you to accept, decline or customize non-essential preferences. You may also configure your browser to block or delete certain cookies, provided this does not impair essential features.
       </p>
     )
   },
   {
     id: "future",
     eyebrow: "Future updates",
-    title: "Future evolution of the cookie banner",
+    title: "Policy updates",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        This policy is designed to remain consistent with a future cookie banner and preference center. Its content may be updated if new tools, providers or consent mechanisms are added to the website.
+        This policy may be updated if new tools, providers or consent mechanisms are added to the website.
       </p>
     )
   }
