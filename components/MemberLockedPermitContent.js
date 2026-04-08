@@ -443,13 +443,13 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
         <div className="rounded-[36px] border border-[#e3ebf3] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-8 lg:p-10">
           {/* ── Bannière d'état — très visible ──────────────────────────── */}
           {status === "member" ? (
-            <div className="mb-8 flex items-center gap-4 rounded-[20px] border border-[#6ee7b7] bg-[linear-gradient(135deg,#f0fdf9_0%,#e6faf6_100%)] px-5 py-4 shadow-[0_4px_18px_rgba(89,185,177,0.15)]">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#59B9B1] text-white shadow-[0_4px_12px_rgba(89,185,177,0.35)]">
+            <div className="mb-8 flex items-center gap-4 rounded-[20px] border border-[#57B7AF] bg-[linear-gradient(135deg,#d4f0ed_0%,#c2e9e5_100%)] px-5 py-4 shadow-[0_4px_18px_rgba(89,185,177,0.25)]">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1d6b65] text-white shadow-[0_4px_12px_rgba(29,107,101,0.35)]">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f9f97]">✦ {copy.unlocked}</p>
-                <p className="mt-0.5 text-xs text-[#4a9e96]">Vous avez accès à l'intégralité de ce contenu réservé aux membres.</p>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#0f4d48]">✦ {copy.unlocked}</p>
+                <p className="mt-0.5 text-xs font-medium text-[#1d6b65]">Vous avez accès à l'intégralité de ce contenu réservé aux membres.</p>
               </div>
             </div>
           ) : status === "guest" ? (
