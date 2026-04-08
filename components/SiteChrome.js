@@ -8,6 +8,7 @@ import NavAuth, { NavAuthMobile } from "./NavAuth";
 import {
   detectLocaleFromPathname,
   localizeHref,
+  switchLocalePath,
   siteCopy,
 } from "../lib/i18n";
 
@@ -172,11 +173,25 @@ export default function SiteChrome({ children }) {
             })}
           </nav>
 
-          {/* Boutons auth desktop */}
-          <NavAuth />
+          {/* Sélecteur de langue + auth desktop */}
+          <div className="hidden items-center gap-2 lg:flex">
+            <Link
+              href={switchLocalePath(pathname, locale === "en" ? "fr" : "en")}
+              className="rounded-full border border-[#e3eaf1] px-3 py-1.5 text-[12px] font-bold text-[#607086] transition hover:border-[#1E3A78] hover:text-[#1E3A78]"
+            >
+              {locale === "en" ? "FR" : "EN"}
+            </Link>
+            <NavAuth />
+          </div>
 
-          {/* Mobile : auth uniquement */}
+          {/* Mobile : langue + auth */}
           <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href={switchLocalePath(pathname, locale === "en" ? "fr" : "en")}
+              className="rounded-full border border-[#e3eaf1] px-2.5 py-1 text-[11px] font-bold text-[#607086]"
+            >
+              {locale === "en" ? "FR" : "EN"}
+            </Link>
             <NavAuthMobile />
           </div>
         </div>
