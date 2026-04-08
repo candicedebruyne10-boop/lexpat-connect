@@ -58,35 +58,39 @@ function StepIcon({ index, className = "h-5 w-5" }) {
    HERO PREMIUM — Section 1
    Dark blue full-bleed, punch headline, 2 CTA cards embedded in hero
    ───────────────────────────────────────────────────────────────────────────── */
+/* Villes belges + points de connexion internationaux visibles sur la carte */
 const CITY_DOTS = [
-  { city: "Bruxelles", left: "27%", top: "41%", hub: true  },
+  /* ── Belgique ── */
+  { city: "Bruxelles",  left: "34%", top: "40%", delay: "0s"    },
+  { city: "Anvers",     left: "40%", top: "27%", delay: "0.4s"  },
+  { city: "Gand",       left: "25%", top: "34%", delay: "0.8s"  },
+  { city: "Liège",      left: "52%", top: "44%", delay: "1.2s"  },
+  { city: "Mons",       left: "27%", top: "59%", delay: "0.6s"  },
+  { city: "Bruges",     left: "17%", top: "28%", delay: "1.0s"  },
+  { city: "Namur",      left: "43%", top: "54%", delay: "1.4s"  },
+  /* ── Connexions internationales ── */
+  { city: "Londres",    left: "13%", top: "18%", delay: "1.6s"  },
+  { city: "Paris",      left: "27%", top: "76%", delay: "1.8s"  },
+  { city: "New York",   left: "89%", top: "13%", delay: "2.0s"  },
+  { city: "Dubaï",      left: "69%", top: "52%", delay: "2.2s"  },
+  { city: "Mumbai",     left: "74%", top: "60%", delay: "2.4s"  },
 ];
 
-function CityDot({ left, top, hub }) {
+function CityDot({ left, top, delay = "0s" }) {
   return (
     <div className="pointer-events-none absolute" style={{ left, top }}>
-      {hub ? (
-        /* Bruxelles — hub principal, halo renforcé */
-        <>
-          {/* Halo externe lent */}
-          <div className="absolute h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/10 [animation-duration:3s]" />
-          {/* Anneau principal */}
-          <div className="absolute h-16 w-16 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/24 [animation-duration:2s]" />
-          {/* Halo flou */}
-          <div className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/28 blur-[8px]" />
-          {/* Anneau fixe pour stabiliser le rendu */}
-          <div className="absolute h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#9de8e2]/45 bg-[#0b234a]/18" />
-          {/* Point central */}
-          <div className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_16px_6px_rgba(89,185,177,0.80)]" />
-        </>
-      ) : (
-        /* Villes secondaires — lisibles, cohérentes avec le réseau */
-        <>
-          <div className="absolute h-11 w-11 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/28 [animation-duration:2.5s]" />
-          <div className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#59B9B1]/32 blur-[4px]" />
-          <div className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_12px_4px_rgba(89,185,177,0.68)]" />
-        </>
-      )}
+      {/* Halo externe — pulsation dorée */}
+      <div
+        className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F59E0B]/25 [animation-duration:2.2s]"
+        style={{ animationDelay: delay }}
+      />
+      {/* Anneau intermédiaire */}
+      <div
+        className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F59E0B]/40 [animation-duration:2.2s]"
+        style={{ animationDelay: delay }}
+      />
+      {/* Point central doré */}
+      <div className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FBBF24] shadow-[0_0_8px_3px_rgba(251,191,36,0.70)]" />
     </div>
   );
 }
