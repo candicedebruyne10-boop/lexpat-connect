@@ -6,6 +6,7 @@ import {
   PresentationVideoSection,
   JobSectors,
   LexpatStrip,
+  TestimonialsStrip,
   CtaBannerDark,
   MatchingPreview
 } from "../components/Sections";
@@ -30,6 +31,7 @@ export default function HomePage() {
       <PresentationVideoSection />
       <JobSectors />
       <LexpatStrip />
+      <TestimonialsStrip />
       <CtaBannerDark
         primaryHref="/employeurs"
         secondaryHref="/travailleurs"

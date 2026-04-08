@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../../lib/supabase/server";
 import { normalizeRegion } from "../../../../lib/matching";
 
-const fallbackAdminEmails = ["lexpat@lexpat.be"];
+const fallbackAdminEmails = ["contact@lexpat-connect.be"];
 
 function isAdminEmail(user) {
   const allowed = [process.env.CONTACT_EMAIL, ...fallbackAdminEmails]

@@ -63,13 +63,33 @@ const sections = [
     )
   },
   {
+    id: "general-information",
+    eyebrow: "Information",
+    title: "No individualized legal advice by default",
+    body: (
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          The content made available on the website, simulator, information pages and user spaces is provided for general information purposes only. Its aim is to help users understand how the platform works, the broad stages of international recruitment and certain legal attention points.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          This content does not constitute individualized legal advice, does not replace an analysis of a specific file and must not be interpreted as a lawyer’s consultation regarding a particular situation.
+        </p>
+      </>
+    )
+  },
+  {
     id: "legal-relay",
     eyebrow: "Separate relay",
     title: "Separate legal support",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        When a match requires support for a single permit, right to work or economic immigration, the LEXPAT law firm may intervene separately. That intervention belongs to a framework distinct from the mere use of the platform.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          When a match requires support for a single permit, right to work or economic immigration, the LEXPAT law firm may intervene separately. That intervention belongs to a framework distinct from the mere use of the platform.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          No attorney-client relationship is created merely by browsing the website, using the simulator, creating an account, exchanging messages through the platform or submitting a form. Such a relationship requires an explicit and separate acceptance of the matter by the law firm.
+        </p>
+      </>
     )
   },
   {
@@ -77,9 +97,14 @@ const sections = [
     eyebrow: "Limitation",
     title: "Limitation of liability",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        LEXPAT Connect cannot be held liable for recruitment decisions, absence of matching, refusal to hire, inaccurate information provided by users, or damage resulting directly from exchanges between an employer and a talent, except in the case of gross negligence or mandatory legal provisions to the contrary.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          LEXPAT Connect cannot be held liable for recruitment decisions, absence of matching, refusal to hire, inaccurate information provided by users, or damage resulting directly from exchanges between an employer and a talent, except in the case of gross negligence or mandatory legal provisions to the contrary.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          The platform does not guarantee the outcome of any administrative process, the granting of a single permit, admission to residence, compliance with timeframes by authorities or the success of any recruitment. Users remain responsible for their own decisions, supporting documents, statements and steps taken on the basis of their own checks.
+        </p>
+      </>
     )
   },
   {
@@ -100,6 +125,7 @@ export default function TermsOfUsePageEn() {
       title="Terms of use"
       intro="These terms set out the rules applicable to the use of LEXPAT Connect by employers, international workers and website visitors."
       sections={sections}
+      locale="en"
     />
   );
 }

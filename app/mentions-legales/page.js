@@ -17,7 +17,7 @@ const sections = [
           <strong className="text-[#1d3b8b]">LEXPAT SRL</strong><br />
           Cabinet d’avocats spécialisé en immigration économique et mobilité internationale<br />
           Belgique<br />
-          Email : lexpat@lexpat.be<br />
+          Email : contact@lexpat-connect.be<br />
           Responsable de la publication : Candice Debruyne
         </p>
       </>
@@ -62,13 +62,43 @@ const sections = [
     )
   },
   {
+    id: "portee-information",
+    eyebrow: "Information",
+    title: "Portée des contenus publiés",
+    body: (
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Les contenus diffusés sur le site, y compris les contenus rédactionnels, les réponses générales, les pages explicatives et les outils d’orientation, sont fournis à titre informatif général. Ils ne constituent pas, à eux seuls, une consultation juridique individualisée.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          L’utilisateur reste tenu de faire vérifier sa situation concrète avant toute décision, dépôt de dossier ou engagement susceptible de produire des effets juridiques, administratifs ou contractuels.
+        </p>
+      </>
+    )
+  },
+  {
+    id: "relation-avocat-client",
+    eyebrow: "Cabinet",
+    title: "Absence de relation avocat-client automatique",
+    body: (
+      <p className="text-base leading-8 text-[#5c6e84]">
+        La consultation du site, l’utilisation du simulateur, la création d’un compte, l’envoi d’un message ou d’un formulaire et l’utilisation des fonctionnalités de matching ne créent pas, en eux-mêmes, une relation avocat-client avec Maître Candice Debruyne ou avec le cabinet LEXPAT. Une telle relation suppose une intervention explicite et distincte du cabinet dans le cadre d’un dossier déterminé.
+      </p>
+    )
+  },
+  {
     id: "responsabilite",
     eyebrow: "Utilisation",
     title: "Responsabilité",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Les utilisateurs restent responsables des profils, informations, besoins et offres publiés. LEXPAT Connect met à disposition un cadre de mise en relation, sans garantir l’exactitude, l’exhaustivité ou l’issue d’un recrutement.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Les utilisateurs restent responsables des profils, informations, besoins et offres publiés. LEXPAT Connect met à disposition un cadre de mise en relation, sans garantir l’exactitude, l’exhaustivité ou l’issue d’un recrutement.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Aucune garantie n’est donnée quant à l’obtention d’un emploi, à l’aboutissement d’un recrutement, à l’obtention d’un permis unique, à l’issue d’une procédure administrative ou au respect des délais par les autorités compétentes.
+        </p>
+      </>
     )
   },
   {
@@ -99,6 +129,7 @@ export default function MentionsLegalesPage() {
       title="Mentions légales"
       intro="Les présentes mentions légales détaillent l’identité de l’éditeur, l’infrastructure technique du site et les règles générales applicables à l’utilisation de la plateforme."
       sections={sections}
+      locale="fr"
     />
   );
 }

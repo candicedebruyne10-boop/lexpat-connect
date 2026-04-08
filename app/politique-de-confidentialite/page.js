@@ -161,7 +161,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Pour toute question relative à vos données personnelles ou pour exercer vos droits, vous pouvez écrire à : <strong className="text-[#1d3b8b]">lexpat@lexpat.be</strong>.
+          Pour toute question relative à vos données personnelles ou pour exercer vos droits, vous pouvez écrire à : <strong className="text-[#1d3b8b]">contact@lexpat-connect.be</strong>.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           Vous pouvez egalement demander des precisions sur la logique de conservation, les sous-traitants utilises et le point de bascule entre la plateforme et le cabinet.
@@ -180,6 +180,7 @@ export default function PolitiqueConfidentialitePage() {
       title="Politique de confidentialité"
       intro="Cette politique explique de manière claire comment LEXPAT Connect collecte, utilise, conserve et protège les données personnelles des employeurs, travailleurs internationaux et utilisateurs des formulaires du site."
       sections={sections}
+      locale="fr"
     />
   );
 }

@@ -75,6 +75,7 @@ export default function CookiesPageEn() {
       title="Cookie policy"
       intro="We use a restrained and transparent cookie approach focused on the proper functioning of the website and, where relevant, on reasonable and controlled audience measurement."
       sections={sections}
+      locale="en"
     />
   );
 }

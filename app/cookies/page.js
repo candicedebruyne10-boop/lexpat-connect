@@ -75,6 +75,7 @@ export default function CookiesPage() {
       title="Politique cookies"
       intro="Nous utilisons une approche sobre et transparente des cookies, centrée sur le bon fonctionnement du site et, le cas échéant, sur une mesure d’audience raisonnable et encadrée."
       sections={sections}
+      locale="fr"
     />
   );
 }

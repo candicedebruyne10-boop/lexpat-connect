@@ -30,8 +30,8 @@ function buildRows(fields) {
 export async function POST(request) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;
-    const recipient = process.env.CONTACT_EMAIL || "lexpat@lexpat.be";
-    const from = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+    const recipient = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
+    const from = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
 
     if (!resendApiKey) {
       return NextResponse.json(

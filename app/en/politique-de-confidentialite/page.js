@@ -161,7 +161,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          For any question about your personal data or to exercise your rights, you may write to: <strong className="text-[#1d3b8b]">lexpat@lexpat.be</strong>.
+          For any question about your personal data or to exercise your rights, you may write to: <strong className="text-[#1d3b8b]">contact@lexpat-connect.be</strong>.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           You may also ask for more detail about retention logic, subprocessors used and the point at which a matter moves from the platform to the law firm.
@@ -180,6 +180,7 @@ export default function PrivacyPolicyPageEn() {
       title="Privacy policy"
       intro="This policy explains in a clear way how LEXPAT Connect collects, uses, keeps and protects the personal data of employers, international workers and users of the website forms."
       sections={sections}
+      locale="en"
     />
   );
 }

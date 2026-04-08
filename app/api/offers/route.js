@@ -151,8 +151,8 @@ async function sendNotificationEmail(body) {
   if (!apiKey) return;
 
   const resend = new Resend(apiKey);
-  const from = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-  const to = process.env.CONTACT_EMAIL || "lexpat@lexpat.be";
+  const from = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
+  const to = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
 
   await resend.emails.send({
     from, to,

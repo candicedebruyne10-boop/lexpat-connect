@@ -331,7 +331,7 @@ cover.addText("Connect", {
   color: C.teal,
   margin: 0
 });
-cover.addText("Architecture business de la plateforme", {
+cover.addText("Architecture business & produit", {
   x: 0.75,
   y: 3.02,
   w: 5.8,
@@ -342,7 +342,7 @@ cover.addText("Architecture business de la plateforme", {
   margin: 0
 });
 cover.addText(
-  "Une lecture claire du site, des espaces membres, du matching et du relais juridique séparé.",
+  "Une lecture premium de la plateforme : acquisition, vitrines publiques, espaces membres, messagerie et relais juridique séparé.",
   {
     x: 0.75,
     y: 3.5,
@@ -353,7 +353,7 @@ cover.addText(
     margin: 0
   }
 );
-cover.addText("Lecture en 10 secondes", {
+cover.addText("Vision exécutive", {
   x: 7.38,
   y: 1.06,
   w: 3.65,
@@ -364,7 +364,7 @@ cover.addText("Lecture en 10 secondes", {
   margin: 0
 });
 addMetric(cover, 7.42, 1.68, 1.9, "Parcours", 2, "blue");
-addMetric(cover, 9.46, 1.68, 1.9, "Tables coeur", 5, "teal");
+addMetric(cover, 9.46, 1.68, 1.9, "Tables coeur", 9, "teal");
 addMetric(cover, 7.42, 3.02, 1.9, "Vue admin", "1", "sand");
 addMetric(cover, 9.46, 3.02, 1.9, "Vues membres", 2, "blue");
 addBulletsCard(cover, {
@@ -372,12 +372,13 @@ addBulletsCard(cover, {
   y: 4.28,
   w: 4.0,
   h: 1.66,
-  title: "Lecture rapide",
+  title: "Idée directrice",
   fill: C.blueSoft,
   lines: [
-    "Matching avant juridique",
-    "Données structurées dans Supabase",
-    "Relais LEXPAT déclenché ensuite"
+    "Le matching vient avant le juridique",
+    "Les données sont structurées dans Supabase",
+    "La messagerie s'ouvre après match confirmé",
+    "Le cabinet prend le relais ensuite"
   ]
 });
 addFooter(cover);
@@ -385,9 +386,9 @@ addFooter(cover);
 const overview = pptx.addSlide();
 fullBleedBackground(overview, C.white);
 addSectionBand(overview, "VUE GLOBALE");
-addHeader(overview, "Combien de pages comporte le site ?", "Le produit se compose aujourd'hui de 24 pages applicatives, réparties entre acquisition, confiance, comptes, espaces membres et pilotage.");
-addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 24, "blue");
-addMetric(overview, 2.55, 1.75, 1.7, "Pages business", 12, "teal");
+addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 26 pages applicatives, réparties entre acquisition, confiance, comptes, espaces membres, simulateur et pilotage.");
+addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 26, "blue");
+addMetric(overview, 2.55, 1.75, 1.7, "Pages business", 14, "teal");
 addMetric(overview, 4.45, 1.75, 1.7, "Pages légales", 4, "sand");
 addMetric(overview, 6.35, 1.75, 1.7, "Espaces", 5, "blue");
 addMetric(overview, 8.25, 1.75, 1.7, "Admin", 1, "teal");
@@ -397,12 +398,13 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.45,
   h: 3.1,
-  title: "Pages publiques",
+  title: "Acquisition & réassurance",
   fill: C.blueSoft,
   lines: [
     "Accueil",
     "Employeurs",
     "Travailleurs",
+    "Simulateur d'éligibilité",
     "Métiers en pénurie",
     "Permis unique",
     "Accompagnement juridique",
@@ -411,6 +413,7 @@ addBulletsCard(overview, {
     "Base de profils",
     "Offres d'emploi",
     "Candidatures",
+    "Histoire de la fondatrice",
     "Contact"
   ]
 });
@@ -419,13 +422,14 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.55,
   h: 3.1,
-  title: "Comptes & espaces",
+  title: "Activation & usage",
   lines: [
     "Connexion",
     "Inscription",
     "Session auth",
     "Espace employeur",
     "Espace travailleur",
+    "Messagerie",
     "Admin",
     "Retours testeurs"
   ]
@@ -435,7 +439,7 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.65,
   h: 3.1,
-  title: "Pages de confiance",
+  title: "Cadre juridique & confiance",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -451,18 +455,20 @@ addFooter(overview);
 const routing = pptx.addSlide();
 fullBleedBackground(routing, C.bg);
 addSectionBand(routing, "PAGES & CTA");
-addHeader(routing, "Ce que contient chaque grande page, et où renvoient ses boutons", "La navigation est pensée autour de deux parcours : employeur et travailleur. Chaque page porte un objectif précis.");
+addHeader(routing, "Parcours d'entrée et mécanique de conversion", "La navigation est pensée autour de deux parcours : employeur et travailleur, complétés par un simulateur et des vitrines publiques d'offres et candidatures.");
 addStepCard(routing, {
   x: 0.62,
   y: 1.82,
   w: 3.55,
   h: 4.7,
   step: "01",
-  title: "Accueil /",
+  title: "Accueil / positionnement",
   fill: C.white,
   lines: [
     "Hero premium de positionnement",
     "Double entrée employeur / travailleur",
+    "Teaser simulateur 2026",
+    "Captures réelles des espaces de matching",
     "Guide métiers en pénurie",
     "Teaser sécurité & conformité",
     "Comment ça marche",
@@ -476,16 +482,16 @@ addStepCard(routing, {
   w: 3.35,
   h: 4.7,
   step: "02",
-  title: "Page Employeurs",
+  title: "Parcours employeur",
   fill: C.blueSoft,
   bandColor: C.navy,
   lines: [
     "Bénéfices du parcours employeur",
-    "Guide métiers en pénurie",
+    "Profils publics anonymisés",
     "Aperçu espace employeur",
     "Formulaire de besoin de recrutement",
     "CTA : Déposer un besoin -> #formulaire",
-    "CTA : Voir l'espace employeur -> /employeurs/espace",
+    "CTA : Déposer une offre -> /employeurs",
     "CTA : Voir le relais juridique -> /accompagnement-juridique"
   ]
 });
@@ -495,16 +501,17 @@ addStepCard(routing, {
   w: 3.67,
   h: 4.7,
   step: "03",
-  title: "Page Travailleurs",
+  title: "Parcours travailleur",
   fill: C.tealSoft,
   bandColor: C.tealDark,
   lines: [
     "Bénéfices du parcours talent",
+    "Offres publiques visibles sans compte",
     "Aperçu espace travailleur",
     "Formulaire candidat",
     "CTA : Créer mon profil -> #formulaire",
     "CTA : Voir les métiers recherchés -> /metiers-en-penurie",
-    "CTA : Voir l'espace travailleur -> /travailleurs/espace",
+    "CTA : Voir les offres -> /offres-d-emploi",
     "CTA : Voir le relais juridique -> /accompagnement-juridique"
   ]
 });
@@ -513,13 +520,13 @@ addFooter(routing);
 const forms = pptx.addSlide();
 fullBleedBackground(forms, C.white);
 addSectionBand(forms, "FORMULAIRES");
-addHeader(forms, "Quelles données remplit-on dans les formulaires publics ?", "Les formulaires publics servent à qualifier rapidement un besoin employeur ou un profil candidat avant toute étape plus poussée.");
+addHeader(forms, "Formulaires publics : la donnée minimale utile", "Les formulaires publics servent à qualifier rapidement un besoin employeur ou un profil candidat avant toute étape plus poussée, puis les messages partent vers l'adresse officielle de contact.");
 addBulletsCard(forms, {
   x: 0.62,
   y: 1.82,
   w: 5.35,
   h: 4.72,
-  title: "Formulaire employeur /employeurs",
+  title: "Formulaire employeur",
   fill: C.blueSoft,
   lines: [
     "Nom du contact, entreprise, email professionnel, téléphone",
@@ -529,7 +536,8 @@ addBulletsCard(forms, {
     "Type de contrat, nombre d'heures, lieu de travail",
     "Missions principales",
     "Compétences recherchées",
-    "Bouton : Envoyer le besoin -> /api/forms"
+    "Bouton : Envoyer le besoin -> /api/forms",
+    "Notification email via Resend -> contact@lexpat-connect.be"
   ]
 });
 addBulletsCard(forms, {
@@ -537,7 +545,7 @@ addBulletsCard(forms, {
   y: 1.82,
   w: 5.48,
   h: 4.72,
-  title: "Formulaire candidat /travailleurs",
+  title: "Formulaire travailleur",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -549,7 +557,8 @@ addBulletsCard(forms, {
     "Statut administratif",
     "Compétences principales",
     "Message complémentaire",
-    "Bouton : Envoyer mon profil -> /api/forms"
+    "Bouton : Envoyer mon profil -> /api/forms",
+    "Notification email via Resend -> contact@lexpat-connect.be"
   ]
 });
 addFooter(forms);
@@ -557,7 +566,7 @@ addFooter(forms);
 const accounts = pptx.addSlide();
 fullBleedBackground(accounts, C.bg);
 addSectionBand(accounts, "COMPTES & REDIRECTIONS");
-addHeader(accounts, "Ce qui se passe au moment de l'inscription et de la connexion", "Le site utilise Supabase Auth, puis redirige vers l'espace adapté selon le rôle choisi.");
+addHeader(accounts, "Création de compte, connexion et redirections", "Le site utilise Supabase Auth, puis redirige vers l'espace adapté selon le rôle choisi. Les pages publiques restent consultables sans compte.");
 addBulletsCard(accounts, {
   x: 0.62,
   y: 1.82,
@@ -594,12 +603,13 @@ addBulletsCard(accounts, {
   y: 1.82,
   w: 4.08,
   h: 4.78,
-  title: "Redirections finales",
+  title: "Logique de redirection",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
     "Employeur -> /employeurs/espace",
     "Travailleur -> /travailleurs/espace",
+    "Messagerie -> /messagerie après match confirmé",
     "Admin -> /admin",
     "Les boutons verrouillés utilisent next= pour revenir au bon contenu",
     "Exemple : permis unique membre -> retour sur la section débloquée"
@@ -610,19 +620,20 @@ addFooter(accounts);
 const employerSpace = pptx.addSlide();
 fullBleedBackground(employerSpace, C.white);
 addSectionBand(employerSpace, "ESPACE EMPLOYEUR");
-addHeader(employerSpace, "Que contient l'espace employeur, et quelles données y sont saisies ?", "L'espace employeur se découpe en quatre vues : tableau de bord, entreprise, offres, profils matchés.");
+addHeader(employerSpace, "Espace employeur : piloter le recrutement", "L'espace employeur se découpe en cinq vues : tableau de bord, entreprise, offres, profils correspondants et messagerie.");
 addBulletsCard(employerSpace, {
   x: 0.62,
   y: 1.82,
   w: 3.45,
   h: 4.75,
-  title: "Sidebar & vues",
+  title: "Navigation & pilotage",
   fill: C.blueSoft,
   lines: [
     "Tableau de bord",
     "Mon entreprise",
     "Mes offres",
-    "Profils matchés",
+    "Profils correspondants",
+    "Messagerie",
     "Cartes de synthèse cliquables",
     "Statut matching actif"
   ]
@@ -632,7 +643,7 @@ addBulletsCard(employerSpace, {
   y: 1.82,
   w: 3.55,
   h: 4.75,
-  title: "Fiche entreprise",
+  title: "Donnée entreprise",
   lines: [
     "Nom de l'entreprise",
     "Secteur principal",
@@ -648,7 +659,7 @@ addBulletsCard(employerSpace, {
   y: 1.82,
   w: 3.58,
   h: 4.75,
-  title: "Création d'offre",
+  title: "Production d'offre",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -659,7 +670,8 @@ addBulletsCard(employerSpace, {
     "Urgence",
     "Description",
     "Bouton : Ajouter une offre / Publier -> /api/offers",
-    "Déclenche le matching automatiquement"
+    "Déclenche le matching automatiquement",
+    "Alimente aussi la vitrine publique /offres-d-emploi"
   ]
 });
 addFooter(employerSpace);
@@ -667,20 +679,21 @@ addFooter(employerSpace);
 const workerSpace = pptx.addSlide();
 fullBleedBackground(workerSpace, C.bg);
 addSectionBand(workerSpace, "ESPACE TRAVAILLEUR");
-addHeader(workerSpace, "Que contient l'espace travailleur, et quelles données y sont saisies ?", "L'espace travailleur sert à alimenter le matching et à suivre les opportunités remontées par la plateforme.");
+addHeader(workerSpace, "Espace travailleur : devenir visible et exploitable", "L'espace travailleur sert à alimenter le matching, à suivre les opportunités remontées par la plateforme et à ouvrir la messagerie après confirmation.");
 addBulletsCard(workerSpace, {
   x: 0.62,
   y: 1.82,
   w: 3.35,
   h: 4.8,
-  title: "Sidebar & vues",
+  title: "Navigation & suivi",
   fill: C.white,
   lines: [
     "Tableau de bord",
     "Mes matchs",
     "Mon profil",
     "Mon CV",
-    "Cartes : Offres matchées, dossiers, vues du profil"
+    "Messagerie",
+    "Cartes : opportunités, visibilité, progression"
   ]
 });
 addBulletsCard(workerSpace, {
@@ -688,7 +701,7 @@ addBulletsCard(workerSpace, {
   y: 1.82,
   w: 3.72,
   h: 4.8,
-  title: "Mon profil",
+  title: "Donnée profil",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -700,7 +713,8 @@ addBulletsCard(workerSpace, {
     "Langues",
     "Description / présentation",
     "Visibilité du profil",
-    "Bouton : Enregistrer -> /api/profile"
+    "Bouton : Enregistrer -> /api/profile",
+    "Alimente aussi la vitrine publique /candidatures"
   ]
 });
 addBulletsCard(workerSpace, {
@@ -708,13 +722,13 @@ addBulletsCard(workerSpace, {
   y: 1.82,
   w: 3.53,
   h: 4.8,
-  title: "Mon CV & interactions",
+  title: "CV & interactions",
   fill: C.white,
   lines: [
-    "Sections prévues : formation, expériences, certificats, compétences",
+    "Sections CV : formation, expériences, certificats, compétences",
     "Vue Mes matchs : offres remontées avec score",
     "Le contact employeur reste protégé avant validation",
-    "Formulaire de candidature intégré au dashboard"
+    "Messagerie ouverte après match confirmé"
   ]
 });
 addFooter(workerSpace);
@@ -722,20 +736,20 @@ addFooter(workerSpace);
 const memberViews = pptx.addSlide();
 fullBleedBackground(memberViews, C.white);
 addSectionBand(memberViews, "VUES MEMBRES & ADMIN");
-addHeader(memberViews, "Quelles pages lisent les données déjà produites ?", "Une fois les profils, offres et candidatures créés, le site expose des vues séparées pour les membres et pour l'administratrice.");
+addHeader(memberViews, "Pages de lecture : public, membre, admin", "Une fois les profils, offres et candidatures créés, le site expose des vitrines publiques, des espaces membres et une vue admin distincte.");
 addBulletsCard(memberViews, {
   x: 0.62,
   y: 1.82,
   w: 3.45,
   h: 4.76,
-  title: "Pages membres",
+  title: "Vitrines et lectures publiques",
   fill: C.blueSoft,
   lines: [
-    "/offres-d-emploi",
-    "/candidatures",
-    "Lecture réservée aux membres connectés",
-    "Offres : poste, entreprise, région, contrat, urgence",
-    "Candidatures : uniquement données anonymisées"
+    "/offres-d-emploi : vitrine publique des besoins",
+    "/candidatures : vitrine publique des profils anonymisés",
+    "/base-de-profils : vue réservée au parcours employeur connecté",
+    "Les CTA poussent vers inscription / connexion",
+    "La version anglaise reprend les mêmes vitrines"
   ]
 });
 addBulletsCard(memberViews, {
@@ -743,7 +757,7 @@ addBulletsCard(memberViews, {
   y: 1.82,
   w: 3.35,
   h: 4.76,
-  title: "Page /admin",
+  title: "Back-office admin",
   lines: [
     "Cartes de synthèse",
     "Recherche globale",
@@ -757,7 +771,7 @@ addBulletsCard(memberViews, {
   y: 1.82,
   w: 3.78,
   h: 4.76,
-  title: "Tables coeur vues par ces pages",
+  title: "Tables coeur",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -767,6 +781,8 @@ addBulletsCard(memberViews, {
     "job_offers",
     "job_applications",
     "matches",
+    "conversations",
+    "messages",
     "test_feedback"
   ]
 });
@@ -775,22 +791,22 @@ addFooter(memberViews);
 const governance = pptx.addSlide();
 fullBleedBackground(governance, C.bg);
 addSectionBand(governance, "GOUVERNANCE");
-addHeader(governance, "Ce que fait la plateforme, et ce que fait ensuite le cabinet", "La compréhension du site repose sur une distinction simple : la plateforme gère le matching ; LEXPAT gère ensuite le juridique.");
+addHeader(governance, "Plateforme et cabinet : deux rôles bien distincts", "La compréhension du site repose sur une distinction simple : la plateforme gère visibilité, matching, messagerie et orientation ; LEXPAT gère ensuite le juridique.");
 addCard(governance, {
   x: 0.7,
   y: 1.9,
   w: 5.15,
   h: 3.85,
-  title: "Ce que fait LEXPAT Connect",
+  title: "Rôle de la plateforme",
   fill: C.blueSoft,
-  text: "Attirer les employeurs et les talents\nStructurer les profils et les offres\nProduire des matchings et des vues membres\nMontrer des candidatures anonymisées\nPiloter les flux via /admin"
+  text: "Attirer les employeurs et les talents\nStructurer les profils et les offres\nProduire des matchings et des vues membres\nMontrer des données publiques utiles sans exposer l'identité\nPiloter les flux via /admin"
 });
 addCard(governance, {
   x: 6.05,
   y: 1.9,
   w: 5.15,
   h: 3.85,
-  title: "Ce que fait ensuite le cabinet LEXPAT",
+  title: "Rôle du cabinet LEXPAT",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   text: "Permis unique\nDroit au travail\nImmigration économique\nSécurisation du dossier après mise en relation\nTraitement séparé du matching"
@@ -800,13 +816,13 @@ addBulletsCard(governance, {
   y: 5.98,
   w: 10.5,
   h: 0.92,
-  title: "Lecture finale",
+  title: "Conclusion business",
   fill: C.white,
   lines: [
-    "Le site n'est pas seulement une vitrine : c'est un système complet de capture, structuration, matching et pilotage avant tout relais juridique."
+    "Le site n'est pas seulement une vitrine : c'est un système complet d'acquisition, de qualification, de matching, de messagerie et de pilotage avant tout relais juridique."
   ]
 });
-addFooter(governance, "LEXPAT Connect — cartographie pages, CTA, formulaires et espaces");
+addFooter(governance, "LEXPAT Connect — architecture business, acquisition, matching et relais juridique");
 
 const outputDir = path.join(process.cwd(), "..", "LEXPAT-Connect-assets-source", "exports");
 fs.mkdirSync(outputDir, { recursive: true });

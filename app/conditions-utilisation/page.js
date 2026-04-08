@@ -63,13 +63,33 @@ const sections = [
     )
   },
   {
+    id: "information-generale",
+    eyebrow: "Information",
+    title: "Aucune consultation juridique individualisée par défaut",
+    body: (
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Les contenus du site, du simulateur, des pages d’information et des espaces utilisateurs sont fournis à titre informatif général. Ils ont pour objet d’aider à comprendre le fonctionnement de la plateforme, les grandes étapes d’un recrutement international et certains points d’attention juridiques.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Ces contenus ne constituent pas un avis juridique individualisé, ne remplacent pas une analyse du dossier concret et ne doivent pas être interprétés comme une consultation d’avocat portant sur une situation déterminée.
+        </p>
+      </>
+    )
+  },
+  {
     id: "juridique",
     eyebrow: "Relais distinct",
     title: "Relais juridique séparé",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Lorsque la mise en relation nécessite un accompagnement en matière de permis unique, de droit au travail ou d’immigration économique, le cabinet LEXPAT peut intervenir séparément. Cette intervention relève d’un cadre distinct de la simple utilisation de la plateforme.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Lorsque la mise en relation nécessite un accompagnement en matière de permis unique, de droit au travail ou d’immigration économique, le cabinet LEXPAT peut intervenir séparément. Cette intervention relève d’un cadre distinct de la simple utilisation de la plateforme.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Aucune relation avocat-client n’est créée du seul fait de naviguer sur le site, d’utiliser le simulateur, de créer un compte, d’échanger via la plateforme ou d’envoyer un formulaire. Une telle relation suppose une prise en charge explicite du dossier par le cabinet, dans un cadre professionnel distinct.
+        </p>
+      </>
     )
   },
   {
@@ -77,9 +97,14 @@ const sections = [
     eyebrow: "Limitation",
     title: "Limitation de responsabilité",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        LEXPAT Connect ne peut être tenue responsable des décisions de recrutement, de l’absence de matching, d’un refus d’embauche, de l’inexactitude des informations fournies par les utilisateurs ou d’un préjudice résultant directement d’un échange entre employeur et talent, sauf faute lourde ou disposition légale impérative contraire.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          LEXPAT Connect ne peut être tenue responsable des décisions de recrutement, de l’absence de matching, d’un refus d’embauche, de l’inexactitude des informations fournies par les utilisateurs ou d’un préjudice résultant directement d’un échange entre employeur et talent, sauf faute lourde ou disposition légale impérative contraire.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          La plateforme ne garantit ni l’issue d’une procédure administrative, ni l’obtention d’un permis unique, ni l’admission au séjour, ni le respect d’un délai par les autorités, ni la réussite d’un recrutement. Les utilisateurs demeurent responsables de leurs décisions, de leurs pièces, de leurs déclarations et des démarches engagées sur la base de leurs propres vérifications.
+        </p>
+      </>
     )
   },
   {
@@ -100,6 +125,7 @@ export default function ConditionsUtilisationPage() {
       title="Conditions d’utilisation"
       intro="Ces conditions précisent les règles applicables à l’utilisation de LEXPAT Connect par les employeurs, les travailleurs internationaux et les visiteurs du site."
       sections={sections}
+      locale="fr"
     />
   );
 }

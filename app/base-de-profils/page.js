@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { useAuth } from "../../components/AuthProvider";
-import { useRouter } from "next/navigation";
 
+/* ── Icônes secteurs ──────────────────────────────────────────────────────── */
 const SECTOR_ICONS = {
   "Informatique": "💻", "IT": "💻", "Tech": "💻",
   "Santé": "🏥", "Médical": "🏥",
@@ -25,11 +25,12 @@ function sectorIcon(sector) {
   return "👤";
 }
 
-function ProfileCard({ profile }) {
+/* ── Carte profil — vue publique ─────────────────────────────────────────── */
+function PublicProfileCard({ profile }) {
   return (
-    <div className="group relative flex flex-col gap-4 rounded-[24px] border border-[#e3eaf1] bg-white p-6 shadow-[0_4px_16px_rgba(15,23,42,0.05)] transition hover:border-[#c5d4f3] hover:shadow-[0_8px_28px_rgba(29,59,139,0.09)]">
+    <div className="group flex flex-col gap-4 rounded-[24px] border border-[#e3eaf1] bg-white p-6 shadow-[0_4px_16px_rgba(15,23,42,0.05)] transition hover:border-[#c5d4f3] hover:shadow-[0_8px_28px_rgba(29,59,139,0.09)]">
 
-      {/* En-tête anonyme */}
+      {/* En-tête */}
       <div className="flex items-center gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#eef1fb,#eaf4f3)] text-2xl shadow-inner">
           {sectorIcon(profile.sector)}
@@ -37,17 +38,19 @@ function ProfileCard({ profile }) {
         <div className="flex-1 min-w-0">
           {/* Nom masqué */}
           <div className="flex items-center gap-2">
-            <div className="h-2.5 w-28 rounded-full bg-[#dce7f5] blur-[1px] opacity-60" />
+            <div className="h-2.5 w-24 rounded-full bg-[#dce7f5] opacity-60" />
             <span className="flex items-center gap-1 rounded-full bg-[#f0f4f8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#8a9bb0]">
-              <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5"><path d="M6 1a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm-4 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+              <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5">
+                <path d="M6 1a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm-4 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
               Identité protégée
             </span>
           </div>
-          <p className="mt-1 text-[13px] font-semibold text-[#1d3b8b]">{profile.sector}</p>
+          <p className="mt-1 text-[13px] font-semibold text-[#1d3b8b]">{profile.jobTitle || profile.sector}</p>
         </div>
       </div>
 
-      {/* Détails */}
+      {/* Détails visibles */}
       <div className="grid grid-cols-2 gap-3 text-[12px]">
         <div className="flex flex-col gap-0.5">
           <span className="text-[10px] uppercase tracking-wider text-[#a0aec0] font-semibold">Région</span>
@@ -72,11 +75,69 @@ function ProfileCard({ profile }) {
       {/* CTA carte */}
       <div className="mt-auto pt-2 border-t border-[#f0f4f8]">
         <Link
+          href="/inscription"
+          onClick={() => track("Signup CTA Clicked", { location: "profile-card-public" })}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#1d3b8b] bg-white px-4 py-2.5 text-[12px] font-semibold text-[#1d3b8b] transition hover:bg-[#1d3b8b] hover:text-white"
+        >
+          Contacter ce candidat →
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ── Carte profil — vue membre ───────────────────────────────────────────── */
+function MemberProfileCard({ profile }) {
+  return (
+    <div className="group flex flex-col gap-4 rounded-[24px] border border-[#e3eaf1] bg-white p-6 shadow-[0_4px_16px_rgba(15,23,42,0.05)] transition hover:border-[#c5d4f3] hover:shadow-[0_8px_28px_rgba(29,59,139,0.09)]">
+      <div className="flex items-center gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#eef1fb,#eaf4f3)] text-2xl shadow-inner">
+          {sectorIcon(profile.sector)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <div className="h-2.5 w-28 rounded-full bg-[#dce7f5] opacity-60" />
+            <span className="flex items-center gap-1 rounded-full bg-[#f0f4f8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#8a9bb0]">
+              <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5">
+                <path d="M6 1a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm-4 9c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+              Identité protégée
+            </span>
+          </div>
+          <p className="mt-1 text-[13px] font-semibold text-[#1d3b8b]">{profile.sector}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 text-[12px]">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] uppercase tracking-wider text-[#a0aec0] font-semibold">Région</span>
+          <span className="font-medium text-[#374151]">{profile.region}</span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] uppercase tracking-wider text-[#a0aec0] font-semibold">Expérience</span>
+          <span className="font-medium text-[#374151]">{profile.experience}</span>
+        </div>
+        <div className="col-span-2 flex flex-col gap-0.5">
+          <span className="text-[10px] uppercase tracking-wider text-[#a0aec0] font-semibold">Langues</span>
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {profile.languages.split(",").map((lang) => (
+              <span key={lang} className="rounded-full bg-[#eaf4f3] px-2.5 py-0.5 text-[11px] font-medium text-[#2b8f88]">
+                {lang.trim()}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-auto pt-2 border-t border-[#f0f4f8]">
+        <Link
           href="/employeurs"
           onClick={() => track("Employer CTA Clicked", { cta: "Être mis en relation", location: "profile-card" })}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d3b8b] px-4 py-2.5 text-[12px] font-semibold text-white transition hover:bg-[#163175]"
         >
-          <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5"><path d="M7 1l1.5 4H13l-3.5 2.5 1.5 4L7 9l-4 2.5 1.5-4L1 5h4.5L7 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+          <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5">
+            <path d="M7 1l1.5 4H13l-3.5 2.5 1.5 4L7 9l-4 2.5 1.5-4L1 5h4.5L7 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+          </svg>
           Être mis en relation
         </Link>
       </div>
@@ -84,9 +145,11 @@ function ProfileCard({ profile }) {
   );
 }
 
+/* ── Page principale ─────────────────────────────────────────────────────── */
 export default function BaseDeProfilsPage() {
   const { session, loading } = useAuth();
-  const router = useRouter();
+  const isMember = !!session;
+
   const [profiles, setProfiles] = useState([]);
   const [summary, setSummary] = useState(null);
   const [fetching, setFetching] = useState(true);
@@ -94,15 +157,13 @@ export default function BaseDeProfilsPage() {
 
   useEffect(() => {
     if (loading) return;
-    if (!session) {
-      router.push("/connexion?next=/base-de-profils");
-      return;
-    }
-    fetch("/api/member/profiles", {
-      headers: {
-        Authorization: `Bearer ${session.access_token}`
-      }
-    })
+
+    const url = isMember ? "/api/member/profiles" : "/api/public/profiles";
+    const headers = isMember
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : {};
+
+    fetch(url, { headers })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -111,7 +172,7 @@ export default function BaseDeProfilsPage() {
       })
       .catch((e) => setError(e.message))
       .finally(() => setFetching(false));
-  }, [loading, session, router]);
+  }, [loading, isMember, session]);
 
   if (loading || fetching) {
     return (
@@ -124,18 +185,22 @@ export default function BaseDeProfilsPage() {
   return (
     <div className="container-shell py-12 lg:py-16">
 
-      {/* En-tête */}
+      {/* ── En-tête ────────────────────────────────────────────────────── */}
       <div className="max-w-2xl">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57b7af]">Espace employeur</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57b7af]">
+          {isMember ? "Espace employeur" : "Candidats disponibles"}
+        </p>
         <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1d3b8b] lg:text-4xl">
           Candidats disponibles
         </h1>
         <p className="mt-4 text-base leading-7 text-[#607086]">
-          Ces profils sont <strong>réels et actifs</strong>. Leurs coordonnées restent confidentielles jusqu'à la mise en relation — déposez une offre d'emploi pour entrer en contact avec les candidats correspondant à votre besoin.
+          {isMember
+            ? "Ces profils sont réels et actifs. Leurs coordonnées restent confidentielles jusqu'à la mise en relation — déposez une offre pour entrer en contact avec les candidats correspondant à votre besoin."
+            : "Ces profils sont réels et actifs. Secteur, région, expérience et langues sont visibles librement. L'identité et les coordonnées sont protégées jusqu'à la mise en relation via un compte employeur."}
         </p>
       </div>
 
-      {/* Compteurs */}
+      {/* ── Compteurs ──────────────────────────────────────────────────── */}
       {summary && (
         <div className="mt-8 flex flex-wrap gap-4">
           {[
@@ -151,25 +216,60 @@ export default function BaseDeProfilsPage() {
         </div>
       )}
 
-      {/* Bannière CTA */}
-      <div className="mt-8 flex flex-col gap-4 rounded-[24px] border border-[#c5d4f3] bg-[linear-gradient(135deg,#eef1fb,#f7fbfb)] p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="font-semibold text-[#1d3b8b]">Prêt à recruter ?</p>
-          <p className="mt-1 text-sm leading-6 text-[#607086]">
-            Déposez votre besoin de recrutement et nous identifions pour vous les candidats correspondants parmi ces profils.
-          </p>
+      {/* ── Bannière CTA ───────────────────────────────────────────────── */}
+      {isMember ? (
+        <div className="mt-8 flex flex-col gap-4 rounded-[24px] border border-[#c5d4f3] bg-[linear-gradient(135deg,#eef1fb,#f7fbfb)] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold text-[#1d3b8b]">Prêt à recruter ?</p>
+            <p className="mt-1 text-sm leading-6 text-[#607086]">
+              Déposez votre besoin de recrutement et nous identifions pour vous les candidats correspondants.
+            </p>
+          </div>
+          <Link
+            href="/employeurs"
+            onClick={() => track("Employer CTA Clicked", { cta: "Déposer une offre", location: "base-de-profils-banner" })}
+            className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#1d3b8b] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.22)] transition hover:bg-[#163175] hover:-translate-y-0.5"
+          >
+            Déposer une offre
+            <svg viewBox="0 0 14 14" fill="none" className="h-4 w-4">
+              <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
         </div>
-        <Link
-          href="/employeurs"
-          onClick={() => track("Employer CTA Clicked", { cta: "Déposer une offre", location: "base-de-profils-banner" })}
-          className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#1d3b8b] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.22)] transition hover:bg-[#163175] hover:-translate-y-0.5"
-        >
-          Déposer une offre
-          <svg viewBox="0 0 14 14" fill="none" className="h-4 w-4"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </Link>
-      </div>
+      ) : (
+        /* Bannière visiteur — appel à l'action fort */
+        <div className="mt-8 overflow-hidden rounded-[28px] border border-[#1d3b8b]/20 bg-[linear-gradient(135deg,#1d3b8b,#204E97)] p-7 sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-white">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#93c5fd]">Accès employeur</p>
+              <p className="mt-2 text-lg font-bold leading-snug">
+                Contactez directement ces candidats
+              </p>
+              <p className="mt-1.5 text-sm leading-6 text-white/70">
+                Créez un compte employeur gratuitement pour déposer votre besoin et être mis en relation avec les profils correspondants.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-2.5 sm:items-end">
+              <Link
+                href="/inscription"
+                onClick={() => track("Signup CTA Clicked", { location: "base-de-profils-banner-public" })}
+                className="inline-flex items-center gap-2 rounded-2xl bg-[#57b7af] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(87,183,175,0.35)] transition hover:-translate-y-0.5 hover:bg-[#4aa39c]"
+              >
+                Créer un compte employeur →
+              </Link>
+              <Link
+                href="/connexion"
+                onClick={() => track("Login CTA Clicked", { location: "base-de-profils-public" })}
+                className="text-center text-xs text-white/50 underline underline-offset-2 transition hover:text-white/80"
+              >
+                Déjà membre ? Se connecter
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Grille de profils */}
+      {/* ── Grille de profils ──────────────────────────────────────────── */}
       {error ? (
         <div className="mt-10 rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-600">{error}</div>
       ) : profiles.length === 0 ? (
@@ -179,11 +279,31 @@ export default function BaseDeProfilsPage() {
           <p className="mt-2 text-sm">Les candidats apparaîtront ici dès qu'ils auront activé la visibilité de leur profil.</p>
         </div>
       ) : (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {profiles.map((profile) => (
-            <ProfileCard key={profile.id} profile={profile} />
-          ))}
-        </div>
+        <>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {profiles.map((profile) =>
+              isMember
+                ? <MemberProfileCard key={profile.id ?? profile.index} profile={profile} />
+                : <PublicProfileCard key={profile.index} profile={profile} />
+            )}
+          </div>
+
+          {/* Rappel CTA bas de page — visiteurs seulement */}
+          {!isMember && profiles.length > 0 && (
+            <div className="mt-12 rounded-[20px] border border-[#e3eaf1] bg-[#f8fafd] p-6 text-center">
+              <p className="text-sm font-semibold text-[#1d3b8b]">
+                {summary?.total} profil{summary?.total > 1 ? "s" : ""} disponible{summary?.total > 1 ? "s" : ""}. Accédez aux coordonnées en créant un compte.
+              </p>
+              <Link
+                href="/inscription"
+                onClick={() => track("Signup CTA Clicked", { location: "base-de-profils-bottom-public" })}
+                className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-[#1d3b8b] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#163175] hover:-translate-y-0.5"
+              >
+                Créer un compte employeur →
+              </Link>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

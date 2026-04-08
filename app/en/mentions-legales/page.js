@@ -19,7 +19,7 @@ const sections = [
         <br />
         Belgium
         <br />
-        Email: lexpat@lexpat.be
+        Email: contact@lexpat-connect.be
         <br />
         Publishing director: Candice Debruyne
       </p>
@@ -72,13 +72,43 @@ const sections = [
     )
   },
   {
+    id: "scope-of-content",
+    eyebrow: "Information",
+    title: "Scope of the published content",
+    body: (
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          The content published on the website, including editorial content, general explanations and orientation tools, is provided for general information purposes only. It does not, by itself, amount to individualized legal advice.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Users remain responsible for having their specific situation checked before making any decision, filing any application or taking any step capable of producing legal, administrative or contractual effects.
+        </p>
+      </>
+    )
+  },
+  {
+    id: "no-attorney-client-relationship",
+    eyebrow: "Law firm",
+    title: "No automatic attorney-client relationship",
+    body: (
+      <p className="text-base leading-8 text-[#5c6e84]">
+        Browsing the website, using the simulator, creating an account, sending a message or form, or using the matching features does not in itself create an attorney-client relationship with Maître Candice Debruyne or the LEXPAT law firm. Such a relationship requires a separate and explicit acceptance of the matter by the law firm.
+      </p>
+    )
+  },
+  {
     id: "liability",
     eyebrow: "Use",
     title: "Liability",
     body: (
-      <p className="text-base leading-8 text-[#5c6e84]">
-        Users remain responsible for the profiles, information, needs and offers they publish. LEXPAT Connect provides a matching framework without guaranteeing the accuracy, completeness or outcome of any recruitment process.
-      </p>
+      <>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          Users remain responsible for the profiles, information, needs and offers they publish. LEXPAT Connect provides a matching framework without guaranteeing the accuracy, completeness or outcome of any recruitment process.
+        </p>
+        <p className="text-base leading-8 text-[#5c6e84]">
+          No guarantee is given as to obtaining a job, completing a recruitment, obtaining a single permit, the outcome of an administrative process or compliance with deadlines by the competent authorities.
+        </p>
+      </>
     )
   },
   {
@@ -109,6 +139,7 @@ export default function LegalNoticePageEn() {
       title="Legal notice"
       intro="This legal notice sets out the identity of the publisher, the website's technical infrastructure and the general rules applicable to the use of the platform."
       sections={sections}
+      locale="en"
     />
   );
 }

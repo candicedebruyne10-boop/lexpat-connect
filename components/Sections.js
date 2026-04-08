@@ -1647,3 +1647,104 @@ export function MatchingPreview({ locale = "fr" }) {
     </section>
   );
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TESTIMONIALS STRIP — Preuves sociales cabinet LEXPAT
+   Positionné après LexpatStrip pour valider l'expertise présentée
+   ───────────────────────────────────────────────────────────────────────────── */
+const TESTIMONIALS = [
+  {
+    initials: "G.P.",
+    name: "G. P.",
+    role: { fr: "Cliente accompagnée sur un permis unique", en: "Client — single work permit" },
+    quote: {
+      fr: "En 5 mois, nous avons obtenu ce que nous attendions depuis près d'un an et demi. Travail sérieux, efficace, professionnel, toujours disponible, à l'écoute de son client…",
+      en: "In 5 months, we obtained what we had been waiting for for almost a year and a half. Serious, efficient, professional, always available, attentive to their client…",
+    },
+  },
+  {
+    initials: "A.S.",
+    name: "A. S.",
+    role: { fr: "Travailleur hautement qualifié", en: "Highly qualified worker" },
+    quote: {
+      fr: "Depuis 3 ans que je leur confie mon dossier de permis de travail, ils me disent toujours quelles sont mes chances et aujourd'hui encore j'ai reçu du positif pour travailleur hautement qualifié.",
+      en: "For 3 years I have entrusted them with my work permit file. They always tell me what my chances are, and once again I received a positive outcome as a highly qualified worker.",
+    },
+  },
+  {
+    initials: "S.M.",
+    name: "S. M.",
+    role: { fr: "Demande d'autorisation de travail et de séjour", en: "Work and residence authorisation" },
+    quote: {
+      fr: "Votre professionnalisme et votre accompagnement m'ont été d'une aide précieuse lors de ma demande d'autorisation de travail et séjour…",
+      en: "Your professionalism and support were invaluable to me during my work and residence authorisation process…",
+    },
+  },
+  {
+    initials: "O.G.",
+    name: "O. G. N. B.",
+    role: { fr: "Dossier de travail et séjour", en: "Work and residence file" },
+    quote: {
+      fr: "Je remercie le cabinet Lexpat Lawfirm de m'avoir soutenu au cours du traitement de mon dossier. En effet, j'ai pu avoir une réponse positive après 8 mois d'attente.",
+      en: "I thank the Lexpat Lawfirm for supporting me throughout the processing of my file. I was able to receive a positive outcome after 8 months of waiting.",
+    },
+  },
+];
+
+export function TestimonialsStrip({ locale = "fr" }) {
+  const isEn = locale === "en";
+
+  return (
+    <section className="py-16 sm:py-20">
+      <div className="container-shell">
+        {/* Bridge phrase */}
+        <p className="mb-10 text-center text-sm font-semibold uppercase tracking-wide text-[#57B7AF]">
+          {isEn
+            ? "Expertise built on real work and residence cases in Belgium."
+            : "Une expertise construite sur des dossiers réels de travail et de séjour en Belgique."}
+        </p>
+
+        {/* Header */}
+        <div className="mb-10 text-center">
+          <h2 className="text-2xl font-bold text-[#1E3A78] sm:text-3xl">
+            {isEn ? "They trusted us" : "Ils nous ont fait confiance"}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#6b7b8f]">
+            {isEn
+              ? "Clients have already entrusted us with their work and residence procedures in Belgium. Their trust reflects our hands-on experience."
+              : "Des clients nous ont déjà confié leurs démarches liées au travail et au séjour en Belgique. Leur confiance témoigne de notre expérience concrète du terrain."}
+          </p>
+        </div>
+
+        {/* Cards grid */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {TESTIMONIALS.map((t) => (
+            <div
+              key={t.name}
+              className="flex flex-col rounded-[24px] border border-[#e4edf4] bg-white p-6 shadow-[0_8px_28px_rgba(15,23,42,0.05)]"
+            >
+              {/* Quote mark */}
+              <span className="mb-3 font-serif text-3xl leading-none text-[#d2e0f5]" aria-hidden="true">"</span>
+
+              {/* Quote text */}
+              <p className="flex-1 text-sm italic leading-relaxed text-[#3d4f66]">
+                {t.quote[isEn ? "en" : "fr"]}
+              </p>
+
+              {/* Author */}
+              <div className="mt-5 flex items-center gap-3 border-t border-[#eef3f7] pt-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1E3A78,#57B7AF)] text-[11px] font-bold text-white">
+                  {t.initials}
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#1E3A78]">{t.name}</p>
+                  <p className="text-[11px] text-[#8a9bb0]">{t.role[isEn ? "en" : "fr"]}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
