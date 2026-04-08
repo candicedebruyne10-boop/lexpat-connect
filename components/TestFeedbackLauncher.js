@@ -19,7 +19,7 @@ export default function TestFeedbackLauncher() {
     >
       <span className="relative inline-flex h-9 w-9 overflow-hidden rounded-full border border-white/25 bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
         <Image
-          src="/persobug2.jpeg"
+          src="/persobug-launcher.jpeg"
           alt=""
           fill
           sizes="36px"

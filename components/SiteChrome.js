@@ -257,110 +257,124 @@ export default function SiteChrome({ children }) {
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer className="mt-20 border-t border-[#edf1f5] bg-[#f8fafb]">
         <div className="container-shell py-12">
-          <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.78fr)_minmax(240px,0.92fr)_minmax(250px,0.9fr)] xl:gap-10">
+          <div className="mx-auto grid max-w-[1180px] gap-5 lg:grid-cols-12 lg:items-stretch">
 
             {/* Col 1 — Brand */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="relative inline-flex h-10 w-10 overflow-hidden rounded-full border border-[#d9e9f1] bg-white">
+            <div className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)] lg:col-span-4">
+              <div className="space-y-5">
+                <div className="flex items-center gap-3">
+                  <span className="relative inline-flex h-10 w-10 overflow-hidden rounded-full border border-[#d9e9f1] bg-white">
                   <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="40px" />
-                </span>
-                <div>
-                  <p className="font-heading text-base font-bold tracking-[0.06em] text-[#1E3A78]">LEXPAT</p>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#57B7AF]">Connect</p>
+                  </span>
+                  <div>
+                    <p className="font-heading text-base font-bold tracking-[0.06em] text-[#1E3A78]">LEXPAT</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#57B7AF]">Connect</p>
+                  </div>
                 </div>
-              </div>
-              <p className="max-w-[320px] text-sm leading-7 text-[#607086]">
-                {isEn
-                  ? "A platform connecting Belgian employers with international workers in shortage occupations, clearly and efficiently."
-                  : "Une plateforme pensée pour connecter les employeurs belges aux travailleurs internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible."}
-              </p>
-              <div className="max-w-[520px] rounded-[16px] border border-[#dce8f3] bg-white p-4 text-sm leading-6 text-[#607086]">
-                <p className="mb-2 font-semibold text-[#1E3A78]">
-                  {isEn ? "After the match" : "Après la mise en relation"}
-                </p>
-                <p className="leading-6">
+                <p className="max-w-[330px] text-sm leading-7 text-[#607086]">
                   {isEn
-                    ? "If a recruitment involves a single permit or economic immigration question, the LEXPAT firm can take over."
-                    : "Si un recrutement suppose un permis unique ou une question d'immigration économique, le cabinet LEXPAT peut ensuite prendre le relais."}
+                    ? "A platform connecting Belgian employers with international workers in shortage occupations, clearly and efficiently."
+                    : "Une plateforme pensée pour connecter les employeurs belges aux travailleurs internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible."}
                 </p>
+                <div className="rounded-[18px] border border-[#e3ebf3] bg-[#f8fbfd] p-4 text-sm leading-6 text-[#607086]">
+                  <p className="mb-2 font-semibold text-[#1E3A78]">
+                    {isEn ? "After the match" : "Après la mise en relation"}
+                  </p>
+                  <p className="leading-6">
+                    {isEn
+                      ? "If a recruitment involves a single permit or economic immigration question, the LEXPAT firm can take over."
+                      : "Si un recrutement suppose un permis unique ou une question d'immigration économique, le cabinet LEXPAT peut ensuite prendre le relais."}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Col 2 — Employeurs + Travailleurs */}
-            <div className="space-y-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
-                {isEn ? "Employers" : "Employeurs"}
-              </p>
-              <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "I'm hiring" : "Je recrute"}
-                </Link>
-                <Link href={localizeHref("/base-de-profils", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Available candidates" : "Candidats disponibles"}
-                </Link>
-                <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Shortage jobs" : "Métiers en pénurie"}
-                </Link>
-              </div>
+            <div className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)] lg:col-span-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
+                    {isEn ? "Employers" : "Employeurs"}
+                  </p>
+                  <div className="space-y-3 text-sm text-[#607086]">
+                    <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">
+                      {isEn ? "I'm hiring" : "Je recrute"}
+                    </Link>
+                    <Link href={localizeHref("/base-de-profils", locale)} className="block transition hover:text-[#1E3A78]">
+                      {isEn ? "Available candidates" : "Candidats disponibles"}
+                    </Link>
+                    <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">
+                      {isEn ? "Shortage jobs" : "Métiers en pénurie"}
+                    </Link>
+                  </div>
+                </div>
 
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
-                {isEn ? "Workers" : "Travailleurs"}
-              </p>
-              <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#57B7AF]">
-                  {isEn ? "I'm applying" : "Je postule"}
-                </Link>
-                <Link href={localizeHref("/offres-d-emploi", locale)} className="block transition hover:text-[#57B7AF]">
-                  {isEn ? "Job listings" : "Offres d'emploi"}
-                </Link>
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
+                    {isEn ? "Workers" : "Travailleurs"}
+                  </p>
+                  <div className="space-y-3 text-sm text-[#607086]">
+                    <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#57B7AF]">
+                      {isEn ? "I'm applying" : "Je postule"}
+                    </Link>
+                    <Link href={localizeHref("/offres-d-emploi", locale)} className="block transition hover:text-[#57B7AF]">
+                      {isEn ? "Job listings" : "Offres d'emploi"}
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Col 3 — Actions rapides */}
-            <div className="space-y-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
-                {isEn ? "Quick actions" : "Actions rapides"}
-              </p>
-              <div className="mt-4 space-y-3 text-sm text-[#607086]">
-                <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Post a recruitment need" : "Déposer un besoin de recrutement"}
-                </Link>
-                <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Make my profile visible" : "Rendre mon profil visible"}
-                </Link>
-                <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Shortage jobs" : "Métiers en pénurie"}
-                </Link>
-                <Link href={localizeHref("/permis-unique", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Understand the single permit" : "Comprendre le permis unique"}
-                </Link>
-                <Link href={localizeHref("/connexion", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Sign in" : "Se connecter"}
-                </Link>
-                <Link href={localizeHref("/inscription", locale)} className="block transition hover:text-[#1E3A78]">
-                  {isEn ? "Create an account" : "Créer un compte"}
-                </Link>
+            <div className="rounded-[28px] border border-[#e5edf4] bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)] lg:col-span-2">
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
+                  {isEn ? "Quick actions" : "Actions rapides"}
+                </p>
+                <div className="space-y-3 text-sm text-[#607086]">
+                  <Link href={localizeHref("/employeurs", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Post a recruitment need" : "Déposer un besoin de recrutement"}
+                  </Link>
+                  <Link href={localizeHref("/travailleurs", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Make my profile visible" : "Rendre mon profil visible"}
+                  </Link>
+                  <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Shortage jobs" : "Métiers en pénurie"}
+                  </Link>
+                  <Link href={localizeHref("/permis-unique", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Understand the single permit" : "Comprendre le permis unique"}
+                  </Link>
+                  <Link href={localizeHref("/connexion", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Sign in" : "Se connecter"}
+                  </Link>
+                  <Link href={localizeHref("/inscription", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Create an account" : "Créer un compte"}
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Col 4 — Cabinet LEXPAT */}
-            <div className="space-y-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
-                {isEn ? "LEXPAT Law Firm" : "Cabinet LEXPAT"}
-              </p>
-              <p className="max-w-[300px] text-sm leading-7 text-[#607086]">
-                {isEn
-                  ? "A distinct legal relay when a match leads to a single permit, work law, or recruitment security question."
-                  : "Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement."}
-              </p>
-              <div>
-                <Link
-                  href={localizeHref("/accompagnement-juridique", locale)}
-                  className="secondary-button inline-flex min-w-[220px] justify-center text-center"
-                >
-                  {isEn ? "View the support" : "Voir l'accompagnement"}
-                </Link>
+            <div className="rounded-[28px] border border-[#dce7f2] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)] lg:col-span-3">
+              <div className="flex h-full flex-col justify-between gap-5">
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
+                    {isEn ? "LEXPAT Law Firm" : "Cabinet LEXPAT"}
+                  </p>
+                  <p className="max-w-[300px] text-sm leading-7 text-[#607086]">
+                    {isEn
+                      ? "A distinct legal relay when a match leads to a single permit, work law, or recruitment security question."
+                      : "Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement."}
+                  </p>
+                </div>
+                <div>
+                  <Link
+                    href={localizeHref("/accompagnement-juridique", locale)}
+                    className="secondary-button inline-flex min-w-[220px] justify-center text-center"
+                  >
+                    {isEn ? "View the support" : "Voir l'accompagnement"}
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
