@@ -2,9 +2,8 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 import FormCard from "../../../components/FormCard";
 import {
-  groupedProfessionOptionsByRegion,
+  getSectorOptions,
   professionSectorByRegion,
-  sectorOptions
 } from "../../../lib/professions";
 
 export const metadata = {
@@ -169,9 +168,9 @@ export default function TravailleursPageEn() {
               { label: "Phone", placeholder: "+32 / +..." },
               { label: "Country of residence", placeholder: "Current country" },
               { name: "region", label: "Preferred region or city in Belgium", type: "region-multi", helperText: "Select one or more Belgian regions depending on your mobility." },
-              { name: "secteur", label: "Target sector", type: "select", placeholder: "Select a sector", options: sectorOptions },
+              { name: "secteur", label: "Target sector", type: "select", placeholder: "Select a sector", options: getSectorOptions("en") },
               { name: "autreSecteur", label: "Other sector / detail", placeholder: "Add another sector if needed", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", optionsMap: groupedProfessionOptionsByRegion, deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
+              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", locale: "en", deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
               { name: "autreProfession", label: "Other occupation / detail", placeholder: "Add another occupation if needed", showWhen: { field: "profession", value: "Autre profession" } },
               { label: "Availability", placeholder: "Immediate, 1 month, 3 months..." },
               { label: "Languages spoken", placeholder: "French, English, Dutch..." },

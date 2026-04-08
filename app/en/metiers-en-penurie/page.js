@@ -1,5 +1,6 @@
 import { CtaBanner, Hero, Section } from "../../../components/Sections";
 import { shortageJobs2026 } from "../../../lib/shortageJobs2026";
+import { translateGroupTitle, translateProfessionLabel, translateRegionLabel } from "../../../lib/professions";
 
 export const metadata = {
   title: "Shortage occupations by region in Belgium | LEXPAT Connect",
@@ -26,12 +27,6 @@ const regionStyles = {
     text: "text-[#204E97]",
     dot: "bg-[#204E97]"
   }
-};
-
-const regionLabelMap = {
-  "Région de Bruxelles-Capitale": "Brussels-Capital Region",
-  "Région wallonne": "Walloon Region",
-  "Région flamande": "Flemish Region"
 };
 
 const regionIntroMap = {
@@ -65,8 +60,14 @@ const groupTitleMap = {
   "Autres fonctions techniques et de construction": "Other technical and construction functions"
 };
 
+const regionCanonicalMap = {
+  "Région de Bruxelles-Capitale": "Bruxelles-Capitale",
+  "Région wallonne": "Wallonie",
+  "Région flamande": "Flandre"
+};
+
 function tRegionLabel(region) {
-  return regionLabelMap[region.label] || region.label;
+  return translateRegionLabel(regionCanonicalMap[region.label] || region.label, "en");
 }
 
 function tRegionIntro(region) {
@@ -74,7 +75,7 @@ function tRegionIntro(region) {
 }
 
 function tGroupTitle(title) {
-  return groupTitleMap[title] || title;
+  return groupTitleMap[title] || translateGroupTitle(title, "en");
 }
 
 export default function MetiersPageEn() {
@@ -165,7 +166,7 @@ export default function MetiersPageEn() {
                         {group.jobs.map((job) => (
                           <li key={job} className="flex items-start gap-3 text-sm leading-6 text-[#334155]">
                             <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
-                            <span>{job}</span>
+                            <span>{translateProfessionLabel(job, "en")}</span>
                           </li>
                         ))}
                       </ul>

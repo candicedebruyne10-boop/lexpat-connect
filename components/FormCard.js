@@ -17,12 +17,13 @@ function shouldShowField(field, values) {
 }
 
 function resolveSelectOptions(field, values) {
-  if (field.optionsMap && field.optionsByField) {
+  if (field.optionsByField) {
     const selected = values[field.optionsByField];
     if (Array.isArray(selected)) {
-      return getProfessionGroupsForRegions(selected);
+      return getProfessionGroupsForRegions(selected, field.locale || "fr");
     }
-    return selected ? field.optionsMap[selected] || [] : [];
+    if (!selected) return [];
+    return field.optionsMap ? field.optionsMap[selected] || [] : getProfessionGroupsForRegions(selected, field.locale || "fr");
   }
 
   return field.options || [];
@@ -182,11 +183,18 @@ export default function FormCard({
                       <option key={option} value={option}>
                         {option}
                       </option>
+                    ) : option?.value ? (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
                     ) : (
                       <optgroup key={option.label} label={option.label}>
                         {option.options.map((groupOption) => (
-                          <option key={`${option.label}-${groupOption}`} value={groupOption}>
-                            {groupOption}
+                          <option
+                            key={`${option.label}-${typeof groupOption === "string" ? groupOption : groupOption.value}`}
+                            value={typeof groupOption === "string" ? groupOption : groupOption.value}
+                          >
+                            {typeof groupOption === "string" ? groupOption : groupOption.label}
                           </option>
                         ))}
                       </optgroup>
@@ -218,8 +226,8 @@ export default function FormCard({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-sm leading-7 text-[#66768b]">
               {locale === "en"
-                ? "Submissions are sent directly to your receiving address via Resend as soon as the sending configuration is completed."
-                : "Les demandes sont envoyées directement à votre adresse de réception via Resend dès que la configuration d'envoi est complétée."}
+                ? "Messages sent through this form are received at the platform's official contact address."
+                : "Les messages envoyés via ce formulaire sont reçus à l'adresse officielle de contact de la plateforme."}
             </p>
             <button
               type="submit"

@@ -9,18 +9,18 @@ import { useAuth } from "./AuthProvider";
 import RegionSelector from "./RegionSelector";
 import {
   findSectorForProfession,
+  getSectorOptions,
   getProfessionGroupsForRegions,
-  parseRegionSelection,
-  sectorOptions
+  parseRegionSelection
 } from "../lib/professions";
 
 function getSidebarItems(locale) {
   if (locale === "en") {
     return [
       { id: "dashboard", label: "Dashboard" },
-      { id: "company", label: "My company" },
+      { id: "company", label: "Employer profile" },
       { id: "offers", label: "My openings" },
-      { id: "matches", label: "Matched profiles" },
+      { id: "matches", label: "Matching profiles" },
       { id: "messaging", label: "Messaging", href: "/en/messagerie" }
     ];
   }
@@ -145,7 +145,7 @@ function DashboardView({ token, onNavigate, locale }) {
 
   const displayStats = [
     { label: isEn ? "Published openings" : "Offres publiées", value: stats.offers, tone: "blue" },
-    { label: isEn ? "Matched profiles" : "Profils matchés", value: stats.matches, tone: "teal" },
+    { label: isEn ? "Matching profiles" : "Profils correspondants", value: stats.matches, tone: "teal" },
     { label: isEn ? "Files to clarify" : "Dossiers à clarifier", value: 0, tone: "amber" },
     { label: isEn ? "Completed hires" : "Recrutements finalisés", value: 0, tone: "green" }
   ];
@@ -174,7 +174,7 @@ function DashboardView({ token, onNavigate, locale }) {
           <article
             key={item.label}
             className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] cursor-pointer transition hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
-            onClick={() => item.label === (isEn ? "Matched profiles" : "Profils matchés") ? onNavigate("matches") : item.label === (isEn ? "Published openings" : "Offres publiées") ? onNavigate("offers") : null}
+            onClick={() => item.label === (isEn ? "Matching profiles" : "Profils correspondants") ? onNavigate("matches") : item.label === (isEn ? "Published openings" : "Offres publiées") ? onNavigate("offers") : null}
           >
             <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-semibold ${toneClasses[item.tone]}`}>
               {item.value}
@@ -434,8 +434,8 @@ function CreateOfferForm({ onSuccess, token, locale }) {
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(utilisé pour le matching)</span></span>
           <select className="field-input" required value={values.sector} onChange={(e) => set("sector", e.target.value)}>
             <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
-            {sectorOptions.map((option) => (
-              <option key={option} value={option}>{option}</option>
+            {getSectorOptions(isEn ? "en" : "fr").map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
         </label>
@@ -454,10 +454,10 @@ function CreateOfferForm({ onSuccess, token, locale }) {
           {values.region ? (
             <select className="field-input" required value={values.profession} onChange={(e) => set("profession", e.target.value)}>
               <option value="" disabled>{isEn ? "Select the target role" : "Sélectionnez le métier visé"}</option>
-              {getProfessionGroupsForRegions(values.region).map((group) => (
+              {getProfessionGroupsForRegions(values.region, isEn ? "en" : "fr").map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.options.map((profession) => (
-                    <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                    <option key={`${group.label}-${profession.value}`} value={profession.value}>{profession.label}</option>
                   ))}
                 </optgroup>
               ))}
@@ -685,9 +685,9 @@ function MatchesView({ token, locale }) {
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Matching</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Profiles matched to your openings" : "Profils matchés à vos offres"}</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Profiles matching your openings" : "Profils correspondant à vos offres"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
-          {isEn ? "The LEXPAT Connect engine automatically compares your openings with available worker profiles. Identifying details are only shared after the match is confirmed." : "Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les données identifiantes ne sont partagées qu'après validation du match."}
+          {isEn ? "The LEXPAT Connect engine automatically compares your openings with available worker profiles. Worker contact details are only shared after the match is confirmed." : "Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les coordonnées travailleur ne sont partagées qu'après confirmation du match."}
         </p>
       </section>
 
@@ -717,8 +717,8 @@ function MatchesView({ token, locale }) {
               </div>
               <div className="mt-4 rounded-[20px] border border-[#ebf0f6] bg-[#f9fbfd] px-4 py-3 text-xs text-[#5f7086]">
                 {match.status?.toLowerCase() === "contacted"
-                  ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— contact details are unlocked." : "— Les coordonnées sont débloquées."}</>
-                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status}</span> {isEn ? "— the worker's details will become available once contact is confirmed." : "— Les coordonnées du profil seront accessibles après confirmation du contact."}</>
+                  ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— Worker contact details are unlocked." : "— Les coordonnées travailleur sont débloquées."}</>
+                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status}</span> {isEn ? "— Worker contact details become available once the match is confirmed." : "— Les coordonnées travailleur deviennent accessibles après confirmation du match."}</>
                 }
               </div>
 
@@ -735,7 +735,7 @@ function MatchesView({ token, locale }) {
                       disabled={openingChat === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#1E3A78] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#162d6b] disabled:opacity-60"
                     >
-                      {openingChat === match.id ? (isEn ? "Opening…" : "Ouverture…") : isEn ? "Open chat →" : "Ouvrir la messagerie →"}
+                      {openingChat === match.id ? (isEn ? "Opening…" : "Ouverture…") : isEn ? "Open messaging →" : "Ouvrir la messagerie →"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "reviewed" ? (
@@ -749,7 +749,7 @@ function MatchesView({ token, locale }) {
                       disabled={acting === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#1E3A78] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#162d6b] disabled:opacity-60"
                     >
-                      {acting === match.id ? "…" : isEn ? "Confirm my interest → confirm the match" : "Confirmer mon intérêt → Match confirmé"}
+                      {acting === match.id ? "…" : isEn ? "Confirm my interest → confirm the match" : "Confirmer mon intérêt → confirmer le match"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "interested" ? (
@@ -818,7 +818,7 @@ export default function EmployerSpace({ locale = "fr" }) {
               </div>
               <div>
                 <p className="text-lg font-semibold text-[#17345d]">{isEn ? "Employer profile" : "Profil employeur"}</p>
-                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">{isEn ? "Company" : "Entreprise"}</span>
+                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">{isEn ? "Employer" : "Employeur"}</span>
               </div>
             </div>
 

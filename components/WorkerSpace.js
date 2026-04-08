@@ -10,9 +10,9 @@ import { useAuth } from "./AuthProvider";
 import RegionSelector from "./RegionSelector";
 import {
   getProfessionGroupsForRegions,
+  getSectorOptions,
   findSectorForProfession,
   parseRegionSelection,
-  sectorOptions,
   stringifyRegionSelection
 } from "../lib/professions";
 
@@ -21,7 +21,7 @@ function getSidebarItems(locale) {
     return [
       { id: "dashboard", label: "Dashboard" },
       { id: "matches", label: "My matches" },
-      { id: "profile", label: "My profile" },
+      { id: "profile", label: "Worker profile" },
       { id: "cv", label: "My CV" },
       { id: "messaging", label: "Messaging", href: "/en/messagerie" }
     ];
@@ -289,11 +289,11 @@ function WorkerMatchesView({ token, locale }) {
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My matches" : "Mes matchs"}</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Jobs that match your profile" : "Offres qui correspondent à votre profil"}</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Opportunities matching your profile" : "Opportunités correspondant à votre profil"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
           {isEn
-            ? "The LEXPAT Connect engine automatically compares your sector and preferred region with Belgian employers' openings. Contact details are only shared after mutual validation."
-            : "Le moteur LEXPAT Connect croise automatiquement votre secteur et votre région avec les offres des employeurs belges. Les coordonnées employeur sont partagées uniquement après validation."}
+            ? "The LEXPAT Connect engine automatically compares your sector and preferred region with Belgian employer openings. Employer contact details are only shared after the match is confirmed."
+            : "Le moteur LEXPAT Connect croise automatiquement votre secteur et votre région avec les offres des employeurs belges. Les coordonnées employeur sont partagées uniquement après confirmation du match."}
         </p>
       </section>
 
@@ -322,8 +322,8 @@ function WorkerMatchesView({ token, locale }) {
               </div>
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
                 {match.status?.toLowerCase() === "contacted"
-                  ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— Contact details are now unlocked." : "— Les coordonnées sont débloquées."}</>
-                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status === "pending" ? (isEn ? "Pending review" : "En attente de validation") : match.status}</span> {isEn ? "— Employer details will become available once the contact is confirmed." : "— Les coordonnées du profil seront accessibles après confirmation du contact."}</>
+                  ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— Employer contact details are unlocked." : "— Les coordonnées employeur sont débloquées."}</>
+                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status === "pending" ? (isEn ? "Pending review" : "En attente de validation") : match.status}</span> {isEn ? "— Employer contact details become available once the match is confirmed." : "— Les coordonnées employeur deviennent accessibles après confirmation du match."}</>
                 }
               </div>
 
@@ -340,7 +340,7 @@ function WorkerMatchesView({ token, locale }) {
                       disabled={openingChat === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2] disabled:opacity-60"
                     >
-                      {openingChat === match.id ? (isEn ? "Opening…" : "Ouverture…") : isEn ? "Open chat →" : "Ouvrir la messagerie →"}
+                      {openingChat === match.id ? (isEn ? "Opening…" : "Ouverture…") : isEn ? "Open messaging →" : "Ouvrir la messagerie →"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "interested" ? (
@@ -354,7 +354,7 @@ function WorkerMatchesView({ token, locale }) {
                       disabled={acting === match.id}
                       className="flex items-center justify-center gap-2 rounded-[16px] bg-[#57B7AF] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#4aa9a2] disabled:opacity-60"
                     >
-                      {acting === match.id ? "…" : isEn ? "Confirm my interest → confirm the match" : "Confirmer mon intérêt → Match confirmé"}
+                      {acting === match.id ? "…" : isEn ? "Confirm my interest → confirm the match" : "Confirmer mon intérêt → confirmer le match"}
                     </button>
                   </div>
                 ) : match.status?.toLowerCase() === "reviewed" ? (
@@ -481,8 +481,8 @@ function ProfileView({ token, locale }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Sector" : "Secteur"} * <span className="text-[#57b7af]">(matching)</span></span>
               <select className="field-input" value={values.sector || ""} onChange={(e) => set("sector", e.target.value)}>
                 <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
-                {sectorOptions.map((option) => (
-                  <option key={option} value={option}>{option}</option>
+                {getSectorOptions(isEn ? "en" : "fr").map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
             </label>
@@ -507,10 +507,10 @@ function ProfileView({ token, locale }) {
                   onChange={(e) => set("profession", e.target.value)}
                 >
                   <option value="" disabled>{isEn ? "Select your role" : "Sélectionnez votre métier"}</option>
-                  {getProfessionGroupsForRegions(values.regions).map((group) => (
+                  {getProfessionGroupsForRegions(values.regions, isEn ? "en" : "fr").map((group) => (
                     <optgroup key={group.label} label={group.label}>
                       {group.options.map((profession) => (
-                        <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                        <option key={`${group.label}-${profession.value}`} value={profession.value}>{profession.label}</option>
                       ))}
                     </optgroup>
                   ))}
@@ -759,8 +759,8 @@ function SubmitCandidacyForm({ token, locale }) {
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Sector" : "Secteur"}</span>
           <select className="field-input" value={values.sector} onChange={(e) => set("sector", e.target.value)}>
             <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
-            {sectorOptions.map((option) => (
-              <option key={option} value={option}>{option}</option>
+            {getSectorOptions(isEn ? "en" : "fr").map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
         </label>
@@ -770,10 +770,10 @@ function SubmitCandidacyForm({ token, locale }) {
           {(values.regions || []).length ? (
             <select className="field-input" value={values.title} onChange={(e) => set("title", e.target.value)}>
               <option value="" disabled>{isEn ? "Select your role" : "Sélectionnez votre métier"}</option>
-              {getProfessionGroupsForRegions(values.regions).map((group) => (
+              {getProfessionGroupsForRegions(values.regions, isEn ? "en" : "fr").map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.options.map((profession) => (
-                    <option key={`${group.label}-${profession}`} value={profession}>{profession}</option>
+                    <option key={`${group.label}-${profession.value}`} value={profession.value}>{profession.label}</option>
                   ))}
                 </optgroup>
               ))}
@@ -920,7 +920,7 @@ export default function WorkerSpace({ locale = "fr" }) {
               </div>
               <div>
                 <p className="text-lg font-semibold text-[#17345d]">{isEn ? "Worker profile" : "Profil travailleur"}</p>
-                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">{isEn ? "Candidate" : "Candidat"}</span>
+                <span className="mt-1 inline-flex rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold text-[#1d3b8b]">{isEn ? "Worker" : "Travailleur"}</span>
               </div>
             </div>
 

@@ -2,9 +2,8 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 import FormCard from "../../../components/FormCard";
 import {
-  groupedProfessionOptionsByRegion,
+  getSectorOptions,
   professionSectorByRegion,
-  sectorOptions
 } from "../../../lib/professions";
 
 export const metadata = {
@@ -182,9 +181,9 @@ export default function EmployeursPageEn() {
               { label: "Work email", placeholder: "contact@company.be", type: "email" },
               { label: "Phone", placeholder: "+32 ..." },
               { name: "region", label: "Relevant region", type: "region-multi", helperText: "Select one, two or three regions depending on your hiring perimeter." },
-              { name: "secteur", label: "Sector", type: "select", placeholder: "Select a sector", options: sectorOptions },
+              { name: "secteur", label: "Sector", type: "select", placeholder: "Select a sector", options: getSectorOptions("en") },
               { name: "autreSecteur", label: "Other sector / detail", placeholder: "Add another sector if needed", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", optionsMap: groupedProfessionOptionsByRegion, deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
+              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", locale: "en", deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
               { name: "autreProfession", label: "Other occupation / detail", placeholder: "Add another occupation if needed", showWhen: { field: "profession", value: "Autre profession" } },
               { label: "Contract type", placeholder: "Permanent, fixed-term, temporary..." },
               { label: "Weekly hours", placeholder: "38h" },

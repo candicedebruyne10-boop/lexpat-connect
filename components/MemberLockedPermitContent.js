@@ -382,11 +382,21 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
         reserved: "Members only",
         unlockTitle: "Unlock the full reading",
         unlockText: "The member content goes further than the public page: it classifies exemptions by residence logic, highlights practical limits and gives a first useful reading before any legal analysis.",
+        memberBannerText: "You have full access to this member-only content.",
+        guestBannerText: "This content is reserved for members. Sign in or create an account to access it.",
         unlockList: [
           "Cases without a residence title",
           "Unlimited and limited residence statuses",
           "Temporary and precarious statuses",
           "Regional labour market test exemptions"
+        ],
+        guestCards: [
+          { title: "Cases without a residence title", note: "Apprenticeship before age 18, mandatory study placements and other situations expressly covered by the regulations." },
+          { title: "Exemptions — unlimited residence statuses", note: "EU citizens, F/F+ cards, B/C/L cards, M card and other statuses already granting access to work." },
+          { title: "Exemptions — limited residence statuses", note: "A card, students, family reunification, international protection, working holiday and other statuses that require closer review." },
+          { title: "Temporary and precarious residence statuses", note: "Orange cards, Annexes 15, 19ter, 35 and other transitional situations that must be read carefully." },
+          { title: "Specific activity categories", note: "Labour market test exemptions may apply to some categories, including certain highly qualified worker profiles." },
+          { title: "Regional reading", note: "Brussels, Wallonia and Flanders do not always apply exactly the same practical logic." }
         ],
         becomeMember: "Become a member",
         signIn: "Sign in"
@@ -399,11 +409,21 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
         reserved: "Réservé aux membres",
         unlockTitle: "Débloquez la lecture complète",
         unlockText: "Le contenu membre va plus loin que la page publique : il classe les dispenses par familles de séjour, attire l’attention sur les limites et apporte un premier niveau de lecture utile avant l’analyse juridique.",
+        memberBannerText: "Vous avez accès à l'intégralité de ce contenu réservé aux membres.",
+        guestBannerText: "Ce contenu est réservé aux membres. Connectez-vous ou créez un compte pour y accéder.",
         unlockList: [
           "Cas sans titre de séjour",
           "Séjours illimités et séjours limités",
           "Séjours temporaires et précaires",
           "Dispenses régionales de l’examen du marché de l’emploi"
+        ],
+        guestCards: [
+          { title: "Sans titre de séjour", note: "Apprentissage avant 18 ans, stage obligatoire dans le cadre des études et cas prévus par la réglementation." },
+          { title: "Dispenses — séjours illimités", note: "Citoyens UE, cartes F/F+, cartes B/C/L, carte M et autres statuts ouvrant déjà le droit au travail." },
+          { title: "Dispenses — séjours limités", note: "Carte A, étudiants, regroupement familial, protection internationale, vacances-travail et autres régimes à vérifier." },
+          { title: "Séjours temporaires et précaires", note: "Cartes orange, annexes 15, 19ter, 35 et autres situations transitoires à lire avec prudence." },
+          { title: "Activité spécifique", note: "Dispense de l’examen du marché de l’emploi, notamment pour certaines catégories de travailleurs hautement qualifiés." },
+          { title: "Lecture régionale", note: "Bruxelles, Wallonie et Flandre n’utilisent pas toujours exactement la même logique pratique." }
         ],
         becomeMember: "Devenir membre",
         signIn: "Se connecter"
@@ -449,7 +469,7 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#0f4d48]">✦ {copy.unlocked}</p>
-                <p className="mt-0.5 text-xs font-medium text-[#1d6b65]">Vous avez accès à l'intégralité de ce contenu réservé aux membres.</p>
+                <p className="mt-0.5 text-xs font-medium text-[#1d6b65]">{copy.memberBannerText}</p>
               </div>
             </div>
           ) : status === "guest" ? (
@@ -459,7 +479,7 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#1d3b8b]">⊘ {copy.memberContent}</p>
-                <p className="mt-0.5 text-xs text-[#4a6090]">Ce contenu est réservé aux membres. Connectez-vous ou créez un compte pour y accéder.</p>
+                <p className="mt-0.5 text-xs text-[#4a6090]">{copy.guestBannerText}</p>
               </div>
             </div>
           ) : null}
@@ -484,12 +504,9 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
               <div className="relative overflow-hidden rounded-[30px] border border-[#d9e6ef] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.74)_0%,rgba(245,248,252,0.94)_100%)] backdrop-blur-[3px]" />
                 <div className="relative grid gap-4 md:grid-cols-2">
-                  <SmallCard title="Sans titre de séjour" note="Apprentissage avant 18 ans, stage obligatoire dans le cadre des études et cas prévus par la réglementation." />
-                  <SmallCard title="Dispenses — séjours illimités" note="Citoyens UE, cartes F/F+, cartes B/C/L, carte M et autres statuts ouvrant déjà le droit au travail." />
-                  <SmallCard title="Dispenses — séjours limités" note="Carte A, étudiants, regroupement familial, protection internationale, vacances-travail et autres régimes à vérifier." />
-                  <SmallCard title="Séjours temporaires et précaires" note="Cartes orange, annexes 15, 19ter, 35 et autres situations transitoires à lire avec prudence." />
-                  <SmallCard title="Activité spécifique" note="Dispense de l’examen du marché de l’emploi, notamment pour certaines catégories de travailleurs hautement qualifiés." />
-                  <SmallCard title="Lecture régionale" note="Bruxelles, Wallonie et Flandre n’utilisent pas toujours exactement la même logique pratique." />
+                  {copy.guestCards.map((card) => (
+                    <SmallCard key={card.title} title={card.title} note={card.note} />
+                  ))}
                 </div>
               </div>
 

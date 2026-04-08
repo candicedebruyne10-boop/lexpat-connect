@@ -515,7 +515,7 @@ export default function SimulateurEligibilite() {
                       {professionGroups.map((group) => (
                         <optgroup key={group.label} label={group.label}>
                           {group.options.map((job) => (
-                            <option key={`${group.label}-${job}`} value={job}>{job}</option>
+                            <option key={`${group.label}-${job.value}`} value={job.value}>{job.label}</option>
                           ))}
                         </optgroup>
                       ))}
@@ -853,8 +853,8 @@ export default function SimulateurEligibilite() {
             {/* Mention de prudence juridique */}
             <div className="rounded-[14px] border-l-4 border-[#1E3A78] bg-[#f0f5ff] px-4 py-4 text-xs text-[#607086] leading-relaxed">
               <p className="font-bold text-[#1E3A78] mb-1">Orientation initiale — pas un avis juridique</p>
-              <p>Ce résultat constitue une orientation initiale basée sur les informations déclarées. Il ne remplace pas une analyse juridique individualisée. Une vérification complémentaire peut être nécessaire selon la région, le poste et la situation personnelle du candidat.</p>
-              <p className="mt-2">Les règles d'immigration économique en Belgique varient selon des critères qui ne peuvent pas tous être captés par un simulateur. Nous recommandons de consulter un professionnel agréé avant d'introduire toute démarche.</p>
+              <p>Ce résultat constitue une orientation initiale basée sur les informations déclarées. Il ne remplace pas une analyse juridique individualisée, ne crée pas à lui seul une relation avocat-client et ne vaut pas validation d'un dossier concret.</p>
+              <p className="mt-2">Les règles d'immigration économique en Belgique varient selon des critères qui ne peuvent pas tous être captés par un simulateur. Aucune démarche ne devrait être engagée sur cette seule base sans vérification professionnelle préalable.</p>
             </div>
 
             {/* Lead capture */}
