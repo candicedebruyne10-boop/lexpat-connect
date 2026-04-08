@@ -228,7 +228,7 @@ export default function TestFeedbackForm({ locale = "fr" }) {
             status.type === "success" ? (
               <div className="flex items-center gap-4 rounded-2xl border border-[#cde8e4] bg-[#f2fbfa] px-4 py-4 text-sm leading-7 text-[#1f6f69]">
                 <Image
-                  src="/persobug3.jpeg"
+                  src="/persobug5.png"
                   alt=""
                   width={64}
                   height={64}
