@@ -61,19 +61,19 @@ function StepIcon({ index, className = "h-5 w-5" }) {
 /* Villes belges + points de connexion internationaux visibles sur la carte */
 const CITY_DOTS = [
   /* ── Belgique ── */
-  { city: "Bruxelles",  left: "18%", top: "40%", delay: "0s"    },
-  { city: "Anvers",     left: "22%", top: "28%", delay: "0.4s"  },
-  { city: "Gand",       left: "12%", top: "34%", delay: "0.8s"  },
-  { city: "Liège",      left: "28%", top: "44%", delay: "1.2s"  },
-  { city: "Mons",       left: "14%", top: "58%", delay: "0.6s"  },
-  { city: "Bruges",     left: "8%",  top: "28%", delay: "1.0s"  },
-  { city: "Namur",      left: "23%", top: "54%", delay: "1.4s"  },
+  { city: "Bruxelles",  left: "54%", top: "40%", delay: "0s"    },
+  { city: "Anvers",     left: "58%", top: "28%", delay: "0.4s"  },
+  { city: "Gand",       left: "48%", top: "34%", delay: "0.8s"  },
+  { city: "Liège",      left: "63%", top: "44%", delay: "1.2s"  },
+  { city: "Mons",       left: "50%", top: "58%", delay: "0.6s"  },
+  { city: "Bruges",     left: "43%", top: "28%", delay: "1.0s"  },
+  { city: "Namur",      left: "59%", top: "54%", delay: "1.4s"  },
   /* ── Connexions internationales ── */
-  { city: "Londres",    left: "8%",  top: "18%", delay: "1.6s"  },
-  { city: "Paris",      left: "14%", top: "76%", delay: "1.8s"  },
-  { city: "New York",   left: "52%", top: "14%", delay: "2.0s"  },
-  { city: "Dubaï",      left: "44%", top: "52%", delay: "2.2s"  },
-  { city: "Mumbai",     left: "48%", top: "62%", delay: "2.4s"  },
+  { city: "Londres",    left: "40%", top: "18%", delay: "1.6s"  },
+  { city: "Paris",      left: "50%", top: "76%", delay: "1.8s"  },
+  { city: "New York",   left: "76%", top: "14%", delay: "2.0s"  },
+  { city: "Dubaï",      left: "70%", top: "52%", delay: "2.2s"  },
+  { city: "Mumbai",     left: "73%", top: "62%", delay: "2.4s"  },
 ];
 
 function CityDot({ left, top, delay = "0s" }) {
