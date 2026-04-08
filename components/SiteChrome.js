@@ -213,9 +213,20 @@ export default function SiteChrome({ children }) {
         </div>
 
         {/* Nav mobile */}
-        <nav className="overflow-x-auto border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden">
-          <div className="flex min-w-max items-start gap-2 pb-1">
-          {navigation.map((item) => {
+        <nav className="border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden">
+          <div className="space-y-2">
+          {navigation.filter((item) => item.highlight).map((item) => (
+            <Link
+              key={item.href}
+              href={localizeHref(item.href, locale)}
+              className="flex w-full items-center justify-center rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(29,59,139,0.16)]"
+              style={{ background: "linear-gradient(135deg, #1E3A78, #57B7AF)" }}
+            >
+              ✦ {item.label}
+            </Link>
+          ))}
+          <div className="flex flex-wrap items-start gap-2">
+          {navigation.filter((item) => !item.highlight).map((item) => {
             const dd = navDropdowns[item.href];
             return dd ? (
               <NavDropdown
@@ -230,17 +241,13 @@ export default function SiteChrome({ children }) {
               <Link
                 key={item.href}
                 href={localizeHref(item.href, locale)}
-                className={`inline-flex shrink-0 items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold text-center transition ${
-                  item.highlight
-                    ? "border-transparent text-white shadow-[0_8px_20px_rgba(29,59,139,0.15)]"
-                    : "border-[#e3eaf1] bg-white hover:border-[#c5d4f3] hover:text-[#1E3A78]"
-                }`}
-                style={item.highlight ? { background: "linear-gradient(135deg, #1E3A78, #57B7AF)" } : undefined}
+                className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#e3eaf1] bg-white px-3 py-2 text-xs font-semibold text-center transition hover:border-[#c5d4f3] hover:text-[#1E3A78]"
               >
-                {item.highlight ? `✦ ${item.label}` : item.label}
+                {item.label}
               </Link>
             );
           })}
+          </div>
           </div>
         </nav>
       </header>

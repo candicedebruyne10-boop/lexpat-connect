@@ -39,21 +39,32 @@ function summarize(text) {
   return trimmed.length > 120 ? `${trimmed.slice(0, 117)}...` : trimmed;
 }
 
-export default function TestFeedbackForm() {
+export default function TestFeedbackForm({ locale = "fr" }) {
+  const isEn = locale === "en";
+  const pageOptions = isEn
+    ? ["Home", "Employers", "Workers", "Shortage occupations", "Single permit", "Sign in", "Create account", "Employer space", "Worker space", "Messaging", "Contact", "Other page"]
+    : PAGE_OPTIONS;
+  const feedbackTypes = isEn
+    ? [
+        { value: "Bug", label: "I found a bug" },
+        { value: "Compréhension", label: "This is unclear" },
+        { value: "Suggestion", label: "I have an idea" }
+      ]
+    : FEEDBACK_TYPES;
   const [values, setValues] = useState(initialValues);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resolvedPageLabel = useMemo(
-    () => (values.page_label === "Autre page" ? values.custom_page : values.page_label),
-    [values.custom_page, values.page_label]
+    () => (values.page_label === (isEn ? "Other page" : "Autre page") ? values.custom_page : values.page_label),
+    [isEn, values.custom_page, values.page_label]
   );
 
   function updateValue(name, value) {
     setValues((current) => ({
       ...current,
       [name]: value,
-      ...(name === "page_label" && value !== "Autre page" ? { custom_page: "" } : {})
+      ...(name === "page_label" && value !== (isEn ? "Other page" : "Autre page") ? { custom_page: "" } : {})
     }));
   }
 
@@ -87,19 +98,20 @@ export default function TestFeedbackForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Impossible d'enregistrer le retour.");
+        throw new Error(result.error || (isEn ? "Unable to save your feedback." : "Impossible d'enregistrer le retour."));
       }
 
       setValues(initialValues());
       setStatus({
         type: "success",
-        message:
-          "Merci beaucoup pour votre retour. Vous participez concrètement à l’éclosion de LEXPAT Connect, et c’est précieux pour nous."
+        message: isEn
+          ? "Thank you very much for your feedback. It genuinely helps us make LEXPAT Connect clearer, smoother and more useful."
+          : "Merci beaucoup pour votre retour. Vous participez concrètement à l’éclosion de LEXPAT Connect, et c’est précieux pour nous."
       });
     } catch (error) {
       setStatus({
         type: "error",
-        message: error.message || "Une erreur est survenue lors de l'envoi."
+        message: error.message || (isEn ? "An error occurred while sending your feedback." : "Une erreur est survenue lors de l'envoi.")
       });
     } finally {
       setIsSubmitting(false);
@@ -110,30 +122,30 @@ export default function TestFeedbackForm() {
     <div className="rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-8">
       <div className="mb-8 max-w-3xl">
         <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-          Retour utilisateur
+          {isEn ? "Tester feedback" : "Retour utilisateur"}
         </p>
         <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b] sm:text-3xl">
-          Un formulaire simple, pensé pour aller vite
+          {isEn ? "A simple form built to stay quick" : "Un formulaire simple, pensé pour aller vite"}
         </h2>
         <p className="mt-3 text-sm leading-7 text-[#5d6e83]">
-          Dites-nous simplement ce qui vous a gêné, surpris ou semblé améliorable. Même un retour court peut nous aider énormément.
+          {isEn ? "Tell us what felt confusing, annoying, broken or simply improvable. Even a short note can help a lot." : "Dites-nous simplement ce qui vous a gêné, surpris ou semblé améliorable. Même un retour court peut nous aider énormément."}
         </p>
       </div>
 
       <form className="grid gap-5 md:grid-cols-2" onSubmit={handleSubmit}>
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Votre prénom ou pseudo</span>
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "Your name or nickname" : "Votre prénom ou pseudo"}</span>
           <input
             className="field-input"
             type="text"
-            placeholder="Facultatif"
+            placeholder={isEn ? "Optional" : "Facultatif"}
             value={values.tester_name}
             onChange={(event) => updateValue("tester_name", event.target.value)}
           />
         </label>
 
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Page concernée</span>
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "Page concerned" : "Page concernée"}</span>
           <select
             className="field-input"
             value={values.page_label}
@@ -141,9 +153,9 @@ export default function TestFeedbackForm() {
             required
           >
             <option value="" disabled>
-              Sélectionnez une page
+              {isEn ? "Select a page" : "Sélectionnez une page"}
             </option>
-            {PAGE_OPTIONS.map((page) => (
+            {pageOptions.map((page) => (
               <option key={page} value={page}>
                 {page}
               </option>
@@ -151,13 +163,13 @@ export default function TestFeedbackForm() {
           </select>
         </label>
 
-        {values.page_label === "Autre page" ? (
+        {values.page_label === (isEn ? "Other page" : "Autre page") ? (
           <label className="md:col-span-2">
-            <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Préciser la page</span>
+            <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "Specify the page" : "Préciser la page"}</span>
             <input
               className="field-input"
               type="text"
-              placeholder="Ex. page sécurité & conformité"
+              placeholder={isEn ? "E.g. security & compliance page" : "Ex. page sécurité & conformité"}
               value={values.custom_page}
               onChange={(event) => updateValue("custom_page", event.target.value)}
               required
@@ -166,9 +178,9 @@ export default function TestFeedbackForm() {
         ) : null}
 
         <div className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Quel type de retour voulez-vous partager ?</span>
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "What kind of feedback do you want to share?" : "Quel type de retour voulez-vous partager ?"}</span>
           <div className="grid gap-3 sm:grid-cols-3">
-            {FEEDBACK_TYPES.map((item) => {
+            {feedbackTypes.map((item) => {
               const active = values.feedback_type === item.value;
               return (
                 <button
@@ -190,10 +202,10 @@ export default function TestFeedbackForm() {
         </div>
 
         <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Ce que vous voulez nous signaler</span>
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "What you want to report" : "Ce que vous voulez nous signaler"}</span>
           <textarea
             className="field-input min-h-36"
-            placeholder="Décrivez librement ce que vous avez remarqué : un bug, une confusion, un détail bloquant, une impression…"
+            placeholder={isEn ? "Describe freely what you noticed: a bug, a confusing point, something blocking, or a general impression..." : "Décrivez librement ce que vous avez remarqué : un bug, une confusion, un détail bloquant, une impression…"}
             value={values.details}
             onChange={(event) => updateValue("details", event.target.value)}
             required
@@ -201,10 +213,10 @@ export default function TestFeedbackForm() {
         </label>
 
         <label className="md:col-span-2">
-          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">Une idée pour améliorer ?</span>
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">{isEn ? "Any idea to improve it?" : "Une idée pour améliorer ?"}</span>
           <textarea
             className="field-input min-h-28"
-            placeholder="Facultatif : si vous avez une suggestion simple, dites-la nous ici."
+            placeholder={isEn ? "Optional: if you have a simple suggestion, tell us here." : "Facultatif : si vous avez une suggestion simple, dites-la nous ici."}
             value={values.suggested_fix}
             onChange={(event) => updateValue("suggested_fix", event.target.value)}
           />
@@ -225,14 +237,14 @@ export default function TestFeedbackForm() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-sm leading-7 text-[#66768b]">
-              Merci de prendre quelques instants pour nous aider. Chaque retour est lu avec attention et nous aide à construire une plateforme plus utile.
+              {isEn ? "Thank you for taking a moment to help us. Every report is read carefully and helps us build a more useful platform." : "Merci de prendre quelques instants pour nous aider. Chaque retour est lu avec attention et nous aide à construire une plateforme plus utile."}
             </p>
             <button
               type="submit"
               disabled={isSubmitting}
               className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_40px_rgba(23,58,138,0.24)] transition hover:bg-[#143273] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Envoi..." : "Envoyer mon retour"}
+              {isSubmitting ? (isEn ? "Sending..." : "Envoi...") : (isEn ? "Send my feedback" : "Envoyer mon retour")}
             </button>
           </div>
         </div>

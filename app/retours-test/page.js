@@ -56,7 +56,7 @@ export default function RetoursTestPage() {
         muted
       >
         <div id="formulaire-retour">
-          <TestFeedbackForm />
+          <TestFeedbackForm locale="fr" />
         </div>
       </Section>
     </>
