@@ -175,23 +175,39 @@ export default function SiteChrome({ children }) {
 
           {/* Sélecteur de langue + auth desktop */}
           <div className="hidden items-center gap-2 lg:flex">
-            <Link
-              href={switchLocalePath(pathname, locale === "en" ? "fr" : "en")}
-              className="rounded-full border border-[#e3eaf1] px-3 py-1.5 text-[12px] font-bold text-[#607086] transition hover:border-[#1E3A78] hover:text-[#1E3A78]"
-            >
-              {locale === "en" ? "FR" : "EN"}
-            </Link>
+            <div className="flex items-center divide-x divide-[#dce8f5] overflow-hidden rounded-full border border-[#dce8f5] bg-white text-[12px] font-bold">
+              <Link
+                href={switchLocalePath(pathname, "fr")}
+                className={`px-3 py-1.5 transition ${locale === "fr" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
+              >
+                FR
+              </Link>
+              <Link
+                href={switchLocalePath(pathname, "en")}
+                className={`px-3 py-1.5 transition ${locale === "en" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
+              >
+                EN
+              </Link>
+            </div>
             <NavAuth />
           </div>
 
           {/* Mobile : langue + auth */}
           <div className="flex items-center gap-2 lg:hidden">
-            <Link
-              href={switchLocalePath(pathname, locale === "en" ? "fr" : "en")}
-              className="rounded-full border border-[#e3eaf1] px-2.5 py-1 text-[11px] font-bold text-[#607086]"
-            >
-              {locale === "en" ? "FR" : "EN"}
-            </Link>
+            <div className="flex items-center divide-x divide-[#dce8f5] overflow-hidden rounded-full border border-[#dce8f5] bg-white text-[11px] font-bold">
+              <Link
+                href={switchLocalePath(pathname, "fr")}
+                className={`px-2.5 py-1 transition ${locale === "fr" ? "bg-[#1E3A78] text-white" : "text-[#607086]"}`}
+              >
+                FR
+              </Link>
+              <Link
+                href={switchLocalePath(pathname, "en")}
+                className={`px-2.5 py-1 transition ${locale === "en" ? "bg-[#1E3A78] text-white" : "text-[#607086]"}`}
+              >
+                EN
+              </Link>
+            </div>
             <NavAuthMobile />
           </div>
         </div>
