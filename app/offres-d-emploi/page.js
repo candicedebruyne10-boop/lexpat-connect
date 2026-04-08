@@ -1,37 +1,26 @@
-import MemberDataShell from "../../components/MemberDataShell";
+import PublicMarketplacePage from "../../components/PublicMarketplacePage";
+import { getPublicOffersData } from "../../lib/public-marketplace";
 
 export const metadata = {
   title: "Offres d'emploi | LEXPAT Connect",
-  description: "Toutes les offres d'emploi visibles aux membres de LEXPAT Connect."
+  description: "Aperçu public des offres d'emploi disponibles sur LEXPAT Connect."
 };
 
-const summaryCards = [
-  { key: "total", label: "Offres publiées", tone: "blue" },
-  { key: "urgent", label: "Offres urgentes", tone: "amber" },
-  { key: "sectors", label: "Secteurs actifs", tone: "teal" }
-];
-
-const columns = [
-  { key: "title", label: "Poste", primary: true, secondaryKey: "sector" },
-  { key: "companyName", label: "Entreprise" },
-  { key: "region", label: "Région" },
-  { key: "contractType", label: "Contrat" },
-  { key: "urgency", label: "Urgence" },
-  { key: "status", label: "Statut" },
-  { key: "createdAt", label: "Créée le" }
-];
-
-export default function OffresEmploiPage() {
+export default async function OffresEmploiPage() {
+  const data = await getPublicOffersData("fr");
   return (
-    <MemberDataShell
+    <PublicMarketplacePage
+      locale="fr"
+      kind="offers"
       title="Offres d'emploi"
-      intro="Cette page rassemble l’ensemble des offres publiées et visibles aux membres connectés. Elle permet de parcourir rapidement les besoins ouverts par entreprise, secteur et région."
-      kicker="Espace membre"
-      endpoint="/api/member/offers"
-      loginPath="/offres-d-emploi"
-      summaryCards={summaryCards}
-      columns={columns}
-      emptyLabel="Toutes les offres"
+      intro="Consultez les besoins actuellement visibles sur la plateforme. Les informations essentielles sont publiques pour vous aider à évaluer les opportunités avant de créer votre espace membre."
+      kicker="Espace public"
+      summary={data.summary}
+      rows={data.rows}
+      primaryCtaHref="/inscription"
+      primaryCtaLabel="Créer mon espace"
+      secondaryCtaHref="/connexion?next=/offres-d-emploi"
+      secondaryCtaLabel="Se connecter"
     />
   );
 }

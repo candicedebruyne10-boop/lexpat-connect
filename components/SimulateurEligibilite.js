@@ -22,32 +22,56 @@ const EU_NATIONALITIES = new Set([
 const RMMMG = 2189.81;
 
 /**
- * Seuils THQ mensuels bruts par région — 2026
- * Bruxelles : 3 703,44 €/mois
- * Wallonie   : 3 703,44 €/mois (référence fédérale identique)
- * Flandre    : 50 310 €/an ÷ 12 ≈ 4 192,50 €/mois
+ * Seuils THQ mensuels bruts par région — 2026 (valeurs confirmées)
+ * Bruxelles : 3 703,44 €/mois  (44 441,28 €/an)
+ * Wallonie   : 4 076,00 €/mois  (48 912 €/an)
+ * Flandre    : 4 435,00 €/mois  (53 220 €/an)
  */
 const THQ_THRESHOLDS = {
   bruxelles: 3703.44,
-  wallonie:  3703.44,
-  flandre:   4192.50,
+  wallonie:  4076.00,
+  flandre:   4435.00,
 };
 
-function getTHQThreshold(region) {
+/**
+ * Seuils réduits pour travailleurs de moins de 30 ans (réduction à 80%)
+ * Bruxelles : pas de réduction spécifique prévue
+ * Wallonie   : 3 260,80 €/mois  (incluant infirmiers et enseignants)
+ * Flandre    : 3 548,00 €/mois
+ */
+const THQ_THRESHOLDS_YOUNG = {
+  bruxelles: 3703.44,  // pas de réduction confirmée pour Bruxelles
+  wallonie:  3260.80,
+  flandre:   3548.00,
+};
+
+function getTHQThreshold(region, youngWorker = false) {
   const labels = parseRegionSelection(region).map((r) => r.toLowerCase());
-  if (labels.some((r) => r.includes("flandre"))) return THQ_THRESHOLDS.flandre;
-  if (labels.some((r) => r.includes("bruxelles"))) return THQ_THRESHOLDS.bruxelles;
-  if (labels.some((r) => r.includes("wallonie") || r.includes("wallonne"))) return THQ_THRESHOLDS.wallonie;
+  const thresholds = youngWorker ? THQ_THRESHOLDS_YOUNG : THQ_THRESHOLDS;
+  if (labels.some((r) => r.includes("flandre"))) return thresholds.flandre;
+  if (labels.some((r) => r.includes("bruxelles"))) return thresholds.bruxelles;
+  if (labels.some((r) => r.includes("wallonie") || r.includes("wallonne"))) return thresholds.wallonie;
   // Multi-région : seuil le plus conservateur
-  return Math.min(...Object.values(THQ_THRESHOLDS));
+  return Math.min(...Object.values(thresholds));
 }
 
 /** Délai légal minimum de publication pour le test marché */
 function getMarketTestDuration(region) {
   const labels = parseRegionSelection(region).map((r) => r.toLowerCase());
-  if (labels.some((r) => r.includes("flandre"))) return { weeks: 9, label: "9 semaines", platform: "VDAB" };
-  if (labels.some((r) => r.includes("bruxelles"))) return { weeks: 5, label: "5 semaines", platform: "Actiris" };
-  return { weeks: 5, label: "5 semaines", platform: "Forem" };
+  if (labels.some((r) => r.includes("flandre"))) return {
+    weeks: 9, label: "9 semaines", platform: "VDAB",
+    timing: "dans les 4 mois précédant la demande",
+    note: "Une médiation active par le VDAB est également requise pendant cette période.",
+  };
+  if (labels.some((r) => r.includes("bruxelles"))) return {
+    weeks: 5, label: "5 semaines", platform: "Actiris",
+    timing: null, note: null,
+  };
+  return {
+    weeks: 5, label: "5 semaines", platform: "Forem",
+    timing: null,
+    note: "Alternative possible : attestation de gestion active du dossier par le Forem.",
+  };
 }
 
 const DIPLOMA_OPTIONS = [
@@ -81,7 +105,8 @@ function fmt(n) {
 function isTHQQualified(data) {
   const sal = Number(data.salary) || 0;
   const hasGoodDiploma = ["Master / Licence (bac+5)", "Doctorat"].includes(data.diploma);
-  return data.isHQ && hasGoodDiploma && sal >= getTHQThreshold(data.region);
+  const youngWorker = data.age === "under30";
+  return data.isHQ && hasGoodDiploma && sal >= getTHQThreshold(data.region, youngWorker);
 }
 
 function isShortageJob(data) {
@@ -98,7 +123,7 @@ function isFlandre(region) {
 function computeEligibility(data) {
   const {
     nationality, region, profession, salary, isHQ, diploma, contractType,
-    fullTime, experience,
+    fullTime, experience, age,
     offerPublished, euresPublished, candidatesRefused,
   } = data;
 
@@ -106,6 +131,7 @@ function computeEligibility(data) {
   const regionName     = regionLabels[0] || "la région sélectionnée";
   const sal            = Number(salary) || 0;
   const expYears       = Number(experience) || 0;
+  const youngWorker    = age === "under30";
   const positives      = [];
   const warnings       = [];
   const nextSteps      = [];
@@ -113,19 +139,20 @@ function computeEligibility(data) {
   /* ── Branche 1 : UE / EEE / Suisse ───────────────────────────────────── */
   if (EU_NATIONALITIES.has(nationality)) {
     return {
-      verdict:    "EU_EXEMPT",
-      label:      "Aucune démarche d'autorisation requise",
-      color:      "teal",
-      procedure:  "Libre circulation",
-      delay:      "Aucun permis requis",
-      complexity: "Faible",
+      verdict:       "EU_EXEMPT",
+      label:         "Aucune démarche d'autorisation requise",
+      color:         "teal",
+      procedure:     "Libre circulation",
+      delay:         "Aucun permis requis",
+      permitDuration:"Sans objet",
+      complexity:    "Faible",
       positives:  ["Ressortissant UE/EEE/CH : libre circulation garantie par les traités européens. Aucun permis de travail ni d'autorisation préalable n'est requis pour exercer une activité salariée en Belgique."],
       warnings:   [],
       nextSteps:  ["Vérifier que le candidat dispose bien d'un titre de séjour valide si nécessaire.", "S'assurer que le contrat respecte le droit belge du travail (CCT, barèmes sectoriels)."],
     };
   }
 
-  const thqThreshold = getTHQThreshold(region);
+  const thqThreshold = getTHQThreshold(region, youngWorker);
   const marketTest   = getMarketTestDuration(region);
   const hasGoodDiploma = ["Master / Licence (bac+5)", "Doctorat"].includes(diploma);
   const thqOk        = isHQ && hasGoodDiploma && sal >= thqThreshold;
@@ -140,12 +167,13 @@ function computeEligibility(data) {
     );
     if (fullTime === "partial") warnings.push("Pour un temps partiel, le RMMMG est calculé au prorata des heures. Vérifiez que le salaire équivaut bien au RMMMG temps plein proraté.");
     return {
-      verdict:    "BLOCKED",
-      label:      "Dossier irrecevable en l'état",
-      color:      "red",
-      procedure:  "Condition salariale non remplie",
-      delay:      "—",
-      complexity: "Bloquant",
+      verdict:       "BLOCKED",
+      label:         "Dossier irrecevable en l'état",
+      color:         "red",
+      procedure:     "Condition salariale non remplie",
+      delay:         "—",
+      permitDuration:"—",
+      complexity:    "Bloquant",
       positives:  [],
       warnings,
       nextSteps:  ["Revoir la grille salariale pour atteindre au minimum le RMMMG (2 189,81 €/mois bruts au 1er avril 2026).", "Consulter le cabinet LEXPAT pour identifier si une convention collective sectorielle impose un barème supérieur."],
@@ -159,19 +187,21 @@ function computeEligibility(data) {
 
   /* ── Branche 2 : Travailleur hautement qualifié (THQ) ────────────────── */
   if (thqOk) {
-    positives.push(`Niveau de diplôme (${diploma}) et salaire (${fmt(sal)} €/mois) atteignent les critères du régime hautement qualifié pour ${regionName} — seuil applicable : ${fmt(thqThreshold)} €/mois.`);
+    positives.push(`Niveau de diplôme (${diploma}) et salaire (${fmt(sal)} €/mois) atteignent les critères du régime hautement qualifié pour ${regionName} — seuil applicable : ${fmt(thqThreshold)} €/mois${youngWorker ? " (seuil jeune travailleur -30 ans)" : ""}.`);
     positives.push("Ce régime dispense entièrement de l'examen du marché de l'emploi : aucune publication d'offre ni justification de refus de candidats locaux n'est exigée.");
-    positives.push("Délai légal de traitement : 4 mois maximum (réduit à 3 mois pour la Carte Bleue Européenne).");
+    positives.push("Délai légal de traitement : 4 mois maximum.");
+    if (youngWorker) positives.push("Travailleur de moins de 30 ans : le seuil salarial réduit s'applique pour les régions Flandre et Wallonie.");
     if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction.");
     if (expYears >= 6) positives.push(`Expérience professionnelle significative (${expYears}+ ans) : renforce la crédibilité du profil auprès de l'autorité compétente.`);
     if (contractType === "CDD") warnings.push("Un CDD est possible en régime THQ, mais sa durée doit justifier la période de séjour demandée.");
     return {
-      verdict:    "THQ_FAVORABLE",
-      label:      "Profil favorable — orientation vers la voie THQ",
-      color:      "green",
-      procedure:  "Permis unique — voie Travailleur Hautement Qualifié",
-      delay:      "4 mois max (3 mois Carte Bleue UE)",
-      complexity: "Modérée",
+      verdict:       "THQ_FAVORABLE",
+      label:         "Profil favorable — orientation vers la voie THQ",
+      color:         "green",
+      procedure:     "Permis unique — voie Travailleur Hautement Qualifié",
+      delay:         "4 mois max",
+      permitDuration:"3 ans max (renouvelable)",
+      complexity:    "Modérée",
       positives,
       warnings,
       nextSteps:  [
@@ -206,12 +236,13 @@ function computeEligibility(data) {
       if (contractType === "CDI") positives.push("Contrat CDI : élément favorable.");
       if (contractType === "CDD") warnings.push("CDD : vérifier que la durée est compatible avec la période de séjour demandée.");
       return {
-        verdict:    "SHORTAGE_FAVORABLE",
-        label:      "Situation favorable à une analyse approfondie",
-        color:      "green",
-        procedure:  "Permis unique — métier en pénurie / dispense Flandre",
-        delay:      "4 mois max",
-        complexity: "Modérée",
+        verdict:       "SHORTAGE_FAVORABLE",
+        label:         "Situation favorable à une analyse approfondie",
+        color:         "green",
+        procedure:     "Permis unique — métier en pénurie / dispense Flandre",
+        delay:         "4 mois max",
+        permitDuration:"1 an max (renouvelable)",
+        complexity:    "Modérée",
         positives,
         warnings,
         nextSteps:  [
@@ -233,17 +264,18 @@ function computeEligibility(data) {
       positives.push("Les démarches de test marché ont été engagées : publication effectuée et candidats locaux documentés.");
       if (contractType === "CDI") positives.push("Contrat CDI : élément favorable.");
       return {
-        verdict:    "SHORTAGE_FAVORABLE",
-        label:      "Situation favorable à une analyse approfondie",
-        color:      "green",
-        procedure:  `Permis unique — métier en pénurie (${marketTest.platform})`,
-        delay:      "4 mois max",
-        complexity: "Modérée",
+        verdict:       "SHORTAGE_FAVORABLE",
+        label:         "Situation favorable à une analyse approfondie",
+        color:         "green",
+        procedure:     `Permis unique — métier en pénurie (${marketTest.platform})`,
+        delay:         "4 mois max",
+        permitDuration:"1 an max (renouvelable)",
+        complexity:    "Modérée",
         positives,
         warnings,
         nextSteps:  [
           "Documenter et archiver formellement tous les refus de candidats locaux (motifs écrits obligatoires).",
-          "S'assurer que la durée de publication atteint bien ${marketTest.label} avant l'introduction.",
+          `S'assurer que la durée de publication atteint bien ${marketTest.label} avant l'introduction.`,
           "Consulter un juriste pour préparer et valider le dossier complet.",
         ],
       };
@@ -252,17 +284,19 @@ function computeEligibility(data) {
     warnings.push(`La publication de l'offre sur ${marketTest.platform} pendant au minimum ${marketTest.label} est requise avant de pouvoir introduire la demande.`);
     if (!euresPublished) warnings.push("La publication sur EURES est fortement recommandée pour étayer la preuve du test marché.");
     return {
-      verdict:    "PENDING_STEPS",
-      label:      "Dossier à sécuriser avant introduction",
-      color:      "orange",
-      procedure:  `Permis unique — métier en pénurie (${marketTest.platform})`,
-      delay:      "4 mois max (après test marché)",
-      complexity: "Modérée",
+      verdict:       "PENDING_STEPS",
+      label:         "Dossier à sécuriser avant introduction",
+      color:         "orange",
+      procedure:     `Permis unique — métier en pénurie (${marketTest.platform})`,
+      delay:         "4 mois max (après test marché)",
+      permitDuration:"1 an max (renouvelable)",
+      complexity:    "Modérée",
       positives,
       warnings,
       nextSteps:  [
         `Publier l'offre sur ${marketTest.platform} et EURES pendant ${marketTest.label} minimum.`,
         "Documenter les candidatures reçues et les motifs de refus.",
+        ...(marketTest.note ? [`${marketTest.note}`] : []),
         "Une fois le test marché complété, constituer le dossier avec l'accompagnement d'un juriste.",
       ],
     };
@@ -277,6 +311,16 @@ function computeEligibility(data) {
     `Durée minimale de publication imposée : ${marketTest.label} sur ${marketTest.platform} + EURES, ` +
     `avec justification écrite des refus de candidats locaux et européens.`
   );
+  if (marketTest.timing) {
+    warnings.push(`Flandre : cette publication doit avoir eu lieu ${marketTest.timing}. ${marketTest.note || ""}`);
+  }
+  if (marketTest.note && !marketTest.timing) {
+    warnings.push(marketTest.note);
+  }
+  /* Flandre : exigence 80% FTE pour permis classique */
+  if (flandre && data.fullTime === "partial") {
+    warnings.push("En Flandre, le contrat doit représenter au minimum 80 % d'un temps plein pour l'obtention d'un permis unique classique. Un temps partiel inférieur à ce seuil est un motif de refus.");
+  }
 
   const marketTestFull    = offerPublished && euresPublished && Number(candidatesRefused) >= 3;
   const marketTestPartial = offerPublished && (euresPublished || Number(candidatesRefused) >= 1);
@@ -286,12 +330,13 @@ function computeEligibility(data) {
     if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction.");
     if (expYears >= 3) positives.push("L'expérience du candidat renforce l'argumentation sur l'inadéquation des profils locaux.");
     return {
-      verdict:    "CLASSIC_FAVORABLE",
-      label:      "Dossier favorable — à consolider avec un juriste",
-      color:      "green",
-      procedure:  "Permis unique classique",
-      delay:      "4 mois max",
-      complexity: "Élevée",
+      verdict:       "CLASSIC_FAVORABLE",
+      label:         "Dossier favorable — à consolider avec un juriste",
+      color:         "green",
+      procedure:     "Permis unique classique",
+      delay:         "4 mois max",
+      permitDuration:"1 an max (renouvelable)",
+      complexity:    "Élevée",
       positives,
       warnings,
       nextSteps:  [
@@ -307,12 +352,13 @@ function computeEligibility(data) {
     positives.push("Certaines démarches de test marché ont été engagées — c'est un point de départ.");
     warnings.push(`Il manque des éléments pour constituer un dossier solide : compléter la publication (${marketTest.label} minimum) et documenter les refus motivés.`);
     return {
-      verdict:    "PENDING_STEPS",
-      label:      "Dossier à sécuriser avant introduction",
-      color:      "orange",
-      procedure:  "Permis unique classique",
-      delay:      "4 mois max (après test marché complet)",
-      complexity: "Élevée",
+      verdict:       "PENDING_STEPS",
+      label:         "Dossier à sécuriser avant introduction",
+      color:         "orange",
+      procedure:     "Permis unique classique",
+      delay:         "4 mois max (après test marché complet)",
+      permitDuration:"1 an max (renouvelable)",
+      complexity:    "Élevée",
       positives,
       warnings,
       nextSteps:  [
@@ -325,12 +371,13 @@ function computeEligibility(data) {
 
   warnings.push("Aucune démarche de test marché n'a encore été engagée. Ce prérequis est obligatoire et doit précéder toute introduction de dossier.");
   return {
-    verdict:    "UNCERTAIN",
-    label:      "Situation juridiquement plus incertaine",
-    color:      "red",
-    procedure:  "Permis unique classique",
-    delay:      "Indéterminé",
-    complexity: "Très élevée",
+    verdict:       "UNCERTAIN",
+    label:         "Situation juridiquement plus incertaine",
+    color:         "red",
+    procedure:     "Permis unique classique",
+    delay:         "Indéterminé",
+    permitDuration:"1 an max (si accordé)",
+    complexity:    "Très élevée",
     positives,
     warnings,
     nextSteps:  [
@@ -406,7 +453,7 @@ const INIT = {
   // Step 1
   region: "", profession: "", sector: "", contractType: "", fullTime: "",
   // Step 2
-  nationality: "", residence: "", diploma: "", experience: "",
+  nationality: "", residence: "", diploma: "", experience: "", age: "",
   // Step 3
   salary: "", isHQ: false,
   // Step 4
@@ -475,7 +522,8 @@ export default function SimulateurEligibilite() {
 
   const professionGroups = getProfessionGroupsForRegions(data.region);
   const regionLabels     = parseRegionSelection(data.region);
-  const thqThreshold     = data.region ? getTHQThreshold(data.region) : null;
+  const youngWorkerUI    = data.age === "under30";
+  const thqThreshold     = data.region ? getTHQThreshold(data.region, youngWorkerUI) : null;
   const marketTest       = data.region ? getMarketTestDuration(data.region) : null;
 
   return (
@@ -625,6 +673,18 @@ export default function SimulateurEligibilite() {
                     </select>
                   </label>
                 </div>
+
+                <label>
+                  <FieldLabel>Âge du candidat</FieldLabel>
+                  <select className="field-input" value={data.age} onChange={(e) => set("age", e.target.value)}>
+                    <option value="">Sélectionnez</option>
+                    <option value="under30">Moins de 30 ans</option>
+                    <option value="30plus">30 ans ou plus</option>
+                  </select>
+                  <p className="mt-1.5 text-xs text-[#8a9bb0]">
+                    En Flandre et en Wallonie, un seuil salarial réduit s'applique pour les travailleurs de moins de 30 ans dans la voie hautement qualifiée.
+                  </p>
+                </label>
               </div>
             )}
 
@@ -707,10 +767,16 @@ export default function SimulateurEligibilite() {
               <div className="space-y-5">
                 <h2 className="text-xl font-bold text-[#1E3A78]">Test du marché de l'emploi</h2>
                 {marketTest && (
-                  <div className="rounded-[12px] border border-[#dce8f5] bg-[#f0f6ff] px-4 py-3 text-xs text-[#1E3A78]">
-                    <strong>Règle pour {regionLabels[0] || "cette région"} :</strong> publication obligatoire pendant{" "}
+                  <div className="rounded-[12px] border border-[#dce8f5] bg-[#f0f6ff] px-4 py-3 text-xs text-[#1E3A78] space-y-1">
+                    <p><strong>Règle pour {regionLabels[0] || "cette région"} :</strong> publication obligatoire pendant{" "}
                     <strong>{marketTest.label} minimum</strong> sur {marketTest.platform}
-                    {!isFlandre(data.region) && " (+ EURES recommandé)"} avant d'introduire le dossier.
+                    {!isFlandre(data.region) && " (+ EURES recommandé)"} avant d'introduire le dossier.</p>
+                    {marketTest.timing && (
+                      <p className="text-[#8a9bb0]">Flandre : cette publication doit avoir eu lieu <strong>{marketTest.timing}</strong>.</p>
+                    )}
+                    {marketTest.note && (
+                      <p className="text-[#57B7AF] font-medium">{marketTest.note}</p>
+                    )}
                   </div>
                 )}
 
@@ -795,11 +861,12 @@ export default function SimulateurEligibilite() {
             <VerdictBadge label={result.label} color={result.color} />
 
             {/* Métriques légales */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: "Procédure",      value: result.procedure },
-                { label: "Délai légal max",value: result.delay },
-                { label: "Complexité",     value: result.complexity },
+                { label: "Procédure",        value: result.procedure },
+                { label: "Durée du permis",  value: result.permitDuration },
+                { label: "Délai légal max",  value: result.delay },
+                { label: "Complexité",       value: result.complexity },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-[16px] border border-[#dce8f5] bg-[#f5f8ff] p-3 text-center">
                   <p className="text-xs text-[#8a9bb0]">{label}</p>
