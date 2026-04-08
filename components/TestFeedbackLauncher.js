@@ -23,14 +23,20 @@ export default function TestFeedbackLauncher() {
           className="h-6 w-6 text-white"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.9"
+          strokeWidth="1.7"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <circle cx="12" cy="12" r="8.5" />
-          <circle cx="9" cy="10" r="0.9" fill="currentColor" stroke="none" />
-          <circle cx="15" cy="10" r="0.9" fill="currentColor" stroke="none" />
-          <path d="M8.7 14.1c.8 1 1.94 1.5 3.3 1.5s2.5-.5 3.3-1.5" />
+          <path d="M9 7.5 7.4 5.7M15 7.5l1.6-1.8" />
+          <path d="M8.2 9.1c0-2.2 1.7-4.1 3.8-4.1s3.8 1.9 3.8 4.1" />
+          <path d="M12 8.6v9.2" />
+          <path d="M7.3 10.4 5.2 9.2M7.1 13.4 4.8 13.4M7.6 16.2 5.7 17.4" />
+          <path d="M16.7 10.4 18.8 9.2M16.9 13.4 19.2 13.4M16.4 16.2 18.3 17.4" />
+          <path d="M12 19.2c-3.2 0-5.8-2.4-5.8-5.5v-.2c0-2.1 1.2-3.7 2.9-4.6 1-.5 1.9-.7 2.9-.7s2 .2 2.9.7c1.7.9 2.9 2.5 2.9 4.6v.2c0 3.1-2.6 5.5-5.8 5.5Z" />
+          <circle cx="9.5" cy="12" r="0.85" fill="currentColor" stroke="none" />
+          <circle cx="9" cy="15" r="0.85" fill="currentColor" stroke="none" />
+          <circle cx="14.5" cy="12" r="0.85" fill="currentColor" stroke="none" />
+          <circle cx="15" cy="15" r="0.85" fill="currentColor" stroke="none" />
         </svg>
       </span>
       <span>{isEn ? "Report a bug" : "Signaler un bug"}</span>

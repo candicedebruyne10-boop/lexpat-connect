@@ -45,6 +45,20 @@ const THQ_THRESHOLDS_YOUNG = {
   flandre:   3548.00,
 };
 
+const REGION_LABELS_EN = {
+  "Bruxelles-Capitale": "Brussels-Capital",
+  Wallonie: "Wallonia",
+  Flandre: "Flanders",
+};
+
+const DIPLOMA_OPTIONS_EN = [
+  { value: "Pas de diplôme / CESS non obtenu", label: "No diploma / upper secondary not completed" },
+  { value: "CESS (secondaire supérieur)", label: "Upper secondary diploma" },
+  { value: "Bachelier (bac+3)", label: "Bachelor's degree" },
+  { value: "Master / Licence (bac+5)", label: "Master's degree" },
+  { value: "Doctorat", label: "Doctorate" },
+];
+
 function getTHQThreshold(region, youngWorker = false) {
   const labels = parseRegionSelection(region).map((r) => r.toLowerCase());
   const thresholds = youngWorker ? THQ_THRESHOLDS_YOUNG : THQ_THRESHOLDS;
@@ -71,6 +85,32 @@ function getMarketTestDuration(region) {
     weeks: 5, label: "5 semaines", platform: "Forem",
     timing: null,
     note: "Alternative possible : attestation de gestion active du dossier par le Forem.",
+  };
+}
+
+function localizeRegionName(label, locale = "fr") {
+  if (!label) return locale === "en" ? "Belgium" : "Belgique";
+  return locale === "en" ? (REGION_LABELS_EN[label] || label) : label;
+}
+
+function localizeMarketTest(marketTest, locale = "fr") {
+  if (locale !== "en" || !marketTest) return marketTest;
+  const labelMap = {
+    "9 semaines": "9 weeks",
+    "5 semaines": "5 weeks",
+  };
+  const timingMap = {
+    "dans les 4 mois précédant la demande": "within the 4 months preceding the application",
+  };
+  const noteMap = {
+    "Une médiation active par le VDAB est également requise pendant cette période.": "Active mediation by the VDAB is also required during that period.",
+    "Alternative possible : attestation de gestion active du dossier par le Forem.": "Possible alternative: formal proof that the file was actively handled by Le Forem.",
+  };
+  return {
+    ...marketTest,
+    label: labelMap[marketTest.label] || marketTest.label,
+    timing: timingMap[marketTest.timing] || marketTest.timing,
+    note: noteMap[marketTest.note] || marketTest.note,
   };
 }
 
@@ -120,7 +160,156 @@ function isFlandre(region) {
 }
 
 /* ── Moteur d'éligibilité — arbre de décision conditionnel ─────────────── */
-function computeEligibility(data) {
+function computeEligibility(data, locale = "fr") {
+  if (locale === "en") {
+    const frResult = computeEligibility(data, "fr");
+    const regionName = localizeRegionName(parseRegionSelection(data.region)[0], "en");
+    const youngWorker = data.age === "under30";
+    const threshold = data.region ? getTHQThreshold(data.region, youngWorker) : null;
+    const marketTest = localizeMarketTest(data.region ? getMarketTestDuration(data.region) : null, "en");
+    const salary = Number(data.salary) || 0;
+
+    const base = {
+      ...frResult,
+      complexity:
+        frResult.complexity === "Faible" ? "Low" :
+        frResult.complexity === "Modérée" ? "Moderate" :
+        frResult.complexity === "Élevée" ? "High" :
+        frResult.complexity === "Très élevée" ? "Very high" :
+        frResult.complexity === "Bloquant" ? "Blocking" :
+        frResult.complexity,
+      delay:
+        frResult.delay === "Aucun permis requis" ? "No permit required" :
+        frResult.delay === "4 mois max" ? "Up to 4 months" :
+        frResult.delay === "4 mois max (après test marché)" ? "Up to 4 months (after labour market test)" :
+        frResult.delay === "4 mois max (après test marché complet)" ? "Up to 4 months (after a complete labour market test)" :
+        frResult.delay === "Indéterminé" ? "Undetermined" :
+        frResult.delay,
+      permitDuration:
+        frResult.permitDuration === "Sans objet" ? "Not applicable" :
+        frResult.permitDuration === "3 ans max (renouvelable)" ? "Up to 3 years (renewable)" :
+        frResult.permitDuration === "1 an max (renouvelable)" ? "Up to 1 year (renewable)" :
+        frResult.permitDuration === "1 an max (si accordé)" ? "Up to 1 year (if granted)" :
+        frResult.permitDuration,
+    };
+
+    switch (frResult.verdict) {
+      case "EU_EXEMPT":
+        return {
+          ...base,
+          label: "No work authorization required",
+          procedure: "Free movement",
+          positives: [
+            "EU, EEA and Swiss nationals can work in Belgium without a single permit.",
+          ],
+          warnings: [],
+          nextSteps: [
+            "Check residence and registration formalities if relevant.",
+            "Make sure the employment contract complies with Belgian labour law.",
+          ],
+        };
+      case "BLOCKED":
+        return {
+          ...base,
+          label: "File blocked in its current state",
+          procedure: "Salary condition not met",
+          warnings: [
+            `The proposed salary (${fmt(salary)} €/month) is below the current legal minimum threshold.`,
+            "The file should not be introduced before the remuneration is corrected.",
+          ],
+          nextSteps: [
+            "Review the salary package to meet at least the legal minimum.",
+            "Check whether a higher sectoral salary scale applies.",
+          ],
+        };
+      case "THQ_FAVORABLE":
+        return {
+          ...base,
+          label: "Favourable profile — highly qualified route",
+          procedure: "Single permit — highly qualified worker route",
+          positives: [
+            `The salary and degree appear to meet the highly qualified route for ${regionName}.`,
+            threshold ? `Indicative regional threshold: ${fmt(threshold)} €/month.` : "The regional threshold appears to be met.",
+            "This route is exempt from the labour market test.",
+          ],
+          warnings: frResult.warnings.length ? ["A final legal check remains advisable before filing."] : [],
+          nextSteps: [
+            "Gather and verify diplomas and supporting documents.",
+            "Prepare the employment contract with the gross monthly salary clearly stated.",
+            "Validate the file with counsel before introduction.",
+          ],
+        };
+      case "SHORTAGE_FAVORABLE":
+        return {
+          ...base,
+          label: "Favourable situation for further legal review",
+          procedure: frResult.procedure.includes("Flandre")
+            ? "Single permit — shortage occupation / Flemish exemption"
+            : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
+          positives: [
+            "The role appears on an official shortage occupation list or benefits from a favourable regional route.",
+            frResult.procedure.includes("Flandre")
+              ? "In Flanders, shortage occupations may benefit from a full labour market test exemption."
+              : `In ${regionName}, the file benefits from a lighter labour market test framework.`,
+          ],
+          warnings: frResult.warnings.length ? ["A final legal validation remains advisable before filing."] : [],
+          nextSteps: [
+            "Check the exact job title against the applicable regional list.",
+            "Prepare the file and supporting documents.",
+            "Validate the strategy with counsel before filing.",
+          ],
+        };
+      case "CLASSIC_FAVORABLE":
+        return {
+          ...base,
+          label: "Favourable file — to be consolidated with counsel",
+          procedure: "Standard single permit",
+          positives: [
+            "The labour market test has already been started in a useful way.",
+            "The basic salary condition appears to be met.",
+          ],
+          warnings: ["The standard route remains document-heavy and should be carefully prepared."],
+          nextSteps: [
+            "Make sure all publication evidence is archived.",
+            "Document local candidate refusals in writing.",
+            "Have the full file reviewed by counsel before filing.",
+          ],
+        };
+      case "PENDING_STEPS":
+        return {
+          ...base,
+          label: "File to secure before filing",
+          procedure: frResult.procedure.includes("classique") ? "Standard single permit" : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
+          positives: frResult.positives.length ? ["Some useful preparatory steps have already been completed."] : [],
+          warnings: [
+            marketTest ? `A publication period of at least ${marketTest.label} on ${marketTest.platform} is still required or must be completed.` : "Further labour market test steps are still required.",
+            "The file should be strengthened before any introduction.",
+          ],
+          nextSteps: [
+            "Complete the labour market test and supporting evidence.",
+            "Document refusals and publication history carefully.",
+            "Review the file with counsel before going further.",
+          ],
+        };
+      default:
+        return {
+          ...base,
+          label: "More legally uncertain situation",
+          procedure: frResult.procedure.includes("classique") ? "Standard single permit" : base.procedure,
+          positives: frResult.positives.length ? ["Some elements may still support the file."] : [],
+          warnings: [
+            "The current information points to a fragile or incomplete file.",
+            "A legal review is strongly recommended before any next step.",
+          ],
+          nextSteps: [
+            "Start or complete the labour market test if applicable.",
+            "Clarify the salary, contract and supporting documents.",
+            "Request a legal review before filing.",
+          ],
+        };
+    }
+  }
+
   const {
     nationality, region, profession, salary, isHQ, diploma, contractType,
     fullTime, experience, age,
@@ -390,7 +579,7 @@ function computeEligibility(data) {
 }
 
 /* ── Composant StepBar ───────────────────────────────────────────────────── */
-function StepBar({ current, total }) {
+function StepBar({ current, total, locale = "fr" }) {
   return (
     <div className="mb-6">
       <div className="mb-2 flex items-center justify-between gap-1.5">
@@ -414,7 +603,9 @@ function StepBar({ current, total }) {
           );
         })}
       </div>
-      <p className="text-right text-[11px] text-[#8a9bb0] sm:text-xs">Étape {current}/{total}</p>
+      <p className="text-right text-[11px] text-[#8a9bb0] sm:text-xs">
+        {locale === "en" ? "Step" : "Étape"} {current}/{total}
+      </p>
     </div>
   );
 }
@@ -460,7 +651,8 @@ const INIT = {
   offerPublished: false, euresPublished: false, candidatesRefused: "0",
 };
 
-export default function SimulateurEligibilite() {
+export default function SimulateurEligibilite({ locale = "fr" }) {
+  const isEn = locale === "en";
   const [step, setStep]       = useState(1);
   const [data, setData]       = useState(INIT);
   const [result, setResult]   = useState(null);
@@ -479,26 +671,26 @@ export default function SimulateurEligibilite() {
   function next() {
     // UE/EEE/CH — sauter étapes 3 et 4
     if (step === 2 && EU_NATIONALITIES.has(data.nationality)) {
-      setResult(computeEligibility(data));
+      setResult(computeEligibility(data, locale));
       setStep(TOTAL_STEPS + 1);
       return;
     }
     // THQ validé après étape 3 — sauter étape 4 (test marché non requis)
     if (step === 3 && isTHQQualified(data)) {
-      setResult(computeEligibility(data));
+      setResult(computeEligibility(data, locale));
       setStep(TOTAL_STEPS + 1);
       return;
     }
     // Métier en pénurie en Flandre après étape 3 — dispense totale du test marché
     if (step === 3 && isShortageJob(data) && isFlandre(data.region)) {
-      setResult(computeEligibility(data));
+      setResult(computeEligibility(data, locale));
       setStep(TOTAL_STEPS + 1);
       return;
     }
     if (step < TOTAL_STEPS) {
       setStep((s) => s + 1);
     } else {
-      setResult(computeEligibility(data));
+      setResult(computeEligibility(data, locale));
       setStep(TOTAL_STEPS + 1);
     }
   }
@@ -520,11 +712,13 @@ export default function SimulateurEligibilite() {
     setSending(false);
   }
 
-  const professionGroups = getProfessionGroupsForRegions(data.region);
+  const professionGroups = getProfessionGroupsForRegions(data.region, locale);
   const regionLabels     = parseRegionSelection(data.region);
   const youngWorkerUI    = data.age === "under30";
   const thqThreshold     = data.region ? getTHQThreshold(data.region, youngWorkerUI) : null;
-  const marketTest       = data.region ? getMarketTestDuration(data.region) : null;
+  const marketTest       = localizeMarketTest(data.region ? getMarketTestDuration(data.region) : null, locale);
+  const displayedRegionLabels = regionLabels.map((label) => localizeRegionName(label, locale));
+  const diplomaOptions = isEn ? DIPLOMA_OPTIONS_EN : DIPLOMA_OPTIONS.map((d) => ({ value: d, label: d }));
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:py-10">
@@ -533,25 +727,26 @@ export default function SimulateurEligibilite() {
         {/* ── ÉTAPES 1–4 ─────────────────────────────────────────────────── */}
         {step <= TOTAL_STEPS && (
           <>
-            <StepBar current={step} total={TOTAL_STEPS} />
+            <StepBar current={step} total={TOTAL_STEPS} locale={locale} />
 
             {/* ÉTAPE 1 — Contexte de l'emploi */}
             {step === 1 && (
               <div className="space-y-5">
-                <h2 className="text-xl font-bold text-[#1E3A78]">Contexte de l'emploi</h2>
-                <p className="text-sm text-[#607086]">Indiquez la région, le métier et le type de contrat proposé.</p>
+                <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Job context" : "Contexte de l'emploi"}</h2>
+                <p className="text-sm text-[#607086]">{isEn ? "Indicate the region, job title and contract type offered." : "Indiquez la région, le métier et le type de contrat proposé."}</p>
 
                 <label>
-                  <FieldLabel required>Région de recrutement</FieldLabel>
+                  <FieldLabel required>{isEn ? "Recruitment region" : "Région de recrutement"}</FieldLabel>
                   <RegionSelector
                     value={regionLabels}
                     onChange={(v) => set("region", v)}
-                    helperText="Sélectionnez la région où le travailleur sera basé."
+                    helperText={isEn ? "Select the region where the worker will mainly be based." : "Sélectionnez la région où le travailleur sera basé."}
+                    locale={locale}
                   />
                 </label>
 
                 <label>
-                  <FieldLabel required>Métier recherché</FieldLabel>
+                  <FieldLabel required>{isEn ? "Target occupation" : "Métier recherché"}</FieldLabel>
                   {data.region ? (
                     <select
                       className="field-input"
@@ -559,7 +754,7 @@ export default function SimulateurEligibilite() {
                       onChange={(e) => set("profession", e.target.value)}
                       required
                     >
-                      <option value="" disabled>Sélectionnez le métier visé</option>
+                      <option value="" disabled>{isEn ? "Select the target occupation" : "Sélectionnez le métier visé"}</option>
                       {professionGroups.map((group) => (
                         <optgroup key={group.label} label={group.label}>
                           {group.options.map((job) => (
@@ -570,23 +765,25 @@ export default function SimulateurEligibilite() {
                     </select>
                   ) : (
                     <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
-                      Sélectionnez d'abord une région pour choisir un métier
+                      {isEn ? "Select a region first to choose an occupation" : "Sélectionnez d'abord une région pour choisir un métier"}
                     </div>
                   )}
                   {data.region && regionLabels.length === 1 && (
                     <p className="mt-1.5 text-xs text-[#57b7af]">
-                      Liste officielle des métiers en pénurie pour {regionLabels[0]} — mise à jour 2026
+                      {isEn
+                        ? `Official shortage occupation list for ${displayedRegionLabels[0]} — 2026 update`
+                        : `Liste officielle des métiers en pénurie pour ${regionLabels[0]} — mise à jour 2026`}
                     </p>
                   )}
                 </label>
 
                 {data.profession === "Autre profession" && (
                   <label>
-                    <FieldLabel required>Précisez l'intitulé du poste</FieldLabel>
+                    <FieldLabel required>{isEn ? "Specify the job title" : "Précisez l'intitulé du poste"}</FieldLabel>
                     <input
                       className="field-input"
                       type="text"
-                      placeholder="Ex. : Technicien CVC"
+                      placeholder={isEn ? "E.g. HVAC technician" : "Ex. : Technicien CVC"}
                       value={data.sector}
                       onChange={(e) => set("sector", e.target.value)}
                     />
@@ -595,19 +792,19 @@ export default function SimulateurEligibilite() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label>
-                    <FieldLabel>Type de contrat</FieldLabel>
+                    <FieldLabel>{isEn ? "Contract type" : "Type de contrat"}</FieldLabel>
                     <select className="field-input" value={data.contractType} onChange={(e) => set("contractType", e.target.value)}>
-                      <option value="">Sélectionnez</option>
-                      <option value="CDI">CDI</option>
-                      <option value="CDD">CDD</option>
+                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                      <option value="CDI">{isEn ? "Permanent contract" : "CDI"}</option>
+                      <option value="CDD">{isEn ? "Fixed-term contract" : "CDD"}</option>
                     </select>
                   </label>
                   <label>
-                    <FieldLabel>Temps de travail</FieldLabel>
+                    <FieldLabel>{isEn ? "Working time" : "Temps de travail"}</FieldLabel>
                     <select className="field-input" value={data.fullTime} onChange={(e) => set("fullTime", e.target.value)}>
-                      <option value="">Sélectionnez</option>
-                      <option value="full">Temps plein</option>
-                      <option value="partial">Temps partiel</option>
+                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                      <option value="full">{isEn ? "Full-time" : "Temps plein"}</option>
+                      <option value="partial">{isEn ? "Part-time" : "Temps partiel"}</option>
                     </select>
                   </label>
                 </div>
@@ -617,19 +814,19 @@ export default function SimulateurEligibilite() {
             {/* ÉTAPE 2 — Profil du candidat */}
             {step === 2 && (
               <div className="space-y-5">
-                <h2 className="text-xl font-bold text-[#1E3A78]">Profil du candidat</h2>
-                <p className="text-sm text-[#607086]">Ces informations permettent de détecter si un permis de travail est requis.</p>
+                <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Candidate profile" : "Profil du candidat"}</h2>
+                <p className="text-sm text-[#607086]">{isEn ? "These details help determine whether a work authorization is required." : "Ces informations permettent de détecter si un permis de travail est requis."}</p>
 
                 <label>
-                  <FieldLabel required>Nationalité</FieldLabel>
+                  <FieldLabel required>{isEn ? "Nationality" : "Nationalité"}</FieldLabel>
                   <select className="field-input" value={data.nationality} onChange={(e) => set("nationality", e.target.value)} required>
-                    <option value="" disabled>Sélectionnez la nationalité</option>
-                    <optgroup label="Hors UE / EEE">
+                    <option value="" disabled>{isEn ? "Select nationality" : "Sélectionnez la nationalité"}</option>
+                    <optgroup label={isEn ? "Non-EU / EEA" : "Hors UE / EEE"}>
                       {NATIONALITIES.filter((n) => !EU_NATIONALITIES.has(n)).map((n) => (
                         <option key={n} value={n}>{n}</option>
                       ))}
                     </optgroup>
-                    <optgroup label="UE / EEE / Suisse — libre circulation">
+                    <optgroup label={isEn ? "EU / EEA / Switzerland — free movement" : "UE / EEE / Suisse — libre circulation"}>
                       {NATIONALITIES.filter((n) => EU_NATIONALITIES.has(n)).map((n) => (
                         <option key={n} value={n}>{n}</option>
                       ))}
@@ -637,17 +834,17 @@ export default function SimulateurEligibilite() {
                   </select>
                   {EU_NATIONALITIES.has(data.nationality) && (
                     <p className="mt-1.5 text-xs text-[#57b7af] font-semibold">
-                      ✓ Ressortissant UE/EEE/CH — aucun permis de travail requis. Résultat disponible à l'étape suivante.
+                      {isEn ? "✓ EU/EEA/Swiss national — no work authorization required. Result available at the next step." : "✓ Ressortissant UE/EEE/CH — aucun permis de travail requis. Résultat disponible à l'étape suivante."}
                     </p>
                   )}
                 </label>
 
                 <label>
-                  <FieldLabel>Pays de résidence actuel</FieldLabel>
+                  <FieldLabel>{isEn ? "Current country of residence" : "Pays de résidence actuel"}</FieldLabel>
                   <input
                     className="field-input"
                     type="text"
-                    placeholder="Ex. : Maroc, Sénégal, Inde…"
+                    placeholder={isEn ? "E.g. Morocco, Senegal, India..." : "Ex. : Maroc, Sénégal, Inde…"}
                     value={data.residence}
                     onChange={(e) => set("residence", e.target.value)}
                   />
@@ -655,34 +852,34 @@ export default function SimulateurEligibilite() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label>
-                    <FieldLabel>Niveau de diplôme</FieldLabel>
+                    <FieldLabel>{isEn ? "Degree level" : "Niveau de diplôme"}</FieldLabel>
                     <select className="field-input" value={data.diploma} onChange={(e) => set("diploma", e.target.value)}>
-                      <option value="">Sélectionnez</option>
-                      {DIPLOMA_OPTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
+                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                      {diplomaOptions.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
                     </select>
                   </label>
                   <label>
-                    <FieldLabel>Années d'expérience</FieldLabel>
+                    <FieldLabel>{isEn ? "Years of experience" : "Années d'expérience"}</FieldLabel>
                     <select className="field-input" value={data.experience} onChange={(e) => set("experience", e.target.value)}>
-                      <option value="">Sélectionnez</option>
-                      <option value="0">Moins d'1 an</option>
-                      <option value="1">1 à 2 ans</option>
-                      <option value="3">3 à 5 ans</option>
-                      <option value="6">6 à 10 ans</option>
-                      <option value="11">Plus de 10 ans</option>
+                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                      <option value="0">{isEn ? "Less than 1 year" : "Moins d'1 an"}</option>
+                      <option value="1">{isEn ? "1 to 2 years" : "1 à 2 ans"}</option>
+                      <option value="3">{isEn ? "3 to 5 years" : "3 à 5 ans"}</option>
+                      <option value="6">{isEn ? "6 to 10 years" : "6 à 10 ans"}</option>
+                      <option value="11">{isEn ? "More than 10 years" : "Plus de 10 ans"}</option>
                     </select>
                   </label>
                 </div>
 
                 <label>
-                  <FieldLabel>Âge du candidat</FieldLabel>
+                  <FieldLabel>{isEn ? "Candidate age" : "Âge du candidat"}</FieldLabel>
                   <select className="field-input" value={data.age} onChange={(e) => set("age", e.target.value)}>
-                    <option value="">Sélectionnez</option>
-                    <option value="under30">Moins de 30 ans</option>
-                    <option value="30plus">30 ans ou plus</option>
+                    <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                    <option value="under30">{isEn ? "Under 30" : "Moins de 30 ans"}</option>
+                    <option value="30plus">{isEn ? "30 or older" : "30 ans ou plus"}</option>
                   </select>
                   <p className="mt-1.5 text-xs text-[#8a9bb0]">
-                    En Flandre et en Wallonie, un seuil salarial réduit s'applique pour les travailleurs de moins de 30 ans dans la voie hautement qualifiée.
+                    {isEn ? "In Flanders and Wallonia, a reduced salary threshold applies to highly qualified workers under 30." : "En Flandre et en Wallonie, un seuil salarial réduit s'applique pour les travailleurs de moins de 30 ans dans la voie hautement qualifiée."}
                   </p>
                 </label>
               </div>
@@ -691,24 +888,26 @@ export default function SimulateurEligibilite() {
             {/* ÉTAPE 3 — Conditions salariales */}
             {step === 3 && (
               <div className="space-y-5">
-                <h2 className="text-xl font-bold text-[#1E3A78]">Conditions salariales</h2>
-                <p className="text-sm text-[#607086]">Le salaire est un critère légal déterminant dans l'instruction du permis unique.</p>
+                <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Salary conditions" : "Conditions salariales"}</h2>
+                <p className="text-sm text-[#607086]">{isEn ? "Salary is a key legal criterion in single permit cases." : "Le salaire est un critère légal déterminant dans l'instruction du permis unique."}</p>
 
                 <label>
-                  <FieldLabel required>Salaire mensuel brut (€)</FieldLabel>
+                  <FieldLabel required>{isEn ? "Gross monthly salary (€)" : "Salaire mensuel brut (€)"}</FieldLabel>
                   <input
                     className="field-input"
                     type="number"
                     min="0"
                     step="50"
-                    placeholder="Ex. : 2800"
+                    placeholder={isEn ? "E.g. 2800" : "Ex. : 2800"}
                     value={data.salary}
                     onChange={(e) => set("salary", e.target.value)}
                     required
                   />
                   <p className="mt-1.5 text-xs text-[#8a9bb0]">
-                    Minimum légal (RMMMG au 1er avril 2026) : {fmt(RMMMG)} €/mois
-                    {thqThreshold && ` · Seuil THQ pour ${regionLabels[0] || "cette région"} : ${fmt(thqThreshold)} €/mois`}
+                    {isEn ? `Legal minimum (as of 1 April 2026): ${fmt(RMMMG)} €/month` : `Minimum légal (RMMMG au 1er avril 2026) : ${fmt(RMMMG)} €/mois`}
+                    {thqThreshold && (isEn
+                      ? ` · HQ threshold for ${displayedRegionLabels[0] || "this region"}: ${fmt(thqThreshold)} €/month`
+                      : ` · Seuil THQ pour ${regionLabels[0] || "cette région"} : ${fmt(thqThreshold)} €/mois`)}
                   </p>
                 </label>
 
@@ -721,19 +920,23 @@ export default function SimulateurEligibilite() {
                       onChange={(e) => set("isHQ", e.target.checked)}
                     />
                     <div>
-                      <p className="text-sm font-semibold text-[#1E3A78]">Travailleur hautement qualifié (THQ)</p>
+                      <p className="text-sm font-semibold text-[#1E3A78]">{isEn ? "Highly qualified worker (HQ)" : "Travailleur hautement qualifié (THQ)"}</p>
                       <p className="mt-1 text-xs text-[#607086]">
-                        Cochez si le poste relève d'une fonction hautement qualifiée : <strong>cadre dirigeant, ingénieur spécialisé, chercheur, médecin, expert IT, juriste senior</strong>, etc.
+                        {isEn
+                          ? <>Tick this box if the role is a highly qualified function: <strong>senior executive, specialised engineer, researcher, doctor, IT expert, senior lawyer</strong>, etc.</>
+                          : <>Cochez si le poste relève d'une fonction hautement qualifiée : <strong>cadre dirigeant, ingénieur spécialisé, chercheur, médecin, expert IT, juriste senior</strong>, etc.</>}
                       </p>
                       <p className="mt-1 text-xs text-[#607086]">
-                        Conditions cumulatives : <strong>diplôme Master ou Doctorat</strong>
+                        {isEn ? <><strong>Combined conditions:</strong> <strong>Master's degree or Doctorate</strong></> : <>Conditions cumulatives : <strong>diplôme Master ou Doctorat</strong></>}
                         {thqThreshold
-                          ? ` + salaire ≥ ${fmt(thqThreshold)} €/mois (seuil ${regionLabels[0] || "régional"} 2026).`
+                          ? isEn
+                            ? ` + salary ≥ ${fmt(thqThreshold)} €/month (${displayedRegionLabels[0] || "regional"} threshold for 2026).`
+                            : ` + salaire ≥ ${fmt(thqThreshold)} €/mois (seuil ${regionLabels[0] || "régional"} 2026).`
                           : "."
                         }
                       </p>
                       <p className="mt-1 text-xs font-medium text-[#1E3A78]">
-                        ✦ Si ces critères sont réunis, le profil est entièrement dispensé du test du marché de l'emploi.
+                        {isEn ? "✦ If these criteria are met, the profile is fully exempt from the labour market test." : "✦ Si ces critères sont réunis, le profil est entièrement dispensé du test du marché de l'emploi."}
                       </p>
                     </div>
                   </label>
@@ -751,10 +954,10 @@ export default function SimulateurEligibilite() {
                         : "border-[#fed7aa] bg-[#fff7ed] text-[#92400e]"
                     }`}>
                       {qualifies
-                        ? "✓ Critères THQ validés — vous passerez directement au résultat sans test marché."
+                        ? (isEn ? "✓ HQ criteria validated — you will go straight to the result without a labour market test." : "✓ Critères THQ validés — vous passerez directement au résultat sans test marché.")
                         : !hasGoodDiploma
-                          ? `⚠ Diplôme insuffisant pour le THQ (Master ou Doctorat requis).`
-                          : `⚠ Salaire (${fmt(sal)} €) inférieur au seuil THQ de ${fmt(thqThreshold)} €/mois — voie classique.`
+                          ? (isEn ? "⚠ Degree level insufficient for the HQ route (Master's degree or Doctorate required)." : `⚠ Diplôme insuffisant pour le THQ (Master ou Doctorat requis).`)
+                          : (isEn ? `⚠ Salary (${fmt(sal)} €) below the HQ threshold of ${fmt(thqThreshold)} €/month — standard route.` : `⚠ Salaire (${fmt(sal)} €) inférieur au seuil THQ de ${fmt(thqThreshold)} €/mois — voie classique.`)
                       }
                     </div>
                   );
@@ -765,14 +968,14 @@ export default function SimulateurEligibilite() {
             {/* ÉTAPE 4 — Test du marché de l'emploi */}
             {step === 4 && (
               <div className="space-y-5">
-                <h2 className="text-xl font-bold text-[#1E3A78]">Test du marché de l'emploi</h2>
+                <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Labour market test" : "Test du marché de l'emploi"}</h2>
                 {marketTest && (
                   <div className="rounded-[12px] border border-[#dce8f5] bg-[#f0f6ff] px-4 py-3 text-xs text-[#1E3A78] space-y-1">
-                    <p><strong>Règle pour {regionLabels[0] || "cette région"} :</strong> publication obligatoire pendant{" "}
-                    <strong>{marketTest.label} minimum</strong> sur {marketTest.platform}
-                    {!isFlandre(data.region) && " (+ EURES recommandé)"} avant d'introduire le dossier.</p>
+                    <p><strong>{isEn ? `Rule for ${displayedRegionLabels[0] || "this region"}:` : `Règle pour ${regionLabels[0] || "cette région"} :`}</strong> {isEn ? "publication required for at least" : "publication obligatoire pendant"}{" "}
+                    <strong>{marketTest.label}</strong> {isEn ? "on" : "sur"} {marketTest.platform}
+                    {!isFlandre(data.region) && (isEn ? " (+ EURES recommended)" : " (+ EURES recommandé)")} {isEn ? "before filing the application." : "avant d'introduire le dossier."}</p>
                     {marketTest.timing && (
-                      <p className="text-[#8a9bb0]">Flandre : cette publication doit avoir eu lieu <strong>{marketTest.timing}</strong>.</p>
+                      <p className="text-[#8a9bb0]">{isEn ? "Flanders: this publication must have taken place" : "Flandre : cette publication doit avoir eu lieu"} <strong>{marketTest.timing}</strong>.</p>
                     )}
                     {marketTest.note && (
                       <p className="text-[#57B7AF] font-medium">{marketTest.note}</p>
@@ -787,10 +990,10 @@ export default function SimulateurEligibilite() {
                         checked={data.offerPublished} onChange={(e) => set("offerPublished", e.target.checked)} />
                       <div>
                         <p className="text-sm font-semibold text-[#1E3A78]">
-                          Offre publiée sur {marketTest ? marketTest.platform : "la plateforme régionale"}
+                          {isEn ? `Opening published on ${marketTest ? marketTest.platform : "the regional platform"}` : `Offre publiée sur ${marketTest ? marketTest.platform : "la plateforme régionale"}`}
                         </p>
                         <p className="mt-0.5 text-xs text-[#607086]">
-                          Publication sur la plateforme régionale compétente pendant la durée requise.
+                          {isEn ? "Published on the competent regional platform for the required duration." : "Publication sur la plateforme régionale compétente pendant la durée requise."}
                         </p>
                       </div>
                     </label>
@@ -801,23 +1004,23 @@ export default function SimulateurEligibilite() {
                       <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[#1E3A78]"
                         checked={data.euresPublished} onChange={(e) => set("euresPublished", e.target.checked)} />
                       <div>
-                        <p className="text-sm font-semibold text-[#1E3A78]">Offre publiée sur EURES</p>
-                        <p className="mt-0.5 text-xs text-[#607086]">Portail européen de la mobilité professionnelle — renforce la preuve du test marché.</p>
+                        <p className="text-sm font-semibold text-[#1E3A78]">{isEn ? "Opening published on EURES" : "Offre publiée sur EURES"}</p>
+                        <p className="mt-0.5 text-xs text-[#607086]">{isEn ? "European job mobility portal — strengthens the labour market test evidence." : "Portail européen de la mobilité professionnelle — renforce la preuve du test marché."}</p>
                       </div>
                     </label>
                   </div>
                 </div>
 
                 <label>
-                  <FieldLabel>Candidats locaux / européens refusés</FieldLabel>
+                  <FieldLabel>{isEn ? "Rejected local / EU candidates" : "Candidats locaux / européens refusés"}</FieldLabel>
                   <select className="field-input" value={data.candidatesRefused} onChange={(e) => set("candidatesRefused", e.target.value)}>
-                    <option value="0">0 — pas encore lancé</option>
-                    <option value="1">1 à 2 candidats</option>
-                    <option value="3">3 à 5 candidats</option>
-                    <option value="6">6 ou plus</option>
+                    <option value="0">{isEn ? "0 — not started yet" : "0 — pas encore lancé"}</option>
+                    <option value="1">{isEn ? "1 to 2 candidates" : "1 à 2 candidats"}</option>
+                    <option value="3">{isEn ? "3 to 5 candidates" : "3 à 5 candidats"}</option>
+                    <option value="6">{isEn ? "6 or more" : "6 ou plus"}</option>
                   </select>
                   <p className="mt-1.5 text-xs text-[#8a9bb0]">
-                    Les refus motivés doivent être documentés et justifiés pour figurer au dossier.
+                    {isEn ? "Reasoned refusals should be documented and justified in the file." : "Les refus motivés doivent être documentés et justifiés pour figurer au dossier."}
                   </p>
                 </label>
               </div>
@@ -828,7 +1031,7 @@ export default function SimulateurEligibilite() {
               {step > 1 ? (
                 <button type="button" onClick={back}
                   className="rounded-2xl border border-[#dce8f5] px-5 py-2.5 text-sm font-semibold text-[#607086] transition hover:border-[#1E3A78] hover:text-[#1E3A78]">
-                  ← Retour
+                  {isEn ? "← Back" : "← Retour"}
                 </button>
               ) : <div />}
               <button
@@ -842,7 +1045,7 @@ export default function SimulateurEligibilite() {
                 className="rounded-2xl px-6 py-2.5 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ background: "linear-gradient(135deg, #1E3A78, #204E97)" }}
               >
-                {step === TOTAL_STEPS ? "Voir le résultat →" : "Étape suivante →"}
+                {step === TOTAL_STEPS ? (isEn ? "View result →" : "Voir le résultat →") : (isEn ? "Next step →" : "Étape suivante →")}
               </button>
             </div>
           </>
@@ -852,9 +1055,9 @@ export default function SimulateurEligibilite() {
         {step === TOTAL_STEPS + 1 && result && (
           <div className="space-y-6">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#57B7AF]">Résultat de votre simulation</p>
-              <h2 className="mt-2 text-2xl font-bold text-[#1E3A78]">{data.profession || "Votre poste"}</h2>
-              <p className="text-sm text-[#607086]">{parseRegionSelection(data.region)[0] || "Belgique"}</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#57B7AF]">{isEn ? "Your simulation result" : "Résultat de votre simulation"}</p>
+              <h2 className="mt-2 text-2xl font-bold text-[#1E3A78]">{data.profession || (isEn ? "Your role" : "Votre poste")}</h2>
+              <p className="text-sm text-[#607086]">{displayedRegionLabels[0] || (isEn ? "Belgium" : "Belgique")}</p>
             </div>
 
             {/* Badge verdict */}
@@ -863,10 +1066,10 @@ export default function SimulateurEligibilite() {
             {/* Métriques légales */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: "Procédure",        value: result.procedure },
-                { label: "Durée du permis",  value: result.permitDuration },
-                { label: "Délai légal max",  value: result.delay },
-                { label: "Complexité",       value: result.complexity },
+                { label: isEn ? "Procedure" : "Procédure",        value: result.procedure },
+                { label: isEn ? "Permit duration" : "Durée du permis",  value: result.permitDuration },
+                { label: isEn ? "Legal max delay" : "Délai légal max",  value: result.delay },
+                { label: isEn ? "Complexity" : "Complexité",       value: result.complexity },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-[16px] border border-[#dce8f5] bg-[#f5f8ff] p-3 text-center">
                   <p className="text-xs text-[#8a9bb0]">{label}</p>
@@ -878,7 +1081,7 @@ export default function SimulateurEligibilite() {
             {/* Ce qui plaide en faveur du dossier */}
             {result.positives.length > 0 && (
               <div className="rounded-[16px] border border-[#6ee7b7] bg-[#f0fdf4] p-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#065f46]">Ce qui plaide en faveur du dossier</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#065f46]">{isEn ? "What supports the file" : "Ce qui plaide en faveur du dossier"}</p>
                 <ul className="space-y-2">
                   {result.positives.map((p, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#065f46]">
@@ -892,7 +1095,7 @@ export default function SimulateurEligibilite() {
             {/* Ce qui fragilise ou manque */}
             {result.warnings.length > 0 && (
               <div className="rounded-[16px] border border-[#fed7aa] bg-[#fff7ed] p-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#92400e]">Ce qui fragilise le dossier ou reste à vérifier</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#92400e]">{isEn ? "What weakens the file or still needs checking" : "Ce qui fragilise le dossier ou reste à vérifier"}</p>
                 <ul className="space-y-2">
                   {result.warnings.map((w, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#92400e]">
@@ -906,7 +1109,7 @@ export default function SimulateurEligibilite() {
             {/* Prochaines étapes recommandées */}
             {result.nextSteps && result.nextSteps.length > 0 && (
               <div className="rounded-[16px] border border-[#c7d7f0] bg-[#f0f5ff] p-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#1E3A78]">Prochaines étapes recommandées</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#1E3A78]">{isEn ? "Recommended next steps" : "Prochaines étapes recommandées"}</p>
                 <ol className="space-y-2">
                   {result.nextSteps.map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#1E3A78]">
@@ -919,48 +1122,48 @@ export default function SimulateurEligibilite() {
 
             {/* Mention de prudence juridique */}
             <div className="rounded-[14px] border-l-4 border-[#1E3A78] bg-[#f0f5ff] px-4 py-4 text-xs text-[#607086] leading-relaxed">
-              <p className="font-bold text-[#1E3A78] mb-1">Orientation initiale — pas un avis juridique</p>
-              <p>Ce résultat constitue une orientation initiale basée sur les informations déclarées. Il ne remplace pas une analyse juridique individualisée, ne crée pas à lui seul une relation avocat-client et ne vaut pas validation d'un dossier concret.</p>
-              <p className="mt-2">Les règles d'immigration économique en Belgique varient selon des critères qui ne peuvent pas tous être captés par un simulateur. Aucune démarche ne devrait être engagée sur cette seule base sans vérification professionnelle préalable.</p>
+              <p className="font-bold text-[#1E3A78] mb-1">{isEn ? "Initial guidance — not legal advice" : "Orientation initiale — pas un avis juridique"}</p>
+              <p>{isEn ? "This result is an initial orientation based on the information entered. It does not replace individual legal advice, does not by itself create an attorney-client relationship and does not validate a real file." : "Ce résultat constitue une orientation initiale basée sur les informations déclarées. Il ne remplace pas une analyse juridique individualisée, ne crée pas à lui seul une relation avocat-client et ne vaut pas validation d'un dossier concret."}</p>
+              <p className="mt-2">{isEn ? "Belgian economic immigration rules depend on criteria that cannot all be captured by a simulator. No filing should be made on this basis alone without prior professional verification." : "Les règles d'immigration économique en Belgique varient selon des critères qui ne peuvent pas tous être captés par un simulateur. Aucune démarche ne devrait être engagée sur cette seule base sans vérification professionnelle préalable."}</p>
             </div>
 
             {/* Lead capture */}
             {!sent ? (
               <div className="rounded-[20px] border-2 border-[#1E3A78] bg-[#f5f8ff] p-5">
-                <p className="text-sm font-bold text-[#1E3A78]">Sécuriser ce recrutement avec LEXPAT</p>
-                <p className="mt-1 text-xs text-[#607086]">Recevez une analyse juridique personnalisée par notre cabinet.</p>
+                <p className="text-sm font-bold text-[#1E3A78]">{isEn ? "Secure this recruitment with LEXPAT" : "Sécuriser ce recrutement avec LEXPAT"}</p>
+                <p className="mt-1 text-xs text-[#607086]">{isEn ? "Receive a tailored legal review from our firm." : "Recevez une analyse juridique personnalisée par notre cabinet."}</p>
                 <form onSubmit={submitLead} className="mt-4 space-y-3">
-                  <input className="field-input" type="email" required placeholder="Email professionnel *"
+                  <input className="field-input" type="email" required placeholder={isEn ? "Business email *" : "Email professionnel *"}
                     value={lead.email} onChange={(e) => setLead((l) => ({ ...l, email: e.target.value }))} />
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <input className="field-input" type="text" placeholder="Entreprise"
+                    <input className="field-input" type="text" placeholder={isEn ? "Company" : "Entreprise"}
                       value={lead.company} onChange={(e) => setLead((l) => ({ ...l, company: e.target.value }))} />
-                    <input className="field-input" type="tel" placeholder="Téléphone"
+                    <input className="field-input" type="tel" placeholder={isEn ? "Phone" : "Téléphone"}
                       value={lead.phone} onChange={(e) => setLead((l) => ({ ...l, phone: e.target.value }))} />
                   </div>
                   <div className="flex flex-wrap gap-3 pt-1">
                     <button type="submit" disabled={!lead.email || sending}
                       className="flex-1 rounded-[14px] py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-60"
                       style={{ background: "linear-gradient(135deg, #1E3A78, #204E97)" }}>
-                      {sending ? "Envoi…" : "Réserver une analyse juridique →"}
+                      {sending ? (isEn ? "Sending..." : "Envoi…") : (isEn ? "Book a legal review →" : "Réserver une analyse juridique →")}
                     </button>
                     <a href="/employeurs"
                       className="flex-1 rounded-[14px] border border-[#dce8f5] py-3 text-center text-sm font-semibold text-[#607086] transition hover:border-[#1E3A78] hover:text-[#1E3A78]">
-                      Déposer l'offre sur LEXPAT Connect
+                      {isEn ? "Post the opening on LEXPAT Connect" : "Déposer l'offre sur LEXPAT Connect"}
                     </a>
                   </div>
                 </form>
               </div>
             ) : (
               <div className="rounded-[20px] border border-[#6ee7b7] bg-[#f0fdf4] p-5 text-center">
-                <p className="text-lg font-bold text-[#065f46]">✓ Demande envoyée</p>
-                <p className="mt-1 text-sm text-[#065f46]">L'équipe LEXPAT vous contactera dans les meilleurs délais.</p>
+                <p className="text-lg font-bold text-[#065f46]">{isEn ? "✓ Request sent" : "✓ Demande envoyée"}</p>
+                <p className="mt-1 text-sm text-[#065f46]">{isEn ? "The LEXPAT team will contact you shortly." : "L'équipe LEXPAT vous contactera dans les meilleurs délais."}</p>
               </div>
             )}
 
             <div className="text-center">
               <button onClick={reset} className="text-sm text-[#8a9bb0] underline transition hover:text-[#1E3A78] hover:no-underline">
-                Recommencer une simulation
+                {isEn ? "Start a new simulation" : "Recommencer une simulation"}
               </button>
             </div>
           </div>

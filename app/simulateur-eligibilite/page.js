@@ -38,7 +38,7 @@ export default function SimulateurPage() {
       </div>
 
       {/* Wizard */}
-      <SimulateurEligibilite />
+      <SimulateurEligibilite locale="fr" />
 
       {/* Bloc SEO */}
       <section className="mx-auto max-w-3xl px-4 py-16">

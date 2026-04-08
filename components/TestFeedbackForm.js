@@ -227,15 +227,13 @@ export default function TestFeedbackForm({ locale = "fr" }) {
           {status.message ? (
             status.type === "success" ? (
               <div className="flex items-center gap-4 rounded-2xl border border-[#cde8e4] bg-[#f2fbfa] px-4 py-4 text-sm leading-7 text-[#1f6f69]">
-                <span className="relative inline-flex h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white shadow-[0_8px_20px_rgba(17,39,87,0.08)]">
-                  <Image
-                    src="/persobug3.jpeg"
-                    alt=""
-                    fill
-                    sizes="64px"
-                    className="object-cover"
-                  />
-                </span>
+                <Image
+                  src="/persobug3.jpeg"
+                  alt=""
+                  width={64}
+                  height={64}
+                  className="h-16 w-16 shrink-0 rounded-full border border-[#d9e9f1] bg-white object-cover shadow-[0_8px_20px_rgba(17,39,87,0.08)]"
+                />
                 <p>{status.message}</p>
               </div>
             ) : (
