@@ -1591,3 +1591,228 @@ export function CtaBanner({
     </section>
   );
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MATCHING PREVIEW — Espace de messagerie
+   Montre aux visiteurs ce qui les attend après le match : espace dédié + messagerie
+   ───────────────────────────────────────────────────────────────────────────── */
+export function MatchingPreview({ locale = "fr" }) {
+  const isEn = locale === "en";
+
+  const copy = {
+    kicker:   isEn ? "After the match"                   : "Après le match",
+    title:    isEn ? "Your dedicated matching space"      : "Votre espace de mise en relation",
+    intro:    isEn
+      ? "Once a match is confirmed, each party gets access to a private space: employer and worker can exchange directly through a secure messaging channel."
+      : "Une fois le match confirmé, chaque partie accède à un espace dédié : l'employeur et le travailleur peuvent échanger directement via une messagerie sécurisée.",
+    tabWorker:   isEn ? "Worker space"   : "Espace travailleur",
+    tabEmployer: isEn ? "Employer space" : "Espace employeur",
+
+    worker: {
+      profileLabel: isEn ? "Worker profile" : "Profil travailleur",
+      badge:        isEn ? "Candidate"       : "Candidat",
+      nav: isEn
+        ? ["Dashboard", "My matches", "My profile", "My CV", "Messaging"]
+        : ["Tableau de bord", "Mes matchs", "Mon profil", "Mon CV", "Messagerie"],
+      activeNav:   isEn ? "My matches" : "Mes matchs",
+      sectionTag:  isEn ? "MY MATCHES"  : "MES MATCHS",
+      sectionTitle:isEn ? "Jobs matching your profile" : "Offres qui correspondent à votre profil",
+      sectionIntro:isEn
+        ? "The LEXPAT Connect engine automatically matches your sector and region with Belgian employer openings. Contact details are shared only after validation."
+        : "Le moteur LEXPAT Connect croise automatiquement votre secteur et votre région avec les offres des employeurs belges. Les coordonnées employeur sont partagées uniquement après validation.",
+      matchTitle:  isEn ? "Earthmoving operator" : "Conducteur d'engins de terrassement",
+      matchMeta:   isEn ? "Construction · Flanders · CDI · High"  : "Construction et travaux publics · Flandre · CDI · Élevée",
+      score:       "100/100",
+      statusLabel: isEn ? "Status:" : "Statut :",
+      statusValue: isEn ? "Confirmed match" : "Match confirmé",
+      statusNote:  isEn ? "Contact details are unlocked." : "Les coordonnées sont débloquées.",
+      unlocked:    isEn ? "Confirmed match — employer contact details are unlocked" : "Match confirmé — les coordonnées employeur sont débloquées",
+      cta:         isEn ? "Open messaging →" : "Ouvrir la messagerie →",
+      completion:  isEn ? "Profile completion" : "Complétude du profil",
+    },
+
+    employer: {
+      profileLabel: isEn ? "Employer profile" : "Profil employeur",
+      badge:        isEn ? "Company"    : "Entreprise",
+      nav: isEn
+        ? ["Dashboard", "My company", "My openings", "Matched profiles", "Messaging"]
+        : ["Tableau de bord", "Mon entreprise", "Mes offres", "Profils matchés", "Messagerie"],
+      activeNav:   isEn ? "Matched profiles" : "Profils matchés",
+      sectionTag:  isEn ? "MATCHING"    : "MATCHING",
+      sectionTitle:isEn ? "Profiles matched to your openings" : "Profils matchés à vos offres",
+      sectionIntro:isEn
+        ? "The LEXPAT Connect engine automatically compares your openings with available worker profiles. Identifying details are only shared after the match is confirmed."
+        : "Le moteur LEXPAT Connect croise automatiquement vos offres avec les profils travailleurs disponibles. Les données identifiantes ne sont partagées qu'après validation du match.",
+      matchTag:    isEn ? "EARTHMOVING OPERATOR" : "CONDUCTEUR D'ENGINS DE TERRASSEMENT",
+      matchTitle:  isEn ? "Earthmoving operator" : "Conductrice d'engins de terrassement",
+      matchMeta:   isEn ? "Construction · Flanders · 5–10 years" : "Construction et travaux publics · Flandre · 5 à 10 ans",
+      score:       "Score 100/100",
+      statusLabel: isEn ? "Status:" : "Statut :",
+      statusValue: isEn ? "Confirmed match" : "Match confirmé",
+      statusNote:  isEn ? "Contact details are unlocked." : "Les coordonnées sont débloquées.",
+      unlocked:    isEn ? "Confirmed match — contact details are unlocked" : "Match confirmé — les coordonnées sont débloquées",
+      cta:         isEn ? "Open messaging →" : "Ouvrir la messagerie →",
+      completion:  isEn ? "Space completion" : "Complétude de l'espace",
+    },
+  };
+
+  return (
+    <section className="py-16 sm:py-20 lg:py-24 bg-[#f8fafb]">
+      <div className="container-shell">
+
+        {/* Header */}
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#57B7AF]">{copy.kicker}</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#1E3A78] sm:text-4xl">{copy.title}</h2>
+          <p className="mt-4 text-sm leading-7 text-[#607086] sm:text-base">{copy.intro}</p>
+        </div>
+
+        {/* Two mock UIs side by side */}
+        <div className="grid gap-6 lg:grid-cols-2">
+
+          {/* ── WORKER SPACE ── */}
+          <MockSpace
+            profileLabel={copy.worker.profileLabel}
+            badge={copy.worker.badge}
+            nav={copy.worker.nav}
+            activeNav={copy.worker.activeNav}
+            sectionTag={copy.worker.sectionTag}
+            sectionTitle={copy.worker.sectionTitle}
+            sectionIntro={copy.worker.sectionIntro}
+            matchTitle={copy.worker.matchTitle}
+            matchMeta={copy.worker.matchMeta}
+            matchTag={null}
+            score={copy.worker.score}
+            statusLabel={copy.worker.statusLabel}
+            statusValue={copy.worker.statusValue}
+            statusNote={copy.worker.statusNote}
+            unlocked={copy.worker.unlocked}
+            cta={copy.worker.cta}
+            completion={copy.worker.completion}
+            pct={54}
+            ctaColor="teal"
+          />
+
+          {/* ── EMPLOYER SPACE ── */}
+          <MockSpace
+            profileLabel={copy.employer.profileLabel}
+            badge={copy.employer.badge}
+            nav={copy.employer.nav}
+            activeNav={copy.employer.activeNav}
+            sectionTag={copy.employer.sectionTag}
+            sectionTitle={copy.employer.sectionTitle}
+            sectionIntro={copy.employer.sectionIntro}
+            matchTitle={copy.employer.matchTitle}
+            matchMeta={copy.employer.matchMeta}
+            matchTag={copy.employer.matchTag}
+            score={copy.employer.score}
+            statusLabel={copy.employer.statusLabel}
+            statusValue={copy.employer.statusValue}
+            statusNote={copy.employer.statusNote}
+            unlocked={copy.employer.unlocked}
+            cta={copy.employer.cta}
+            completion={copy.employer.completion}
+            pct={44}
+            ctaColor="navy"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Composant interne — maquette d'un espace membre */
+function MockSpace({ profileLabel, badge, nav, activeNav, sectionTag, sectionTitle, sectionIntro,
+  matchTitle, matchMeta, matchTag, score, statusLabel, statusValue, statusNote,
+  unlocked, cta, completion, pct, ctaColor }) {
+  return (
+    <div className="overflow-hidden rounded-[28px] border border-[#e4edf4] bg-white shadow-[0_16px_48px_rgba(15,23,42,0.07)]">
+      <div className="flex h-full">
+
+        {/* Sidebar */}
+        <div className="w-44 shrink-0 border-r border-[#f0f4f8] bg-[#f8fafb] p-4 flex flex-col gap-4">
+          {/* Avatar + nom */}
+          <div className="flex flex-col items-center gap-2 pt-2 text-center">
+            <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#dce8f5] bg-[#e8f0fb] flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7 text-[#1E3A78]">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#1E3A78] leading-tight">{profileLabel}</p>
+              <span className="mt-1 inline-block rounded-full bg-[#eef4ff] px-2 py-0.5 text-[10px] font-semibold text-[#1E3A78]">{badge}</span>
+            </div>
+          </div>
+
+          {/* Nav */}
+          <nav className="flex flex-col gap-1 text-[11px]">
+            {nav.map((item) => (
+              <div key={item} className={`flex items-center justify-between rounded-[10px] px-2.5 py-2 font-medium transition ${
+                item === activeNav
+                  ? "bg-white shadow-[0_2px_8px_rgba(15,23,42,0.07)] text-[#1E3A78] font-bold"
+                  : "text-[#8a9bb0] hover:text-[#1E3A78]"
+              }`}>
+                <span>{item}</span>
+                <span className="text-[#c5d4e8]">›</span>
+              </div>
+            ))}
+          </nav>
+
+          {/* Completion */}
+          <div className="mt-auto rounded-[14px] border border-[#e4edf4] bg-white p-3">
+            <p className="text-[10px] font-bold text-[#1E3A78]">{completion}</p>
+            <p className="mt-1 text-xl font-bold text-red-500">{pct}%</p>
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#e4edf4]">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#1E3A78] to-[#57B7AF]" style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 overflow-hidden p-5 flex flex-col gap-4">
+          {/* Section header */}
+          <div className="rounded-[16px] border border-[#e4edf4] bg-[#f8fafb] p-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#57B7AF]">{sectionTag}</p>
+            <h3 className="mt-1 text-base font-bold text-[#1E3A78] leading-tight">{sectionTitle}</h3>
+            <p className="mt-1.5 text-[11px] leading-5 text-[#607086]">{sectionIntro}</p>
+          </div>
+
+          {/* Match card */}
+          <div className="rounded-[16px] border border-[#e4edf4] bg-white p-4 shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                {matchTag && <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#57B7AF] mb-1">{matchTag}</p>}
+                <h4 className="text-sm font-bold text-[#1E3A78] leading-tight">{matchTitle}</h4>
+                <p className="mt-1 text-[11px] text-[#8a9bb0]">{matchMeta}</p>
+              </div>
+              <span className="shrink-0 rounded-full bg-[#ecfaf8] px-2.5 py-1 text-[11px] font-bold text-[#2f9f97]">{score}</span>
+            </div>
+
+            {/* Status */}
+            <div className="rounded-[10px] border border-[#e4edf4] bg-[#f8fafb] px-3 py-2 text-[11px] text-[#607086]">
+              <span className="font-semibold">{statusLabel} </span>
+              <span className="font-bold text-[#2f9f97]">{statusValue}</span>
+              {" — "}{statusNote}
+            </div>
+
+            {/* Unlocked banner */}
+            <div className="rounded-[10px] bg-[#f0fdf8] border border-[#b6ead8] px-3 py-2 text-[11px] font-semibold text-[#1a8a5a] flex items-center gap-1.5">
+              <span className="text-[#2f9f97]">✓</span>
+              {unlocked}
+            </div>
+
+            {/* CTA */}
+            <button className={`w-full rounded-[12px] py-2.5 text-sm font-bold text-white transition ${
+              ctaColor === "teal"
+                ? "bg-[#57B7AF] hover:bg-[#4aa8a0]"
+                : "bg-[#1E3A78] hover:bg-[#162d60]"
+            }`}>
+              {cta}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

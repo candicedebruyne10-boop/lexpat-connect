@@ -6,7 +6,8 @@ import {
   PresentationVideoSection,
   JobSectors,
   LexpatStrip,
-  CtaBannerDark
+  CtaBannerDark,
+  MatchingPreview
 } from "../components/Sections";
 
 export const metadata = {
@@ -25,6 +26,7 @@ export default function HomePage() {
       <DualEntry />
       <ShortageJobsQuickLink />
       <HowItWorksPremium />
+      <MatchingPreview />
       <PresentationVideoSection />
       <JobSectors />
       <LexpatStrip />
