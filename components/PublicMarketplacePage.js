@@ -60,7 +60,7 @@ const kindConfig = {
 const cardCopy = {
   fr: {
     offers: {
-      labelA: "Entreprise",
+      labelA: "Secteur",
       labelB: "Région",
       labelC: "Contrat",
       labelD: "Urgence",
@@ -77,7 +77,7 @@ const cardCopy = {
   },
   en: {
     offers: {
-      labelA: "Employer",
+      labelA: "Sector",
       labelB: "Region",
       labelC: "Contract",
       labelD: "Urgency",

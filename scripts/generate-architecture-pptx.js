@@ -331,7 +331,7 @@ cover.addText("Connect", {
   color: C.teal,
   margin: 0
 });
-cover.addText("Architecture business & produit", {
+cover.addText("Plateforme, acquisition et exécution", {
   x: 0.75,
   y: 3.02,
   w: 5.8,
@@ -342,7 +342,7 @@ cover.addText("Architecture business & produit", {
   margin: 0
 });
 cover.addText(
-  "Une lecture premium de la plateforme : acquisition, vitrines publiques, espaces membres, messagerie et relais juridique séparé.",
+  "Une lecture stratégique de la plateforme : comment LEXPAT Connect attire, qualifie, active et sécurise la mise en relation avant relais juridique.",
   {
     x: 0.75,
     y: 3.5,
@@ -353,7 +353,7 @@ cover.addText(
     margin: 0
   }
 );
-cover.addText("Vision exécutive", {
+cover.addText("Executive summary", {
   x: 7.38,
   y: 1.06,
   w: 3.65,
@@ -363,22 +363,22 @@ cover.addText("Vision exécutive", {
   color: C.white,
   margin: 0
 });
-addMetric(cover, 7.42, 1.68, 1.9, "Parcours", 2, "blue");
-addMetric(cover, 9.46, 1.68, 1.9, "Tables coeur", 9, "teal");
-addMetric(cover, 7.42, 3.02, 1.9, "Vue admin", "1", "sand");
-addMetric(cover, 9.46, 3.02, 1.9, "Vues membres", 2, "blue");
+addMetric(cover, 7.42, 1.68, 1.9, "Funnels", 2, "blue");
+addMetric(cover, 9.46, 1.68, 1.9, "Data core", 9, "teal");
+addMetric(cover, 7.42, 3.02, 1.9, "Admin hub", "1", "sand");
+addMetric(cover, 9.46, 3.02, 1.9, "Member spaces", 2, "blue");
 addBulletsCard(cover, {
   x: 7.4,
   y: 4.28,
   w: 4.0,
   h: 1.66,
-  title: "Idée directrice",
+  title: "Thèse produit",
   fill: C.blueSoft,
   lines: [
-    "Le matching vient avant le juridique",
-    "Les données sont structurées dans Supabase",
-    "La messagerie s'ouvre après match confirmé",
-    "Le cabinet prend le relais ensuite"
+    "Le matching crée la valeur avant le juridique",
+    "La donnée est structurée pour être réutilisable",
+    "La messagerie intervient au bon moment",
+    "Le cabinet transforme l'intérêt en dossier sécurisé"
   ]
 });
 addFooter(cover);
@@ -386,19 +386,19 @@ addFooter(cover);
 const overview = pptx.addSlide();
 fullBleedBackground(overview, C.white);
 addSectionBand(overview, "VUE GLOBALE");
-addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 26 pages applicatives, réparties entre acquisition, confiance, comptes, espaces membres, simulateur et pilotage.");
+addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 26 pages applicatives, réparties entre acquisition, conversion, activation membre, réassurance juridique et pilotage opérationnel.");
 addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 26, "blue");
-addMetric(overview, 2.55, 1.75, 1.7, "Pages business", 14, "teal");
-addMetric(overview, 4.45, 1.75, 1.7, "Pages légales", 4, "sand");
-addMetric(overview, 6.35, 1.75, 1.7, "Espaces", 5, "blue");
-addMetric(overview, 8.25, 1.75, 1.7, "Admin", 1, "teal");
-addMetric(overview, 10.15, 1.75, 1.2, "Tests", 1, "sand");
+addMetric(overview, 2.55, 1.75, 1.7, "Acquisition", 14, "teal");
+addMetric(overview, 4.45, 1.75, 1.7, "Trust layer", 4, "sand");
+addMetric(overview, 6.35, 1.75, 1.7, "Member views", 5, "blue");
+addMetric(overview, 8.25, 1.75, 1.7, "Admin hub", 1, "teal");
+addMetric(overview, 10.15, 1.75, 1.2, "QA", 1, "sand");
 addBulletsCard(overview, {
   x: 0.65,
   y: 3.2,
   w: 3.45,
   h: 3.1,
-  title: "Acquisition & réassurance",
+  title: "Top of funnel",
   fill: C.blueSoft,
   lines: [
     "Accueil",
@@ -422,7 +422,7 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.55,
   h: 3.1,
-  title: "Activation & usage",
+  title: "Activation & retention",
   lines: [
     "Connexion",
     "Inscription",
@@ -439,7 +439,7 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.65,
   h: 3.1,
-  title: "Cadre juridique & confiance",
+  title: "Trust & compliance",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -455,14 +455,14 @@ addFooter(overview);
 const routing = pptx.addSlide();
 fullBleedBackground(routing, C.bg);
 addSectionBand(routing, "PAGES & CTA");
-addHeader(routing, "Parcours d'entrée et mécanique de conversion", "La navigation est pensée autour de deux parcours : employeur et travailleur, complétés par un simulateur et des vitrines publiques d'offres et candidatures.");
+addHeader(routing, "Parcours d'entrée et mécanique de conversion", "La navigation est pensée comme un double funnel employeur / travailleur, renforcé par un simulateur et des vitrines publiques qui réduisent la friction d'entrée.");
 addStepCard(routing, {
   x: 0.62,
   y: 1.82,
   w: 3.55,
   h: 4.7,
   step: "01",
-  title: "Accueil / positionnement",
+  title: "Homepage / positioning",
   fill: C.white,
   lines: [
     "Hero premium de positionnement",
@@ -482,7 +482,7 @@ addStepCard(routing, {
   w: 3.35,
   h: 4.7,
   step: "02",
-  title: "Parcours employeur",
+  title: "Employer funnel",
   fill: C.blueSoft,
   bandColor: C.navy,
   lines: [
@@ -501,7 +501,7 @@ addStepCard(routing, {
   w: 3.67,
   h: 4.7,
   step: "03",
-  title: "Parcours travailleur",
+  title: "Worker funnel",
   fill: C.tealSoft,
   bandColor: C.tealDark,
   lines: [
@@ -520,7 +520,7 @@ addFooter(routing);
 const forms = pptx.addSlide();
 fullBleedBackground(forms, C.white);
 addSectionBand(forms, "FORMULAIRES");
-addHeader(forms, "Formulaires publics : la donnée minimale utile", "Les formulaires publics servent à qualifier rapidement un besoin employeur ou un profil candidat avant toute étape plus poussée, puis les messages partent vers l'adresse officielle de contact.");
+addHeader(forms, "Formulaires publics : capter sans surcharger", "Les formulaires publics captent juste assez d'information pour qualifier un lead, déclencher une réponse et nourrir la suite du parcours sans créer de friction excessive.");
 addBulletsCard(forms, {
   x: 0.62,
   y: 1.82,
@@ -566,7 +566,7 @@ addFooter(forms);
 const accounts = pptx.addSlide();
 fullBleedBackground(accounts, C.bg);
 addSectionBand(accounts, "COMPTES & REDIRECTIONS");
-addHeader(accounts, "Création de compte, connexion et redirections", "Le site utilise Supabase Auth, puis redirige vers l'espace adapté selon le rôle choisi. Les pages publiques restent consultables sans compte.");
+addHeader(accounts, "Création de compte, connexion et redirections", "Le compte sert de bascule entre la vitrine publique et l'expérience propriétaire. Supabase Auth gère l'identité, puis le site oriente vers l'espace à forte valeur du bon rôle.");
 addBulletsCard(accounts, {
   x: 0.62,
   y: 1.82,
@@ -603,7 +603,7 @@ addBulletsCard(accounts, {
   y: 1.82,
   w: 4.08,
   h: 4.78,
-  title: "Logique de redirection",
+  title: "Activation post-auth",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -620,13 +620,13 @@ addFooter(accounts);
 const employerSpace = pptx.addSlide();
 fullBleedBackground(employerSpace, C.white);
 addSectionBand(employerSpace, "ESPACE EMPLOYEUR");
-addHeader(employerSpace, "Espace employeur : piloter le recrutement", "L'espace employeur se découpe en cinq vues : tableau de bord, entreprise, offres, profils correspondants et messagerie.");
+addHeader(employerSpace, "Espace employeur : piloter le recrutement", "L'espace employeur sert à passer d'un besoin exprimé à un pipeline clair : structurer l'entreprise, publier des offres, lire les profils correspondants et ouvrir la conversation.");
 addBulletsCard(employerSpace, {
   x: 0.62,
   y: 1.82,
   w: 3.45,
   h: 4.75,
-  title: "Navigation & pilotage",
+  title: "Pilotage quotidien",
   fill: C.blueSoft,
   lines: [
     "Tableau de bord",
@@ -643,7 +643,7 @@ addBulletsCard(employerSpace, {
   y: 1.82,
   w: 3.55,
   h: 4.75,
-  title: "Donnée entreprise",
+  title: "Socle entreprise",
   lines: [
     "Nom de l'entreprise",
     "Secteur principal",
@@ -659,7 +659,7 @@ addBulletsCard(employerSpace, {
   y: 1.82,
   w: 3.58,
   h: 4.75,
-  title: "Production d'offre",
+  title: "Machine à opportunités",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -679,13 +679,13 @@ addFooter(employerSpace);
 const workerSpace = pptx.addSlide();
 fullBleedBackground(workerSpace, C.bg);
 addSectionBand(workerSpace, "ESPACE TRAVAILLEUR");
-addHeader(workerSpace, "Espace travailleur : devenir visible et exploitable", "L'espace travailleur sert à alimenter le matching, à suivre les opportunités remontées par la plateforme et à ouvrir la messagerie après confirmation.");
+addHeader(workerSpace, "Espace travailleur : devenir visible et exploitable", "L'espace travailleur transforme un profil dispersé en candidature lisible : données de matching, CV, opportunités et ouverture de la messagerie au bon moment.");
 addBulletsCard(workerSpace, {
   x: 0.62,
   y: 1.82,
   w: 3.35,
   h: 4.8,
-  title: "Navigation & suivi",
+  title: "Suivi du parcours",
   fill: C.white,
   lines: [
     "Tableau de bord",
@@ -701,7 +701,7 @@ addBulletsCard(workerSpace, {
   y: 1.82,
   w: 3.72,
   h: 4.8,
-  title: "Donnée profil",
+  title: "Socle candidat",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -736,13 +736,13 @@ addFooter(workerSpace);
 const memberViews = pptx.addSlide();
 fullBleedBackground(memberViews, C.white);
 addSectionBand(memberViews, "VUES MEMBRES & ADMIN");
-addHeader(memberViews, "Pages de lecture : public, membre, admin", "Une fois les profils, offres et candidatures créés, le site expose des vitrines publiques, des espaces membres et une vue admin distincte.");
+addHeader(memberViews, "Pages de lecture : public, membre, admin", "Une fois les données produites, le produit les redistribue selon trois niveaux de valeur : visibilité publique, profondeur membre et supervision admin.");
 addBulletsCard(memberViews, {
   x: 0.62,
   y: 1.82,
   w: 3.45,
   h: 4.76,
-  title: "Vitrines et lectures publiques",
+  title: "Public layer",
   fill: C.blueSoft,
   lines: [
     "/offres-d-emploi : vitrine publique des besoins",
@@ -757,7 +757,7 @@ addBulletsCard(memberViews, {
   y: 1.82,
   w: 3.35,
   h: 4.76,
-  title: "Back-office admin",
+  title: "Operations layer",
   lines: [
     "Cartes de synthèse",
     "Recherche globale",
@@ -771,7 +771,7 @@ addBulletsCard(memberViews, {
   y: 1.82,
   w: 3.78,
   h: 4.76,
-  title: "Tables coeur",
+  title: "Data layer",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -791,13 +791,13 @@ addFooter(memberViews);
 const governance = pptx.addSlide();
 fullBleedBackground(governance, C.bg);
 addSectionBand(governance, "GOUVERNANCE");
-addHeader(governance, "Plateforme et cabinet : deux rôles bien distincts", "La compréhension du site repose sur une distinction simple : la plateforme gère visibilité, matching, messagerie et orientation ; LEXPAT gère ensuite le juridique.");
+addHeader(governance, "Plateforme et cabinet : deux rôles bien distincts", "L'avantage compétitif repose sur une articulation claire : la plateforme capte et qualifie la demande ; le cabinet intervient ensuite sur les sujets à forte valeur juridique.");
 addCard(governance, {
   x: 0.7,
   y: 1.9,
   w: 5.15,
   h: 3.85,
-  title: "Rôle de la plateforme",
+  title: "Plateforme = moteur de croissance",
   fill: C.blueSoft,
   text: "Attirer les employeurs et les talents\nStructurer les profils et les offres\nProduire des matchings et des vues membres\nMontrer des données publiques utiles sans exposer l'identité\nPiloter les flux via /admin"
 });
@@ -806,7 +806,7 @@ addCard(governance, {
   y: 1.9,
   w: 5.15,
   h: 3.85,
-  title: "Rôle du cabinet LEXPAT",
+  title: "Cabinet = moteur de sécurisation",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   text: "Permis unique\nDroit au travail\nImmigration économique\nSécurisation du dossier après mise en relation\nTraitement séparé du matching"
@@ -816,13 +816,13 @@ addBulletsCard(governance, {
   y: 5.98,
   w: 10.5,
   h: 0.92,
-  title: "Conclusion business",
+  title: "Lecture stratégique",
   fill: C.white,
   lines: [
-    "Le site n'est pas seulement une vitrine : c'est un système complet d'acquisition, de qualification, de matching, de messagerie et de pilotage avant tout relais juridique."
+    "LEXPAT Connect fonctionne comme une couche d'acquisition, de qualification et d'orchestration ; le cabinet ajoute ensuite la couche de sécurisation juridique là où la valeur est la plus forte."
   ]
 });
-addFooter(governance, "LEXPAT Connect — architecture business, acquisition, matching et relais juridique");
+addFooter(governance, "LEXPAT Connect — acquisition, matching, orchestration et relais juridique");
 
 const outputDir = path.join(process.cwd(), "..", "LEXPAT-Connect-assets-source", "exports");
 fs.mkdirSync(outputDir, { recursive: true });
