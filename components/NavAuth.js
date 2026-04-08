@@ -35,11 +35,11 @@ export default function NavAuth() {
       : (parts[0]?.[0] || user.email?.[0] || '?').toUpperCase();
 
     return (
-      <div className="hidden items-center gap-2 lg:flex">
+      <div className="hidden items-center gap-1.5 lg:flex">
         {/* Lien vers l'espace */}
         <Link
           href={spacePath}
-          className="whitespace-nowrap rounded-2xl border border-[#d9e9f1] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1d3b8b] transition hover:border-[#b8cef5] hover:text-[#1d3b8b]"
+          className="whitespace-nowrap rounded-full border border-[#d9e9f1] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#1d3b8b] shadow-[0_4px_10px_rgba(15,23,42,0.03)] transition hover:border-[#b8cef5] hover:text-[#1d3b8b]"
         >
           {spaceLabel}
         </Link>
@@ -47,7 +47,7 @@ export default function NavAuth() {
         {/* Déconnexion */}
         <button
           onClick={handleSignOut}
-          className="whitespace-nowrap rounded-2xl border border-[#e8edf3] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#6d7b8d] transition hover:border-[#f2c4c4] hover:text-[#a33f3f]"
+          className="whitespace-nowrap rounded-full border border-[#e8edf3] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#6d7b8d] shadow-[0_4px_10px_rgba(15,23,42,0.03)] transition hover:border-[#f2c4c4] hover:text-[#a33f3f]"
         >
           {copy.auth.signOut}
         </button>
@@ -57,12 +57,19 @@ export default function NavAuth() {
 
   // Utilisateur non connecté
   return (
-    <div className="hidden items-center gap-4 lg:flex">
-      <Link href={localizeHref("/connexion", locale)} className="secondary-button">
+    <div className="hidden items-center gap-1.5 lg:flex">
+      <Link
+        href={localizeHref("/connexion", locale)}
+        className="inline-flex items-center rounded-full border border-[#d9e9f1] bg-white px-4 py-2 text-[12px] font-semibold text-[#1d3b8b] shadow-[0_4px_10px_rgba(15,23,42,0.03)] transition hover:border-[#b8cef5] hover:text-[#1d3b8b]"
+      >
         {copy.auth.signIn}
       </Link>
-      <Link href={localizeHref("/inscription", locale)} className="primary-button">
-        {copy.auth.createAccount}
+      <Link
+        href={localizeHref("/inscription", locale)}
+        className="inline-flex items-center rounded-full px-4 py-2 text-[12px] font-semibold text-white shadow-[0_8px_20px_rgba(87,183,175,0.18)] transition hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(87,183,175,0.24)]"
+        style={{ background: "linear-gradient(135deg, #6fc1b8, #57B7AF)" }}
+      >
+        {locale === "en" ? "Create account" : copy.auth.createAccount}
       </Link>
     </div>
   );

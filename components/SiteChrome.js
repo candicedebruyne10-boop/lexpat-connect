@@ -111,7 +111,7 @@ export default function SiteChrome({ children }) {
     <div className="shell">
       {/* ── HEADER ────────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 border-b border-[#edf1f5] bg-white/95 backdrop-blur-xl">
-        <div className="container-shell flex min-h-[64px] items-center justify-between gap-3 py-2.5 lg:min-h-[80px] lg:gap-4 lg:py-3">
+        <div className="container-shell flex min-h-[64px] items-center justify-between gap-3 py-2.5 lg:min-h-[74px] lg:gap-4 lg:py-2.5">
 
           {/* Logo LEXPAT Connect */}
           <Link href={localizeHref("/", locale)} className="flex items-center gap-3">
@@ -135,7 +135,7 @@ export default function SiteChrome({ children }) {
           </Link>
 
           {/* Nav desktop */}
-          <nav className="hidden items-center gap-1 text-[15px] font-medium text-[#607086] lg:flex">
+          <nav className="hidden items-center gap-0.5 text-[15px] font-medium text-[#607086] lg:flex">
             {navigation.map((item) => {
               const dd = navDropdowns[item.href];
               if (dd) {
@@ -154,7 +154,7 @@ export default function SiteChrome({ children }) {
                   <Link
                     key={item.href}
                     href={localizeHref(item.href, locale)}
-                    className="whitespace-nowrap rounded-2xl px-3.5 py-2 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(29,59,139,0.15)] transition hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(29,59,139,0.22)]"
+                    className="whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-bold text-white shadow-[0_4px_12px_rgba(29,59,139,0.15)] transition hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(29,59,139,0.22)]"
                     style={{ background: "linear-gradient(135deg, #1E3A78, #57B7AF)" }}
                   >
                     ✦ {item.label}
@@ -165,7 +165,7 @@ export default function SiteChrome({ children }) {
                 <Link
                   key={item.href}
                   href={localizeHref(item.href, locale)}
-                  className="whitespace-nowrap px-3 py-2 transition hover:text-[#1E3A78]"
+                  className="whitespace-nowrap rounded-full px-2.5 py-1.5 transition hover:bg-[#f6f8fb] hover:text-[#1E3A78]"
                 >
                   {item.label}
                 </Link>
@@ -174,17 +174,17 @@ export default function SiteChrome({ children }) {
           </nav>
 
           {/* Sélecteur de langue + auth desktop */}
-          <div className="hidden items-center gap-2 lg:flex">
-            <div className="flex items-center divide-x divide-[#dce8f5] overflow-hidden rounded-full border border-[#dce8f5] bg-white text-[12px] font-bold">
+          <div className="hidden items-center gap-1.5 lg:flex">
+            <div className="flex items-center divide-x divide-[#dce8f5] overflow-hidden rounded-full border border-[#dce8f5] bg-white text-[11px] font-bold shadow-[0_4px_10px_rgba(15,23,42,0.03)]">
               <Link
                 href={switchLocalePath(pathname, "fr")}
-                className={`px-3 py-1.5 transition ${locale === "fr" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
+                className={`px-2.5 py-1.5 transition ${locale === "fr" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
               >
                 FR
               </Link>
               <Link
                 href={switchLocalePath(pathname, "en")}
-                className={`px-3 py-1.5 transition ${locale === "en" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
+                className={`px-2.5 py-1.5 transition ${locale === "en" ? "bg-[#1E3A78] text-white" : "text-[#607086] hover:text-[#1E3A78]"}`}
               >
                 EN
               </Link>
