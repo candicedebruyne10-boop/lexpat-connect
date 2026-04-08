@@ -39,18 +39,15 @@ export default function NavAuth() {
         {/* Lien vers l'espace */}
         <Link
           href={spacePath}
-          className="flex items-center gap-2 rounded-2xl border border-[#d9e9f1] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1d3b8b] shadow-[0_4px_12px_rgba(29,59,139,0.08)] transition hover:shadow-[0_6px_18px_rgba(29,59,139,0.13)] hover:-translate-y-px"
+          className="whitespace-nowrap rounded-2xl border border-[#d9e9f1] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1d3b8b] transition hover:border-[#b8cef5] hover:text-[#1d3b8b]"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1d3b8b,#57b7af)] text-[11px] font-bold text-white">
-            {initials}
-          </span>
-          <span className="whitespace-nowrap">{spaceLabel}</span>
+          {spaceLabel}
         </Link>
 
         {/* Déconnexion */}
         <button
           onClick={handleSignOut}
-          className="whitespace-nowrap rounded-2xl border border-[#e8edf3] bg-white px-3.5 py-2 text-[13px] font-medium text-[#6d7b8d] transition hover:border-[#f2c4c4] hover:text-[#a33f3f]"
+          className="whitespace-nowrap rounded-2xl border border-[#e8edf3] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#6d7b8d] transition hover:border-[#f2c4c4] hover:text-[#a33f3f]"
         >
           {copy.auth.signOut}
         </button>

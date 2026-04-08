@@ -100,6 +100,7 @@ function getCompanyFields(locale) {
 }
 
 function Field({ field, value, onChange }) {
+  const isEn = field.locale === "en";
   const base = "field-input";
 
   return (
@@ -110,7 +111,7 @@ function Field({ field, value, onChange }) {
       ) : field.type === "select" ? (
         <select className={base} value={value} onChange={(event) => onChange(field.name, event.target.value)}>
           <option value="" disabled>
-            Sélectionnez une option
+            {isEn ? "Select an option" : "Sélectionnez une option"}
           </option>
           {field.options.map((option) => (
             <option key={option} value={option}>
@@ -294,7 +295,7 @@ function CompanyView({ token, locale }) {
           <form onSubmit={handleSubmit} className="mt-6 space-y-6">
             <div className="grid gap-5 md:grid-cols-2">
               {getCompanyFields(locale).map((field) => (
-                <Field key={field.name} field={field} value={values[field.name] || ""} onChange={updateValue} />
+                <Field key={field.name} field={{ ...field, locale }} value={values[field.name] || ""} onChange={updateValue} />
               ))}
             </div>
 
@@ -422,7 +423,7 @@ function CreateOfferForm({ onSuccess, token, locale }) {
         <button
           onClick={() => { setOpen(false); setError(""); }}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e0eaf2] bg-[#f5f9fd] text-[#6b7b8f] transition hover:bg-[#edf3f9]"
-          aria-label="Fermer"
+          aria-label={isEn ? "Close" : "Fermer"}
         >
           ✕
         </button>
@@ -813,7 +814,7 @@ export default function EmployerSpace({ locale = "fr" }) {
           <aside className="rounded-[32px] border border-[#e4edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-7 xl:sticky xl:top-8">
             <div className="flex items-center gap-4 rounded-[24px] border border-[#edf2f7] bg-[#fbfdff] p-4">
               <div className="relative flex h-16 w-16 overflow-hidden rounded-[20px] border border-[#d9e9f1] bg-white shadow-[0_4px_12px_rgba(29,59,139,0.08)]">
-                <Image src="/logo-lexpat-connect.png" alt="LEXPAT Connect" fill className="object-cover" sizes="64px" />
+                <Image src="/logo-lexpat-connect.png" alt="LEXPAT" fill className="object-cover" sizes="64px" />
               </div>
               <div>
                 <p className="text-lg font-semibold text-[#17345d]">{isEn ? "Employer profile" : "Profil employeur"}</p>

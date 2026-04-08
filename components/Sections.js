@@ -118,14 +118,15 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
 
       {/* ══ DESKTOP : carte pleine fenêtre, texte en haut à gauche ══ */}
       <div className="hidden lg:block">
-        <div className="relative mx-5 mb-5 mt-4 overflow-hidden rounded-[28px] border border-[#59B9B1]/15 shadow-[0_0_60px_rgba(89,185,177,0.12)]" style={{ height: 'calc(100vh - 96px)' }}>
+        <div className="relative overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
           <Image
             src="/hero-image.jpg"
             alt="Carte mondiale et Belgique — connexions LEXPAT Connect"
             fill
             priority
             quality={84}
-            className="object-contain object-center bg-[#eef2f7]"
+            className="object-contain bg-[#060c26]"
+            style={{ objectPosition: '65% center' }}
             sizes="100vw"
           />
           {/* Voile sombre à gauche */}
@@ -168,7 +169,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
             fill
             priority
             quality={84}
-            className="object-contain object-center bg-[#eef2f7]"
+            className="object-contain object-center bg-[#060c26]"
             sizes="100vw"
           />
           <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.95),transparent)]" />

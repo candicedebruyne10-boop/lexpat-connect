@@ -137,7 +137,7 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
           <div className={`h-1 w-full ${p.stripe}`} />
 
           {items.map((item, i) => (
-            <div key={item.href}>
+            <div key={`${item.href}-${i}`}>
               <Link
                 href={item.href}
                 className={`flex items-start gap-3 px-5 py-4 transition group ${p.itemHoverBg}`}
