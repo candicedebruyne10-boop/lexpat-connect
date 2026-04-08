@@ -181,8 +181,8 @@ export default function SiteChrome({ children }) {
           </div>
         </div>
 
-        {/* Nav mobile scrollable */}
-        <nav className="flex w-full gap-2 overflow-x-auto border-t border-[#f0f4f8] px-4 py-2 text-xs font-medium text-[#607086] lg:hidden">
+        {/* Nav mobile */}
+        <nav className="grid w-full gap-2 border-t border-[#f0f4f8] px-4 py-3 text-sm font-medium text-[#607086] lg:hidden">
           {navigation.map((item) => {
             const dd = navDropdowns[item.href];
             return dd ? (
@@ -198,9 +198,14 @@ export default function SiteChrome({ children }) {
               <Link
                 key={item.href}
                 href={localizeHref(item.href, locale)}
-                className="whitespace-nowrap rounded-full border border-[#e3eaf1] bg-white px-3 py-1.5 transition hover:border-[#c5d4f3] hover:text-[#1E3A78]"
+                className={`flex w-full items-center justify-center rounded-2xl border px-4 py-3 text-center transition ${
+                  item.highlight
+                    ? "border-transparent text-white shadow-[0_8px_20px_rgba(29,59,139,0.15)]"
+                    : "border-[#e3eaf1] bg-white hover:border-[#c5d4f3] hover:text-[#1E3A78]"
+                }`}
+                style={item.highlight ? { background: "linear-gradient(135deg, #1E3A78, #57B7AF)" } : undefined}
               >
-                {item.label}
+                {item.highlight ? `✦ ${item.label}` : item.label}
               </Link>
             );
           })}
