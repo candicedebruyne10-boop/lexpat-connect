@@ -15,16 +15,18 @@ export default function TestFeedbackLauncher() {
   return (
     <Link
       href={localizeHref("/retours-test", locale)}
-      className="fixed bottom-4 right-4 z-30 inline-flex items-center gap-2.5 rounded-full border border-[#8ed7d0] bg-[linear-gradient(135deg,rgba(30,58,120,0.96),rgba(87,183,175,0.96))] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(29,59,139,0.22)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(29,59,139,0.28)]"
+      className="fixed bottom-4 right-4 z-30 inline-flex items-center gap-3 rounded-full border border-[#bfe8e2] bg-[linear-gradient(135deg,rgba(30,58,120,0.98),rgba(87,183,175,0.98))] px-3 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(29,59,139,0.22)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(29,59,139,0.28)]"
     >
-      <span className="relative inline-flex h-9 w-9 overflow-hidden rounded-full border border-white/25 bg-white/16 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+      <span className="rounded-full bg-white/95 p-1.5 shadow-[0_6px_16px_rgba(17,39,87,0.18)]">
+      <span className="relative inline-flex h-11 w-11 overflow-hidden rounded-full border border-[#d9e9f1] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]">
         <Image
-          src="/persobug-launcher.jpeg"
+          src="/persobug3.jpeg"
           alt=""
           fill
-          sizes="36px"
+          sizes="44px"
           className="object-cover"
         />
+      </span>
       </span>
       <span>{isEn ? "Report a bug" : "Signaler un bug"}</span>
     </Link>
