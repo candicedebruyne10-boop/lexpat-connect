@@ -79,18 +79,18 @@ const CITY_DOTS = [
 function CityDot({ left, top, delay = "0s" }) {
   return (
     <div className="pointer-events-none absolute" style={{ left, top }}>
-      {/* Halo externe — pulsation dorée */}
+      {/* Halo externe — pulsation bleue */}
       <div
-        className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F59E0B]/25 [animation-duration:2.2s]"
+        className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/25 [animation-duration:2.2s]"
         style={{ animationDelay: delay }}
       />
       {/* Anneau intermédiaire */}
       <div
-        className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F59E0B]/40 [animation-duration:2.2s]"
+        className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#59B9B1]/40 [animation-duration:2.2s]"
         style={{ animationDelay: delay }}
       />
-      {/* Point central doré */}
-      <div className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FBBF24] shadow-[0_0_8px_3px_rgba(251,191,36,0.70)]" />
+      {/* Point central bleu */}
+      <div className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9de8e2] shadow-[0_0_8px_3px_rgba(89,185,177,0.70)]" />
     </div>
   );
 }
