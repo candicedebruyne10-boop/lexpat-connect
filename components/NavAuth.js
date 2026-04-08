@@ -115,7 +115,10 @@ export function NavAuthMobile() {
   }
 
   return (
-    <Link href={localizeHref("/connexion", locale)} className="secondary-button">
+    <Link
+      href={localizeHref("/connexion", locale)}
+      className="inline-flex items-center rounded-full border border-[#d9e9f1] bg-white px-3 py-2 text-xs font-semibold text-[#1d3b8b] shadow-sm"
+    >
       {copy.auth.signIn}
     </Link>
   );

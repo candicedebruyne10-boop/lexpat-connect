@@ -392,29 +392,29 @@ function computeEligibility(data) {
 /* ── Composant StepBar ───────────────────────────────────────────────────── */
 function StepBar({ current, total }) {
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-2">
+    <div className="mb-6">
+      <div className="mb-2 flex items-center justify-between gap-1.5">
         {Array.from({ length: total }, (_, i) => {
           const n = i + 1;
           const done   = n < current;
           const active = n === current;
           return (
             <div key={n} className="flex items-center flex-1">
-              <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition ${
+              <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition sm:h-8 sm:w-8 sm:text-sm ${
                 done    ? "bg-[#57B7AF] text-white" :
-                active  ? "bg-[#1E3A78] text-white ring-4 ring-[#1E3A78]/20" :
+                active  ? "bg-[#1E3A78] text-white ring-2 ring-[#1E3A78]/15 sm:ring-4 sm:ring-[#1E3A78]/20" :
                           "border-2 border-[#dce8f5] bg-white text-[#8a9bb0]"
               }`}>
                 {done ? "✓" : n}
               </div>
               {n < total && (
-                <div className={`flex-1 mx-1 h-1 rounded-full ${done ? "bg-[#57B7AF]" : "bg-[#edf1f5]"}`} />
+                <div className={`mx-1 h-1 flex-1 rounded-full ${done ? "bg-[#57B7AF]" : "bg-[#edf1f5]"}`} />
               )}
             </div>
           );
         })}
       </div>
-      <p className="text-xs text-[#8a9bb0] text-right">Étape {current} sur {total}</p>
+      <p className="text-right text-[11px] text-[#8a9bb0] sm:text-xs">Étape {current}/{total}</p>
     </div>
   );
 }
@@ -527,8 +527,8 @@ export default function SimulateurEligibilite() {
   const marketTest       = data.region ? getMarketTestDuration(data.region) : null;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <div className="rounded-[32px] border border-[#e4edf4] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.07)] sm:p-8">
+    <div className="mx-auto max-w-2xl px-4 py-8 sm:py-10">
+      <div className="rounded-[28px] border border-[#e4edf4] bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] sm:rounded-[32px] sm:p-8">
 
         {/* ── ÉTAPES 1–4 ─────────────────────────────────────────────────── */}
         {step <= TOTAL_STEPS && (

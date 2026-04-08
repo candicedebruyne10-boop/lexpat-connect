@@ -83,10 +83,10 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
   /* ── MOBILE ──────────────────────────────────────────────────────── */
   if (mobile) {
     return (
-      <div className="w-full">
+      <div className="relative shrink-0">
         <button
           onClick={() => setOpen((v) => !v)}
-          className={`flex w-full items-center justify-between gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition
+          className={`flex items-center justify-between gap-2 rounded-full border px-3 py-2 text-left text-xs font-semibold transition
             ${open
               ? `border-current ${p.navText} bg-white`
               : `border-[#e3eaf1] bg-white text-[#607086] ${p.navHover}`
@@ -94,7 +94,7 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
         >
           <span className="flex min-w-0 items-center gap-2">
             <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${p.dot}`} />
-            <span>{label}</span>
+            <span className="truncate">{label}</span>
           </span>
           <svg className={`h-3 w-3 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 12 12" fill="none">
             <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -102,13 +102,13 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
         </button>
 
         {open ? (
-          <div className="mt-2 grid gap-2 rounded-[20px] border border-[#e3eaf1] bg-white p-2">
+          <div className="absolute left-0 top-full z-50 mt-2 grid min-w-[220px] gap-2 rounded-[18px] border border-[#e3eaf1] bg-white p-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
             {items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${p.subChip}`}
+                className={`rounded-2xl border px-3 py-2.5 text-sm font-medium transition ${p.subChip}`}
               >
                 <span className="block text-[#1E3A78]">{item.label}</span>
                 {item.description ? (
