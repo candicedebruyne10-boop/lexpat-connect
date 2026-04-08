@@ -98,26 +98,30 @@ function isFlandre(region) {
 function computeEligibility(data) {
   const {
     nationality, region, profession, salary, isHQ, diploma, contractType,
+    fullTime, experience,
     offerPublished, euresPublished, candidatesRefused,
   } = data;
 
-  const regionLabels  = parseRegionSelection(region);
-  const regionName    = regionLabels[0] || "la région sélectionnée";
-  const sal           = Number(salary) || 0;
-  const positives     = [];
-  const warnings      = [];
+  const regionLabels   = parseRegionSelection(region);
+  const regionName     = regionLabels[0] || "la région sélectionnée";
+  const sal            = Number(salary) || 0;
+  const expYears       = Number(experience) || 0;
+  const positives      = [];
+  const warnings       = [];
+  const nextSteps      = [];
 
   /* ── Branche 1 : UE / EEE / Suisse ───────────────────────────────────── */
   if (EU_NATIONALITIES.has(nationality)) {
     return {
       verdict:    "EU_EXEMPT",
-      label:      "Ressortissant UE / EEE / CH",
+      label:      "Aucune démarche d'autorisation requise",
       color:      "teal",
       procedure:  "Libre circulation",
       delay:      "Aucun permis requis",
       complexity: "Faible",
-      positives:  ["Libre circulation : aucun permis de travail n'est requis pour exercer une activité salariée en Belgique."],
+      positives:  ["Ressortissant UE/EEE/CH : libre circulation garantie par les traités européens. Aucun permis de travail ni d'autorisation préalable n'est requis pour exercer une activité salariée en Belgique."],
       warnings:   [],
+      nextSteps:  ["Vérifier que le candidat dispose bien d'un titre de séjour valide si nécessaire.", "S'assurer que le contrat respecte le droit belge du travail (CCT, barèmes sectoriels)."],
     };
   }
 
@@ -129,166 +133,212 @@ function computeEligibility(data) {
   const flandre      = isFlandre(region);
 
   /* ── Vérification préalable : salaire minimum légal ─────────────────── */
-  if (sal < RMMMG) {
+  if (sal > 0 && sal < RMMMG) {
     warnings.push(
-      `Salaire proposé (${fmt(sal)} €/mois) inférieur au RMMMG légal en vigueur depuis le 1er avril 2026 : ${fmt(RMMMG)} €/mois. ` +
-      `La rémunération doit atteindre ce minimum pour tout travailleur étranger. Le dossier ne peut pas être introduit en l'état.`
+      `Le salaire proposé (${fmt(sal)} €/mois) est inférieur au RMMMG légal en vigueur depuis le 1er avril 2026 : ${fmt(RMMMG)} €/mois bruts pour un temps plein. ` +
+      `La rémunération d'un travailleur étranger doit impérativement atteindre ce minimum. En l'état, le dossier ne peut pas être introduit.`
     );
+    if (fullTime === "partial") warnings.push("Pour un temps partiel, le RMMMG est calculé au prorata des heures. Vérifiez que le salaire équivaut bien au RMMMG temps plein proraté.");
     return {
       verdict:    "BLOCKED",
-      label:      "Salaire sous le minimum légal",
+      label:      "Dossier irrecevable en l'état",
       color:      "red",
-      procedure:  "Dossier irrecevable",
+      procedure:  "Condition salariale non remplie",
       delay:      "—",
       complexity: "Bloquant",
       positives:  [],
       warnings,
+      nextSteps:  ["Revoir la grille salariale pour atteindre au minimum le RMMMG (2 189,81 €/mois bruts au 1er avril 2026).", "Consulter le cabinet LEXPAT pour identifier si une convention collective sectorielle impose un barème supérieur."],
     };
+  }
+
+  /* Avertissement temps partiel */
+  if (fullTime === "partial") {
+    warnings.push(`Temps partiel : assurez-vous que la rémunération rapportée à un équivalent temps plein atteint bien le RMMMG de ${fmt(RMMMG)} €/mois.`);
   }
 
   /* ── Branche 2 : Travailleur hautement qualifié (THQ) ────────────────── */
   if (thqOk) {
-    positives.push(
-      `Profil THQ validé : ${diploma} + salaire de ${fmt(sal)} €/mois ≥ seuil ${fmt(thqThreshold)} €/mois pour ${regionName}.`
-    );
-    positives.push("Dispensé de l'examen du marché de l'emploi — aucune publication d'offre ni justification de refus n'est requise.");
+    positives.push(`Niveau de diplôme (${diploma}) et salaire (${fmt(sal)} €/mois) atteignent les critères du régime hautement qualifié pour ${regionName} — seuil applicable : ${fmt(thqThreshold)} €/mois.`);
+    positives.push("Ce régime dispense entièrement de l'examen du marché de l'emploi : aucune publication d'offre ni justification de refus de candidats locaux n'est exigée.");
     positives.push("Délai légal de traitement : 4 mois maximum (réduit à 3 mois pour la Carte Bleue Européenne).");
-    if (contractType === "CDI") positives.push("Contrat CDI : facteur favorable à l'instruction du dossier.");
-    if (contractType === "CDD") warnings.push("Un CDD est acceptable pour le régime THQ, mais la durée doit être suffisante pour justifier le séjour demandé.");
+    if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction.");
+    if (expYears >= 6) positives.push(`Expérience professionnelle significative (${expYears}+ ans) : renforce la crédibilité du profil auprès de l'autorité compétente.`);
+    if (contractType === "CDD") warnings.push("Un CDD est possible en régime THQ, mais sa durée doit justifier la période de séjour demandée.");
     return {
-      verdict:    "ELIGIBLE_DIRECT",
-      label:      "Éligible — profil THQ dispensé",
+      verdict:    "THQ_FAVORABLE",
+      label:      "Profil favorable — orientation vers la voie THQ",
       color:      "green",
-      procedure:  "Permis unique — voie THQ",
+      procedure:  "Permis unique — voie Travailleur Hautement Qualifié",
       delay:      "4 mois max (3 mois Carte Bleue UE)",
       complexity: "Modérée",
       positives,
       warnings,
+      nextSteps:  [
+        "Rassembler et faire authentifier les diplômes (reconnaissance éventuelle via NARIC).",
+        "Préparer le contrat de travail mentionnant explicitement le salaire mensuel brut.",
+        "Constituer le dossier de demande de permis unique auprès de l'autorité régionale compétente.",
+        "Une vérification juridique complémentaire reste recommandée selon le profil exact du candidat.",
+      ],
     };
   }
 
   /* Signaler pourquoi THQ refusé si la case était cochée */
   if (isHQ) {
     if (!hasGoodDiploma)
-      warnings.push(`Le régime THQ exige un diplôme Master ou Doctorat. Le niveau "${diploma || "non renseigné"}" n'ouvre pas droit à cette voie.`);
+      warnings.push(`Le régime THQ requiert un diplôme Master ou Doctorat. Le niveau indiqué ("${diploma || "non renseigné"}") ne permet pas d'accéder à cette voie — le dossier sera orienté vers la procédure classique.`);
     else if (sal < thqThreshold)
-      warnings.push(`Le salaire (${fmt(sal)} €) est inférieur au seuil THQ de ${fmt(thqThreshold)} €/mois pour ${regionName}. Le dossier sera traité en voie classique.`);
+      warnings.push(`Le salaire indiqué (${fmt(sal)} €) est inférieur au seuil THQ de ${fmt(thqThreshold)} €/mois pour ${regionName}. Le profil ne peut pas bénéficier de la dispense de test marché — voie classique applicable.`);
   }
 
-  /* Salaire au-dessus du RMMMG ✓ */
-  positives.push(`Salaire de ${fmt(sal)} €/mois ≥ RMMMG légal (${fmt(RMMMG)} €). Condition de base respectée.`);
+  /* Salaire OK */
+  positives.push(`Salaire de ${fmt(sal)} €/mois ≥ RMMMG légal (${fmt(RMMMG)} €). La condition salariale de base est respectée.`);
+  if (expYears >= 3) positives.push(`Expérience de ${expYears}+ ans : élément de nature à renforcer la pertinence du recrutement aux yeux de l'autorité d'instruction.`);
 
   /* ── Branche 3 : Métier en pénurie ───────────────────────────────────── */
   if (shortage) {
-    positives.push(`"${profession}" figure sur la liste officielle des métiers en pénurie pour ${regionName} (2026).`);
+    positives.push(`"${profession}" figure sur la liste officielle des métiers en pénurie pour ${regionName} (2026) — cela influence favorablement la procédure.`);
 
-    /* Flandre : dispense totale du test marché pour les knelpuntberoepen */
+    /* Flandre : dispense totale */
     if (flandre) {
-      positives.push("En Flandre, les métiers en pénurie (knelpuntberoepen) sont entièrement dispensés du test du marché de l'emploi.");
+      positives.push("En Flandre, les métiers en pénurie (knelpuntberoepen) ouvrent droit à une dispense totale de l'examen du marché de l'emploi.");
       positives.push("Délai légal de traitement : 4 mois maximum.");
-      if (contractType === "CDI") positives.push("Contrat CDI : facteur favorable.");
-      if (contractType === "CDD") warnings.push("CDD : la durée doit être suffisante pour couvrir la période du permis demandé.");
+      if (contractType === "CDI") positives.push("Contrat CDI : élément favorable.");
+      if (contractType === "CDD") warnings.push("CDD : vérifier que la durée est compatible avec la période de séjour demandée.");
       return {
-        verdict:    "ELIGIBLE_DIRECT",
-        label:      "Éligible — métier en pénurie (Flandre)",
+        verdict:    "SHORTAGE_FAVORABLE",
+        label:      "Situation favorable à une analyse approfondie",
         color:      "green",
         procedure:  "Permis unique — métier en pénurie / dispense Flandre",
         delay:      "4 mois max",
         complexity: "Modérée",
         positives,
         warnings,
+        nextSteps:  [
+          "Vérifier que l'intitulé exact du poste correspond bien à la liste VDAB des knelpuntberoepen.",
+          "Préparer le dossier de demande de permis unique avec les documents requis.",
+          "Consulter un juriste pour valider les conditions spécifiques du dossier avant introduction.",
+        ],
       };
     }
 
-    /* Bruxelles / Wallonie : test marché allégé (5 semaines) */
+    /* Bruxelles / Wallonie : test marché allégé */
     positives.push(
-      `À ${regionName}, les métiers en pénurie facilitent la procédure mais une publication minimale de ` +
+      `À ${regionName}, le métier en pénurie facilite la procédure, mais une publication minimale de ` +
       `${marketTest.label} sur ${marketTest.platform} reste requise avant l'introduction du dossier.`
     );
 
     const marketDone = offerPublished && (Number(candidatesRefused) >= 1 || euresPublished);
     if (marketDone) {
-      positives.push("Test marché engagé : publication effectuée et candidats locaux documentés.");
-      if (contractType === "CDI") positives.push("Contrat CDI : facteur favorable.");
+      positives.push("Les démarches de test marché ont été engagées : publication effectuée et candidats locaux documentés.");
+      if (contractType === "CDI") positives.push("Contrat CDI : élément favorable.");
       return {
-        verdict:    "ELIGIBLE_DIRECT",
-        label:      "Éligible — risque maîtrisé",
+        verdict:    "SHORTAGE_FAVORABLE",
+        label:      "Situation favorable à une analyse approfondie",
         color:      "green",
         procedure:  `Permis unique — métier en pénurie (${marketTest.platform})`,
         delay:      "4 mois max",
         complexity: "Modérée",
         positives,
         warnings,
+        nextSteps:  [
+          "Documenter et archiver formellement tous les refus de candidats locaux (motifs écrits obligatoires).",
+          "S'assurer que la durée de publication atteint bien ${marketTest.label} avant l'introduction.",
+          "Consulter un juriste pour préparer et valider le dossier complet.",
+        ],
       };
     }
 
-    warnings.push(`Publication de l'offre requise pendant ${marketTest.label} minimum sur ${marketTest.platform} avant introduction.`);
-    if (!euresPublished) warnings.push("Publication EURES recommandée pour renforcer la preuve du test marché.");
+    warnings.push(`La publication de l'offre sur ${marketTest.platform} pendant au minimum ${marketTest.label} est requise avant de pouvoir introduire la demande.`);
+    if (!euresPublished) warnings.push("La publication sur EURES est fortement recommandée pour étayer la preuve du test marché.");
     return {
-      verdict:    "MARKET_TEST_REQUIRED",
-      label:      "Test marché à compléter",
+      verdict:    "PENDING_STEPS",
+      label:      "Dossier à sécuriser avant introduction",
       color:      "orange",
       procedure:  `Permis unique — métier en pénurie (${marketTest.platform})`,
       delay:      "4 mois max (après test marché)",
       complexity: "Modérée",
       positives,
       warnings,
+      nextSteps:  [
+        `Publier l'offre sur ${marketTest.platform} et EURES pendant ${marketTest.label} minimum.`,
+        "Documenter les candidatures reçues et les motifs de refus.",
+        "Une fois le test marché complété, constituer le dossier avec l'accompagnement d'un juriste.",
+      ],
     };
   }
 
-  /* ── Branche 4 : Permis unique classique — test marché complet ──────── */
+  /* ── Branche 4 : Permis unique classique ────────────────────────────── */
   warnings.push(
-    `"${profession || "Ce métier"}" ne figure pas sur la liste des métiers en pénurie — ` +
-    `l'examen complet du marché de l'emploi est obligatoire.`
+    `"${profession || "Ce métier"}" ne figure pas sur la liste des métiers en pénurie pour ${regionName} — ` +
+    `l'examen complet du marché de l'emploi est obligatoire avant toute introduction de dossier.`
   );
   warnings.push(
-    `Durée minimale de publication : ${marketTest.label} sur ${marketTest.platform} + EURES, ` +
-    `avec justification des refus de candidats locaux et européens.`
+    `Durée minimale de publication imposée : ${marketTest.label} sur ${marketTest.platform} + EURES, ` +
+    `avec justification écrite des refus de candidats locaux et européens.`
   );
 
   const marketTestFull    = offerPublished && euresPublished && Number(candidatesRefused) >= 3;
   const marketTestPartial = offerPublished && (euresPublished || Number(candidatesRefused) >= 1);
 
   if (marketTestFull) {
-    positives.push("Test marché complet : publication régionale + EURES + candidats locaux documentés.");
-    if (contractType === "CDI") positives.push("Contrat CDI : facteur favorable.");
+    positives.push("Les trois composantes du test marché sont engagées : publication régionale, EURES et candidats locaux documentés.");
+    if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction.");
+    if (expYears >= 3) positives.push("L'expérience du candidat renforce l'argumentation sur l'inadéquation des profils locaux.");
     return {
-      verdict:    "ELIGIBLE_DIRECT",
-      label:      "Éligible — test marché satisfait",
+      verdict:    "CLASSIC_FAVORABLE",
+      label:      "Dossier favorable — à consolider avec un juriste",
       color:      "green",
       procedure:  "Permis unique classique",
       delay:      "4 mois max",
       complexity: "Élevée",
       positives,
       warnings,
+      nextSteps:  [
+        "Vérifier que la durée effective de publication atteint bien le minimum légal requis.",
+        "Constituer et archiver formellement tous les justificatifs de refus.",
+        "Faire analyser le dossier complet par un juriste avant introduction.",
+        "Une vérification complémentaire peut être nécessaire selon la région, le poste et la situation individuelle du candidat.",
+      ],
     };
   }
 
   if (marketTestPartial) {
-    positives.push("Test marché partiellement engagé.");
-    warnings.push(`Complétez la procédure : ${marketTest.label} de publication + documentation des refus de candidats locaux/européens.`);
+    positives.push("Certaines démarches de test marché ont été engagées — c'est un point de départ.");
+    warnings.push(`Il manque des éléments pour constituer un dossier solide : compléter la publication (${marketTest.label} minimum) et documenter les refus motivés.`);
     return {
-      verdict:    "MARKET_TEST_REQUIRED",
-      label:      "Test marché à compléter",
+      verdict:    "PENDING_STEPS",
+      label:      "Dossier à sécuriser avant introduction",
       color:      "orange",
       procedure:  "Permis unique classique",
       delay:      "4 mois max (après test marché complet)",
       complexity: "Élevée",
       positives,
       warnings,
+      nextSteps:  [
+        `Compléter la publication sur ${marketTest.platform} et EURES jusqu'à ${marketTest.label} minimum.`,
+        "Collecter et archiver les refus motivés de candidats locaux et européens.",
+        "Consulter un juriste pour évaluer la solidité du dossier avant introduction.",
+      ],
     };
   }
 
-  warnings.push("Aucune démarche de test marché engagée. Ce prérequis est obligatoire et doit précéder l'introduction du dossier.");
+  warnings.push("Aucune démarche de test marché n'a encore été engagée. Ce prérequis est obligatoire et doit précéder toute introduction de dossier.");
   return {
-    verdict:    "HIGH_RISK",
-    label:      "Test marché non engagé",
+    verdict:    "UNCERTAIN",
+    label:      "Situation juridiquement plus incertaine",
     color:      "red",
     procedure:  "Permis unique classique",
     delay:      "Indéterminé",
     complexity: "Très élevée",
     positives,
     warnings,
+    nextSteps:  [
+      `Engager immédiatement le test marché : publication sur ${marketTest.platform} et EURES.`,
+      `Respecter la durée minimale de ${marketTest.label} avant toute introduction.`,
+      "Ne pas introduire de dossier sans avoir complété et documenté le test marché.",
+      "Consulter le cabinet LEXPAT pour une analyse juridique de la situation avant d'aller plus loin.",
+    ],
   };
 }
 
@@ -612,13 +662,18 @@ export default function SimulateurEligibilite() {
                     />
                     <div>
                       <p className="text-sm font-semibold text-[#1E3A78]">Travailleur hautement qualifié (THQ)</p>
-                      <p className="mt-0.5 text-xs text-[#607086]">
-                        Requiert : diplôme Master ou Doctorat
+                      <p className="mt-1 text-xs text-[#607086]">
+                        Cochez si le poste relève d'une fonction hautement qualifiée : <strong>cadre dirigeant, ingénieur spécialisé, chercheur, médecin, expert IT, juriste senior</strong>, etc.
+                      </p>
+                      <p className="mt-1 text-xs text-[#607086]">
+                        Conditions cumulatives : <strong>diplôme Master ou Doctorat</strong>
                         {thqThreshold
-                          ? ` + salaire ≥ ${fmt(thqThreshold)} €/mois pour ${regionLabels[0] || "cette région"}.`
+                          ? ` + salaire ≥ ${fmt(thqThreshold)} €/mois (seuil ${regionLabels[0] || "régional"} 2026).`
                           : "."
                         }
-                        {" "}Le profil THQ est entièrement dispensé du test du marché de l'emploi.
+                      </p>
+                      <p className="mt-1 text-xs font-medium text-[#1E3A78]">
+                        ✦ Si ces critères sont réunis, le profil est entièrement dispensé du test du marché de l'emploi.
                       </p>
                     </div>
                   </label>
@@ -753,10 +808,10 @@ export default function SimulateurEligibilite() {
               ))}
             </div>
 
-            {/* Points favorables */}
+            {/* Ce qui plaide en faveur du dossier */}
             {result.positives.length > 0 && (
               <div className="rounded-[16px] border border-[#6ee7b7] bg-[#f0fdf4] p-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#065f46]">Points favorables</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#065f46]">Ce qui plaide en faveur du dossier</p>
                 <ul className="space-y-2">
                   {result.positives.map((p, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#065f46]">
@@ -767,10 +822,10 @@ export default function SimulateurEligibilite() {
               </div>
             )}
 
-            {/* Points d'attention */}
+            {/* Ce qui fragilise ou manque */}
             {result.warnings.length > 0 && (
               <div className="rounded-[16px] border border-[#fed7aa] bg-[#fff7ed] p-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#92400e]">Points d'attention</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#92400e]">Ce qui fragilise le dossier ou reste à vérifier</p>
                 <ul className="space-y-2">
                   {result.warnings.map((w, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#92400e]">
@@ -781,10 +836,26 @@ export default function SimulateurEligibilite() {
               </div>
             )}
 
-            {/* Mention légale */}
-            <p className="rounded-[12px] bg-[#f5f8ff] px-4 py-3 text-xs text-[#8a9bb0] leading-relaxed">
-              <strong className="text-[#607086]">Avertissement</strong> — Cette simulation est fournie à titre indicatif et ne constitue pas un avis juridique. Les règles d'immigration économique varient selon la situation individuelle. Consultez un professionnel agréé avant toute démarche.
-            </p>
+            {/* Prochaines étapes recommandées */}
+            {result.nextSteps && result.nextSteps.length > 0 && (
+              <div className="rounded-[16px] border border-[#c7d7f0] bg-[#f0f5ff] p-4">
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#1E3A78]">Prochaines étapes recommandées</p>
+                <ol className="space-y-2">
+                  {result.nextSteps.map((s, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-[#1E3A78]">
+                      <span className="mt-0.5 shrink-0 text-xs font-bold text-[#57B7AF]">{i + 1}.</span> {s}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
+            {/* Mention de prudence juridique */}
+            <div className="rounded-[14px] border-l-4 border-[#1E3A78] bg-[#f0f5ff] px-4 py-4 text-xs text-[#607086] leading-relaxed">
+              <p className="font-bold text-[#1E3A78] mb-1">Orientation initiale — pas un avis juridique</p>
+              <p>Ce résultat constitue une orientation initiale basée sur les informations déclarées. Il ne remplace pas une analyse juridique individualisée. Une vérification complémentaire peut être nécessaire selon la région, le poste et la situation personnelle du candidat.</p>
+              <p className="mt-2">Les règles d'immigration économique en Belgique varient selon des critères qui ne peuvent pas tous être captés par un simulateur. Nous recommandons de consulter un professionnel agréé avant d'introduire toute démarche.</p>
+            </div>
 
             {/* Lead capture */}
             {!sent ? (

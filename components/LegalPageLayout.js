@@ -11,7 +11,23 @@ function renderBody(body) {
   return body;
 }
 
-export default function LegalPageLayout({ title, intro, sections, lastUpdated = "1 avril 2026" }) {
+export default function LegalPageLayout({
+  title,
+  intro,
+  sections,
+  lastUpdated = "1 avril 2026",
+  locale = "fr"
+}) {
+  const isEn = locale === "en";
+  const legalBadge = isEn ? "Legal information" : "Informations légales";
+  const pageLabel = isEn ? "On this page" : "Sur cette page";
+  const contactTitle = isEn ? "A question?" : "Une question ?";
+  const contactText = isEn
+    ? "Website content is provided for general information only. Using the platform, reading these pages or submitting a form does not create an attorney-client relationship or personalized legal advice."
+    : "Le contenu du site est fourni à titre informatif général. L’utilisation de la plateforme, la lecture de ces pages ou l’envoi d’un formulaire ne créent pas, à eux seuls, une relation avocat-client ni un avis juridique personnalisé.";
+  const contactCta = isEn ? "Contact LEXPAT" : "Contacter LEXPAT";
+  const contactHref = isEn ? "/en/contact" : "/contact";
+
   return (
     <section className="pb-16 pt-8 sm:pb-20 lg:pb-24 lg:pt-12">
       <div className="container-shell">
@@ -21,7 +37,7 @@ export default function LegalPageLayout({ title, intro, sections, lastUpdated = 
 
           <div className="relative mx-auto max-w-3xl text-center">
             <p className="inline-flex items-center justify-center rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#255c8f]">
-              Informations légales
+              {legalBadge}
             </p>
             <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-[#1d3b8b] sm:text-5xl">
               {title}
@@ -35,7 +51,7 @@ export default function LegalPageLayout({ title, intro, sections, lastUpdated = 
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
           <aside className="rounded-[28px] border border-[#e4edf4] bg-white p-6 shadow-[0_12px_30px_rgba(24,53,101,0.05)] lg:sticky lg:top-28">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Sur cette page</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">{pageLabel}</p>
             <nav className="mt-5 space-y-3">
               {sections.map((section, index) => (
                 <a
@@ -49,16 +65,16 @@ export default function LegalPageLayout({ title, intro, sections, lastUpdated = 
               ))}
             </nav>
             <div className="mt-6 rounded-[22px] border border-[#dce9e7] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-5 text-sm text-[#607086]">
-              <p className="font-semibold text-[#1d3b8b]">Une question ?</p>
+              <p className="font-semibold text-[#1d3b8b]">{contactTitle}</p>
               <p className="mt-2 leading-7">
-                Pour toute demande liée aux données, au fonctionnement de la plateforme ou au relais juridique, vous pouvez nous écrire.
+                {contactText}
               </p>
               <Link
-                href="/contact"
-                onClick={() => track("Legal Contact CTA Clicked", { cta: "Contacter LEXPAT", location: "legal-sidebar" })}
+                href={contactHref}
+                onClick={() => track("Legal Contact CTA Clicked", { cta: contactCta, location: "legal-sidebar" })}
                 className="mt-4 inline-flex font-semibold text-[#1d3b8b] transition hover:text-[#57b7af]"
               >
-                Contacter LEXPAT
+                {contactCta}
               </Link>
             </div>
           </aside>
