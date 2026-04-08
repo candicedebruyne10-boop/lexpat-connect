@@ -126,7 +126,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
             priority
             quality={84}
             className="object-contain bg-[#060c26]"
-            style={{ objectPosition: '65% center' }}
+            style={{ objectPosition: 'right center' }}
             sizes="100vw"
           />
           {/* Voile sombre à gauche */}
