@@ -82,6 +82,7 @@ export function NavAuthMobile() {
   const pathname = usePathname() || "/";
   const locale = detectLocaleFromPathname(pathname);
   const copy = siteCopy[locale];
+  const mobileSignInLabel = locale === "fr" ? "Connexion" : copy.auth.signIn;
 
   async function handleSignOut() {
     await signOut();
@@ -126,7 +127,7 @@ export function NavAuthMobile() {
       href={localizeHref("/connexion", locale)}
       className="inline-flex items-center rounded-full border border-[#d9e9f1] bg-white px-3 py-2 text-xs font-semibold text-[#1d3b8b] shadow-sm"
     >
-      {copy.auth.signIn}
+      {mobileSignInLabel}
     </Link>
   );
 }
