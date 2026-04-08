@@ -441,20 +441,31 @@ export default function MemberLockedPermitContent({ locale = "fr" }) {
     <section id="contenu-membre" className="py-10 sm:py-14 lg:py-16">
       <div className="container-shell">
         <div className="rounded-[36px] border border-[#e3ebf3] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-8 lg:p-10">
-          <div className="mx-auto mb-8 max-w-4xl text-center">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <p className="inline-flex items-center gap-2 rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#173A8A]">
-                <LockIcon />
-                {copy.memberContent}
-              </p>
-              {status === "member" ? (
-                <p className="inline-flex items-center gap-2 rounded-full border border-[rgba(89,185,177,0.22)] bg-[#ecfaf8] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2f9f97]">
-                  <span className="h-2 w-2 rounded-full bg-[#59B9B1]" />
-                  {copy.unlocked}
-                </p>
-              ) : null}
+          {/* ── Bannière d'état — très visible ──────────────────────────── */}
+          {status === "member" ? (
+            <div className="mb-8 flex items-center gap-4 rounded-[20px] border border-[#6ee7b7] bg-[linear-gradient(135deg,#f0fdf9_0%,#e6faf6_100%)] px-5 py-4 shadow-[0_4px_18px_rgba(89,185,177,0.15)]">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#59B9B1] text-white shadow-[0_4px_12px_rgba(89,185,177,0.35)]">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f9f97]">✦ {copy.unlocked}</p>
+                <p className="mt-0.5 text-xs text-[#4a9e96]">Vous avez accès à l'intégralité de ce contenu réservé aux membres.</p>
+              </div>
             </div>
-            <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">
+          ) : status === "guest" ? (
+            <div className="mb-8 flex items-center gap-4 rounded-[20px] border border-[#c7d7ef] bg-[linear-gradient(135deg,#f0f4ff_0%,#e8eefb_100%)] px-5 py-4 shadow-[0_4px_18px_rgba(29,59,139,0.08)]">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1d3b8b] text-white shadow-[0_4px_12px_rgba(29,59,139,0.30)]">
+                <LockIcon />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#1d3b8b]">⊘ {copy.memberContent}</p>
+                <p className="mt-0.5 text-xs text-[#4a6090]">Ce contenu est réservé aux membres. Connectez-vous ou créez un compte pour y accéder.</p>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mx-auto mb-8 max-w-4xl text-center">
+            <h2 className="mx-auto max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">
               {copy.title}
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-[#607086] sm:text-base">
