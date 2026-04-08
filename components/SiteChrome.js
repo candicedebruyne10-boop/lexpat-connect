@@ -256,8 +256,8 @@ export default function SiteChrome({ children }) {
 
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer className="mt-20 border-t border-[#edf1f5] bg-[#f8fafb]">
-        <div className="container-shell py-14">
-          <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div className="container-shell py-12">
+          <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.78fr)_minmax(240px,0.92fr)_minmax(250px,0.9fr)] xl:gap-10">
 
             {/* Col 1 — Brand */}
             <div className="space-y-4">
@@ -270,12 +270,12 @@ export default function SiteChrome({ children }) {
                   <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#57B7AF]">Connect</p>
                 </div>
               </div>
-              <p className="max-w-xs text-sm leading-7 text-[#607086]">
+              <p className="max-w-[320px] text-sm leading-7 text-[#607086]">
                 {isEn
                   ? "A platform connecting Belgian employers with international workers in shortage occupations, clearly and efficiently."
                   : "Une plateforme pensée pour connecter les employeurs belges aux travailleurs internationaux dans les métiers en pénurie, de façon plus claire, plus rapide et plus lisible."}
               </p>
-              <div className="rounded-[16px] border border-[#dce8f3] bg-white p-4 text-sm leading-5 text-[#607086]">
+              <div className="max-w-[520px] rounded-[16px] border border-[#dce8f3] bg-white p-4 text-sm leading-6 text-[#607086]">
                 <p className="mb-2 font-semibold text-[#1E3A78]">
                   {isEn ? "After the match" : "Après la mise en relation"}
                 </p>
@@ -288,7 +288,7 @@ export default function SiteChrome({ children }) {
             </div>
 
             {/* Col 2 — Employeurs + Travailleurs */}
-            <div>
+            <div className="space-y-6">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
                 {isEn ? "Employers" : "Employeurs"}
               </p>
@@ -304,7 +304,7 @@ export default function SiteChrome({ children }) {
                 </Link>
               </div>
 
-              <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
                 {isEn ? "Workers" : "Travailleurs"}
               </p>
               <div className="mt-4 space-y-3 text-sm text-[#607086]">
@@ -318,7 +318,7 @@ export default function SiteChrome({ children }) {
             </div>
 
             {/* Col 3 — Actions rapides */}
-            <div>
+            <div className="space-y-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#57B7AF]">
                 {isEn ? "Quick actions" : "Actions rapides"}
               </p>
@@ -345,19 +345,19 @@ export default function SiteChrome({ children }) {
             </div>
 
             {/* Col 4 — Cabinet LEXPAT */}
-            <div>
+            <div className="space-y-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1E3A78]">
                 {isEn ? "LEXPAT Law Firm" : "Cabinet LEXPAT"}
               </p>
-              <p className="mt-4 text-sm leading-7 text-[#607086]">
+              <p className="max-w-[300px] text-sm leading-7 text-[#607086]">
                 {isEn
                   ? "A distinct legal relay when a match leads to a single permit, work law, or recruitment security question."
                   : "Un relais juridique distinct lorsque la mise en relation débouche sur une question de permis unique, de droit au travail ou de sécurisation du recrutement."}
               </p>
-              <div className="mt-5">
+              <div>
                 <Link
                   href={localizeHref("/accompagnement-juridique", locale)}
-                  className="secondary-button inline-flex text-center"
+                  className="secondary-button inline-flex min-w-[220px] justify-center text-center"
                 >
                   {isEn ? "View the support" : "Voir l'accompagnement"}
                 </Link>
