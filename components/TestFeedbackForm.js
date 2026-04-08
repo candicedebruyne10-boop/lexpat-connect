@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 const PAGE_OPTIONS = [
@@ -224,15 +225,24 @@ export default function TestFeedbackForm({ locale = "fr" }) {
 
         <div className="md:col-span-2 flex flex-col gap-4 pt-2">
           {status.message ? (
-            <div
-              className={
-                status.type === "success"
-                  ? "rounded-2xl border border-[#cde8e4] bg-[#f2fbfa] px-4 py-4 text-sm leading-7 text-[#1f6f69]"
-                  : "rounded-2xl border border-[#f2d6d8] bg-[#fff7f7] px-4 py-4 text-sm leading-7 text-[#9b3a43]"
-              }
-            >
-              {status.message}
-            </div>
+            status.type === "success" ? (
+              <div className="flex items-center gap-4 rounded-2xl border border-[#cde8e4] bg-[#f2fbfa] px-4 py-4 text-sm leading-7 text-[#1f6f69]">
+                <span className="relative inline-flex h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#d9e9f1] bg-white shadow-[0_8px_20px_rgba(17,39,87,0.08)]">
+                  <Image
+                    src="/persobug3.jpeg"
+                    alt=""
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                </span>
+                <p>{status.message}</p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-[#f2d6d8] bg-[#fff7f7] px-4 py-4 text-sm leading-7 text-[#9b3a43]">
+                {status.message}
+              </div>
+            )
           ) : null}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
