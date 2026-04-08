@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { AuthProvider } from '../components/AuthProvider';
 import SiteChrome from '../components/SiteChrome';
 import CookieBanner from '../components/CookieBanner';
+import TestFeedbackLauncher from '../components/TestFeedbackLauncher';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       <body className="font-sans">
         <AuthProvider>
           <SiteChrome>{children}</SiteChrome>
+          <TestFeedbackLauncher />
           <CookieBanner />
           <Analytics />
         </AuthProvider>
