@@ -239,8 +239,8 @@ export default function EmployerRegionalLanding({ page }) {
       />
 
       <Section
-        title={page.form.title}
-        intro={page.form.intro}
+        title="Besoin d’un échange direct avant d’avancer ?"
+        intro="La plateforme reste le parcours principal. Ce formulaire est proposé comme solution secondaire pour les employeurs qui préfèrent être recontactés."
         kicker="Contact employeur"
         muted
       >
