@@ -123,7 +123,13 @@ export default function FormCard({
       }
 
       setValues({});
-      setStatus({ type: "success", message: successMessage });
+      setStatus({
+        type: result.emailSent === false ? "warning" : "success",
+        message:
+          result.emailSent === false
+            ? "Votre demande a bien été enregistrée, mais l'email de notification n'a pas pu être envoyé pour le moment. Le message est tout de même bien pris en compte."
+            : successMessage
+      });
     } catch (error) {
       setStatus({
         type: "error",
@@ -218,7 +224,9 @@ export default function FormCard({
             <div
               className={status.type === "success"
                 ? "rounded-2xl border border-[#cde8e4] bg-[#f2fbfa] px-4 py-3 text-sm text-[#1f6f69]"
-                : "rounded-2xl border border-[#f2d6d8] bg-[#fff7f7] px-4 py-3 text-sm text-[#9b3a43]"}
+                : status.type === "warning"
+                  ? "rounded-2xl border border-[#f4e3b0] bg-[#fffaf0] px-4 py-3 text-sm text-[#8a6420]"
+                  : "rounded-2xl border border-[#f2d6d8] bg-[#fff7f7] px-4 py-3 text-sm text-[#9b3a43]"}
             >
               {status.message}
             </div>

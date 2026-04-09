@@ -81,32 +81,55 @@ export async function POST(request) {
     `;
 
     const resend = new Resend(resendApiKey);
+    let emailSent = false;
+    let emailErrorMessage = "";
 
-    await resend.emails.send({
-      from,
-      to: recipient,
-      subject: `[LEXPAT Connect] ${title}`,
-      replyTo: replyToField?.value,
-      html
-    });
-
-    if (replyToField?.value) {
-      await resend.emails.send({
+    try {
+      const { error: primaryEmailError } = await resend.emails.send({
         from,
-        to: replyToField.value,
-        subject: "Votre demande a bien été enregistrée — LEXPAT Connect",
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #17345d;">
-            <h2 style="margin-bottom: 12px;">Votre demande a bien été enregistrée</h2>
-            <p>Merci pour votre message. Votre demande a bien été transmise à LEXPAT Connect.</p>
-            <p>Nous reviendrons vers vous dès qu'une première lecture de votre besoin aura pu être effectuée.</p>
-            <p style="margin-top: 20px; color: #5d6e83;">Selon la nature de votre demande, elle pourra être traitée par la plateforme LEXPAT Connect ou, si nécessaire, orientée vers le cabinet LEXPAT.</p>
-          </div>
-        `
+        to: recipient,
+        subject: `[LEXPAT Connect] ${title}`,
+        replyTo: replyToField?.value,
+        html
       });
+
+      if (primaryEmailError) {
+        emailErrorMessage = primaryEmailError.message || "Erreur Resend inconnue";
+        console.error("[forms] Erreur Resend :", primaryEmailError);
+      } else {
+        emailSent = true;
+        console.log(`[forms] Email envoyé à ${recipient}`);
+
+        if (replyToField?.value) {
+          const { error: confirmationEmailError } = await resend.emails.send({
+            from,
+            to: replyToField.value,
+            subject: "Votre demande a bien été enregistrée — LEXPAT Connect",
+            html: `
+              <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #17345d;">
+                <h2 style="margin-bottom: 12px;">Votre demande a bien été enregistrée</h2>
+                <p>Merci pour votre message. Votre demande a bien été transmise à LEXPAT Connect.</p>
+                <p>Nous reviendrons vers vous dès qu'une première lecture de votre besoin aura pu être effectuée.</p>
+                <p style="margin-top: 20px; color: #5d6e83;">Selon la nature de votre demande, elle pourra être traitée par la plateforme LEXPAT Connect ou, si nécessaire, orientée vers le cabinet LEXPAT.</p>
+              </div>
+            `
+          });
+
+          if (confirmationEmailError) {
+            console.error("[forms] Erreur email de confirmation :", confirmationEmailError);
+          }
+        }
+      }
+    } catch (emailError) {
+      emailErrorMessage = emailError.message || "Impossible d'envoyer l'email";
+      console.error("[forms] Impossible d'envoyer l'email :", emailError.message);
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      emailSent,
+      emailError: emailErrorMessage
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error.message || "Erreur lors de l'envoi du formulaire." },
