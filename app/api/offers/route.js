@@ -3,6 +3,7 @@ import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/serv
 import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
+import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 
 /**
  * POST /api/offers
@@ -151,8 +152,8 @@ async function sendNotificationEmail(body) {
   if (!apiKey) return;
 
   const resend = new Resend(apiKey);
-  const from = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
-  const to = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
+  const from = getSenderAddress();
+  const to = getNotificationRecipient();
 
   await resend.emails.send({
     from, to,

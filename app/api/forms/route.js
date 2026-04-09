@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 
 function escapeHtml(value) {
   return String(value)
@@ -41,8 +42,8 @@ function getClientIp(request) {
 export async function POST(request) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;
-    const recipient = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
-    const from = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
+    const recipient = getNotificationRecipient();
+    const from = getSenderAddress();
 
     if (!resendApiKey) {
       return NextResponse.json(
@@ -99,26 +100,6 @@ export async function POST(request) {
       } else {
         emailSent = true;
         console.log(`[forms] Email envoyé à ${recipient}`);
-
-        if (replyToField?.value) {
-          const { error: confirmationEmailError } = await resend.emails.send({
-            from,
-            to: replyToField.value,
-            subject: "Votre demande a bien été enregistrée — LEXPAT Connect",
-            html: `
-              <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #17345d;">
-                <h2 style="margin-bottom: 12px;">Votre demande a bien été enregistrée</h2>
-                <p>Merci pour votre message. Votre demande a bien été transmise à LEXPAT Connect.</p>
-                <p>Nous reviendrons vers vous dès qu'une première lecture de votre besoin aura pu être effectuée.</p>
-                <p style="margin-top: 20px; color: #5d6e83;">Selon la nature de votre demande, elle pourra être traitée par la plateforme LEXPAT Connect ou, si nécessaire, orientée vers le cabinet LEXPAT.</p>
-              </div>
-            `
-          });
-
-          if (confirmationEmailError) {
-            console.error("[forms] Erreur email de confirmation :", confirmationEmailError);
-          }
-        }
       }
     } catch (emailError) {
       emailErrorMessage = emailError.message || "Impossible d'envoyer l'email";

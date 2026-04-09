@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getServiceClient } from "../../../lib/supabase/server";
+import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 
 function required(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -82,8 +83,8 @@ export async function POST(request) {
     }
 
     const resendApiKey = process.env.RESEND_API_KEY;
-    const recipient = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
-    const from = process.env.RESEND_FROM_EMAIL || "noreply@lexpat-connect.be";
+    const recipient = getNotificationRecipient();
+    const from = getSenderAddress();
     let emailSent = false;
     let emailErrorMessage = "";
 
