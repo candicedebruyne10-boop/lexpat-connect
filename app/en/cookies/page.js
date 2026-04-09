@@ -33,7 +33,7 @@ const sections = [
     title: "Audience measurement and analytics, where applicable",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        If analytics tools are activated, their purpose is to improve user experience, the readability of user journeys and the overall performance of the website. Where consent is required, these tools should only be enabled after acceptance.
+        If analytics tools are activated, their purpose is to improve user experience, the readability of user journeys and the overall performance of the website. LEXPAT Connect may use Vercel Analytics and Google Analytics 4 to measure traffic and better understand returning visits. Where consent is required, these tools are enabled only after acceptance.
       </p>
     )
   },

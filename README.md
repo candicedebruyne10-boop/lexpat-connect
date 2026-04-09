@@ -33,6 +33,14 @@ Copier `.env.example` vers `.env.local` si vous connectez ensuite :
 - Resend pour les formulaires
 - Supabase pour les profils, annonces et comptes
 - l'URL publique du site
+- Google Analytics 4 via `NEXT_PUBLIC_GA_MEASUREMENT_ID` pour les revisites
+
+## Analytics et IP
+
+- `Vercel Analytics` et `Google Analytics 4` ne se chargent qu'apres acceptation du consentement analytics dans le bandeau cookies.
+- Pour activer GA4, ajoutez `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`.
+- Les formulaires incluent dans l'email recu des metadonnees serveur utiles a la qualification et a l'anti-abus: date de soumission, IP publique, user-agent, referer et langue du navigateur.
+- Si vous stockez ou exploitez l'IP de facon systematique, il faut l'assumer dans votre documentation RGPD et votre politique de confidentialite.
 
 ## Prochaines etapes conseillees
 

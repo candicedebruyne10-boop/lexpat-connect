@@ -27,6 +27,17 @@ function buildRows(fields) {
     .join("");
 }
 
+function getClientIp(request) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const realIp = request.headers.get("x-real-ip");
+
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim() || "";
+  }
+
+  return realIp || "";
+}
+
 export async function POST(request) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;
@@ -46,6 +57,14 @@ export async function POST(request) {
     const fields = Array.isArray(body.fields) ? body.fields : [];
     const replyToField = fields.find((field) => ["Email", "Email professionnel"].includes(field.label));
     const rows = buildRows(fields);
+    const submittedAt = new Date().toISOString();
+    const requestDetails = buildRows([
+      { label: "Date de soumission", value: submittedAt },
+      { label: "Adresse IP publique", value: getClientIp(request) },
+      { label: "User-Agent", value: request.headers.get("user-agent") || "" },
+      { label: "Referer", value: request.headers.get("referer") || "" },
+      { label: "Langue du navigateur", value: request.headers.get("accept-language") || "" }
+    ]);
 
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #17345d;">
@@ -53,6 +72,10 @@ export async function POST(request) {
         <p style="margin-top: 0; color: #5d6e83;">Type de formulaire : ${escapeHtml(formType)}</p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
           <tbody>${rows}</tbody>
+        </table>
+        <h3 style="margin: 28px 0 8px; font-size: 16px;">Metadonnees techniques</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tbody>${requestDetails}</tbody>
         </table>
       </div>
     `;

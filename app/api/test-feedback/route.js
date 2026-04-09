@@ -83,19 +83,40 @@ export async function POST(request) {
 
     const resendApiKey = process.env.RESEND_API_KEY;
     const recipient = process.env.CONTACT_EMAIL || "contact@lexpat-connect.be";
-    const from = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
+    const from = process.env.RESEND_FROM_EMAIL || "noreply@lexpat-connect.be";
+    let emailSent = false;
+    let emailErrorMessage = "";
 
-    if (resendApiKey) {
-      const resend = new Resend(resendApiKey);
-      await resend.emails.send({
-        from,
-        to: recipient,
-        subject: `[LEXPAT Connect] Retour testeur — ${payload.tester_name} — ${payload.page_label}`,
-        html: feedbackEmailHtml(payload)
-      });
+    if (!resendApiKey) {
+      emailErrorMessage = "RESEND_API_KEY manquant";
+      console.warn("[test-feedback] RESEND_API_KEY manquant — email non envoyé. Retour enregistré en base uniquement.");
+    } else {
+      try {
+        const resend = new Resend(resendApiKey);
+        const { error: emailError } = await resend.emails.send({
+          from,
+          to: recipient,
+          subject: `[LEXPAT Connect] Retour testeur — ${payload.tester_name} — ${payload.page_label}`,
+          html: feedbackEmailHtml(payload)
+        });
+        if (emailError) {
+          emailErrorMessage = emailError.message || "Erreur Resend inconnue";
+          console.error("[test-feedback] Erreur Resend :", emailError);
+        } else {
+          emailSent = true;
+          console.log(`[test-feedback] Email envoyé à ${recipient}`);
+        }
+      } catch (emailErr) {
+        emailErrorMessage = emailErr.message || "Impossible d'envoyer l'email";
+        console.error("[test-feedback] Impossible d'envoyer l'email :", emailErr.message);
+      }
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      emailSent,
+      emailError: emailErrorMessage
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error.message || "Impossible d'enregistrer le retour testeur." },

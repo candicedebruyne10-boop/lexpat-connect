@@ -1,9 +1,10 @@
 import './globals.css';
+import { Suspense } from 'react';
 import { Montserrat, Open_Sans } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
 import { AuthProvider } from '../components/AuthProvider';
 import SiteChrome from '../components/SiteChrome';
 import CookieBanner from '../components/CookieBanner';
+import ConsentAwareAnalytics from '../components/ConsentAwareAnalytics';
 import TestFeedbackLauncher from '../components/TestFeedbackLauncher';
 
 const montserrat = Montserrat({
@@ -32,7 +33,9 @@ export default function RootLayout({ children }) {
           <SiteChrome>{children}</SiteChrome>
           <TestFeedbackLauncher />
           <CookieBanner />
-          <Analytics />
+          <Suspense fallback={null}>
+            <ConsentAwareAnalytics />
+          </Suspense>
         </AuthProvider>
       </body>
     </html>

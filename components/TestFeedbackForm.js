@@ -104,10 +104,15 @@ export default function TestFeedbackForm({ locale = "fr" }) {
 
       setValues(initialValues());
       setStatus({
-        type: "success",
-        message: isEn
-          ? "Thank you very much for your feedback. It genuinely helps us make LEXPAT Connect clearer, smoother and more useful."
-          : "Merci beaucoup pour votre retour. Vous participez concrètement à l’éclosion de LEXPAT Connect, et c’est précieux pour nous."
+        type: result.emailSent === false ? "warning" : "success",
+        message:
+          result.emailSent === false
+            ? (isEn
+              ? "Your feedback was saved, but the notification email could not be sent yet. The report is still recorded in our database."
+              : "Votre retour a bien été enregistré, mais l'email de notification n'a pas pu être envoyé pour le moment. Le retour est tout de même bien conservé en base.")
+            : (isEn
+              ? "Thank you very much for your feedback. It genuinely helps us make LEXPAT Connect clearer, smoother and more useful."
+              : "Merci beaucoup pour votre retour. Vous participez concrètement à l’éclosion de LEXPAT Connect, et c’est précieux pour nous.")
       });
     } catch (error) {
       setStatus({
@@ -235,6 +240,10 @@ export default function TestFeedbackForm({ locale = "fr" }) {
                   className="h-16 w-16 shrink-0 rounded-full border border-[#d9e9f1] bg-white object-cover shadow-[0_8px_20px_rgba(17,39,87,0.08)]"
                 />
                 <p>{status.message}</p>
+              </div>
+            ) : status.type === "warning" ? (
+              <div className="rounded-2xl border border-[#f4e3b0] bg-[#fffaf0] px-4 py-4 text-sm leading-7 text-[#8a6420]">
+                {status.message}
               </div>
             ) : (
               <div className="rounded-2xl border border-[#f2d6d8] bg-[#fff7f7] px-4 py-4 text-sm leading-7 text-[#9b3a43]">

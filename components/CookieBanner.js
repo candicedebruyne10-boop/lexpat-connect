@@ -4,26 +4,18 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { detectLocaleFromPathname, localizeHref } from "../lib/i18n";
-
-const STORAGE_KEY = "lexpat-cookie-consent";
-const COOKIE_KEY = "lexpat_cookie_consent";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
-
-function readCookieConsent() {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_KEY}=([^;]+)`));
-  if (!match) return null;
-
-  try {
-    return JSON.parse(decodeURIComponent(match[1]));
-  } catch {
-    return null;
-  }
-}
+import {
+  ANALYTICS_CONSENT_EVENT,
+  COOKIE_KEY,
+  COOKIE_MAX_AGE,
+  STORAGE_KEY,
+  readCookieConsent
+} from "../lib/analytics-consent";
 
 function persistConsent(consent) {
   if (typeof window !== "undefined") {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
+    window.dispatchEvent(new CustomEvent(ANALYTICS_CONSENT_EVENT, { detail: consent }));
   }
 
   if (typeof document !== "undefined") {

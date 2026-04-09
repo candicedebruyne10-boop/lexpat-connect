@@ -33,7 +33,7 @@ const sections = [
     title: "Mesures d’audience et analytics éventuels",
     body: (
       <p className="text-base leading-8 text-[#5c6e84]">
-        Si des outils de mesure d’audience sont activés, ils ont pour finalité d’améliorer l’expérience utilisateur, la lisibilité des parcours et la performance du site. Lorsqu’un consentement est requis, ces outils ne doivent être activés qu’après acceptation.
+        Si des outils de mesure d’audience sont activés, ils ont pour finalité d’améliorer l’expérience utilisateur, la lisibilité des parcours et la performance du site. LEXPAT Connect peut utiliser Vercel Analytics et Google Analytics 4 pour mesurer la fréquentation et mieux identifier les visites récurrentes. Lorsqu’un consentement est requis, ces outils ne sont activés qu’après acceptation.
       </p>
     )
   },
