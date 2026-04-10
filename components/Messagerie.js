@@ -979,14 +979,15 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
             className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px]"
             style={{ background: C.light, color: C.mid }}
           >
-            AI-READY
+            Bientôt disponible
           </span>
         </p>
-        {/* AI_HOOK: behavioral_scoring — POST /api/ai/score-conversation */}
-        <div className="flex flex-col gap-2">
-          <ScoreBar label="Réactivité" value={82} color={C.teal} />
-          <ScoreBar label="Qualité échange" value={91} color={C.mid} />
-          <ScoreBar label="Probabilité closing" value={74} color={C.dark} />
+        <div
+          className="rounded-xl px-3 py-3 text-[11px] leading-relaxed"
+          style={{ background: C.surface, border: `1px solid ${C.line}`, color: C.muted }}
+        >
+          <p>📊 Les scores de réactivité et de qualité d'échange seront calculés automatiquement.</p>
+          <p className="mt-2">⭐ Vous pourrez bientôt évaluer votre expérience avec ce {isEmployer ? "candidat" : "recruteur"} directement depuis cet espace.</p>
         </div>
       </div>
 

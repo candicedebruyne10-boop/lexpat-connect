@@ -184,6 +184,14 @@ function DashboardView({ token, onNavigate, locale }) {
     { label: isEn ? "Profile views" : "Vues du profil", value: 0, tone: "rose" },
     { label: isEn ? "Shortlisted" : "Présélectionné", value: 0, tone: "green" }
   ];
+  const matchingStatus =
+    matchCount > 0
+      ? isEn
+        ? `${matchCount} opening${matchCount > 1 ? "s" : ""} detected`
+        : `${matchCount} offre${matchCount > 1 ? "s" : ""} détectée${matchCount > 1 ? "s" : ""}`
+      : isEn
+        ? "No opening detected yet"
+        : "Aucune offre détectée pour l'instant";
 
   return (
     <div className="space-y-6">
@@ -199,7 +207,7 @@ function DashboardView({ token, onNavigate, locale }) {
             </p>
           </div>
           <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{isEn ? "active" : "actif"}</span>
+            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{matchingStatus}</span>
           </div>
         </div>
       </section>
@@ -978,14 +986,6 @@ export default function WorkerSpace({ locale = "fr" }) {
               ))}
             </nav>
 
-            <div className="mt-8 rounded-[24px] border border-[#e7eef5] bg-[#f9fbfd] p-5">
-              <p className="text-sm font-semibold text-[#17345d]">{isEn ? "Profile completion" : "Complétude du profil"}</p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#d94b4b]">{completion}%</p>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e3eaf1]">
-                <div className="h-full rounded-full bg-[linear-gradient(90deg,#57b7af_0%,#1d3b8b_100%)]" style={{ width: `${completion}%` }} />
-              </div>
-              <p className="mt-4 text-sm leading-7 text-[#6d7d91]">{isEn ? "Complete your profile and CV to make your application clearer, stronger and easier for a Belgian employer to assess." : "Complétez votre profil et votre CV pour rendre votre candidature plus claire, plus sérieuse et plus exploitable pour un employeur belge."}</p>
-            </div>
           </aside>
 
           <div>

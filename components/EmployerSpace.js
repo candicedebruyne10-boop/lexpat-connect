@@ -149,6 +149,14 @@ function DashboardView({ token, onNavigate, locale }) {
     { label: isEn ? "Files to clarify" : "Dossiers à clarifier", value: 0, tone: "amber" },
     { label: isEn ? "Completed hires" : "Recrutements finalisés", value: 0, tone: "green" }
   ];
+  const matchingStatus =
+    stats.matches > 0
+      ? isEn
+        ? `${stats.matches} profile${stats.matches > 1 ? "s" : ""} detected`
+        : `${stats.matches} profil${stats.matches > 1 ? "s" : ""} détecté${stats.matches > 1 ? "s" : ""}`
+      : isEn
+        ? "No profile detected yet"
+        : "Aucun profil détecté pour l'instant";
 
   return (
     <div className="space-y-6">
@@ -164,7 +172,7 @@ function DashboardView({ token, onNavigate, locale }) {
             </p>
           </div>
           <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{isEn ? "active" : "actif"}</span>
+            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{matchingStatus}</span>
           </div>
         </div>
       </section>
@@ -878,14 +886,6 @@ export default function EmployerSpace({ locale = "fr" }) {
               ))}
             </nav>
 
-            <div className="mt-8 rounded-[24px] border border-[#e7eef5] bg-[#f9fbfd] p-5">
-              <p className="text-sm font-semibold text-[#17345d]">{isEn ? "Space completion" : "Complétude de l'espace"}</p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#d94b4b]">{completion}%</p>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e3eaf1]">
-                <div className="h-full rounded-full bg-[linear-gradient(90deg,#57b7af_0%,#1d3b8b_100%)]" style={{ width: `${completion}%` }} />
-              </div>
-              <p className="mt-4 text-sm leading-7 text-[#6d7d91]">{isEn ? "Complete your company profile and prepare your openings to make your hiring process clearer and more credible." : "Complétez la fiche entreprise et préparez vos offres pour rendre vos recrutements plus lisibles et plus crédibles."}</p>
-            </div>
           </aside>
 
           <div>
