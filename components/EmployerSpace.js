@@ -20,7 +20,7 @@ function getSidebarItems(locale) {
       { id: "dashboard", label: "Dashboard" },
       { id: "company", label: "Employer profile" },
       { id: "offers", label: "My openings" },
-      { id: "matches", label: "Matching profiles" },
+      { id: "matches", label: "Candidates for my openings" },
       { id: "messaging", label: "Messaging", href: "/en/messagerie" }
     ];
   }
@@ -29,7 +29,7 @@ function getSidebarItems(locale) {
     { id: "dashboard", label: "Tableau de bord" },
     { id: "company", label: "Mon entreprise" },
     { id: "offers", label: "Mes offres" },
-    { id: "matches", label: "Profils matchés" },
+    { id: "matches", label: "Candidats pour mes offres" },
     { id: "messaging", label: "Messagerie", href: "/messagerie" }
   ];
 }
@@ -562,7 +562,7 @@ function CreateOfferForm({ onSuccess, token, locale }) {
   );
 }
 
-function OffersView({ token, locale }) {
+function OffersView({ token, locale, onNavigate }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [offers, setOffers] = useState([]);
   const isEn = locale === "en";
@@ -589,6 +589,28 @@ function OffersView({ token, locale }) {
         <div className="rounded-[24px] border border-[#c6e8e3] bg-[#f0fbf9] px-5 py-4 text-sm font-semibold text-[#1d7a6e]">
           {successMsg}
         </div>
+      )}
+
+      {offers.length > 0 && (
+        <section className="rounded-[26px] border border-[#dce8f6] bg-[#f8fbff] p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-[#1d3b8b]">
+              {isEn ? "Want to see the candidates matching this opening?" : "Vous voulez voir les candidats correspondant à cette offre ?"}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-[#5f7086]">
+              {isEn
+                ? "Open the matching space to review the profiles already linked to your hiring needs."
+                : "Ouvrez l'espace de matching pour voir les profils déjà reliés à vos besoins de recrutement."}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate("matches")}
+            className="mt-4 inline-flex items-center justify-center rounded-[16px] bg-[#1E3A78] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#162d6b] sm:mt-0"
+          >
+            {isEn ? "See matching candidates →" : "Voir les candidats correspondants →"}
+          </button>
+        </section>
       )}
 
       {offers.length > 0 && (
@@ -863,7 +885,7 @@ export default function EmployerSpace({ locale = "fr" }) {
           <div>
             {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} locale={locale} /> : null}
             {activeTab === "company" ? <CompanyView token={token} locale={locale} /> : null}
-            {activeTab === "offers" ? <OffersView token={token} locale={locale} /> : null}
+            {activeTab === "offers" ? <OffersView token={token} locale={locale} onNavigate={setActiveTab} /> : null}
             {activeTab === "matches" ? <MatchesView token={token} locale={locale} /> : null}
           </div>
         </div>

@@ -20,7 +20,7 @@ function getSidebarItems(locale) {
   if (locale === "en") {
     return [
       { id: "dashboard", label: "Dashboard" },
-      { id: "matches", label: "My matches" },
+      { id: "matches", label: "Jobs for my profile" },
       { id: "profile", label: "Worker profile" },
       { id: "cv", label: "My CV" },
       { id: "messaging", label: "Messaging", href: "/en/messagerie" }
@@ -29,7 +29,7 @@ function getSidebarItems(locale) {
 
   return [
     { id: "dashboard", label: "Tableau de bord" },
-    { id: "matches", label: "Mes matchs" },
+    { id: "matches", label: "Offres pour mon profil" },
     { id: "profile", label: "Mon profil" },
     { id: "cv", label: "Mon CV" },
     { id: "messaging", label: "Messagerie", href: "/messagerie" }
@@ -381,7 +381,7 @@ function WorkerMatchesView({ token, locale }) {
   );
 }
 
-function ProfileView({ token, locale }) {
+function ProfileView({ token, locale, onNavigate }) {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const isEn = locale === "en";
@@ -466,6 +466,26 @@ function ProfileView({ token, locale }) {
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My profile" : "Mon profil"}</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Edit my profile" : "Modifier mon profil"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">{isEn ? "These details feed the matching engine directly. A sector and one or more regions are enough to make your profile discoverable by Belgian employers." : "Ces informations alimentent directement le moteur de matching. Un secteur et une ou plusieurs régions renseignés suffisent pour être détecté par les employeurs belges."}</p>
+      </section>
+
+      <section className="rounded-[26px] border border-[#dce8f6] bg-[#f8fbff] p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-[#1d3b8b]">
+            {isEn ? "Want to see the openings matching your profile?" : "Vous voulez voir les offres correspondant à votre profil ?"}
+          </p>
+          <p className="mt-1 text-sm leading-6 text-[#5f7086]">
+            {isEn
+              ? "Open the matching space to review the employer openings already linked to your sector and regions."
+              : "Ouvrez l'espace de matching pour voir les offres déjà reliées à votre secteur et à vos régions."}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onNavigate("matches")}
+          className="mt-4 inline-flex items-center justify-center rounded-[16px] bg-[#57B7AF] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#4aa9a2] sm:mt-0"
+        >
+          {isEn ? "See matching openings →" : "Voir les offres correspondantes →"}
+        </button>
       </section>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -965,7 +985,7 @@ export default function WorkerSpace({ locale = "fr" }) {
           <div>
             {activeTab === "dashboard" ? <DashboardView token={token} onNavigate={setActiveTab} locale={locale} /> : null}
             {activeTab === "matches" ? <WorkerMatchesView token={token} locale={locale} /> : null}
-            {activeTab === "profile" ? <ProfileView token={token} locale={locale} /> : null}
+            {activeTab === "profile" ? <ProfileView token={token} locale={locale} onNavigate={setActiveTab} /> : null}
             {activeTab === "cv" ? <CvView locale={locale} /> : null}
           </div>
         </div>
