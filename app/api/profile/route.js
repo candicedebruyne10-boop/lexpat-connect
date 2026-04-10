@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
 import { normalizeRegion, computeMatchScore } from "../../../lib/matching";
 import { parseRegionSelection } from "../../../lib/professions";
-import { notifyEmployersForNewWorker } from "../../../lib/match-notifications";
+import { Resend } from "resend";
+import { getSenderAddress } from "../../../lib/email-routing";
+import { newWorkerMatchEmailHtml } from "../../../lib/email-templates";
+import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -142,10 +145,42 @@ async function notifyMatchingEmployers({ userId, targetJob, sector, region, expe
       { onConflict: "job_offer_id,worker_profile_id" }
     );
 
-  await notifyEmployersForNewWorker({
-    supabase,
-    workerProfileId: worker.id
-  });
+  // Notifier les employeurs par email (best-effort)
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  const resend = new Resend(apiKey);
+  const from = getSenderAddress();
+
+  for (const row of matchedRows) {
+    const { data: members } = await supabase
+      .from("employer_members")
+      .select("work_email")
+      .eq("employer_profile_id",
+        (await supabase.from("job_offers").select("employer_profile_id").eq("id", row.job_offer_id).maybeSingle()).data?.employer_profile_id
+      );
+
+    const offer = offers.find((o) => o.id === row.job_offer_id);
+
+    for (const member of members || []) {
+      if (!member.work_email) continue;
+      const unsubbed = await isUnsubscribed(member.work_email).catch(() => false);
+      if (unsubbed) continue;
+      await resend.emails.send({
+        from,
+        to: member.work_email,
+        subject: `[LEXPAT Connect] Un nouveau candidat correspond à votre offre "${offer?.title}"`,
+        html: newWorkerMatchEmailHtml({
+          targetJob,
+          sector,
+          region: normalizeRegion(region),
+          experience,
+          offerTitle: offer?.title,
+          recipientEmail: member.work_email
+        })
+      }).catch(() => {});
+    }
+  }
 }
 
 /**
