@@ -5,6 +5,13 @@ import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 
+const regionToDb = {
+  "Bruxelles-Capitale": "brussels",
+  Wallonie: "wallonia",
+  Flandre: "flanders",
+  "Plusieurs régions": "multi_region"
+};
+
 /**
  * POST /api/offers
  * Saves an employer offer to the DB.
@@ -21,8 +28,8 @@ export async function POST(request) {
     const selectedRegions = parseRegionSelection(body.region || body.regions);
     const normalizedRegion =
       selectedRegions.length > 1
-        ? stringifyRegionSelection(selectedRegions, "Plusieurs régions")
-        : selectedRegions[0] || "";
+        ? "multi_region"
+        : regionToDb[selectedRegions[0]] || null;
 
     // 1. Find the employer_profile_id for this user
     const { data: membership, error: memberError } = await supabase
@@ -42,7 +49,7 @@ export async function POST(request) {
         employer_profile_id: membership.employer_profile_id,
         title:         normalizedTitle,
         sector:        normalizedSector,
-        region:        normalizedRegion || null,
+        region:        normalizedRegion,
         shortage_job:  shortageJob || null,
         shortage_job_other: shortageJob === "Autre profession" ? shortageJobOther || null : null,
         contract_type: body.contract_type,
