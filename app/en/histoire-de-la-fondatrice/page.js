@@ -223,7 +223,7 @@ export default function FounderStoryPageEn() {
             <li className="flex gap-4">
               <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#57B7AF]" />
               <span>
-                I also want to thank <strong className="text-[#1E3A78]">Margaux Leguellec</strong>, who supported me with rigor, enthusiasm and determination as this project, which I had been dreaming of for more than five years, finally came to life.
+                I also want to thank <strong className="text-[#1E3A78]">Margaux Le Guellec</strong>, who supported me with rigor, enthusiasm and determination as this project, which I had been dreaming of for more than five years, finally came to life.
               </span>
             </li>
           </ul>

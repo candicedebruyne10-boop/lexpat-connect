@@ -226,7 +226,7 @@ export default function HistoireFondatricePage() {
             <li className="flex gap-4">
               <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#57B7AF]" />
               <span>
-                Je remercie également <strong className="text-[#1E3A78]">Margaux Leguellec</strong>, qui m’a accompagnée avec rigueur, enthousiasme et détermination vers l’éclosion de ce projet dont je rêvais depuis plus de cinq ans.
+                Je remercie également <strong className="text-[#1E3A78]">Margaux Le Guellec</strong>, qui m’a accompagnée avec rigueur, enthousiasme et détermination vers l’éclosion de ce projet dont je rêvais depuis plus de cinq ans.
               </span>
             </li>
           </ul>
