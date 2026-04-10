@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { track } from "@vercel/analytics";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -82,59 +82,73 @@ const profileSections = [
 ];
 
 function getCvSections(locale) {
-  if (locale === "en") {
-    return [
-      {
-        title: "Education",
-        description: "Add your main degrees and formal training.",
-        items: ["Main degree", "Additional training"],
-        buttonLabel: "Add"
-      },
-      {
-        title: "Experience",
-        description: "Present the work experience that matters most to a Belgian employer.",
-        items: ["Main experience", "Additional experience"],
-        buttonLabel: "Add"
-      },
-      {
-        title: "Certificates",
-        description: "Mention any certifications or distinctions that strengthen your profile.",
-        items: ["Certificate or distinction"],
-        buttonLabel: "Add"
-      },
-      {
-        title: "Skills",
-        description: "List the technical or operational skills that support your application.",
-        items: ["Skill 1", "Skill 2"],
-        buttonLabel: "Add"
-      }
-    ];
-  }
+  const isEn = locale === "en";
+
+  const yearFromField = { key: "yearFrom", label: isEn ? "Year started" : "Année de début", type: "number", placeholder: "2018" };
+  const yearToField   = { key: "yearTo",   label: isEn ? "Year ended"   : "Année de fin",   type: "number", placeholder: "2022" };
+  const descField     = { key: "description", label: isEn ? "Description" : "Description", type: "textarea",
+    placeholder: isEn ? "Briefly describe the content, specialization or key outcomes." : "Décrivez brièvement le contenu, la spécialisation ou les résultats clés." };
+
+  const educationFields = [
+    { key: "school",  label: isEn ? "School / University" : "École / Université", placeholder: isEn ? "Université de Liège" : "Université de Liège" },
+    { key: "diploma", label: isEn ? "Diploma / Title" : "Diplôme / Titre",       placeholder: isEn ? "Bachelor in Management" : "Bachelier en Gestion" },
+    yearFromField, yearToField, descField
+  ];
+
+  const experienceFields = [
+    { key: "company",  label: isEn ? "Company" : "Entreprise",       placeholder: isEn ? "Company name" : "Nom de l'entreprise" },
+    { key: "jobTitle", label: isEn ? "Job title" : "Intitulé du poste", placeholder: isEn ? "Project Manager" : "Chef de projet" },
+    yearFromField, yearToField, descField
+  ];
+
+  const certFields = [
+    { key: "name",   label: isEn ? "Certificate name" : "Nom du certificat",          placeholder: isEn ? "AWS Cloud Practitioner" : "AWS Cloud Practitioner" },
+    { key: "issuer", label: isEn ? "Issuing organization" : "Organisme délivrant",    placeholder: isEn ? "Amazon Web Services" : "Amazon Web Services" },
+    { key: "year",   label: isEn ? "Year obtained" : "Année d'obtention", type: "number", placeholder: "2023" },
+    descField
+  ];
+
+  const skillFields = [
+    { key: "name",  label: isEn ? "Skill" : "Compétence", placeholder: isEn ? "Project management, AutoCAD…" : "Gestion de projet, AutoCAD…" },
+    { key: "level", label: isEn ? "Level" : "Niveau", type: "select",
+      options: isEn ? ["Beginner", "Intermediate", "Advanced", "Expert"] : ["Débutant", "Intermédiaire", "Avancé", "Expert"] }
+  ];
 
   return [
     {
-      title: "Formation",
-      description: "Ajoutez vos diplômes et formations principales.",
-      items: ["Diplôme principal", "Formation complémentaire"],
-      buttonLabel: "Ajouter"
+      title: isEn ? "Education" : "Formation",
+      description: isEn ? "Add your main degrees and formal training." : "Ajoutez vos diplômes et formations principales.",
+      sectionKey: "formation",
+      items: [
+        { label: isEn ? "Main degree"        : "Diplôme principal",        fields: educationFields },
+        { label: isEn ? "Additional training" : "Formation complémentaire", fields: educationFields }
+      ]
     },
     {
-      title: "Expériences",
-      description: "Présentez vos expériences les plus pertinentes pour un employeur belge.",
-      items: ["Expérience principale", "Expérience complémentaire"],
-      buttonLabel: "Ajouter"
+      title: isEn ? "Experience" : "Expériences",
+      description: isEn ? "Present the most relevant work experience for a Belgian employer." : "Présentez vos expériences les plus pertinentes pour un employeur belge.",
+      sectionKey: "experiences",
+      items: [
+        { label: isEn ? "Main experience"       : "Expérience principale",    fields: experienceFields },
+        { label: isEn ? "Additional experience" : "Expérience complémentaire", fields: experienceFields }
+      ]
     },
     {
-      title: "Certificats",
-      description: "Mentionnez vos certifications ou distinctions utiles.",
-      items: ["Certificat ou distinction"],
-      buttonLabel: "Ajouter"
+      title: isEn ? "Certificates" : "Certificats",
+      description: isEn ? "Mention any certifications or distinctions that strengthen your profile." : "Mentionnez vos certifications ou distinctions utiles.",
+      sectionKey: "certificats",
+      items: [
+        { label: isEn ? "Certificate or distinction" : "Certificat ou distinction", fields: certFields }
+      ]
     },
     {
-      title: "Compétences",
-      description: "Listez les compétences techniques ou opérationnelles qui renforcent votre dossier.",
-      items: ["Compétence 1", "Compétence 2"],
-      buttonLabel: "Ajouter"
+      title: isEn ? "Skills" : "Compétences",
+      description: isEn ? "List the technical or operational skills that support your application." : "Listez les compétences techniques ou opérationnelles qui renforcent votre dossier.",
+      sectionKey: "competences",
+      items: [
+        { label: isEn ? "Skill 1" : "Compétence 1", fields: skillFields },
+        { label: isEn ? "Skill 2" : "Compétence 2", fields: skillFields }
+      ]
     }
   ];
 }
@@ -615,20 +629,86 @@ function ProfileView({ token, locale, onNavigate }) {
   );
 }
 
-function CvCollection({ title, description, items, buttonLabel = "Ajouter" }) {
+function CvCollectionAccordion({ title, description, sectionKey, items, locale, data, onChange }) {
+  const [openIndex, setOpenIndex] = useState(null);
+  const isEn = locale === "en";
+
+  function updateEntry(itemIdx, fieldKey, value) {
+    const updated = Array.isArray(data) ? [...data] : [];
+    if (!updated[itemIdx]) updated[itemIdx] = {};
+    updated[itemIdx] = { ...updated[itemIdx], [fieldKey]: value };
+    onChange(sectionKey, updated);
+  }
+
   return (
     <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
       <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{title}</h2>
       <p className="mt-2 text-sm leading-7 text-[#5f7086]">{description}</p>
-      <div className="mt-6 space-y-4">
-        {items.map((item) => (
-          <div key={item} className="flex items-center justify-between gap-4 rounded-[20px] border border-[#e8eff5] bg-[#f7fafc] px-4 py-4 text-sm text-[#314761]">
-            <span>{item}</span>
-            <span className="text-[#7b8da3]">▾</span>
-          </div>
-        ))}
+      <div className="mt-6 space-y-3">
+        {items.map((item, idx) => {
+          const isOpen = openIndex === idx;
+          const entry = (Array.isArray(data) ? data[idx] : null) || {};
+
+          return (
+            <div key={idx} className="overflow-hidden rounded-[20px] border border-[#e8eff5]">
+              <button
+                type="button"
+                onClick={() => setOpenIndex(isOpen ? null : idx)}
+                className="flex w-full items-center justify-between gap-4 bg-[#f7fafc] px-4 py-4 text-sm font-semibold text-[#314761] transition hover:bg-[#eef5ff] hover:text-[#1d3b8b]"
+              >
+                <span>{item.label}</span>
+                <span
+                  className="text-[#7b8da3] transition-transform duration-200"
+                  style={{ display: "inline-block", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                >
+                  ▾
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="grid gap-4 border-t border-[#e8eff5] bg-white p-5 md:grid-cols-2">
+                  {item.fields.map((field) => (
+                    <label
+                      key={field.key}
+                      className={field.type === "textarea" ? "md:col-span-2" : ""}
+                    >
+                      <span className="mb-2 block text-sm font-semibold text-[#17345d]">{field.label}</span>
+                      {field.type === "textarea" ? (
+                        <textarea
+                          className="field-input min-h-[80px] resize-y"
+                          placeholder={field.placeholder || ""}
+                          value={entry[field.key] || ""}
+                          onChange={(e) => updateEntry(idx, field.key, e.target.value)}
+                          rows={3}
+                        />
+                      ) : field.type === "select" ? (
+                        <select
+                          className="field-input"
+                          value={entry[field.key] || ""}
+                          onChange={(e) => updateEntry(idx, field.key, e.target.value)}
+                        >
+                          <option value="">{isEn ? "Select…" : "Sélectionnez…"}</option>
+                          {(field.options || []).map((opt) => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          className="field-input"
+                          type={field.type || "text"}
+                          placeholder={field.placeholder || ""}
+                          value={entry[field.key] || ""}
+                          onChange={(e) => updateEntry(idx, field.key, e.target.value)}
+                        />
+                      )}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
-      <button className="mt-5 secondary-button">{buttonLabel}</button>
     </section>
   );
 }
@@ -874,33 +954,196 @@ function SubmitCandidacyForm({ token, locale }) {
 
 function CvView({ locale }) {
   const isEn = locale === "en";
+  const fileInputRef = useRef(null);
+
+  // ── Upload state ──────────────────────────────────────────────────────────
+  const [cvFileName, setCvFileName] = useState("");
+  const [uploading,  setUploading]  = useState(false);
+  const [uploadMsg,  setUploadMsg]  = useState("");
+  const uploadIsError = uploadMsg.startsWith("❌");
+
+  // ── CV sections data ──────────────────────────────────────────────────────
+  const [cvData, setCvData]   = useState({});
+  const [videoUrl, setVideoUrl] = useState("");
+
+  // ── Save state ────────────────────────────────────────────────────────────
+  const [saving,  setSaving]  = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+  const saveIsError = saveMsg.startsWith("❌");
+
+  const sections = getCvSections(locale);
+
+  // Open the native file picker
+  function handleFileClick() {
+    fileInputRef.current?.click();
+  }
+
+  // Upload the selected file to the server
+  async function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCvFileName(file.name);
+    setUploading(true);
+    setUploadMsg("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res  = await fetch("/api/cv-upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      setUploadMsg(isEn ? "✓ File uploaded." : "✓ Fichier téléversé.");
+    } catch (err) {
+      setUploadMsg(`❌ ${err.message}`);
+      setCvFileName("");
+    } finally {
+      setUploading(false);
+      // Reset file input so the same file can be re-selected if needed
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  // Update a single CV section's data
+  function handleSectionChange(sectionKey, updated) {
+    setCvData((prev) => ({ ...prev, [sectionKey]: updated }));
+  }
+
+  // Save the full CV data
+  async function handleSave() {
+    setSaving(true);
+    setSaveMsg("");
+    try {
+      const res  = await fetch("/api/profile/cv", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ cv_data: { ...cvData, videoUrl } })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Save failed");
+      setSaveMsg(isEn ? "✓ CV saved." : "✓ CV enregistré.");
+    } catch (err) {
+      setSaveMsg(`❌ ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {/* ── Header ── */}
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My CV" : "Mon CV"}</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Build a more credible CV" : "Structurer un CV plus crédible"}</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">{isEn ? "Add your documents, education, work experience and skills in a format that makes your application easier for an employer to read." : "Ajoutez vos documents, vos formations, vos expériences et vos compétences dans un format qui aide un employeur à mieux lire votre dossier."}</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">
+          {isEn ? "Build a more credible CV" : "Structurer un CV plus crédible"}
+        </h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
+          {isEn
+            ? "Add your documents, education, work experience and skills in a format that makes your application easier for an employer to read."
+            : "Ajoutez vos documents, vos formations, vos expériences et vos compétences dans un format qui aide un employeur à mieux lire votre dossier."}
+        </p>
       </section>
 
+      {/* ── CV Upload ── */}
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Main document" : "Document principal"}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">
+          {isEn ? "Main document" : "Document principal"}
+        </h2>
+
+        {/* Hidden native file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.doc,.docx"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
         <div className="mt-5 rounded-[24px] border border-dashed border-[#cfddeb] bg-[#f8fbfd] p-6">
-          <p className="text-sm leading-7 text-[#5f7086]">{isEn ? "Upload your CV as a PDF, DOC or DOCX file. You can then enrich it with the rest of your profile." : "Téléversez votre CV en PDF, DOC ou DOCX. Cette version pourra ensuite être complétée par les autres éléments du profil."}</p>
-          <button className="secondary-button mt-5">{isEn ? "Upload a file" : "Téléverser un fichier"}</button>
+          <p className="text-sm leading-7 text-[#5f7086]">
+            {isEn
+              ? "Upload your CV as a PDF, DOC or DOCX file (max 5 MB). You can then enrich it with the rest of your profile."
+              : "Téléversez votre CV en PDF, DOC ou DOCX (max 5 Mo). Cette version pourra ensuite être complétée par les autres éléments du profil."}
+          </p>
+
+          {cvFileName && (
+            <p className="mt-3 flex items-center gap-2 text-sm font-medium text-[#314761]">
+              <span>📄</span>
+              <span className="truncate">{cvFileName}</span>
+            </p>
+          )}
+
+          {uploadMsg && (
+            <p className={`mt-2 text-sm font-semibold ${uploadIsError ? "text-[#a33f3f]" : "text-[#1d7a6e]"}`}>
+              {uploadMsg}
+            </p>
+          )}
+
+          <button
+            type="button"
+            onClick={handleFileClick}
+            disabled={uploading}
+            className="secondary-button mt-5 disabled:opacity-60"
+          >
+            {uploading
+              ? (isEn ? "Uploading…" : "Envoi en cours…")
+              : cvFileName
+                ? (isEn ? "Replace the file" : "Remplacer le fichier")
+                : (isEn ? "Upload a file" : "Téléverser un fichier")}
+          </button>
         </div>
       </section>
 
-      {getCvSections(locale).map((section) => (
-        <CvCollection key={section.title} {...section} />
+      {/* ── CV Sections (accordions) ── */}
+      {sections.map((section) => (
+        <CvCollectionAccordion
+          key={section.sectionKey}
+          title={section.title}
+          description={section.description}
+          sectionKey={section.sectionKey}
+          items={section.items}
+          locale={locale}
+          data={cvData[section.sectionKey] || []}
+          onChange={handleSectionChange}
+        />
       ))}
 
+      {/* ── Video introduction ── */}
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Video introduction" : "Présentation vidéo"}</h2>
-        <textarea className="field-input mt-6 min-h-32" placeholder={isEn ? "Add a video link or a short presentation if you want to enrich your profile." : "Ajoutez un lien vidéo ou une courte présentation si vous souhaitez compléter votre profil."} rows={5} />
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">
+          {isEn ? "Video introduction" : "Présentation vidéo"}
+        </h2>
+        <textarea
+          className="field-input mt-6 min-h-32"
+          placeholder={isEn
+            ? "Add a video link or a short presentation if you want to enrich your profile."
+            : "Ajoutez un lien vidéo ou une courte présentation si vous souhaitez compléter votre profil."}
+          rows={5}
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+        />
       </section>
 
+      {/* ── Save ── */}
+      {saveMsg && (
+        <div className={`rounded-[22px] border px-4 py-3 text-sm font-semibold ${
+          saveIsError
+            ? "border-[#f2c4c4] bg-[#fff5f5] text-[#a33f3f]"
+            : "border-[#c6e8e3] bg-[#f0fbf9] text-[#1d7a6e]"
+        }`}>
+          {saveMsg}
+        </div>
+      )}
       <div className="flex justify-end">
-        <button className="primary-button">{isEn ? "Save my CV" : "Enregistrer mon CV"}</button>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-8 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-70"
+        >
+          {saving ? (isEn ? "Saving…" : "Enregistrement…") : (isEn ? "Save my CV" : "Enregistrer mon CV")}
+        </button>
       </div>
     </div>
   );
