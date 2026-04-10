@@ -296,7 +296,7 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
           className="font-heading text-[15px] font-bold tracking-tight"
           style={{ color: C.dark }}
         >
-          {locale === "en" ? "Messaging" : "Messagerie"}
+          {locale === "en" ? "Inbox" : "Messagerie"}
         </h2>
         <p className="mt-0.5 text-xs" style={{ color: C.muted }}>
           {conversations.filter((c) => c.unread > 0).length} {locale === "en" ? "unread message(s)" : "message(s) non lu(s)"}
@@ -446,14 +446,14 @@ function StartConversationPanel({ matches, onStart, startingId, locale = "fr" })
       <div className="mx-auto w-full max-w-3xl">
         <div className="rounded-[30px] border bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)]" style={{ borderColor: C.line }}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: C.teal }}>
-            {locale === "en" ? "Confirmed matches" : "Matchs confirmés"}
+            {locale === "en" ? "Ready to contact" : "Matchs confirmés"}
           </p>
           <h2 className="mt-3 font-heading text-2xl font-bold tracking-tight" style={{ color: C.dark }}>
-            {locale === "en" ? "Start a conversation with your match" : "Démarrer une conversation avec votre match"}
+            {locale === "en" ? "Start a conversation" : "Démarrer une conversation avec votre match"}
           </h2>
           <p className="mt-3 text-sm leading-7" style={{ color: C.muted }}>
             {locale === "en"
-              ? "Your confirmed matches appear here. Click the button to open messaging with the right person."
+              ? "Your confirmed matches appear here. Open the conversation to contact the right person directly."
               : "Vos matchs confirmés apparaissent ici. Cliquez sur le bouton pour ouvrir la messagerie avec la bonne personne."}
           </p>
 
@@ -467,13 +467,13 @@ function StartConversationPanel({ matches, onStart, startingId, locale = "fr" })
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-heading text-lg font-bold tracking-tight" style={{ color: C.dark }}>
-                      {match.offer?.title || match.job_title || (locale === "en" ? "Role" : "Poste")}
+                    {match.offer?.title || match.job_title || (locale === "en" ? "Role" : "Poste")}
                     </p>
                     <p className="mt-1 text-sm" style={{ color: C.muted }}>
                       {[match.offer?.sector || match.sector, displayRegion(match.offer?.region || match.region, locale)].filter(Boolean).join(" · ")}
                     </p>
                     <p className="mt-2 text-xs font-semibold" style={{ color: C.mid }}>
-                      {locale === "en" ? "Compatibility score:" : "Score de compatibilité :"} {match.score || match.compatibility_score || 0}%
+                    {locale === "en" ? "Compatibility score:" : "Score de compatibilité :"} {match.score || match.compatibility_score || 0}%
                     </p>
                   </div>
 
@@ -483,7 +483,7 @@ function StartConversationPanel({ matches, onStart, startingId, locale = "fr" })
                     className="rounded-2xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60"
                     style={{ background: C.dark }}
                   >
-                    {startingId === match.id ? (locale === "en" ? "Opening…" : "Ouverture…") : (locale === "en" ? "Talk to my match" : "Parler à mon match")}
+                    {startingId === match.id ? (locale === "en" ? "Opening…" : "Ouverture…") : (locale === "en" ? "Open conversation" : "Parler à mon match")}
                   </button>
                 </div>
               </article>
@@ -603,8 +603,8 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
               {locale === "en" ? "Confirmed match!" : "Match confirmé !"}
             </p>
             <p className="text-[12px]" style={{ color: C.muted }}>
-              {locale === "en"
-                ? "Both sides have shown interest. Start the conversation."
+                {locale === "en"
+                ? "Both sides have shown interest. You can now start the conversation."
                 : "Les deux parties ont exprimé leur intérêt. Démarrez la conversation."}
             </p>
           </div>
@@ -759,8 +759,8 @@ function AISummaryBar({ conversation, messages, locale = "fr" }) {
         </span>
         <span className="text-[12px] font-semibold" style={{ color: C.dark }}>
           {hasPermitKeywords
-            ? (locale === "en" ? "⚠️ Permit-related topic detected in the conversation" : "⚠️ Besoin de permis détecté dans la conversation")
-            : (locale === "en" ? "AI summary available" : "Résumé IA disponible")}
+            ? (locale === "en" ? "⚠️ Work authorization topic detected" : "⚠️ Besoin de permis détecté dans la conversation")
+            : (locale === "en" ? "AI conversation summary available" : "Résumé IA disponible")}
         </span>
       </div>
       <button
@@ -773,7 +773,7 @@ function AISummaryBar({ conversation, messages, locale = "fr" }) {
       {open && (
         <div className="absolute left-0 right-0 top-full z-10 mx-4 mt-1 rounded-xl p-3 text-[12px] shadow-soft"
           style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted }}>
-          <em>{locale === "en" ? "AI summary — coming soon (hook ready for LLM integration)" : "Résumé IA — bientôt disponible (hook prêt pour intégration LLM)"}</em>
+          <em>{locale === "en" ? "AI summary coming soon. The integration layer is already in place." : "Résumé IA — bientôt disponible (hook prêt pour intégration LLM)"}</em>
         </div>
       )}
     </div>
@@ -852,7 +852,7 @@ function AISuggestionHook({ conversation, onSelect, locale = "fr" }) {
    ══════════════════════════════════════════════════════════════════════════ */
 const PERMIT_INFO = {
   fr: "En Belgique, si le candidat est ressortissant d'un pays hors Union européenne et ne dispose pas encore d'un titre de séjour et d'une autorisation de travail valides, c'est l'employeur qui doit introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.",
-  en: "In Belgium, if the candidate is a non-EU national and does not yet hold a valid residence permit and work authorization, it is the employer who must file the single permit application with the competent region (Flanders, Wallonia or Brussels-Capital). The candidate cannot complete this process alone."
+  en: "In Belgium, if the candidate is a non-EU national and does not yet hold a valid residence permit and work authorization, the employer must file the single permit application with the competent region (Flanders, Wallonia or Brussels-Capital). The candidate cannot complete this process alone."
 };
 
 function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMessage, className = "hidden md:flex md:w-[280px]", locale = "fr" }) {
@@ -953,7 +953,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       {/* Situation administrative / Permis unique */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
         <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest flex items-center" style={{ color: C.muted }}>
-          {locale === "en" ? "Administrative situation" : "Situation administrative"}
+          {locale === "en" ? "Work authorization" : "Situation administrative"}
           <InfoTooltip text={PERMIT_INFO[locale]} locale={locale} />
         </p>
 
@@ -1037,7 +1037,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       {/* Scoring comportemental hook */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
         <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
-          {locale === "en" ? "Scoring" : "Scoring"}
+          {locale === "en" ? "Interaction insights" : "Scoring"}
           <span
             className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px]"
             style={{ background: C.light, color: C.mid }}
@@ -1062,7 +1062,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
           style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
         >
           <IconScale />
-          {locale === "en" ? "Request LEXPAT support" : "Demander accompagnement LEXPAT"}
+          {locale === "en" ? "Request legal support" : "Demander accompagnement LEXPAT"}
         </button>
         <p className="mt-2 text-center text-[10px]" style={{ color: C.muted }}>
           {locale === "en" ? "Law firm specialized in immigration" : "Cabinet juridique spécialisé en immigration"}
@@ -1192,7 +1192,7 @@ function LexpatModal({ conversation, onClose, locale = "fr" }) {
                 <IconBriefcase />
                 <div>
                   <p className="text-[11px]" style={{ color: C.muted }}>
-                    {locale === "en" ? "Related case" : "Dossier concerné"}
+                    {locale === "en" ? "Related role" : "Dossier concerné"}
                   </p>
                   <p className="font-heading text-[13px] font-bold" style={{ color: C.dark }}>
                     {conversation.job_title} · {conversation.employer.name}
