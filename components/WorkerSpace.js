@@ -986,6 +986,15 @@ export default function WorkerSpace({ locale = "fr" }) {
               ))}
             </nav>
 
+            {user?.email && (
+              <div className="mt-6 rounded-[16px] border border-[#e7eef5] bg-[#f9fbfd] px-4 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8ea1bb]">
+                  {isEn ? "Logged in as" : "Connecté en tant que"}
+                </p>
+                <p className="mt-1 break-all text-[12px] font-semibold text-[#17345d]">{user.email}</p>
+              </div>
+            )}
+
           </aside>
 
           <div>
