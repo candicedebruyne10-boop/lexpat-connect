@@ -5,6 +5,7 @@ import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 import { newOfferEmailHtml, newOfferMatchEmailHtml } from "../../../lib/email-templates";
+import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -146,6 +147,10 @@ async function runMatchingForOffer(supabase, offer) {
     const workerEmail = authUser?.user?.email;
     if (!workerEmail) continue;
 
+    // Respect RGPD : ne pas envoyer si le travailleur s'est désabonné
+    const unsubscribed = await isUnsubscribed(workerEmail).catch(() => false);
+    if (unsubscribed) continue;
+
     await resend.emails.send({
       from,
       to: workerEmail,
@@ -156,7 +161,8 @@ async function runMatchingForOffer(supabase, offer) {
         sector: offer.sector,
         region: normalizeRegion(offer.region),
         contractType: offer.contractType,
-        urgency: offer.urgency
+        urgency: offer.urgency,
+        recipientEmail: workerEmail
       })
     }).catch(() => {});
   }

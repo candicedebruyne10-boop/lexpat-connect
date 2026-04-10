@@ -5,6 +5,7 @@ import { parseRegionSelection } from "../../../lib/professions";
 import { Resend } from "resend";
 import { getSenderAddress } from "../../../lib/email-routing";
 import { newWorkerMatchEmailHtml } from "../../../lib/email-templates";
+import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -118,6 +119,10 @@ async function notifyMatchingEmployers({ targetJob, sector, region, experience }
     // Envoyer l'email à chaque membre de l'équipe employeur
     for (const member of members) {
       if (!member.work_email) continue;
+      // Respect RGPD : ne pas envoyer si l'employeur s'est désabonné
+      const unsubscribed = await isUnsubscribed(member.work_email).catch(() => false);
+      if (unsubscribed) continue;
+
       await resend.emails.send({
         from,
         to: member.work_email,
@@ -127,7 +132,8 @@ async function notifyMatchingEmployers({ targetJob, sector, region, experience }
           sector,
           region: normalizeRegion(region),
           experience,
-          offerTitle: offer.title
+          offerTitle: offer.title,
+          recipientEmail: member.work_email
         })
       }).catch(() => {});
     }
