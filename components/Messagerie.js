@@ -557,7 +557,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
 
         <div className="flex flex-col gap-3">
           {messages.map((msg) => (
-            <MessageBubble key={msg.id} msg={msg} conversation={conversation} />
+            <MessageBubble key={msg.id} msg={msg} conversation={conversation} viewerRole={conversation.viewer_role} />
           ))}
         </div>
         <div ref={bottomRef} />
@@ -617,25 +617,42 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
   );
 }
 
-function MessageBubble({ msg, conversation }) {
-  const isEmployer = msg.sender_type === "employer";
+function MessageBubble({ msg, conversation, viewerRole }) {
+  // isMine = ce message est envoyé par le visiteur connecté
+  const isMine =
+    (viewerRole === "employer" && msg.sender_type === "employer") ||
+    (viewerRole === "worker"   && msg.sender_type === "worker");
+
+  // isEmployerMsg = pour déterminer la couleur (bleu foncé = employeur, turquoise = travailleur)
+  const isEmployerMsg = msg.sender_type === "employer";
 
   return (
-    <div className={`flex items-end gap-2 ${isEmployer ? "flex-row-reverse" : "flex-row"}`}>
+    <div className={`flex items-end gap-2 ${isMine ? "flex-row-reverse" : "flex-row"}`}>
       <Avatar
-        initials={isEmployer ? conversation.employer.initials : conversation.worker.initials}
-        color={isEmployer ? conversation.employer.color : conversation.worker.color}
+        initials={isEmployerMsg ? conversation.employer.initials : conversation.worker.initials}
+        color={isEmployerMsg ? conversation.employer.color : conversation.worker.color}
         size={28}
       />
       <div
-        className={`flex max-w-[68%] flex-col ${isEmployer ? "items-end" : "items-start"}`}
+        className={`flex max-w-[68%] flex-col ${isMine ? "items-end" : "items-start"}`}
       >
         <div
           className="rounded-2xl px-4 py-2.5 text-[14px] leading-relaxed"
           style={
-            isEmployer
-              ? { background: C.dark, color: "#fff", borderBottomRightRadius: 4 }
-              : { background: C.tealSoft, color: C.ink, border: `1px solid rgba(87,183,175,0.28)`, borderBottomLeftRadius: 4 }
+            isEmployerMsg
+              ? {
+                  background: C.dark,
+                  color: "#fff",
+                  borderBottomRightRadius: isMine ? 4 : undefined,
+                  borderBottomLeftRadius: !isMine ? 4 : undefined,
+                }
+              : {
+                  background: C.tealSoft,
+                  color: C.ink,
+                  border: `1px solid rgba(87,183,175,0.28)`,
+                  borderBottomRightRadius: isMine ? 4 : undefined,
+                  borderBottomLeftRadius: !isMine ? 4 : undefined,
+                }
           }
         >
           {msg.content}
@@ -645,7 +662,7 @@ function MessageBubble({ msg, conversation }) {
           style={{ color: C.muted }}
         >
           <span>{formatTimestamp(msg.created_at)}</span>
-          {isEmployer && (
+          {isMine && (
             <span style={{ color: msg.read ? C.teal : C.muted }}>
               {msg.read ? <IconCheckDouble /> : <IconCheck />}
             </span>
