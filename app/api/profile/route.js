@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../lib/supabase/server";
 import { normalizeRegion } from "../../../lib/matching";
-import { parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
+import { parseRegionSelection } from "../../../lib/professions";
+
+const regionToDb = {
+  "Bruxelles-Capitale": "brussels",
+  Wallonie: "wallonia",
+  Flandre: "flanders",
+  "Plusieurs régions": "multi_region",
+  "Toute la Belgique": "multi_region"
+};
 
 export async function POST(request) {
   try {
@@ -16,8 +24,8 @@ export async function POST(request) {
     const selectedRegions = parseRegionSelection(body.region || body.regions);
     const normalizedRegion =
       selectedRegions.length > 1
-        ? stringifyRegionSelection(selectedRegions, "Toute la Belgique")
-        : selectedRegions[0] || "";
+        ? "multi_region"
+        : regionToDb[selectedRegions[0]] || null;
     const languages = Array.isArray(body.languages)
       ? body.languages
       : String(body.languages || "")
@@ -31,7 +39,7 @@ export async function POST(request) {
         target_job: finalJobTitle || null,
         target_job_other: selectedJobOption === "Autre profession" ? otherJobTitle || null : null,
         target_sector: body.sector || null,
-        preferred_region: normalizedRegion || null,
+        preferred_region: normalizedRegion,
         experience_level: body.experience || null,
         languages,
         summary: body.description || null,
