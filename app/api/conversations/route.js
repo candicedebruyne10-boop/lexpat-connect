@@ -90,12 +90,18 @@ export async function GET(request) {
         interview_requested: false,
         archived: false,
       };
+      // Déterminer le rôle du visiteur dans cette conversation
+      const isConvEmployer = membership && conv.employer_id === membership.employer_profile_id;
+      const isConvWorker = workerProfile && conv.worker_id === workerProfile.id;
+      const viewer_role = isConvEmployer ? "employer" : isConvWorker ? "worker" : "unknown";
+
       return {
         id: conv.id,
         match_id: conv.match_id,
         status: conv.status,
         created_at: conv.created_at,
         updated_at: conv.updated_at,
+        viewer_role,
         employer: {
           id: conv.employer_id,
           name: conv.employer_profiles?.company_name || "Entreprise",

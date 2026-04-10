@@ -54,6 +54,17 @@ const STATUS_LABEL = {
    UTILS
    ══════════════════════════════════════════════════════════════════════════ */
 
+const REGION_FR = {
+  brussels:  "Bruxelles-Capitale",
+  wallonia:  "Wallonie",
+  flanders:  "Flandre",
+};
+
+function displayRegion(region) {
+  if (!region) return "";
+  return REGION_FR[region?.toLowerCase()] || region;
+}
+
 function formatTime(iso) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -390,7 +401,7 @@ function StartConversationPanel({ matches, onStart, startingId }) {
                       {match.offer?.title || match.job_title || "Poste"}
                     </p>
                     <p className="mt-1 text-sm" style={{ color: C.muted }}>
-                      {[match.offer?.sector || match.sector, match.offer?.region || match.region].filter(Boolean).join(" · ")}
+                      {[match.offer?.sector || match.sector, displayRegion(match.offer?.region || match.region)].filter(Boolean).join(" · ")}
                     </p>
                     <p className="mt-2 text-xs font-semibold" style={{ color: C.mid }}>
                       Score de compatibilité : {match.score || match.compatibility_score || 0}%
@@ -491,7 +502,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
             {conversation.employer.name} × {conversation.worker.name}
           </p>
           <p className="text-[12px]" style={{ color: C.muted }}>
-            {conversation.job_title} · {conversation.region}
+            {conversation.job_title} · {displayRegion(conversation.region)}
           </p>
         </div>
         {/* Score badge */}
@@ -697,14 +708,27 @@ function AISummaryBar({ conversation, messages }) {
  * Future: POST /api/ai/suggest-reply { context, last_message } → string[]
  */
 function AISuggestionHook({ conversation, onSelect }) {
-  // Static suggestions based on status — à remplacer par appel LLM
-  const suggestions = {
-    [STATUS.FIRST_MSG_SENT]: ["Merci pour votre message, je suis intéressé(e).", "Pouvez-vous m'en dire plus sur le poste ?"],
-    [STATUS.DISCUSSION_ACTIVE]: ["Je suis disponible pour un entretien.", "Quelles sont les prochaines étapes ?"],
-    [STATUS.INTERVIEW_REQUESTED]: ["Mardi ou jeudi me convient.", "Quel format d'entretien prévoyez-vous ?"],
-    [STATUS.LEGAL_REVIEW]: ["J'ai besoin d'un accompagnement pour mon permis de travail.", "Mes documents sont en cours de traitement."],
+  const role = conversation?.viewer_role || "worker";
+  const isEmployer = role === "employer";
+
+  // Suggestions différenciées selon le rôle
+  const employerSuggestions = {
+    [STATUS.MATCH_CONFIRMED]:    ["Bonjour, je suis intéressé(e) par votre profil. Seriez-vous disponible pour un échange ?"],
+    [STATUS.FIRST_MSG_SENT]:     ["Pourriez-vous me préciser vos disponibilités pour un entretien ?", "Je vous propose un entretien mercredi ou jeudi, à votre convenance."],
+    [STATUS.DISCUSSION_ACTIVE]:  ["Je souhaite vous proposer un entretien. Quand êtes-vous disponible ?", "Seriez-vous libre la semaine prochaine pour un premier échange ?"],
+    [STATUS.INTERVIEW_REQUESTED]:["Je vous confirme le créneau. Voici le lien de visio :", "Préférez-vous un entretien en présentiel ou en visioconférence ?"],
+    [STATUS.LEGAL_REVIEW]:       ["Nous sommes prêts à soutenir votre démarche de permis.", "Pouvez-vous nous transmettre les documents nécessaires ?"],
   };
 
+  const workerSuggestions = {
+    [STATUS.MATCH_CONFIRMED]:    ["Bonjour, merci pour ce match. Je suis très intéressé(e) par ce poste."],
+    [STATUS.FIRST_MSG_SENT]:     ["Pouvez-vous m'en dire plus sur le poste et l'équipe ?", "Quelles sont les prochaines étapes du processus de sélection ?"],
+    [STATUS.DISCUSSION_ACTIVE]:  ["Quel format d'entretien prévoyez-vous ?", "Y a-t-il plusieurs étapes dans votre processus de recrutement ?"],
+    [STATUS.INTERVIEW_REQUESTED]:["Je suis disponible aux horaires que vous proposez.", "Pourriez-vous me confirmer le format et la durée de l'entretien ?"],
+    [STATUS.LEGAL_REVIEW]:       ["Je suis en train de rassembler mes documents.", "Mes documents sont en cours de traitement."],
+  };
+
+  const suggestions = isEmployer ? employerSuggestions : workerSuggestions;
   const convSuggestions = suggestions[conversation?.status];
   if (!convSuggestions) return null;
 
@@ -770,7 +794,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
 
         <div className="mt-3 flex flex-col gap-2">
           <InfoRow icon={<IconBriefcase />} label="Entreprise" value={conversation.employer.name} />
-          <InfoRow icon={<IconMapPin />} label="Région" value={conversation.region} />
+          <InfoRow icon={<IconMapPin />} label="Région" value={displayRegion(conversation.region)} />
           <InfoRow
             icon={<IconStar />}
             label="Compatibilité"
@@ -861,7 +885,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
               border: `1px solid #fecaca`,
             }}
           >
-            Signaler besoin permis
+            Signaler qu'un permis unique pourrait être nécessaire
           </button>
         )}
       </div>
