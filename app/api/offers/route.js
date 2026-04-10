@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
+import { newOfferEmailHtml } from "../../../lib/email-templates";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -162,9 +163,20 @@ async function sendNotificationEmail(body) {
   const from = getSenderAddress();
   const to = getNotificationRecipient();
 
+  const regionDisplay = stringifyRegionSelection(body.region || body.regions, "Plusieurs régions") || "-";
+  const title = body.title || body.shortage_job || "Poste non précisé";
+
   await resend.emails.send({
     from, to,
-    subject: `[LEXPAT Connect] Nouvelle offre : ${body.title}`,
-    html: `<p>Secteur: ${body.sector || "-"} | Région: ${stringifyRegionSelection(body.region || body.regions, "Plusieurs régions") || "-"} | Urgence: ${body.urgency || "-"}</p><p>${body.description || ""}</p>`
+    subject: `[LEXPAT Connect] Nouvelle offre : ${title}`,
+    html: newOfferEmailHtml({
+      title,
+      sector: body.sector || "-",
+      region: regionDisplay,
+      contract: body.contract_type || "-",
+      urgency: body.urgency || "-",
+      description: body.description || "",
+      companyName: body.companyName || null
+    })
   });
 }

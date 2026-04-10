@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
+import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
+import { eligibilityLeadEmailHtml } from "../../../lib/email-templates";
 
 export async function POST(request) {
   try {
@@ -25,6 +28,26 @@ export async function POST(request) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+      }).catch(() => {});
+    }
+
+    // Email de notification LEXPAT (best-effort)
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      await resend.emails.send({
+        from: getSenderAddress(),
+        to: getNotificationRecipient(),
+        subject: `[LEXPAT Connect] Nouveau lead simulateur — ${email}`,
+        html: eligibilityLeadEmailHtml({
+          name: company || null,
+          email,
+          phone,
+          jobTitle: payload.profession,
+          sector: null,
+          region: payload.region,
+          message: payload.verdict ? `Résultat du simulateur : ${payload.verdict}` : null
+        })
       }).catch(() => {});
     }
 

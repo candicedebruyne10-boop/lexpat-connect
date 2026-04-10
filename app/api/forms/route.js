@@ -1,32 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function buildRows(fields) {
-  return fields
-    .filter((field) => field.value)
-    .map((field) => {
-      const label = escapeHtml(field.label);
-      const value = escapeHtml(field.value).replaceAll("\n", "<br />");
-
-      return `
-        <tr>
-          <td style="padding: 10px 0; border-bottom: 1px solid #e5edf4; font-weight: 600; width: 220px; vertical-align: top;">${label}</td>
-          <td style="padding: 10px 0; border-bottom: 1px solid #e5edf4;">${value}</td>
-        </tr>
-      `;
-    })
-    .join("");
-}
+import { contactFormEmailHtml } from "../../../lib/email-templates";
 
 function getClientIp(request) {
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -57,29 +32,20 @@ export async function POST(request) {
     const title = body.title || "Nouvelle demande";
     const fields = Array.isArray(body.fields) ? body.fields : [];
     const replyToField = fields.find((field) => ["Email", "Email professionnel"].includes(field.label));
-    const rows = buildRows(fields);
-    const submittedAt = new Date().toISOString();
-    const requestDetails = buildRows([
-      { label: "Date de soumission", value: submittedAt },
-      { label: "Adresse IP publique", value: getClientIp(request) },
-      { label: "User-Agent", value: request.headers.get("user-agent") || "" },
-      { label: "Referer", value: request.headers.get("referer") || "" },
-      { label: "Langue du navigateur", value: request.headers.get("accept-language") || "" }
-    ]);
 
-    const html = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #17345d;">
-        <h2 style="margin-bottom: 8px;">${escapeHtml(title)}</h2>
-        <p style="margin-top: 0; color: #5d6e83;">Type de formulaire : ${escapeHtml(formType)}</p>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
-          <tbody>${rows}</tbody>
-        </table>
-        <h3 style="margin: 28px 0 8px; font-size: 16px;">Metadonnees techniques</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tbody>${requestDetails}</tbody>
-        </table>
-      </div>
-    `;
+    // Enrichir avec les métadonnées techniques
+    const enrichedFields = [
+      ...fields,
+      { label: "Date de soumission", value: new Date().toISOString() },
+      { label: "Adresse IP", value: getClientIp(request) },
+      { label: "Referer", value: request.headers.get("referer") || "" }
+    ];
+
+    const html = contactFormEmailHtml({
+      formTitle: title,
+      formType,
+      fields: enrichedFields
+    });
 
     const resend = new Resend(resendApiKey);
     let emailSent = false;
