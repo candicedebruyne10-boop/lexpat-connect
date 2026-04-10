@@ -163,9 +163,9 @@ function InfoTooltip({ text }) {
     <span className="relative inline-block">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold transition-colors"
-        style={{ background: C.light, color: C.mid, border: `1px solid ${C.border}` }}
-        title="En savoir plus"
+        className="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold transition-all hover:scale-110"
+        style={{ background: C.teal, color: "#fff", boxShadow: "0 1px 4px rgba(87,183,175,0.4)" }}
+        title="En savoir plus sur le permis unique"
       >
         i
       </button>
@@ -902,13 +902,13 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
         <div
           className="flex items-center gap-2 rounded-xl px-3 py-2"
           style={{
-            background: permitNeeded ? "#fff0f0" : C.surface,
-            border: `1px solid ${permitNeeded ? "#fecaca" : C.line}`,
+            background: permitNeeded ? "#fff0f0" : "#fffbeb",
+            border: `1px solid ${permitNeeded ? "#fecaca" : "#fde68a"}`,
           }}
         >
-          <IconScale />
-          <span className="text-[12px] font-semibold" style={{ color: permitNeeded ? C.red : C.muted }}>
-            {permitNeeded ? "⚠️ Permis unique requis" : "À clarifier"}
+          <span className="text-[13px]">{permitNeeded ? "⚠️" : "❓"}</span>
+          <span className="text-[12px] font-semibold" style={{ color: permitNeeded ? C.red : "#92400e" }}>
+            {permitNeeded ? "Un permis de travail est requis" : "Droit au travail non vérifié"}
           </span>
         </div>
 
@@ -924,10 +924,10 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
                     );
                   }
                 }}
-                className="w-full rounded-xl px-3 py-2 text-left text-[11px] font-semibold transition-colors hover:opacity-90"
+                className="w-full rounded-xl px-3 py-2.5 text-left text-[12px] font-semibold transition-colors hover:opacity-90"
                 style={{ background: C.light, color: C.dark, border: `1px solid ${C.border}` }}
               >
-                Demander la situation administrative du candidat
+                🔍 Le candidat a-t-il le droit de travailler en Belgique ?
               </button>
             ) : (
               <div
@@ -949,14 +949,14 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
             {!permitNeeded ? (
               <>
                 <p className="text-[11px]" style={{ color: C.muted }}>
-                  L'employeur peut vous demander votre situation. Indiquez si un permis unique sera nécessaire.
+                  Êtes-vous ressortissant(e) hors UE sans titre de séjour ni autorisation de travail en Belgique ?
                 </p>
                 <button
                   onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
-                  className="w-full rounded-xl px-3 py-2 text-[11px] font-semibold transition-colors hover:opacity-90"
+                  className="w-full rounded-xl px-3 py-2.5 text-[12px] font-semibold transition-colors hover:opacity-90"
                   style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
                 >
-                  ⚠️ Confirmer qu'un permis unique sera requis
+                  ⚠️ Oui, j'ai besoin d'une autorisation de travail
                 </button>
               </>
             ) : (
