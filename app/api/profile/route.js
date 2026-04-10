@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
-import { getUserFromRequest } from "../../../lib/supabase/server";
-import { normalizeRegion } from "../../../lib/matching";
+import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
+import { normalizeRegion, computeMatchScore } from "../../../lib/matching";
 import { parseRegionSelection } from "../../../lib/professions";
+import { Resend } from "resend";
+import { getSenderAddress } from "../../../lib/email-routing";
+import { newWorkerMatchEmailHtml } from "../../../lib/email-templates";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -50,9 +53,84 @@ export async function POST(request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+    // Notifier les employeurs dont les offres correspondent à ce profil (best-effort, non-bloquant)
+    if (body.profile_visibility === "visible") {
+      notifyMatchingEmployers({
+        targetJob: finalJobTitle,
+        sector: body.sector || null,
+        region: normalizedRegion,
+        experience: body.experience || null
+      }).catch(() => {});
+    }
+
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
+  }
+}
+
+/**
+ * Cherche les offres actives qui correspondent au profil travailleur
+ * et envoie un email de notification aux employeurs concernés.
+ */
+async function notifyMatchingEmployers({ targetJob, sector, region, experience }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !targetJob) return;
+
+  const supabase = getServiceClient();
+
+  // Récupérer toutes les offres publiées avec les infos de l'employeur
+  const { data: offers } = await supabase
+    .from("job_offers")
+    .select("id, title, sector, region, employer_profile_id")
+    .eq("status", "published");
+
+  if (!offers?.length) return;
+
+  const resend = new Resend(apiKey);
+  const from = getSenderAddress();
+
+  const workerForMatch = {
+    profile_visibility: "visible",
+    job_title: targetJob,
+    sector,
+    region,
+    experience
+  };
+
+  for (const offer of offers) {
+    const score = computeMatchScore(workerForMatch, {
+      job_title: offer.title,
+      sector: offer.sector,
+      region: offer.region
+    });
+
+    if (score < 40) continue;
+
+    // Récupérer l'email de contact de l'employeur
+    const { data: members } = await supabase
+      .from("employer_members")
+      .select("work_email, full_name")
+      .eq("employer_profile_id", offer.employer_profile_id);
+
+    if (!members?.length) continue;
+
+    // Envoyer l'email à chaque membre de l'équipe employeur
+    for (const member of members) {
+      if (!member.work_email) continue;
+      await resend.emails.send({
+        from,
+        to: member.work_email,
+        subject: `[LEXPAT Connect] Un nouveau candidat correspond à votre offre "${offer.title}"`,
+        html: newWorkerMatchEmailHtml({
+          targetJob,
+          sector,
+          region: normalizeRegion(region),
+          experience,
+          offerTitle: offer.title
+        })
+      }).catch(() => {});
+    }
   }
 }
 

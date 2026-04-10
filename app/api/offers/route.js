@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
-import { newOfferEmailHtml } from "../../../lib/email-templates";
+import { newOfferEmailHtml, newOfferMatchEmailHtml } from "../../../lib/email-templates";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -65,12 +65,14 @@ export async function POST(request) {
       return NextResponse.json({ error: offerError?.message || "Erreur création offre." }, { status: 500 });
     }
 
-    // 3. Generate simple matches for the new offer (best-effort)
+    // 3. Generate simple matches + notify matched workers (best-effort)
     runMatchingForOffer(supabase, {
       id: offer.id,
       sector: normalizedSector,
       region: offer.region,
-      jobTitle: normalizedTitle
+      jobTitle: normalizedTitle,
+      contractType: body.contract_type,
+      urgency: body.urgency
     }).catch(() => {});
 
     // 4. Send notification email to LEXPAT (best-effort, non-blocking)
@@ -92,13 +94,14 @@ export async function POST(request) {
 async function runMatchingForOffer(supabase, offer) {
   const { data: workers, error: workersError } = await supabase
     .from("worker_profiles")
-    .select("id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility")
+    .select("id, user_id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility")
     .neq("profile_visibility", "hidden");
 
   if (workersError || !workers?.length) return;
 
-  const rows = workers
+  const matchedWorkers = workers
     .map((worker) => ({
+      worker,
       job_offer_id: offer.id,
       worker_profile_id: worker.id,
       score: computeMatchScore({
@@ -116,11 +119,47 @@ async function runMatchingForOffer(supabase, offer) {
     }))
     .filter((match) => match.score >= 40);
 
-  if (!rows.length) return;
+  if (!matchedWorkers.length) return;
 
+  // Insérer les matches en base
   await supabase
     .from("matches")
-    .upsert(rows, { onConflict: "job_offer_id,worker_profile_id" });
+    .upsert(
+      matchedWorkers.map(({ job_offer_id, worker_profile_id, score, status }) => ({
+        job_offer_id, worker_profile_id, score, status
+      })),
+      { onConflict: "job_offer_id,worker_profile_id" }
+    );
+
+  // Notifier les travailleurs correspondants par email (best-effort)
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  const resend = new Resend(apiKey);
+  const from = getSenderAddress();
+
+  for (const { worker } of matchedWorkers) {
+    if (!worker.user_id) continue;
+
+    // Récupérer l'email depuis auth.users via l'admin API
+    const { data: authUser } = await supabase.auth.admin.getUserById(worker.user_id).catch(() => ({ data: null }));
+    const workerEmail = authUser?.user?.email;
+    if (!workerEmail) continue;
+
+    await resend.emails.send({
+      from,
+      to: workerEmail,
+      subject: `[LEXPAT Connect] Une offre correspond à votre profil — ${offer.jobTitle}`,
+      html: newOfferMatchEmailHtml({
+        jobTitle: offer.jobTitle,
+        companyName: null, // anonymisé volontairement
+        sector: offer.sector,
+        region: normalizeRegion(offer.region),
+        contractType: offer.contractType,
+        urgency: offer.urgency
+      })
+    }).catch(() => {});
+  }
 }
 
 /**
