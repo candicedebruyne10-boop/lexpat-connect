@@ -954,6 +954,7 @@ function SubmitCandidacyForm({ token, locale }) {
 
 function CvView({ locale }) {
   const isEn = locale === "en";
+  const { session } = useAuth();
   const fileInputRef = useRef(null);
 
   // ── Upload state ──────────────────────────────────────────────────────────
@@ -991,7 +992,11 @@ function CvView({ locale }) {
     formData.append("file", file);
 
     try {
-      const res  = await fetch("/api/cv-upload", { method: "POST", body: formData });
+      const res  = await fetch("/api/cv-upload", {
+        method: "POST",
+        body: formData,
+        headers: { "Authorization": `Bearer ${session?.access_token || ""}` }
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
       setUploadMsg(isEn ? "✓ File uploaded." : "✓ Fichier téléversé.");
@@ -1017,7 +1022,10 @@ function CvView({ locale }) {
     try {
       const res  = await fetch("/api/profile/cv", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token || ""}`
+        },
         body:    JSON.stringify({ cv_data: { ...cvData, videoUrl } })
       });
       const data = await res.json();
