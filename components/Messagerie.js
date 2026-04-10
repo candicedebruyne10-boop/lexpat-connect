@@ -155,6 +155,38 @@ function IconScale() {
     </svg>
   );
 }
+
+/* ── InfoTooltip — point d'information cliquable ───────────────────────── */
+function InfoTooltip({ text }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-block">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold transition-colors"
+        style={{ background: C.light, color: C.mid, border: `1px solid ${C.border}` }}
+        title="En savoir plus"
+      >
+        i
+      </button>
+      {open && (
+        <div
+          className="absolute left-0 top-full z-20 mt-1.5 w-64 rounded-xl p-3 text-[11px] leading-relaxed shadow-lg"
+          style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted }}
+        >
+          {text}
+          <button
+            onClick={() => setOpen(false)}
+            className="mt-2 block text-[10px] font-semibold"
+            style={{ color: C.mid }}
+          >
+            Fermer
+          </button>
+        </div>
+      )}
+    </span>
+  );
+}
 function IconMapPin() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.8">
@@ -772,7 +804,10 @@ function AISuggestionHook({ conversation, onSelect }) {
 /* ══════════════════════════════════════════════════════════════════════════
    PANNEAU DROIT — ContextPanel
    ══════════════════════════════════════════════════════════════════════════ */
-function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className = "hidden md:flex md:w-[280px]" }) {
+const PERMIT_INFO =
+  "En Belgique, si le candidat est ressortissant d'un pays hors Union européenne et ne dispose pas encore d'un titre de séjour et d'une autorisation de travail valides, c'est l'employeur qui doit introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.";
+
+function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMessage, className = "hidden md:flex md:w-[280px]" }) {
   if (!conversation) {
     return (
       <aside
@@ -866,11 +901,14 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
         )}
       </div>
 
-      {/* Permis unique */}
+      {/* Situation administrative / Permis unique */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
-        <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
-          Permis unique
+        <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest flex items-center" style={{ color: C.muted }}>
+          Situation administrative
+          <InfoTooltip text={PERMIT_INFO} />
         </p>
+
+        {/* Statut actuel */}
         <div
           className="flex items-center gap-2 rounded-xl px-3 py-2"
           style={{
@@ -879,35 +917,66 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
           }}
         >
           <IconScale />
-          <span
-            className="text-[12px] font-semibold"
-            style={{ color: permitNeeded ? C.red : C.muted }}
-          >
-            {permitNeeded ? "⚠️ Vérification requise" : "À évaluer"}
+          <span className="text-[12px] font-semibold" style={{ color: permitNeeded ? C.red : C.muted }}>
+            {permitNeeded ? "⚠️ Permis unique requis" : "À clarifier"}
           </span>
         </div>
 
-        {/* Travailleur : peut signaler un besoin de permis */}
-        {isWorker && !permitNeeded && (
-          <button
-            onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
-            className="mt-2 w-full rounded-xl px-3 py-2 text-[11px] font-semibold transition-colors"
-            style={{
-              background: "#fff0f0",
-              color: C.red,
-              border: `1px solid #fecaca`,
-            }}
-          >
-            Signaler qu'un permis unique pourrait être nécessaire
-          </button>
+        {/* EMPLOYEUR */}
+        {isEmployer && (
+          <div className="mt-2 flex flex-col gap-2">
+            {!permitNeeded ? (
+              <button
+                onClick={() => {
+                  if (onSendMessage) {
+                    onSendMessage(
+                      "Bonjour, afin de préparer votre dossier, pourriez-vous nous indiquer votre situation administrative actuelle en Belgique ? Êtes-vous ressortissant(e) de l'UE, ou hors UE ? Disposez-vous déjà d'un titre de séjour et d'une autorisation de travail valides en Belgique ?"
+                    );
+                  }
+                }}
+                className="w-full rounded-xl px-3 py-2 text-left text-[11px] font-semibold transition-colors hover:opacity-90"
+                style={{ background: C.light, color: C.dark, border: `1px solid ${C.border}` }}
+              >
+                📋 Demander la situation administrative du candidat
+              </button>
+            ) : (
+              <div
+                className="rounded-xl px-3 py-2 text-[11px] leading-relaxed"
+                style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
+              >
+                <p className="font-semibold">⚠️ Un permis unique sera nécessaire</p>
+                <p className="mt-1 font-normal" style={{ color: "#7f1d1d" }}>
+                  En tant qu'employeur, c'est vous qui devez introduire la demande auprès de la région compétente.
+                </p>
+              </div>
+            )}
+          </div>
         )}
-        {/* Employeur : lecture seule — voit ce que le travailleur a signalé */}
-        {isEmployer && permitNeeded && (
-          <div
-            className="mt-2 rounded-xl px-3 py-2 text-[11px] font-semibold"
-            style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
-          >
-            ⚠️ Le candidat a signalé un besoin de permis unique
+
+        {/* TRAVAILLEUR */}
+        {isWorker && (
+          <div className="mt-2 flex flex-col gap-2">
+            {!permitNeeded ? (
+              <>
+                <p className="text-[11px]" style={{ color: C.muted }}>
+                  L'employeur peut vous demander votre situation. Indiquez si un permis unique sera nécessaire.
+                </p>
+                <button
+                  onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
+                  className="w-full rounded-xl px-3 py-2 text-[11px] font-semibold transition-colors hover:opacity-90"
+                  style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
+                >
+                  ⚠️ Confirmer qu'un permis unique sera requis
+                </button>
+              </>
+            ) : (
+              <div
+                className="rounded-xl px-3 py-2 text-[11px] font-semibold"
+                style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}
+              >
+                ✅ Situation signalée à l'employeur
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -1457,6 +1526,7 @@ export default function MessagerieApp() {
           conversation={activeConversation}
           onUpdateStatus={handleUpdateStatus}
           onRequestLexpat={(conv) => setLexpatModal(conv)}
+          onSendMessage={handleSendMessage}
           className="flex w-[280px]"
         />
       </div>
