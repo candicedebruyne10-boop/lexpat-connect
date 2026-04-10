@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
 import { normalizeRegion, computeMatchScore } from "../../../lib/matching";
 import { parseRegionSelection } from "../../../lib/professions";
-import { Resend } from "resend";
-import { getSenderAddress } from "../../../lib/email-routing";
-import { newWorkerMatchEmailHtml } from "../../../lib/email-templates";
-import { isUnsubscribed } from "../../../lib/email-unsubscribe";
+import { notifyEmployersForNewWorker } from "../../../lib/match-notifications";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -39,24 +36,36 @@ export async function POST(request) {
 
     const { error } = await supabase
       .from("worker_profiles")
-      .update({
-        target_job: finalJobTitle || null,
-        target_job_other: selectedJobOption === "Autre profession" ? otherJobTitle || null : null,
-        target_sector: body.sector || null,
-        preferred_region: normalizedRegion,
-        experience_level: body.experience || null,
-        languages,
-        summary: body.description || null,
-        full_name: body.full_name || null,
-        profile_visibility: body.profile_visibility || "review"
-      })
-      .eq("user_id", user.id);
+      .upsert(
+        {
+          user_id: user.id,
+          target_job: finalJobTitle || null,
+          target_job_other: selectedJobOption === "Autre profession" ? otherJobTitle || null : null,
+          target_sector: body.sector || null,
+          preferred_region: normalizedRegion,
+          experience_level: body.experience || null,
+          languages,
+          summary: body.description || null,
+          full_name: body.full_name || null,
+          profile_visibility: body.profile_visibility || "review"
+        },
+        { onConflict: "user_id" }
+      );
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    await supabase.auth.admin.updateUserById(user.id, {
+      user_metadata: {
+        ...(user.user_metadata || {}),
+        preferred_locale: body.preferred_locale === "en" ? "en" : "fr",
+        match_alerts_enabled: body.match_alerts_enabled !== false
+      }
+    }).catch(() => {});
 
     // Notifier les employeurs dont les offres correspondent à ce profil (best-effort, non-bloquant)
     if (body.profile_visibility === "visible") {
       notifyMatchingEmployers({
+        userId: user.id,
         targetJob: finalJobTitle,
         sector: body.sector || null,
         region: normalizedRegion,
@@ -74,9 +83,8 @@ export async function POST(request) {
  * Cherche les offres actives qui correspondent au profil travailleur
  * et envoie un email de notification aux employeurs concernés.
  */
-async function notifyMatchingEmployers({ targetJob, sector, region, experience }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey || !targetJob) return;
+async function notifyMatchingEmployers({ userId, targetJob, sector, region, experience }) {
+  if (!targetJob) return;
 
   const supabase = getServiceClient();
 
@@ -88,8 +96,7 @@ async function notifyMatchingEmployers({ targetJob, sector, region, experience }
 
   if (!offers?.length) return;
 
-  const resend = new Resend(apiKey);
-  const from = getSenderAddress();
+  const matchedRows = [];
 
   const workerForMatch = {
     profile_visibility: "visible",
@@ -107,37 +114,38 @@ async function notifyMatchingEmployers({ targetJob, sector, region, experience }
     });
 
     if (score < 40) continue;
-
-    // Récupérer l'email de contact de l'employeur
-    const { data: members } = await supabase
-      .from("employer_members")
-      .select("work_email, full_name")
-      .eq("employer_profile_id", offer.employer_profile_id);
-
-    if (!members?.length) continue;
-
-    // Envoyer l'email à chaque membre de l'équipe employeur
-    for (const member of members) {
-      if (!member.work_email) continue;
-      // Respect RGPD : ne pas envoyer si l'employeur s'est désabonné
-      const unsubscribed = await isUnsubscribed(member.work_email).catch(() => false);
-      if (unsubscribed) continue;
-
-      await resend.emails.send({
-        from,
-        to: member.work_email,
-        subject: `[LEXPAT Connect] Un nouveau candidat correspond à votre offre "${offer.title}"`,
-        html: newWorkerMatchEmailHtml({
-          targetJob,
-          sector,
-          region: normalizeRegion(region),
-          experience,
-          offerTitle: offer.title,
-          recipientEmail: member.work_email
-        })
-      }).catch(() => {});
-    }
+    matchedRows.push({
+      job_offer_id: offer.id,
+      worker_profile_id: null,
+      score,
+      status: "new"
+    });
   }
+
+  if (!matchedRows.length) return;
+
+  const { data: worker } = await supabase
+    .from("worker_profiles")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (!worker?.id) return;
+
+  await supabase
+    .from("matches")
+    .upsert(
+      matchedRows.map((row) => ({
+        ...row,
+        worker_profile_id: worker.id
+      })),
+      { onConflict: "job_offer_id,worker_profile_id" }
+    );
+
+  await notifyEmployersForNewWorker({
+    supabase,
+    workerProfileId: worker.id
+  });
 }
 
 /**
@@ -166,7 +174,9 @@ export async function GET(request) {
             regions: parseRegionSelection(data.preferred_region),
             experience: data.experience_level || "",
             languages: Array.isArray(data.languages) ? data.languages.join(", ") : data.languages || "",
-            description: data.summary || ""
+            description: data.summary || "",
+            preferred_locale: user.user_metadata?.preferred_locale === "en" ? "en" : "fr",
+            match_alerts_enabled: user.user_metadata?.match_alerts_enabled !== false
           }
         : null
     });
