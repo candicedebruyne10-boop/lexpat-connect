@@ -821,7 +821,13 @@ export default function EmployerSpace({ locale = "fr" }) {
     }
   }, [loading, session, router, isEn]);
 
-  if (loading || !session) {
+  useEffect(() => {
+    if (!loading && session && user?.user_metadata?.role === "worker") {
+      router.replace(isEn ? "/en/travailleurs/espace" : "/travailleurs/espace");
+    }
+  }, [loading, session, user, router, isEn]);
+
+  if (loading || !session || user?.user_metadata?.role === "worker") {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" />

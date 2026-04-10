@@ -48,6 +48,37 @@ export async function POST(request) {
     const fullName = body?.fullName || user.user_metadata?.full_name || null;
     const companyName = body?.companyName || user.user_metadata?.company_name || null;
     const email = body?.email || user.email || null;
+    const metadataRole = user.user_metadata?.role || null;
+
+    if (metadataRole && allowedRoles.has(metadataRole) && metadataRole !== role) {
+      return NextResponse.json(
+        {
+          error:
+            metadataRole === 'employer'
+              ? "Ce compte est déjà configuré comme employeur. Utilisez uniquement l'espace employeur avec cette adresse email."
+              : "Ce compte est déjà configuré comme travailleur. Utilisez uniquement l'espace travailleur avec cette adresse email."
+        },
+        { status: 409 }
+      );
+    }
+
+    const { data: existingRoleRow } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (existingRoleRow?.role && existingRoleRow.role !== role) {
+      return NextResponse.json(
+        {
+          error:
+            existingRoleRow.role === 'employer'
+              ? "Ce compte est déjà configuré comme employeur. Utilisez uniquement l'espace employeur avec cette adresse email."
+              : "Ce compte est déjà configuré comme travailleur. Utilisez uniquement l'espace travailleur avec cette adresse email."
+        },
+        { status: 409 }
+      );
+    }
 
     const { error: roleError } = await supabase
       .from('user_roles')
