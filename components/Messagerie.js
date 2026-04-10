@@ -773,6 +773,8 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
 
   const statusInfo = STATUS_LABEL[conversation.status];
   const permitNeeded = conversation.actions.legal_review_needed;
+  const isEmployer = conversation.viewer_role === "employer";
+  const isWorker = conversation.viewer_role === "worker";
 
   return (
     <aside
@@ -825,33 +827,26 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
           </span>
         </div>
 
-        {/* Status actions */}
-        <div className="mt-3 flex flex-col gap-2">
-          {conversation.status !== STATUS.INTERVIEW_REQUESTED &&
-            conversation.status !== STATUS.CLOSED && (
-              <button
-                onClick={() => onUpdateStatus(conversation.id, STATUS.INTERVIEW_REQUESTED)}
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-semibold transition-colors hover:opacity-90"
-                style={{
-                  background: C.light,
-                  color: C.dark,
-                  border: `1px solid ${C.border}`,
-                }}
-              >
-                <IconCalendar />
-                Proposer un entretien
-              </button>
-            )}
-          {conversation.status === STATUS.INTERVIEW_REQUESTED && (
-            <div
-              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-semibold"
-              style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}
-            >
-              <IconCheck />
-              Entretien demandé
-            </div>
-          )}
-        </div>
+        {/* Status actions — employeur uniquement peut proposer un entretien */}
+        {isEmployer && (
+          <div className="mt-3 flex flex-col gap-2">
+            {conversation.status !== STATUS.INTERVIEW_REQUESTED &&
+              conversation.status !== STATUS.CLOSED && (
+                <button
+                  onClick={() => onUpdateStatus(conversation.id, STATUS.INTERVIEW_REQUESTED)}
+                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-semibold transition-colors hover:opacity-90"
+                  style={{
+                    background: C.light,
+                    color: C.dark,
+                    border: `1px solid ${C.border}`,
+                  }}
+                >
+                  <IconCalendar />
+                  Proposer un entretien
+                </button>
+              )}
+          </div>
+        )}
       </div>
 
       {/* Permis unique */}
@@ -875,7 +870,8 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
           </span>
         </div>
 
-        {!permitNeeded && (
+        {/* Travailleur : peut signaler un besoin de permis */}
+        {isWorker && !permitNeeded && (
           <button
             onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
             className="mt-2 w-full rounded-xl px-3 py-2 text-[11px] font-semibold transition-colors"
@@ -887,6 +883,15 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, className
           >
             Signaler qu'un permis unique pourrait être nécessaire
           </button>
+        )}
+        {/* Employeur : lecture seule — voit ce que le travailleur a signalé */}
+        {isEmployer && permitNeeded && (
+          <div
+            className="mt-2 rounded-xl px-3 py-2 text-[11px] font-semibold"
+            style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
+          >
+            ⚠️ Le candidat a signalé un besoin de permis unique
+          </div>
         )}
       </div>
 
