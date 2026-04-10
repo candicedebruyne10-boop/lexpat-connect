@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function MessageriePage() {
-  return <MessagerieApp />;
+  return <MessagerieApp locale="fr" />;
 }

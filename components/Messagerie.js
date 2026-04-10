@@ -54,32 +54,63 @@ const STATUS_LABEL = {
    UTILS
    ══════════════════════════════════════════════════════════════════════════ */
 
-const REGION_FR = {
-  brussels:  "Bruxelles-Capitale",
-  wallonia:  "Wallonie",
-  flanders:  "Flandre",
+const REGION_LABELS = {
+  fr: {
+    brussels: "Bruxelles-Capitale",
+    wallonia: "Wallonie",
+    flanders: "Flandre",
+  },
+  en: {
+    brussels: "Brussels-Capital",
+    wallonia: "Wallonia",
+    flanders: "Flanders",
+  }
 };
 
-function displayRegion(region) {
+function displayRegion(region, locale = "fr") {
   if (!region) return "";
-  return REGION_FR[region?.toLowerCase()] || region;
+  return REGION_LABELS[locale]?.[region?.toLowerCase()] || region;
 }
 
-function formatTime(iso) {
+function formatTime(iso, locale = "fr") {
   if (!iso) return "";
   const d = new Date(iso);
   const now = new Date();
   const diff = now - d;
   const days = Math.floor(diff / 86400000);
-  if (days === 0) return d.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
-  if (days === 1) return "Hier";
-  if (days < 7) return d.toLocaleDateString("fr-BE", { weekday: "short" });
-  return d.toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit" });
+  const localeCode = locale === "en" ? "en-GB" : "fr-BE";
+  if (days === 0) return d.toLocaleTimeString(localeCode, { hour: "2-digit", minute: "2-digit" });
+  if (days === 1) return locale === "en" ? "Yesterday" : "Hier";
+  if (days < 7) return d.toLocaleDateString(localeCode, { weekday: "short" });
+  return d.toLocaleDateString(localeCode, { day: "2-digit", month: "2-digit" });
 }
 
-function formatTimestamp(iso) {
+function formatTimestamp(iso, locale = "fr") {
   if (!iso) return "";
-  return new Date(iso).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleTimeString(locale === "en" ? "en-GB" : "fr-BE", { hour: "2-digit", minute: "2-digit" });
+}
+
+function getLocalizedStatusLabel(status, locale = "fr") {
+  const baseLabel = STATUS_LABEL[status]?.label || STATUS_LABEL.match_confirmed.label;
+  const labels = {
+    fr: {
+      "Match confirmé": "Match confirmé",
+      "Premier contact": "Premier contact",
+      "En discussion": "En discussion",
+      "Entretien demandé": "Entretien demandé",
+      "Autorisation de travail requise": "Autorisation de travail requise",
+      "Clôturé": "Clôturé",
+    },
+    en: {
+      "Match confirmé": "Confirmed match",
+      "Premier contact": "First contact",
+      "En discussion": "In discussion",
+      "Entretien demandé": "Interview requested",
+      "Autorisation de travail requise": "Work authorization required",
+      "Clôturé": "Closed",
+    },
+  };
+  return labels[locale]?.[baseLabel] || baseLabel;
 }
 
 function Avatar({ initials, color, size = 40 }) {
@@ -157,7 +188,7 @@ function IconScale() {
 }
 
 /* ── InfoTooltip — point d'information cliquable ───────────────────────── */
-function InfoTooltip({ text }) {
+function InfoTooltip({ text, locale = "fr" }) {
   const [open, setOpen] = useState(false);
   return (
     <span className="relative inline-block">
@@ -165,7 +196,7 @@ function InfoTooltip({ text }) {
         onClick={() => setOpen((v) => !v)}
         className="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold transition-all hover:scale-110"
         style={{ background: C.teal, color: "#fff", boxShadow: "0 1px 4px rgba(87,183,175,0.4)" }}
-        title="En savoir plus sur le permis unique"
+        title={locale === "en" ? "Learn more about the single permit" : "En savoir plus sur le permis unique"}
       >
         i
       </button>
@@ -180,7 +211,7 @@ function InfoTooltip({ text }) {
             className="mt-2 block text-[10px] font-semibold"
             style={{ color: C.mid }}
           >
-            Fermer
+            {locale === "en" ? "Close" : "Fermer"}
           </button>
         </div>
       )}
@@ -242,7 +273,7 @@ function IconArrowLeft() {
 /* ══════════════════════════════════════════════════════════════════════════
    PANEL GAUCHE — ConversationList
    ══════════════════════════════════════════════════════════════════════════ */
-function ConversationList({ conversations, activeId, onSelect, className = "w-full md:w-[300px]" }) {
+function ConversationList({ conversations, activeId, onSelect, className = "w-full md:w-[300px]", locale = "fr" }) {
   const [search, setSearch] = useState("");
 
   const filtered = conversations.filter((c) => {
@@ -265,10 +296,10 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
           className="font-heading text-[15px] font-bold tracking-tight"
           style={{ color: C.dark }}
         >
-          Messagerie
+          {locale === "en" ? "Messaging" : "Messagerie"}
         </h2>
         <p className="mt-0.5 text-xs" style={{ color: C.muted }}>
-          {conversations.filter((c) => c.unread > 0).length} message(s) non lu(s)
+          {conversations.filter((c) => c.unread > 0).length} {locale === "en" ? "unread message(s)" : "message(s) non lu(s)"}
         </p>
         {/* Search */}
         <div
@@ -280,7 +311,7 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
           </span>
           <input
             type="text"
-            placeholder="Rechercher…"
+            placeholder={locale === "en" ? "Search…" : "Rechercher…"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-transparent text-[13px] outline-none"
@@ -293,7 +324,7 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 && (
           <div className="px-4 py-8 text-center text-sm" style={{ color: C.muted }}>
-            Aucune conversation trouvée
+            {locale === "en" ? "No conversation found" : "Aucune conversation trouvée"}
           </div>
         )}
         {filtered.map((conv) => (
@@ -302,6 +333,7 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
             conv={conv}
             active={conv.id === activeId}
             onSelect={onSelect}
+            locale={locale}
           />
         ))}
       </div>
@@ -309,8 +341,9 @@ function ConversationList({ conversations, activeId, onSelect, className = "w-fu
   );
 }
 
-function ConversationItem({ conv, active, onSelect }) {
+function ConversationItem({ conv, active, onSelect, locale = "fr" }) {
   const statusInfo = STATUS_LABEL[conv.status] || STATUS_LABEL.match_confirmed;
+  const localizedStatusLabel = getLocalizedStatusLabel(conv.status, locale);
 
   return (
     <button
@@ -345,7 +378,7 @@ function ConversationItem({ conv, active, onSelect }) {
               </p>
             </div>
             <span className="shrink-0 text-[10px]" style={{ color: C.muted }}>
-              {formatTime(conv.last_message_at)}
+              {formatTime(conv.last_message_at, locale)}
             </span>
           </div>
 
@@ -357,7 +390,7 @@ function ConversationItem({ conv, active, onSelect }) {
               fontWeight: conv.unread > 0 ? 600 : 400,
             }}
           >
-            {conv.last_message || "Match confirmé — démarrez la conversation"}
+            {conv.last_message || (locale === "en" ? "Confirmed match — start the conversation" : "Match confirmé — démarrez la conversation")}
           </p>
 
           {/* Footer: status + unread badge */}
@@ -369,7 +402,7 @@ function ConversationItem({ conv, active, onSelect }) {
                 background: statusInfo.bg,
               }}
             >
-              {statusInfo.label}
+              {localizedStatusLabel}
             </span>
             {conv.unread > 0 && (
               <span
@@ -386,7 +419,7 @@ function ConversationItem({ conv, active, onSelect }) {
   );
 }
 
-function StartConversationPanel({ matches, onStart, startingId }) {
+function StartConversationPanel({ matches, onStart, startingId, locale = "fr" }) {
   if (!matches.length) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-8 text-center" style={{ background: C.surface }}>
@@ -397,10 +430,12 @@ function StartConversationPanel({ matches, onStart, startingId }) {
           <span style={{ color: C.dark, fontSize: 32 }}>💬</span>
         </div>
         <p className="mt-4 font-heading text-base font-semibold" style={{ color: C.dark }}>
-          Aucune conversation active
+          {locale === "en" ? "No active conversation" : "Aucune conversation active"}
         </p>
         <p className="mt-2 max-w-md text-sm leading-7" style={{ color: C.muted }}>
-          Quand un match est confirmé des deux côtés, vous pouvez démarrer ici le premier échange avec votre match.
+          {locale === "en"
+            ? "Once a match is confirmed on both sides, you can start the first exchange here."
+            : "Quand un match est confirmé des deux côtés, vous pouvez démarrer ici le premier échange avec votre match."}
         </p>
       </div>
     );
@@ -411,13 +446,15 @@ function StartConversationPanel({ matches, onStart, startingId }) {
       <div className="mx-auto w-full max-w-3xl">
         <div className="rounded-[30px] border bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)]" style={{ borderColor: C.line }}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: C.teal }}>
-            Matchs confirmés
+            {locale === "en" ? "Confirmed matches" : "Matchs confirmés"}
           </p>
           <h2 className="mt-3 font-heading text-2xl font-bold tracking-tight" style={{ color: C.dark }}>
-            Démarrer une conversation avec votre match
+            {locale === "en" ? "Start a conversation with your match" : "Démarrer une conversation avec votre match"}
           </h2>
           <p className="mt-3 text-sm leading-7" style={{ color: C.muted }}>
-            Vos matchs confirmés apparaissent ici. Cliquez sur le bouton pour ouvrir la messagerie avec la bonne personne.
+            {locale === "en"
+              ? "Your confirmed matches appear here. Click the button to open messaging with the right person."
+              : "Vos matchs confirmés apparaissent ici. Cliquez sur le bouton pour ouvrir la messagerie avec la bonne personne."}
           </p>
 
           <div className="mt-6 grid gap-4">
@@ -430,13 +467,13 @@ function StartConversationPanel({ matches, onStart, startingId }) {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-heading text-lg font-bold tracking-tight" style={{ color: C.dark }}>
-                      {match.offer?.title || match.job_title || "Poste"}
+                      {match.offer?.title || match.job_title || (locale === "en" ? "Role" : "Poste")}
                     </p>
                     <p className="mt-1 text-sm" style={{ color: C.muted }}>
-                      {[match.offer?.sector || match.sector, displayRegion(match.offer?.region || match.region)].filter(Boolean).join(" · ")}
+                      {[match.offer?.sector || match.sector, displayRegion(match.offer?.region || match.region, locale)].filter(Boolean).join(" · ")}
                     </p>
                     <p className="mt-2 text-xs font-semibold" style={{ color: C.mid }}>
-                      Score de compatibilité : {match.score || match.compatibility_score || 0}%
+                      {locale === "en" ? "Compatibility score:" : "Score de compatibilité :"} {match.score || match.compatibility_score || 0}%
                     </p>
                   </div>
 
@@ -446,7 +483,7 @@ function StartConversationPanel({ matches, onStart, startingId }) {
                     className="rounded-2xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60"
                     style={{ background: C.dark }}
                   >
-                    {startingId === match.id ? "Ouverture…" : "Parler à mon match"}
+                    {startingId === match.id ? (locale === "en" ? "Opening…" : "Ouverture…") : (locale === "en" ? "Talk to my match" : "Parler à mon match")}
                   </button>
                 </div>
               </article>
@@ -461,7 +498,7 @@ function StartConversationPanel({ matches, onStart, startingId }) {
 /* ══════════════════════════════════════════════════════════════════════════
    ZONE CENTRALE — ChatWindow
    ══════════════════════════════════════════════════════════════════════════ */
-function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview, onBack }) {
+function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview, onBack, locale = "fr" }) {
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
 
@@ -494,10 +531,10 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
           <span style={{ color: C.dark, fontSize: 32 }}>💬</span>
         </div>
         <p className="mt-4 font-heading text-base font-semibold" style={{ color: C.dark }}>
-          Sélectionnez une conversation
+          {locale === "en" ? "Select a conversation" : "Sélectionnez une conversation"}
         </p>
         <p className="mt-1 text-sm" style={{ color: C.muted }}>
-          Vos échanges apparaîtront ici
+          {locale === "en" ? "Your messages will appear here" : "Vos échanges apparaîtront ici"}
         </p>
       </div>
     );
@@ -518,7 +555,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
             onClick={onBack}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border md:hidden"
             style={{ borderColor: C.line, color: C.dark, background: C.surface }}
-            aria-label="Revenir aux conversations"
+            aria-label={locale === "en" ? "Back to conversations" : "Revenir aux conversations"}
           >
             <IconArrowLeft />
           </button>
@@ -534,7 +571,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
             {conversation.employer.name} × {conversation.worker.name}
           </p>
           <p className="text-[12px]" style={{ color: C.muted }}>
-            {conversation.job_title} · {displayRegion(conversation.region)}
+            {conversation.job_title} · {displayRegion(conversation.region, locale)}
           </p>
         </div>
         {/* Score badge */}
@@ -563,10 +600,12 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
           </div>
           <div>
             <p className="font-heading text-[13px] font-bold" style={{ color: C.dark }}>
-              Match confirmé !
+              {locale === "en" ? "Confirmed match!" : "Match confirmé !"}
             </p>
             <p className="text-[12px]" style={{ color: C.muted }}>
-              Les deux parties ont exprimé leur intérêt. Démarrez la conversation.
+              {locale === "en"
+                ? "Both sides have shown interest. Start the conversation."
+                : "Les deux parties ont exprimé leur intérêt. Démarrez la conversation."}
             </p>
           </div>
         </div>
@@ -577,19 +616,19 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
         {messages.length === 0 && !isNewMatch && (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-sm" style={{ color: C.muted }}>
-              Aucun message pour l'instant
+              {locale === "en" ? "No message yet" : "Aucun message pour l'instant"}
             </p>
           </div>
         )}
 
         {/* AI Summary Hook — prévu pour résumé automatique */}
         {messages.length >= 3 && (
-          <AISummaryBar conversation={conversation} messages={messages} />
+          <AISummaryBar conversation={conversation} messages={messages} locale={locale} />
         )}
 
         <div className="flex flex-col gap-3">
           {messages.map((msg) => (
-            <MessageBubble key={msg.id} msg={msg} conversation={conversation} viewerRole={conversation.viewer_role} />
+            <MessageBubble key={msg.id} msg={msg} conversation={conversation} viewerRole={conversation.viewer_role} locale={locale} />
           ))}
         </div>
         <div ref={bottomRef} />
@@ -601,7 +640,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
         style={{ background: "#fff", borderColor: C.line }}
       >
         {/* AI suggestion hook — espace pour suggestions IA futures */}
-        <AISuggestionHook conversation={conversation} onSelect={setInput} />
+        <AISuggestionHook conversation={conversation} onSelect={setInput} locale={locale} />
 
         <div
           className="flex items-end gap-2 rounded-2xl px-4 py-3"
@@ -611,7 +650,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Écrivez votre message… (Entrée pour envoyer)"
+            placeholder={locale === "en" ? "Write your message… (Enter to send)" : "Écrivez votre message… (Entrée pour envoyer)"}
             rows={1}
             className="flex-1 resize-none bg-transparent text-[14px] leading-relaxed outline-none"
             style={{
@@ -639,7 +678,7 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
   );
 }
 
-function MessageBubble({ msg, conversation, viewerRole }) {
+function MessageBubble({ msg, conversation, viewerRole, locale = "fr" }) {
   // isMine = ce message est envoyé par le visiteur connecté
   const isMine =
     (viewerRole === "employer" && msg.sender_type === "employer") ||
@@ -683,7 +722,7 @@ function MessageBubble({ msg, conversation, viewerRole }) {
           className="mt-1 flex items-center gap-1 px-1 text-[10px]"
           style={{ color: C.muted }}
         >
-          <span>{formatTimestamp(msg.created_at)}</span>
+          <span>{formatTimestamp(msg.created_at, locale)}</span>
           {isMine && (
             <span style={{ color: msg.read ? C.teal : C.muted }}>
               {msg.read ? <IconCheckDouble /> : <IconCheck />}
@@ -702,7 +741,7 @@ function MessageBubble({ msg, conversation, viewerRole }) {
  * Trigger: messages.length >= 3
  * Future: POST /api/ai/summarize { messages } → { summary, key_points, permit_flag }
  */
-function AISummaryBar({ conversation, messages }) {
+function AISummaryBar({ conversation, messages, locale = "fr" }) {
   const [open, setOpen] = useState(false);
   // AI_EVENT: permit_detection — scan messages for permit keywords
   const hasPermitKeywords = messages.some((m) =>
@@ -720,8 +759,8 @@ function AISummaryBar({ conversation, messages }) {
         </span>
         <span className="text-[12px] font-semibold" style={{ color: C.dark }}>
           {hasPermitKeywords
-            ? "⚠️ Besoin de permis détecté dans la conversation"
-            : "Résumé IA disponible"}
+            ? (locale === "en" ? "⚠️ Permit-related topic detected in the conversation" : "⚠️ Besoin de permis détecté dans la conversation")
+            : (locale === "en" ? "AI summary available" : "Résumé IA disponible")}
         </span>
       </div>
       <button
@@ -729,12 +768,12 @@ function AISummaryBar({ conversation, messages }) {
         className="text-[11px] font-bold underline"
         style={{ color: C.mid }}
       >
-        {open ? "Masquer" : "Voir"}
+        {open ? (locale === "en" ? "Hide" : "Masquer") : (locale === "en" ? "View" : "Voir")}
       </button>
       {open && (
         <div className="absolute left-0 right-0 top-full z-10 mx-4 mt-1 rounded-xl p-3 text-[12px] shadow-soft"
           style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted }}>
-          <em>Résumé IA — bientôt disponible (hook prêt pour intégration LLM)</em>
+          <em>{locale === "en" ? "AI summary — coming soon (hook ready for LLM integration)" : "Résumé IA — bientôt disponible (hook prêt pour intégration LLM)"}</em>
         </div>
       )}
     </div>
@@ -746,28 +785,45 @@ function AISummaryBar({ conversation, messages }) {
  * Trigger: last message from other party
  * Future: POST /api/ai/suggest-reply { context, last_message } → string[]
  */
-function AISuggestionHook({ conversation, onSelect }) {
+function AISuggestionHook({ conversation, onSelect, locale = "fr" }) {
   const role = conversation?.viewer_role || "worker";
   const isEmployer = role === "employer";
 
-  // Suggestions différenciées selon le rôle
   const employerSuggestions = {
-    [STATUS.MATCH_CONFIRMED]:    ["Bonjour, je suis intéressé(e) par votre profil. Seriez-vous disponible pour un échange ?"],
-    [STATUS.FIRST_MSG_SENT]:     ["Pourriez-vous me préciser vos disponibilités pour un entretien ?", "Je vous propose un entretien mercredi ou jeudi, à votre convenance."],
-    [STATUS.DISCUSSION_ACTIVE]:  ["Je souhaite vous proposer un entretien. Quand êtes-vous disponible ?", "Seriez-vous libre la semaine prochaine pour un premier échange ?"],
-    [STATUS.INTERVIEW_REQUESTED]:["Je vous confirme le créneau. Voici le lien de visio :", "Préférez-vous un entretien en présentiel ou en visioconférence ?"],
-    [STATUS.LEGAL_REVIEW]:       ["Nous sommes prêts à soutenir votre démarche de permis.", "Pouvez-vous nous transmettre les documents nécessaires ?"],
+    fr: {
+      [STATUS.MATCH_CONFIRMED]: ["Bonjour, je suis intéressé(e) par votre profil. Seriez-vous disponible pour un échange ?"],
+      [STATUS.FIRST_MSG_SENT]: ["Pourriez-vous me préciser vos disponibilités pour un entretien ?", "Je vous propose un entretien mercredi ou jeudi, à votre convenance."],
+      [STATUS.DISCUSSION_ACTIVE]: ["Je souhaite vous proposer un entretien. Quand êtes-vous disponible ?", "Seriez-vous libre la semaine prochaine pour un premier échange ?"],
+      [STATUS.INTERVIEW_REQUESTED]: ["Je vous confirme le créneau. Voici le lien de visio :", "Préférez-vous un entretien en présentiel ou en visioconférence ?"],
+      [STATUS.LEGAL_REVIEW]: ["Nous sommes prêts à soutenir votre démarche de permis.", "Pouvez-vous nous transmettre les documents nécessaires ?"],
+    },
+    en: {
+      [STATUS.MATCH_CONFIRMED]: ["Hello, I'm interested in your profile. Would you be available for a quick exchange?"],
+      [STATUS.FIRST_MSG_SENT]: ["Could you share your availability for an interview?", "I can offer an interview on Wednesday or Thursday, whichever suits you best."],
+      [STATUS.DISCUSSION_ACTIVE]: ["I would like to suggest an interview. When would you be available?", "Would you be available next week for a first conversation?"],
+      [STATUS.INTERVIEW_REQUESTED]: ["I confirm the proposed slot. Here is the video link:", "Would you prefer an in-person interview or a video call?"],
+      [STATUS.LEGAL_REVIEW]: ["We are ready to support your work authorization process.", "Could you send us the necessary documents?"],
+    },
   };
 
   const workerSuggestions = {
-    [STATUS.MATCH_CONFIRMED]:    ["Bonjour, merci pour ce match. Je suis très intéressé(e) par ce poste."],
-    [STATUS.FIRST_MSG_SENT]:     ["Pouvez-vous m'en dire plus sur le poste et l'équipe ?", "Quelles sont les prochaines étapes du processus de sélection ?"],
-    [STATUS.DISCUSSION_ACTIVE]:  ["Quel format d'entretien prévoyez-vous ?", "Y a-t-il plusieurs étapes dans votre processus de recrutement ?"],
-    [STATUS.INTERVIEW_REQUESTED]:["Je suis disponible aux horaires que vous proposez.", "Pourriez-vous me confirmer le format et la durée de l'entretien ?"],
-    [STATUS.LEGAL_REVIEW]:       ["Je suis en train de rassembler mes documents.", "Mes documents sont en cours de traitement."],
+    fr: {
+      [STATUS.MATCH_CONFIRMED]: ["Bonjour, merci pour ce match. Je suis très intéressé(e) par ce poste."],
+      [STATUS.FIRST_MSG_SENT]: ["Pouvez-vous m'en dire plus sur le poste et l'équipe ?", "Quelles sont les prochaines étapes du processus de sélection ?"],
+      [STATUS.DISCUSSION_ACTIVE]: ["Quel format d'entretien prévoyez-vous ?", "Y a-t-il plusieurs étapes dans votre processus de recrutement ?"],
+      [STATUS.INTERVIEW_REQUESTED]: ["Je suis disponible aux horaires que vous proposez.", "Pourriez-vous me confirmer le format et la durée de l'entretien ?"],
+      [STATUS.LEGAL_REVIEW]: ["Je suis en train de rassembler mes documents.", "Mes documents sont en cours de traitement."],
+    },
+    en: {
+      [STATUS.MATCH_CONFIRMED]: ["Hello, thank you for this match. I am very interested in this role."],
+      [STATUS.FIRST_MSG_SENT]: ["Could you tell me more about the role and the team?", "What are the next steps in your selection process?"],
+      [STATUS.DISCUSSION_ACTIVE]: ["What interview format do you usually use?", "Are there several stages in your hiring process?"],
+      [STATUS.INTERVIEW_REQUESTED]: ["I am available at the times you suggested.", "Could you confirm the format and duration of the interview?"],
+      [STATUS.LEGAL_REVIEW]: ["I am currently gathering my documents.", "My documents are currently being processed."],
+    },
   };
 
-  const suggestions = isEmployer ? employerSuggestions : workerSuggestions;
+  const suggestions = isEmployer ? employerSuggestions[locale] : workerSuggestions[locale];
   const convSuggestions = suggestions[conversation?.status];
   if (!convSuggestions) return null;
 
@@ -794,10 +850,12 @@ function AISuggestionHook({ conversation, onSelect }) {
 /* ══════════════════════════════════════════════════════════════════════════
    PANNEAU DROIT — ContextPanel
    ══════════════════════════════════════════════════════════════════════════ */
-const PERMIT_INFO =
-  "En Belgique, si le candidat est ressortissant d'un pays hors Union européenne et ne dispose pas encore d'un titre de séjour et d'une autorisation de travail valides, c'est l'employeur qui doit introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.";
+const PERMIT_INFO = {
+  fr: "En Belgique, si le candidat est ressortissant d'un pays hors Union européenne et ne dispose pas encore d'un titre de séjour et d'une autorisation de travail valides, c'est l'employeur qui doit introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.",
+  en: "In Belgium, if the candidate is a non-EU national and does not yet hold a valid residence permit and work authorization, it is the employer who must file the single permit application with the competent region (Flanders, Wallonia or Brussels-Capital). The candidate cannot complete this process alone."
+};
 
-function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMessage, className = "hidden md:flex md:w-[280px]" }) {
+function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMessage, className = "hidden md:flex md:w-[280px]", locale = "fr" }) {
   if (!conversation) {
     return (
       <aside
@@ -806,7 +864,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       >
         <div className="flex flex-1 items-center justify-center">
           <p className="text-sm" style={{ color: C.muted }}>
-            Sélectionnez une conversation
+            {locale === "en" ? "Select a conversation" : "Sélectionnez une conversation"}
           </p>
         </div>
       </aside>
@@ -817,6 +875,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
   const permitNeeded = conversation.actions.legal_review_needed;
   const isEmployer = conversation.viewer_role === "employer";
   const isWorker = conversation.viewer_role === "worker";
+  const localizedStatusLabel = getLocalizedStatusLabel(conversation.status, locale);
 
   return (
     <aside
@@ -829,7 +888,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
           className="font-heading text-[11px] font-bold uppercase tracking-widest"
           style={{ color: C.teal }}
         >
-          Contexte du match
+          {locale === "en" ? "Match context" : "Contexte du match"}
         </p>
 
         <h3 className="mt-2 font-heading text-[16px] font-bold leading-tight" style={{ color: C.dark }}>
@@ -837,11 +896,11 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
         </h3>
 
         <div className="mt-3 flex flex-col gap-2">
-          <InfoRow icon={<IconBriefcase />} label="Entreprise" value={conversation.employer.name} />
-          <InfoRow icon={<IconMapPin />} label="Région" value={displayRegion(conversation.region)} />
+          <InfoRow icon={<IconBriefcase />} label={locale === "en" ? "Company" : "Entreprise"} value={conversation.employer.name} />
+          <InfoRow icon={<IconMapPin />} label={locale === "en" ? "Region" : "Région"} value={displayRegion(conversation.region, locale)} />
           <InfoRow
             icon={<IconStar />}
-            label="Compatibilité"
+            label={locale === "en" ? "Compatibility" : "Compatibilité"}
             value={
               <span className="font-bold" style={{ color: C.teal }}>
                 {conversation.compatibility_score}%
@@ -854,7 +913,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       {/* Statut discussion */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
         <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
-          Statut
+          {locale === "en" ? "Status" : "Statut"}
         </p>
         <div
           className="flex items-center gap-2 rounded-xl px-3 py-2"
@@ -865,7 +924,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
             style={{ background: statusInfo.color }}
           />
           <span className="text-[13px] font-semibold" style={{ color: statusInfo.color }}>
-            {statusInfo.label}
+            {localizedStatusLabel}
           </span>
         </div>
 
@@ -884,7 +943,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
                   }}
                 >
                   <IconCalendar />
-                  Proposer un entretien
+                  {locale === "en" ? "Suggest an interview" : "Proposer un entretien"}
                 </button>
               )}
           </div>
@@ -894,8 +953,8 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       {/* Situation administrative / Permis unique */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
         <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest flex items-center" style={{ color: C.muted }}>
-          Situation administrative
-          <InfoTooltip text={PERMIT_INFO} />
+          {locale === "en" ? "Administrative situation" : "Situation administrative"}
+          <InfoTooltip text={PERMIT_INFO[locale]} locale={locale} />
         </p>
 
         {/* Statut actuel */}
@@ -908,7 +967,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
         >
           <span className="text-[13px]">{permitNeeded ? "⚠️" : "❓"}</span>
           <span className="text-[12px] font-semibold" style={{ color: permitNeeded ? C.red : "#92400e" }}>
-            {permitNeeded ? "Un permis de travail est requis" : "À vérifier"}
+            {permitNeeded ? (locale === "en" ? "A work permit is required" : "Un permis de travail est requis") : (locale === "en" ? "To be checked" : "À vérifier")}
           </span>
         </div>
 
@@ -920,23 +979,27 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
                 onClick={() => {
                   if (onSendMessage) {
                     onSendMessage(
-                      "Bonjour, afin de préparer votre dossier, pourriez-vous nous indiquer votre situation administrative actuelle en Belgique ? Êtes-vous ressortissant(e) de l'UE, ou hors UE ? Disposez-vous déjà d'un titre de séjour et d'une autorisation de travail valides en Belgique ?"
+                      locale === "en"
+                        ? "Hello, to prepare your file, could you tell us about your current administrative situation in Belgium? Are you an EU national or a non-EU national? Do you already have a valid residence permit and work authorization in Belgium?"
+                        : "Bonjour, afin de préparer votre dossier, pourriez-vous nous indiquer votre situation administrative actuelle en Belgique ? Êtes-vous ressortissant(e) de l'UE, ou hors UE ? Disposez-vous déjà d'un titre de séjour et d'une autorisation de travail valides en Belgique ?"
                     );
                   }
                 }}
                 className="w-full rounded-xl px-3 py-2.5 text-left text-[12px] font-semibold transition-colors hover:opacity-90"
                 style={{ background: C.light, color: C.dark, border: `1px solid ${C.border}` }}
               >
-                🔍 Le candidat a-t-il le droit de travailler en Belgique ?
+                {locale === "en" ? "🔍 Does the candidate already have the right to work in Belgium?" : "🔍 Le candidat a-t-il le droit de travailler en Belgique ?"}
               </button>
             ) : (
               <div
                 className="rounded-xl px-3 py-2 text-[11px] leading-relaxed"
                 style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
               >
-                <p className="font-semibold">⚠️ Le candidat a besoin d'une autorisation de travail</p>
+                <p className="font-semibold">{locale === "en" ? "⚠️ The candidate needs work authorization" : "⚠️ Le candidat a besoin d'une autorisation de travail"}</p>
                 <p className="mt-1.5 font-normal" style={{ color: "#7f1d1d" }}>
-                  En tant qu'employeur, c'est <strong>vous</strong> qui devez introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.
+                  {locale === "en"
+                    ? <>As the employer, <strong>you</strong> must file the single permit application with the competent region (Flanders, Wallonia or Brussels-Capital). The candidate cannot do this alone.</>
+                    : <>En tant qu'employeur, c'est <strong>vous</strong> qui devez introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.</>}
                 </p>
               </div>
             )}
@@ -949,14 +1012,14 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
             {!permitNeeded ? (
               <>
                 <p className="text-[11px]" style={{ color: C.muted }}>
-                  Êtes-vous ressortissant(e) hors UE sans titre de séjour ni autorisation de travail en Belgique ?
+                  {locale === "en" ? "Are you a non-EU national without a residence permit or work authorization in Belgium?" : "Êtes-vous ressortissant(e) hors UE sans titre de séjour ni autorisation de travail en Belgique ?"}
                 </p>
                 <button
                   onClick={() => onUpdateStatus(conversation.id, STATUS.LEGAL_REVIEW, { legal_review_needed: true })}
                   className="w-full rounded-xl px-3 py-2.5 text-[12px] font-semibold transition-colors hover:opacity-90"
                   style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
                 >
-                  ⚠️ Oui, j'ai besoin d'une autorisation de travail
+                  {locale === "en" ? "⚠️ Yes, I need work authorization" : "⚠️ Oui, j'ai besoin d'une autorisation de travail"}
                 </button>
               </>
             ) : (
@@ -964,7 +1027,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
                 className="rounded-xl px-3 py-2 text-[11px] font-semibold"
                 style={{ background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}
               >
-                ✅ Situation signalée à l'employeur
+                {locale === "en" ? "✅ Situation reported to the employer" : "✅ Situation signalée à l'employeur"}
               </div>
             )}
           </div>
@@ -974,20 +1037,20 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
       {/* Scoring comportemental hook */}
       <div className="border-b px-5 py-4" style={{ borderColor: C.line }}>
         <p className="mb-2 font-heading text-[11px] font-bold uppercase tracking-widest" style={{ color: C.muted }}>
-          Scoring
+          {locale === "en" ? "Scoring" : "Scoring"}
           <span
             className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px]"
             style={{ background: C.light, color: C.mid }}
           >
-            Bientôt disponible
+            {locale === "en" ? "Coming soon" : "Bientôt disponible"}
           </span>
         </p>
         <div
           className="rounded-xl px-3 py-3 text-[11px] leading-relaxed"
           style={{ background: C.surface, border: `1px solid ${C.line}`, color: C.muted }}
         >
-          <p>📊 Les scores de réactivité et de qualité d'échange seront calculés automatiquement.</p>
-          <p className="mt-2">⭐ Vous pourrez bientôt évaluer votre expérience avec ce {isEmployer ? "candidat" : "recruteur"} directement depuis cet espace.</p>
+          <p>{locale === "en" ? "📊 Responsiveness and exchange quality scores will soon be calculated automatically." : "📊 Les scores de réactivité et de qualité d'échange seront calculés automatiquement."}</p>
+          <p className="mt-2">{locale === "en" ? `⭐ You will soon be able to rate your experience with this ${isEmployer ? "candidate" : "recruiter"} directly from this space.` : `⭐ Vous pourrez bientôt évaluer votre expérience avec ce ${isEmployer ? "candidat" : "recruteur"} directement depuis cet espace.`}</p>
         </div>
       </div>
 
@@ -999,10 +1062,10 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
           style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
         >
           <IconScale />
-          Demander accompagnement LEXPAT
+          {locale === "en" ? "Request LEXPAT support" : "Demander accompagnement LEXPAT"}
         </button>
         <p className="mt-2 text-center text-[10px]" style={{ color: C.muted }}>
-          Cabinet juridique spécialisé en immigration
+          {locale === "en" ? "Law firm specialized in immigration" : "Cabinet juridique spécialisé en immigration"}
         </p>
       </div>
     </aside>
@@ -1051,7 +1114,7 @@ function ScoreBar({ label, value, color }) {
 /* ══════════════════════════════════════════════════════════════════════════
    MODAL — Demander accompagnement LEXPAT
    ══════════════════════════════════════════════════════════════════════════ */
-function LexpatModal({ conversation, onClose }) {
+function LexpatModal({ conversation, onClose, locale = "fr" }) {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ message: "", urgency: "normal" });
 
@@ -1089,10 +1152,10 @@ function LexpatModal({ conversation, onClose }) {
             <IconScale />
           </div>
           <h3 className="font-heading text-[18px] font-bold text-white">
-            Accompagnement juridique
+            {locale === "en" ? "Legal support" : "Accompagnement juridique"}
           </h3>
           <p className="mt-1 text-[13px] text-white/70">
-            Cabinet LEXPAT — Experts en droit de l'immigration
+            {locale === "en" ? "LEXPAT Law Firm — Immigration law specialists" : "Cabinet LEXPAT — Experts en droit de l'immigration"}
           </p>
         </div>
 
@@ -1105,17 +1168,17 @@ function LexpatModal({ conversation, onClose }) {
               <span className="text-2xl">✓</span>
             </div>
             <h4 className="font-heading text-[16px] font-bold" style={{ color: C.dark }}>
-              Demande envoyée
+              {locale === "en" ? "Request sent" : "Demande envoyée"}
             </h4>
             <p className="mt-2 text-sm" style={{ color: C.muted }}>
-              Notre équipe juridique vous contactera sous 24h ouvrables.
+              {locale === "en" ? "Our legal team will contact you within 24 business hours." : "Notre équipe juridique vous contactera sous 24h ouvrables."}
             </p>
             <button
               onClick={onClose}
               className="mt-6 w-full rounded-2xl py-3 font-heading text-[14px] font-bold text-white"
               style={{ background: C.dark }}
             >
-              Fermer
+              {locale === "en" ? "Close" : "Fermer"}
             </button>
           </div>
         ) : (
@@ -1129,7 +1192,7 @@ function LexpatModal({ conversation, onClose }) {
                 <IconBriefcase />
                 <div>
                   <p className="text-[11px]" style={{ color: C.muted }}>
-                    Dossier concerné
+                    {locale === "en" ? "Related case" : "Dossier concerné"}
                   </p>
                   <p className="font-heading text-[13px] font-bold" style={{ color: C.dark }}>
                     {conversation.job_title} · {conversation.employer.name}
@@ -1141,13 +1204,13 @@ function LexpatModal({ conversation, onClose }) {
             {/* Urgency */}
             <div className="mb-4">
               <label className="mb-1.5 block font-heading text-[12px] font-bold uppercase tracking-wide" style={{ color: C.muted }}>
-                Niveau d'urgence
+                {locale === "en" ? "Urgency level" : "Niveau d'urgence"}
               </label>
               <div className="flex gap-2">
                 {[
-                  { v: "normal", l: "Normal" },
-                  { v: "urgent", l: "Urgent" },
-                  { v: "critical", l: "Critique" },
+                  { v: "normal", l: locale === "en" ? "Normal" : "Normal" },
+                  { v: "urgent", l: locale === "en" ? "Urgent" : "Urgent" },
+                  { v: "critical", l: locale === "en" ? "Critical" : "Critique" },
                 ].map(({ v, l }) => (
                   <button
                     key={v}
@@ -1169,13 +1232,13 @@ function LexpatModal({ conversation, onClose }) {
             {/* Message */}
             <div className="mb-5">
               <label className="mb-1.5 block font-heading text-[12px] font-bold uppercase tracking-wide" style={{ color: C.muted }}>
-                Contexte / précisions
+                {locale === "en" ? "Context / details" : "Contexte / précisions"}
               </label>
               <textarea
                 rows={3}
                 value={form.message}
                 onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                placeholder="Expliquez la situation (nationalité, poste, région…)"
+                placeholder={locale === "en" ? "Explain the situation (nationality, role, region…)" : "Expliquez la situation (nationalité, poste, région…)"}
                 className="w-full resize-none rounded-xl px-4 py-3 text-[13px] outline-none"
                 style={{
                   border: `1.5px solid ${C.border}`,
@@ -1191,7 +1254,7 @@ function LexpatModal({ conversation, onClose }) {
               className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-heading text-[14px] font-bold text-white shadow-blue transition-all hover:opacity-90"
               style={{ background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)` }}
             >
-              Envoyer la demande
+              {locale === "en" ? "Send request" : "Envoyer la demande"}
               <IconArrowRight />
             </button>
           </form>
@@ -1204,7 +1267,7 @@ function LexpatModal({ conversation, onClose }) {
 /* ══════════════════════════════════════════════════════════════════════════
    ROOT — MessagerieApp
    ══════════════════════════════════════════════════════════════════════════ */
-export default function MessagerieApp() {
+export default function MessagerieApp({ locale = "fr" }) {
   const { session, loading: authLoading } = useAuth();
   const token = session?.access_token;
 
@@ -1468,14 +1531,14 @@ export default function MessagerieApp() {
         style={{ height: "calc(100vh - 72px)", background: C.surface }}
       >
         <p className="font-heading text-base font-semibold" style={{ color: C.dark }}>
-          Connectez-vous pour accéder à votre messagerie
+          {locale === "en" ? "Sign in to access your messaging" : "Connectez-vous pour accéder à votre messagerie"}
         </p>
         <a
-          href="/connexion"
+          href={locale === "en" ? "/en/connexion" : "/connexion"}
           className="rounded-2xl px-6 py-3 font-heading text-sm font-bold text-white"
           style={{ background: C.dark }}
         >
-          Se connecter
+          {locale === "en" ? "Sign in" : "Se connecter"}
         </a>
       </div>
     );
@@ -1492,6 +1555,7 @@ export default function MessagerieApp() {
           activeId={activeId}
           onSelect={handleSelect}
           className="w-[300px]"
+          locale={locale}
         />
 
         {conversations.length === 0 ? (
@@ -1499,6 +1563,7 @@ export default function MessagerieApp() {
             matches={starterMatches}
             onStart={handleStartConversation}
             startingId={startingConversationFor}
+            locale={locale}
           />
         ) : (
           <ChatWindow
@@ -1510,6 +1575,7 @@ export default function MessagerieApp() {
                 interview_requested: true,
               })
             }
+            locale={locale}
           />
         )}
 
@@ -1519,6 +1585,7 @@ export default function MessagerieApp() {
           onRequestLexpat={(conv) => setLexpatModal(conv)}
           onSendMessage={handleSendMessage}
           className="flex w-[280px]"
+          locale={locale}
         />
       </div>
 
@@ -1529,12 +1596,14 @@ export default function MessagerieApp() {
               matches={starterMatches}
               onStart={handleStartConversation}
               startingId={startingConversationFor}
+              locale={locale}
             />
           ) : (
             <ConversationList
               conversations={conversations}
               activeId={activeId}
               onSelect={handleSelect}
+              locale={locale}
             />
           )
         ) : (
@@ -1548,6 +1617,7 @@ export default function MessagerieApp() {
               })
             }
             onBack={() => setMobilePanel("list")}
+            locale={locale}
           />
         )}
       </div>
@@ -1557,6 +1627,7 @@ export default function MessagerieApp() {
         <LexpatModal
           conversation={lexpatModal}
           onClose={() => setLexpatModal(null)}
+          locale={locale}
         />
       )}
     </div>
