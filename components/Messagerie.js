@@ -45,7 +45,7 @@ const STATUS_LABEL = {
   first_message_sent:  { label: "Premier contact",     color: C.mid,   bg: C.light    },
   discussion_active:   { label: "En discussion",       color: C.dark,  bg: C.light    },
   interview_requested: { label: "Entretien demandé",   color: "#7c3aed", bg: "#f5f3ff" },
-  legal_review_needed: { label: "Permis requis",       color: C.red,   bg: "#fff0f0"  },
+  legal_review_needed: { label: "Autorisation de travail requise", color: C.red, bg: "#fff0f0" },
   closed:              { label: "Clôturé",             color: C.muted, bg: "#f1f5f9"  },
 };
 
@@ -171,8 +171,8 @@ function InfoTooltip({ text }) {
       </button>
       {open && (
         <div
-          className="absolute left-0 top-full z-20 mt-1.5 w-64 rounded-xl p-3 text-[11px] leading-relaxed shadow-lg"
-          style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted }}
+          className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl p-3 text-[11px] leading-relaxed shadow-lg"
+          style={{ background: "#fff", border: `1px solid ${C.border}`, color: C.muted, textTransform: "none", letterSpacing: "normal", fontWeight: "normal" }}
         >
           {text}
           <button
@@ -607,16 +607,6 @@ function ChatWindow({ conversation, messages, onSendMessage, onRequestInterview,
           className="flex items-end gap-2 rounded-2xl px-4 py-3"
           style={{ border: `1.5px solid ${C.border}`, background: "#fff" }}
         >
-          {/* Paperclip — disabled, prévu pour pièces jointes */}
-          <button
-            disabled
-            title="Pièces jointes (bientôt disponible)"
-            className="mb-0.5 shrink-0 opacity-30"
-            style={{ color: C.muted, cursor: "not-allowed" }}
-          >
-            <IconPaperclip />
-          </button>
-
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -937,16 +927,16 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
                 className="w-full rounded-xl px-3 py-2 text-left text-[11px] font-semibold transition-colors hover:opacity-90"
                 style={{ background: C.light, color: C.dark, border: `1px solid ${C.border}` }}
               >
-                📋 Demander la situation administrative du candidat
+                Demander la situation administrative du candidat
               </button>
             ) : (
               <div
                 className="rounded-xl px-3 py-2 text-[11px] leading-relaxed"
                 style={{ background: "#fff0f0", color: C.red, border: "1px solid #fecaca" }}
               >
-                <p className="font-semibold">⚠️ Un permis unique sera nécessaire</p>
-                <p className="mt-1 font-normal" style={{ color: "#7f1d1d" }}>
-                  En tant qu'employeur, c'est vous qui devez introduire la demande auprès de la région compétente.
+                <p className="font-semibold">⚠️ Le candidat a besoin d'une autorisation de travail</p>
+                <p className="mt-1.5 font-normal" style={{ color: "#7f1d1d" }}>
+                  En tant qu'employeur, c'est <strong>vous</strong> qui devez introduire la demande de permis unique auprès de la région compétente (Flandre, Wallonie ou Bruxelles-Capitale). Le candidat ne peut pas faire cette démarche lui-même.
                 </p>
               </div>
             )}
