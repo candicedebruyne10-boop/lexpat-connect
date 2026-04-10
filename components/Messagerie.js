@@ -908,7 +908,7 @@ function ContextPanel({ conversation, onUpdateStatus, onRequestLexpat, onSendMes
         >
           <span className="text-[13px]">{permitNeeded ? "⚠️" : "❓"}</span>
           <span className="text-[12px] font-semibold" style={{ color: permitNeeded ? C.red : "#92400e" }}>
-            {permitNeeded ? "Un permis de travail est requis" : "Droit au travail non vérifié"}
+            {permitNeeded ? "Un permis de travail est requis" : "À vérifier"}
           </span>
         </div>
 
