@@ -220,3 +220,26 @@ export async function GET(request) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 }
+
+/**
+ * DELETE /api/profile
+ * Deletes the worker profile of the authenticated user.
+ */
+export async function DELETE(request) {
+  try {
+    const { user, supabase } = await getUserFromRequest(request);
+
+    const { error } = await supabase
+      .from("worker_profiles")
+      .delete()
+      .eq("user_id", user.id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 401 });
+  }
+}

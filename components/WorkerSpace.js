@@ -405,14 +405,21 @@ function WorkerMatchesView({ token, locale }) {
 
 function ProfileView({ token, locale, onNavigate }) {
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [hasProfile, setHasProfile] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const isEn = locale === "en";
-  const [values, setValues] = useState({
-    full_name: "", profession: "", otherProfession: "", sector: "", regions: [],
-    experience: "", languages: "", description: "", profile_visibility: "visible",
-    preferred_locale: locale === "en" ? "en" : "fr",
-    match_alerts_enabled: true
-  });
+
+  function createEmptyProfileValues() {
+    return {
+      full_name: "", profession: "", otherProfession: "", sector: "", regions: [],
+      experience: "", languages: "", description: "", profile_visibility: "visible",
+      preferred_locale: locale === "en" ? "en" : "fr",
+      match_alerts_enabled: true
+    };
+  }
+
+  const [values, setValues] = useState(createEmptyProfileValues);
 
   useEffect(() => {
     if (!token) return;
@@ -420,6 +427,7 @@ function ProfileView({ token, locale, onNavigate }) {
       .then((r) => r.json())
       .then((d) => {
         if (d.profile) {
+          setHasProfile(true);
           setValues((prev) => ({
             ...prev,
             ...d.profile,
@@ -427,10 +435,13 @@ function ProfileView({ token, locale, onNavigate }) {
             otherProfession: d.profile.otherProfession || "",
             regions: d.profile.regions || parseRegionSelection(d.profile.region)
           }));
+        } else {
+          setHasProfile(false);
+          setValues(createEmptyProfileValues());
         }
       })
       .catch(() => {});
-  }, [token]);
+  }, [token, locale]);
 
   async function handleSave(e) {
     e.preventDefault();
@@ -451,11 +462,42 @@ function ProfileView({ token, locale, onNavigate }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      setHasProfile(true);
       setSaveMsg(isEn ? "Profile saved — your visibility is now active in the matching engine." : "Profil enregistré — votre visibilité est maintenant active dans le moteur de matching.");
     } catch (err) {
       setSaveMsg((isEn ? "Error: " : "Erreur : ") + err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDeleteProfile() {
+    const confirmed = window.confirm(
+      isEn
+        ? "Do you really want to delete your worker profile? Your CV items, matches and linked applications will also be removed."
+        : "Voulez-vous vraiment supprimer votre profil travailleur ? Votre CV, vos matchs et vos candidatures liées seront aussi supprimés."
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setSaveMsg("");
+
+    try {
+      const res = await fetch("/api/profile", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setHasProfile(false);
+      setValues(createEmptyProfileValues());
+      setSaveMsg(isEn ? "Profile deleted." : "Profil supprimé.");
+    } catch (err) {
+      setSaveMsg((isEn ? "Error: " : "Erreur : ") + err.message);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -641,7 +683,25 @@ function ProfileView({ token, locale, onNavigate }) {
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            {hasProfile ? (
+              <button
+                type="button"
+                onClick={handleDeleteProfile}
+                disabled={deleting}
+                className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl border border-[#f0c3c3] bg-[#fff5f5] px-5 py-3 text-sm font-semibold text-[#b54848] transition hover:bg-[#ffeaea] disabled:opacity-60"
+              >
+                {deleting
+                  ? (isEn ? "Deleting…" : "Suppression…")
+                  : (isEn ? "Delete my profile" : "Supprimer mon profil")}
+              </button>
+            ) : (
+              <p className="text-sm text-[#6b7b8f]">
+                {isEn ? "No worker profile has been saved yet." : "Aucun profil travailleur n’a encore été enregistré."}
+              </p>
+            )}
+          </div>
           <button type="submit" disabled={saving} className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-8 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-70">
             {saving ? (isEn ? "Saving…" : "Enregistrement…") : isEn ? "Save my profile" : "Enregistrer mon profil"}
           </button>
