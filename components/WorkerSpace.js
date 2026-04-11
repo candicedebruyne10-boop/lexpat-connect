@@ -615,16 +615,25 @@ function ProfileView({ token, locale, onNavigate }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setHasProfile(true);
-      const isVisible = (values.profile_visibility || "visible") === "visible";
-      setSaveMsg(
-        isEn
-          ? isVisible
-            ? "Profile saved — your profile is now active and visible to employers."
-            : "Profile saved — your profile is paused. Reactivate it at any time to appear in matching results."
-          : isVisible
-            ? "Profil enregistré — votre profil est actif et visible par les employeurs."
-            : "Profil enregistré — votre profil est en pause. Réactivez-le quand vous le souhaitez pour réapparaître dans les résultats."
-      );
+      // Use the server-confirmed visibility (may differ from user selection if fields were missing)
+      if (data.forced_hidden) {
+        setSaveMsg(
+          isEn
+            ? "Profile saved — but kept hidden because the target job and sector are required to activate visibility. Fill them in and save again."
+            : "Profil enregistré — mais maintenu masqué car le poste visé et le secteur sont obligatoires pour activer la visibilité. Renseignez-les et enregistrez à nouveau."
+        );
+      } else {
+        const isVisible = data.profile_visibility === "visible";
+        setSaveMsg(
+          isEn
+            ? isVisible
+              ? "Profile saved — your profile is now active and visible to employers."
+              : "Profile saved — your profile is paused. Reactivate it at any time to appear in matching results."
+            : isVisible
+              ? "Profil enregistré — votre profil est actif et visible par les employeurs."
+              : "Profil enregistré — votre profil est en pause. Réactivez-le quand vous le souhaitez pour réapparaître dans les résultats."
+        );
+      }
     } catch (err) {
       setSaveMsg((isEn ? "Error: " : "Erreur : ") + err.message);
     } finally {
@@ -814,11 +823,31 @@ function ProfileView({ token, locale, onNavigate }) {
                 <option value="visible">{isEn ? "Active — employers can find me" : "Actif — les employeurs peuvent me trouver"}</option>
                 <option value="hidden">{isEn ? "Paused — my profile is invisible" : "En pause — mon profil est invisible"}</option>
               </select>
-              <p className="mt-2 text-xs leading-5 text-[#5f7086]">
-                {(values.profile_visibility || "visible") === "visible"
-                  ? (isEn ? "Your profile appears in matching results and employers can contact you." : "Votre profil apparaît dans les résultats de matching et les employeurs peuvent vous contacter.")
-                  : (isEn ? "Your profile is saved but invisible. No employer will see it until you reactivate it." : "Votre profil est sauvegardé mais invisible. Aucun employeur ne le verra tant que vous ne le réactivez pas.")}
-              </p>
+              {(() => {
+                const hasJob = !!(values.profession && values.profession !== "Autre profession"
+                  ? values.profession.trim()
+                  : values.otherProfession?.trim());
+                const hasSector = !!values.sector?.trim();
+                const canBeVisible = hasJob && hasSector;
+                const wantsVisible = (values.profile_visibility || "visible") === "visible";
+
+                if (wantsVisible && !canBeVisible) {
+                  return (
+                    <p className="mt-2 text-xs leading-5 text-[#a33f3f] font-medium">
+                      {isEn
+                        ? "⚠ The target job and sector are required before your profile can be visible. Fill them in above."
+                        : "⚠ Le poste visé et le secteur sont obligatoires pour activer la visibilité. Renseignez-les ci-dessus."}
+                    </p>
+                  );
+                }
+                return (
+                  <p className="mt-2 text-xs leading-5 text-[#5f7086]">
+                    {wantsVisible
+                      ? (isEn ? "Your profile appears in matching results and employers can contact you." : "Votre profil apparaît dans les résultats de matching et les employeurs peuvent vous contacter.")
+                      : (isEn ? "Your profile is saved but invisible. No employer will see it until you reactivate it." : "Votre profil est sauvegardé mais invisible. Aucun employeur ne le verra tant que vous ne le réactivez pas.")}
+                  </p>
+                );
+              })()}
             </div>
             <label className="md:col-span-2 rounded-[20px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-4">
               <span className="flex items-start gap-3">

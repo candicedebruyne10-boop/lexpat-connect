@@ -19,7 +19,6 @@ export async function POST(request) {
   try {
     const { user, supabase } = await getUserFromRequest(request);
     const body = await request.json();
-    const effectiveProfileVisibility = body.profile_visibility || "visible";
     const selectedJobOption = body.job_option || body.profession || body.job_title || "";
     const otherJobTitle = body.job_title_other || body.otherProfession || "";
     const finalJobTitle =
@@ -37,6 +36,12 @@ export async function POST(request) {
           .split(",")
           .map((item) => item.trim())
           .filter(Boolean);
+
+    // A profile can only be visible if the two fields required for matching are present
+    const hasRequiredFields = !!(finalJobTitle?.trim() && body.sector?.trim());
+    const effectiveProfileVisibility = hasRequiredFields
+      ? (body.profile_visibility || "visible")
+      : "hidden";
 
     const { error } = await supabase
       .from("worker_profiles")
@@ -77,7 +82,7 @@ export async function POST(request) {
       }).catch(() => {});
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, forced_hidden: !hasRequiredFields, profile_visibility: effectiveProfileVisibility });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
