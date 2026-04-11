@@ -878,8 +878,28 @@ function ProfileView({ token, locale, onNavigate }) {
 }
 
 function CvCollectionAccordion({ title, description, sectionKey, items, locale, data, onChange }) {
-  const [openIndex, setOpenIndex] = useState(null);
   const isEn = locale === "en";
+  const templateFields = items[0]?.fields || [];
+  const baseLabel = items[0]?.label?.replace(/\s*\d+\s*$/, "").trim() || title;
+
+  // Total number of rows = max(template count, saved data count, user-added count)
+  const savedCount = Array.isArray(data) ? data.length : 0;
+  const [totalCount, setTotalCount] = useState(Math.max(items.length, savedCount));
+  const [openIndex, setOpenIndex]   = useState(null);
+
+  // If saved data has more entries than what we're showing, expand to fit
+  useEffect(() => {
+    if (savedCount > totalCount) setTotalCount(savedCount);
+  }, [savedCount]);
+
+  function getLabel(idx) {
+    if (idx < items.length) return items[idx].label;
+    return `${baseLabel} ${idx + 1}`;
+  }
+
+  function getFields(idx) {
+    return items[idx]?.fields || templateFields;
+  }
 
   function updateEntry(itemIdx, fieldKey, value) {
     const updated = Array.isArray(data) ? [...data] : [];
@@ -888,34 +908,67 @@ function CvCollectionAccordion({ title, description, sectionKey, items, locale, 
     onChange(sectionKey, updated);
   }
 
+  function addEntry() {
+    const next = totalCount;
+    setTotalCount((n) => n + 1);
+    setOpenIndex(next);
+  }
+
+  function removeEntry(idx) {
+    const updated = Array.isArray(data) ? [...data] : [];
+    updated.splice(idx, 1);
+    onChange(sectionKey, updated);
+    setTotalCount((n) => Math.max(1, n - 1));
+    setOpenIndex((prev) => {
+      if (prev === idx) return null;
+      if (prev > idx) return prev - 1;
+      return prev;
+    });
+  }
+
+  const indices = Array.from({ length: totalCount }, (_, i) => i);
+
   return (
     <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
       <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{title}</h2>
       <p className="mt-2 text-sm leading-7 text-[#5f7086]">{description}</p>
       <div className="mt-6 space-y-3">
-        {items.map((item, idx) => {
+        {indices.map((idx) => {
           const isOpen = openIndex === idx;
-          const entry = (Array.isArray(data) ? data[idx] : null) || {};
+          const entry  = (Array.isArray(data) ? data[idx] : null) || {};
+          const fields = getFields(idx);
 
           return (
             <div key={idx} className="overflow-hidden rounded-[20px] border border-[#e8eff5]">
-              <button
-                type="button"
-                onClick={() => setOpenIndex(isOpen ? null : idx)}
-                className="flex w-full items-center justify-between gap-4 bg-[#f7fafc] px-4 py-4 text-sm font-semibold text-[#314761] transition hover:bg-[#eef5ff] hover:text-[#1d3b8b]"
-              >
-                <span>{item.label}</span>
-                <span
-                  className="text-[#7b8da3] transition-transform duration-200"
-                  style={{ display: "inline-block", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : idx)}
+                  className="flex flex-1 items-center justify-between gap-4 bg-[#f7fafc] px-4 py-4 text-sm font-semibold text-[#314761] transition hover:bg-[#eef5ff] hover:text-[#1d3b8b]"
                 >
-                  ▾
-                </span>
-              </button>
+                  <span>{getLabel(idx)}</span>
+                  <span
+                    className="text-[#7b8da3] transition-transform duration-200"
+                    style={{ display: "inline-block", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                  >
+                    ▾
+                  </span>
+                </button>
+                {totalCount > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeEntry(idx)}
+                    title={isEn ? "Remove" : "Supprimer"}
+                    className="flex h-full items-center border-l border-[#e8eff5] bg-[#f7fafc] px-3 py-4 text-[#a0b0c0] transition hover:bg-[#fff1f1] hover:text-[#af4b4b]"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
 
               {isOpen && (
                 <div className="grid gap-4 border-t border-[#e8eff5] bg-white p-5 md:grid-cols-2">
-                  {item.fields.map((field) => (
+                  {fields.map((field) => (
                     <label
                       key={field.key}
                       className={field.type === "textarea" ? "md:col-span-2" : ""}
@@ -957,8 +1010,21 @@ function CvCollectionAccordion({ title, description, sectionKey, items, locale, 
           );
         })}
       </div>
+
+      <button
+        type="button"
+        onClick={addEntry}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-[20px] border border-dashed border-[#c0d5ea] py-3 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#8ab0d0] hover:bg-[#f4f8fd]"
+      >
+        <span className="text-base">+</span>
+        {isEn ? `Add a ${baseLabel.toLowerCase()}` : `Ajouter ${startsWithVowel(baseLabel) ? "une" : "une"} ${baseLabel.toLowerCase()}`}
+      </button>
     </section>
   );
+}
+
+function startsWithVowel(str) {
+  return /^[aeiouyàâéèêëîïôùûüæœ]/i.test(str || "");
 }
 
 function SubmitCandidacyForm({ token, locale }) {
