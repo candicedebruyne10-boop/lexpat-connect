@@ -66,7 +66,9 @@ export async function GET(request) {
         description: profile.company_description || "",
         region: regionFromDb[profile.region] || "",
         completion: profile.profile_completion || 0,
-        isOwner: Boolean(membership.is_owner)
+        isOwner: Boolean(membership.is_owner),
+        preferred_locale: user.user_metadata?.preferred_locale === "en" ? "en" : "fr",
+        match_alerts_enabled: user.user_metadata?.match_alerts_enabled !== false
       }
     });
   } catch (error) {
@@ -135,6 +137,14 @@ export async function PUT(request) {
     if (memberUpdateError) {
       return NextResponse.json({ error: memberUpdateError.message }, { status: 500 });
     }
+
+    await supabase.auth.admin.updateUserById(user.id, {
+      user_metadata: {
+        ...(user.user_metadata || {}),
+        preferred_locale: body.preferred_locale === "en" ? "en" : "fr",
+        match_alerts_enabled: body.match_alerts_enabled !== false
+      }
+    }).catch(() => {});
 
     return NextResponse.json({ ok: true, completion: profileCompletion });
   } catch (error) {

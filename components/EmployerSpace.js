@@ -216,7 +216,9 @@ function CompanyView({ token, locale }) {
     phone: "",
     website: "",
     region: "",
-    description: ""
+    description: "",
+    preferred_locale: locale === "en" ? "en" : "fr",
+    match_alerts_enabled: true
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -242,7 +244,9 @@ function CompanyView({ token, locale }) {
             phone: data.profile.phone || "",
             website: data.profile.website || "",
             region: data.profile.region || "",
-            description: data.profile.description || ""
+            description: data.profile.description || "",
+            preferred_locale: data.profile.preferred_locale || (locale === "en" ? "en" : "fr"),
+            match_alerts_enabled: data.profile.match_alerts_enabled !== false
           });
         }
       })
@@ -305,6 +309,26 @@ function CompanyView({ token, locale }) {
               {getCompanyFields(locale).map((field) => (
                 <Field key={field.name} field={{ ...field, locale }} value={values[field.name] || ""} onChange={updateValue} />
               ))}
+              <label className="md:col-span-2 rounded-[20px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-4">
+                <span className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={values.match_alerts_enabled !== false}
+                    onChange={(event) => updateValue("match_alerts_enabled", event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-[#bfd0e5] text-[#1E3A78] focus:ring-[#57B7AF]"
+                  />
+                  <span>
+                    <span className="block text-sm font-semibold text-[#17345d]">
+                      {isEn ? "Email me when a new talent matches one of my openings" : "M’envoyer un email quand un nouveau talent correspond à l’une de mes offres"}
+                    </span>
+                    <span className="mt-1 block text-xs leading-6 text-[#5f7086]">
+                      {isEn
+                        ? "Maximum one notification every 12 hours. Several new matches are grouped into a single premium alert."
+                        : "Maximum une notification toutes les 12 heures. Plusieurs nouveaux matchs sont regroupés dans une seule alerte premium."}
+                    </span>
+                  </span>
+                </span>
+              </label>
             </div>
 
             {error ? (

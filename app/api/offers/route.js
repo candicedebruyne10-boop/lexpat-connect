@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getUserFromRequest, getServiceClient } from "../../../lib/supabase/server";
+import { getUserFromRequest } from "../../../lib/supabase/server";
 import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
-import { newOfferEmailHtml, newOfferMatchEmailHtml } from "../../../lib/email-templates";
-import { isUnsubscribed } from "../../../lib/email-unsubscribe";
+import { newOfferEmailHtml } from "../../../lib/email-templates";
+import { notifyWorkersForNewOffer } from "../../../lib/match-notifications";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -132,40 +132,7 @@ async function runMatchingForOffer(supabase, offer) {
       { onConflict: "job_offer_id,worker_profile_id" }
     );
 
-  // Notifier les travailleurs correspondants par email (best-effort)
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
-
-  const resend = new Resend(apiKey);
-  const from = getSenderAddress();
-
-  for (const { worker } of matchedWorkers) {
-    if (!worker.user_id) continue;
-
-    // Récupérer l'email depuis auth.users via l'admin API
-    const { data: authUser } = await supabase.auth.admin.getUserById(worker.user_id).catch(() => ({ data: null }));
-    const workerEmail = authUser?.user?.email;
-    if (!workerEmail) continue;
-
-    // Respect RGPD : ne pas envoyer si le travailleur s'est désabonné
-    const unsubscribed = await isUnsubscribed(workerEmail).catch(() => false);
-    if (unsubscribed) continue;
-
-    await resend.emails.send({
-      from,
-      to: workerEmail,
-      subject: `[LEXPAT Connect] Une offre correspond à votre profil — ${offer.jobTitle}`,
-      html: newOfferMatchEmailHtml({
-        jobTitle: offer.jobTitle,
-        companyName: null, // anonymisé volontairement
-        sector: offer.sector,
-        region: normalizeRegion(offer.region),
-        contractType: offer.contractType,
-        urgency: offer.urgency,
-        recipientEmail: workerEmail
-      })
-    }).catch(() => {});
-  }
+  await notifyWorkersForNewOffer({ supabase, offerId: offer.id });
 }
 
 /**

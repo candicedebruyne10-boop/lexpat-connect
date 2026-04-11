@@ -409,7 +409,9 @@ function ProfileView({ token, locale, onNavigate }) {
   const isEn = locale === "en";
   const [values, setValues] = useState({
     full_name: "", profession: "", otherProfession: "", sector: "", regions: [],
-    experience: "", languages: "", description: "", profile_visibility: "review"
+    experience: "", languages: "", description: "", profile_visibility: "review",
+    preferred_locale: locale === "en" ? "en" : "fr",
+    match_alerts_enabled: true
   });
 
   useEffect(() => {
@@ -440,6 +442,7 @@ function ProfileView({ token, locale, onNavigate }) {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           ...values,
+          preferred_locale: locale === "en" ? "en" : "fr",
           region: stringifyRegionSelection(values.regions, "Toute la Belgique"),
           job_option: values.profession,
           job_title: values.profession === "Autre profession" ? values.otherProfession : values.profession,
@@ -609,6 +612,26 @@ function ProfileView({ token, locale, onNavigate }) {
                 <option value="review">{isEn ? "Visible after LEXPAT review" : "Visible après validation LEXPAT"}</option>
                 <option value="hidden">{isEn ? "Hidden" : "Masqué"}</option>
               </select>
+            </label>
+            <label className="md:col-span-2 rounded-[20px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-4">
+              <span className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={values.match_alerts_enabled !== false}
+                  onChange={(e) => set("match_alerts_enabled", e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-[#bfd0e5] text-[#1E3A78] focus:ring-[#57B7AF]"
+                />
+                <span>
+                  <span className="block text-sm font-semibold text-[#17345d]">
+                    {isEn ? "Email me when a new opening matches my profile" : "M’envoyer un email quand une nouvelle offre correspond à mon profil"}
+                  </span>
+                  <span className="mt-1 block text-xs leading-6 text-[#5f7086]">
+                    {isEn
+                      ? "Maximum one notification every 12 hours. Several new matches are grouped into a single premium alert."
+                      : "Maximum une notification toutes les 12 heures. Plusieurs nouveaux matchs sont regroupés dans une seule alerte premium."}
+                  </span>
+                </span>
+              </span>
             </label>
           </div>
         </section>
