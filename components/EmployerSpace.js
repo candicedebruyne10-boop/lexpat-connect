@@ -210,7 +210,7 @@ function DashboardView({ token, onNavigate, locale }) {
         </div>
         <div className="mt-4">
           <a
-            href="mailto:contact@lexpat.be"
+            href="mailto:lexpat@lexpat.be"
             className="inline-flex items-center gap-2 rounded-2xl bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(29,59,139,0.25)]"
           >
             ✉ {isEn ? "Contact LEXPAT Law Firm" : "Contacter le cabinet LEXPAT"}
