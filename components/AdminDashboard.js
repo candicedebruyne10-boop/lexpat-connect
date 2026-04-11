@@ -44,6 +44,37 @@ const statusClasses = {
   legal_review: "bg-[#f4efff] text-[#6c49b8]"
 };
 
+const statusLabels = {
+  // Offres
+  draft: "Brouillon",
+  review: "En révision",
+  published: "Publiée",
+  paused: "En pause",
+  closed: "Clôturée",
+  // Matchings
+  new: "Nouveau",
+  reviewed: "Travailleur intéressé",
+  interested: "Employeur intéressé",
+  contacted: "Contact établi",
+  legal_review: "Vérification légale",
+  // Autres
+  submitted: "Soumise",
+  reviewing: "En cours",
+  shortlisted: "Présélectionné",
+  rejected: "Refusé",
+  hired: "Recruté"
+};
+
+function StatusBadge({ status }) {
+  const label = statusLabels[status] || status;
+  const cls = statusClasses[status] || "bg-[#f5f7fa] text-[#607086]";
+  return (
+    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${cls}`}>
+      {label}
+    </span>
+  );
+}
+
 function formatDate(value) {
   if (!value) return "Non renseignée";
 
@@ -102,11 +133,7 @@ function OffersTable({ rows }) {
             <div className="text-sm text-[#334155]">{row.companyName}</div>
             <div className="text-sm text-[#334155]">{row.region}</div>
             <div className="text-sm text-[#334155]">{row.contractType}</div>
-            <div>
-              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[row.status] || "bg-[#f5f7fa] text-[#607086]"}`}>
-                {row.status}
-              </span>
-            </div>
+            <div><StatusBadge status={row.status} /></div>
             <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
           </article>
         ))}
@@ -188,11 +215,7 @@ function ApplicationsTable({ rows }) {
             <div className="text-sm text-[#334155]">{row.companyName}</div>
             <div className="text-sm text-[#334155]">{row.offerTitle}</div>
             <div className="text-sm text-[#334155]">{row.candidateRegion}</div>
-            <div>
-              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[row.status] || "bg-[#f5f7fa] text-[#607086]"}`}>
-                {row.status}
-              </span>
-            </div>
+            <div><StatusBadge status={row.status} /></div>
             <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
           </article>
         ))}
@@ -230,11 +253,7 @@ function MatchesTable({ rows }) {
                 {row.score}/100
               </span>
             </div>
-            <div>
-              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[row.status] || "bg-[#f5f7fa] text-[#607086]"}`}>
-                {row.status}
-              </span>
-            </div>
+            <div><StatusBadge status={row.status} /></div>
             <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
           </article>
         ))}

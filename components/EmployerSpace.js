@@ -469,7 +469,7 @@ function CreateOfferForm({ onSuccess, token, locale }) {
 
       <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
         <label>
-          <span className="mb-2 block text-sm font-semibold text-[#17345d]">Secteur * <span className="text-[#57b7af]">(utilisé pour le matching)</span></span>
+          <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Sector" : "Secteur"} * <span className="text-[#57b7af]">{isEn ? "(used for matching)" : "(utilisé pour le matching)"}</span></span>
           <select className="field-input" required value={values.sector} onChange={(e) => set("sector", e.target.value)}>
             <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
             {getSectorOptions(isEn ? "en" : "fr").map((option) => (
@@ -527,11 +527,11 @@ function CreateOfferForm({ onSuccess, token, locale }) {
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Contract type" : "Type de contrat"}</span>
           <select className="field-input" value={values.contract} onChange={(e) => set("contract", e.target.value)}>
             <option value="" disabled>{isEn ? "Select a type" : "Sélectionnez un type"}</option>
-            <option>CDI</option>
-            <option>CDD</option>
-            <option>Intérim</option>
-            <option>Temps plein</option>
-            <option>Temps partiel</option>
+            <option value="CDI">{isEn ? "Open-ended contract (CDI)" : "CDI"}</option>
+            <option value="CDD">{isEn ? "Fixed-term contract (CDD)" : "CDD"}</option>
+            <option value="Intérim">{isEn ? "Temporary / Interim" : "Intérim"}</option>
+            <option value="Temps plein">{isEn ? "Full-time" : "Temps plein"}</option>
+            <option value="Temps partiel">{isEn ? "Part-time" : "Temps partiel"}</option>
           </select>
         </label>
 
@@ -539,9 +539,9 @@ function CreateOfferForm({ onSuccess, token, locale }) {
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Urgency level" : "Niveau d'urgence"}</span>
           <select className="field-input" value={values.urgency} onChange={(e) => set("urgency", e.target.value)}>
             <option value="" disabled>{isEn ? "Select a level" : "Sélectionnez un niveau"}</option>
-            <option>Normal</option>
-            <option>Urgent</option>
-            <option>Très urgent</option>
+            <option value="Normal">{isEn ? "Standard" : "Normal"}</option>
+            <option value="Urgent">{isEn ? "Urgent" : "Urgent"}</option>
+            <option value="Très urgent">{isEn ? "Very urgent" : "Très urgent"}</option>
           </select>
         </label>
 
@@ -893,11 +893,11 @@ function OffersView({ token, locale, onNavigate }) {
                     <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Contract type" : "Type de contrat"}</span>
                     <select className="field-input" value={editingValues.contract} onChange={(e) => setEditValue("contract", e.target.value)}>
                       <option value="" disabled>{isEn ? "Select a type" : "Sélectionnez un type"}</option>
-                      <option>CDI</option>
-                      <option>CDD</option>
-                      <option>Intérim</option>
-                      <option>Temps plein</option>
-                      <option>Temps partiel</option>
+                      <option value="CDI">{isEn ? "Open-ended contract (CDI)" : "CDI"}</option>
+                      <option value="CDD">{isEn ? "Fixed-term contract (CDD)" : "CDD"}</option>
+                      <option value="Intérim">{isEn ? "Temporary / Interim" : "Intérim"}</option>
+                      <option value="Temps plein">{isEn ? "Full-time" : "Temps plein"}</option>
+                      <option value="Temps partiel">{isEn ? "Part-time" : "Temps partiel"}</option>
                     </select>
                   </label>
 
@@ -905,9 +905,9 @@ function OffersView({ token, locale, onNavigate }) {
                     <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Urgency level" : "Niveau d'urgence"}</span>
                     <select className="field-input" value={editingValues.urgency} onChange={(e) => setEditValue("urgency", e.target.value)}>
                       <option value="" disabled>{isEn ? "Select a level" : "Sélectionnez un niveau"}</option>
-                      <option>Normal</option>
-                      <option>Urgent</option>
-                      <option>Très urgent</option>
+                      <option value="Normal">{isEn ? "Standard" : "Normal"}</option>
+                      <option value="Urgent">{isEn ? "Urgent" : "Urgent"}</option>
+                      <option value="Très urgent">{isEn ? "Very urgent" : "Très urgent"}</option>
                     </select>
                   </label>
 

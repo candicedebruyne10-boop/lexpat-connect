@@ -51,43 +51,6 @@ function formatCompatibilityLabel(score, isEn, compact = false) {
   return `${label} ${score}/100`;
 }
 
-const profileSections = [
-  {
-    title: "Informations principales",
-    fields: [
-      { label: "Nom complet", placeholder: "Candice Debruyne" },
-      { label: "Date de naissance", placeholder: "JJ/MM/AAAA" },
-      { label: "Genre", type: "select", options: ["Femme", "Homme", "Autre", "Préfère ne pas répondre"] },
-      { label: "Tranche d'âge", type: "select", options: ["18-24", "25-34", "35-44", "45-54", "55+"] },
-      { label: "Téléphone", placeholder: "+32 ..." },
-      { label: "Email", type: "email", placeholder: "votre.email@example.com" },
-      { label: "Expérience", type: "select", options: ["Débutant", "1 à 3 ans", "3 à 5 ans", "5 à 10 ans", "10 ans et plus"] },
-      { label: "Prétention salariale", placeholder: "Indiquez un montant indicatif" },
-      { label: "Titre recherché", placeholder: "Intitulé de poste recherché", wide: true },
-      { label: "Présentation", type: "textarea", placeholder: "Présentez votre parcours, vos compétences et le type d'opportunités que vous recherchez.", wide: true },
-      { label: "Afficher mon profil", type: "select", options: ["Visible", "Visible sur validation", "Masqué"] }
-    ]
-  },
-  {
-    title: "Qualification et langues",
-    fields: [
-      { label: "Qualification", type: "select", options: ["Secondaire", "Bachelier", "Master", "Doctorat", "Certification professionnelle", "Autre"] },
-      { label: "Langues", type: "select", options: ["Français", "Anglais", "Néerlandais", "Allemand", "Espagnol", "Autre"] },
-      { label: "Autre langue", placeholder: "Précisez si nécessaire" },
-      { label: "Catégorie métier", type: "select", options: ["Construction et travaux publics", "Santé et action sociale", "Transport et logistique", "Industrie et maintenance", "Technologies et informatique", "Éducation et formation", "Personnel hautement qualifié", "Personnel de direction"] }
-    ]
-  },
-  {
-    title: "Coordonnées et réseaux",
-    fields: [
-      { label: "Adresse", placeholder: "Adresse complète", wide: true },
-      { label: "Emplacement souhaité", type: "select", options: ["Bruxelles-Capitale", "Wallonie", "Flandre", "Toute la Belgique"] },
-      { label: "Localisation actuelle", placeholder: "Ville et pays de résidence" },
-      { label: "LinkedIn", placeholder: "https://linkedin.com/in/...", wide: true },
-      { label: "Autre réseau", placeholder: "Portfolio, site, vidéo...", wide: true }
-    ]
-  }
-];
 
 function getCvSections(locale) {
   const isEn = locale === "en";
