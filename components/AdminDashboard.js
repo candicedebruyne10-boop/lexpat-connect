@@ -8,14 +8,14 @@ import { useAuth } from "./AuthProvider";
 
 const tabs = [
   { id: "offers", label: "Offres" },
-  { id: "applications", label: "Candidatures" },
+  { id: "workers", label: "Travailleurs" },
   { id: "matches", label: "Matchings" }
 ];
 
 const summaryCards = [
-  { key: "offers", label: "Offres totales", tone: "blue" },
-  { key: "publishedOffers", label: "Offres publiées", tone: "teal" },
-  { key: "applications", label: "Candidatures", tone: "amber" },
+  { key: "publishedOffers", label: "Offres publiées", tone: "blue" },
+  { key: "workers", label: "Travailleurs inscrits", tone: "teal" },
+  { key: "visibleWorkers", label: "Profils visibles", tone: "amber" },
   { key: "newMatches", label: "Nouveaux matchs", tone: "green" }
 ];
 
@@ -105,6 +105,54 @@ function OffersTable({ rows }) {
             <div>
               <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[row.status] || "bg-[#f5f7fa] text-[#607086]"}`}>
                 {row.status}
+              </span>
+            </div>
+            <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const visibilityLabel = {
+  visible: "Visible",
+  hidden: "Masqué",
+  review: "En attente"
+};
+
+const visibilityClasses = {
+  visible: "bg-[#eef9f1] text-[#2f9d57]",
+  hidden: "bg-[#f5f7fa] text-[#607086]",
+  review: "bg-[#fff7e8] text-[#c48014]"
+};
+
+function WorkersTable({ rows }) {
+  if (!rows.length) return <EmptyState label="Travailleurs" />;
+
+  return (
+    <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
+      <div className="hidden grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
+        <div>Travailleur</div>
+        <div>Secteur</div>
+        <div>Région souhaitée</div>
+        <div>Expérience</div>
+        <div>Profil</div>
+        <div>Inscrit le</div>
+      </div>
+      <div className="divide-y divide-[#edf3f7]">
+        {rows.map((row) => (
+          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] lg:items-center lg:gap-4">
+            <div>
+              <p className="text-base font-semibold text-[#173a8a]">{row.fullName}</p>
+              <p className="mt-1 text-sm text-[#6d7b8d]">{row.targetJob}</p>
+            </div>
+            <div className="text-sm text-[#334155]">{row.targetSector}</div>
+            <div className="text-sm text-[#334155]">{row.preferredRegion}</div>
+            <div className="text-sm text-[#334155]">{row.experienceLevel}</div>
+            <div>
+              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${visibilityClasses[row.profileVisibility] || "bg-[#f5f7fa] text-[#607086]"}`}>
+                {visibilityLabel[row.profileVisibility] || row.profileVisibility}
               </span>
             </div>
             <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
@@ -252,7 +300,7 @@ export default function AdminDashboard() {
 
   const filtered = useMemo(() => {
     if (!data) {
-      return { offers: [], applications: [], matches: [] };
+      return { offers: [], workers: [], applications: [], matches: [] };
     }
 
     const needle = query.trim().toLowerCase();
@@ -268,7 +316,10 @@ export default function AdminDashboard() {
       offers: data.offers.filter((row) =>
         includesAny([row.title, row.companyName, row.sector, row.region, row.status])
       ),
-      applications: data.applications.filter((row) =>
+      workers: (data.workers || []).filter((row) =>
+        includesAny([row.fullName, row.targetJob, row.targetSector, row.preferredRegion, row.profileVisibility])
+      ),
+      applications: (data.applications || []).filter((row) =>
         includesAny([row.candidateName, row.candidateJob, row.companyName, row.offerTitle, row.status])
       ),
       matches: data.matches.filter((row) =>
@@ -392,7 +443,7 @@ export default function AdminDashboard() {
 
         <div className="mt-8">
           {activeTab === "offers" ? <OffersTable rows={filtered.offers || []} /> : null}
-          {activeTab === "applications" ? <ApplicationsTable rows={filtered.applications || []} /> : null}
+          {activeTab === "workers" ? <WorkersTable rows={filtered.workers || []} /> : null}
           {activeTab === "matches" ? <MatchesTable rows={filtered.matches || []} /> : null}
         </div>
       </section>

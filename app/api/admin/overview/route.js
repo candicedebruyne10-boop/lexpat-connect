@@ -23,6 +23,19 @@ async function assertAdminAccess(supabase, user) {
   return roleRow?.role === "admin";
 }
 
+function hydrateWorkers(workers) {
+  return workers.map((worker) => ({
+    id: worker.id,
+    fullName: worker.full_name || "Nom non renseigné",
+    targetJob: worker.target_job || "Poste non renseigné",
+    targetSector: worker.target_sector || "Secteur non renseigné",
+    preferredRegion: normalizeRegion(worker.preferred_region),
+    experienceLevel: worker.experience_level || "Non renseigné",
+    profileVisibility: worker.profile_visibility || "hidden",
+    createdAt: worker.created_at
+  }));
+}
+
 function hydrateOffers(offers, companies) {
   const companyMap = new Map(companies.map((company) => [company.id, company]));
 
@@ -118,7 +131,8 @@ export async function GET(request) {
         .order("created_at", { ascending: false }),
       supabase
         .from("worker_profiles")
-        .select("id, full_name, target_job, target_sector, preferred_region"),
+        .select("id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility, created_at")
+        .order("created_at", { ascending: false }),
       supabase
         .from("employer_profiles")
         .select("id, company_name")
@@ -140,11 +154,13 @@ export async function GET(request) {
       summary: {
         offers: offers.length,
         publishedOffers: offers.filter((offer) => offer.status === "published").length,
-        applications: applications.length,
+        workers: workers.length,
+        visibleWorkers: workers.filter((w) => w.profile_visibility === "visible").length,
         matches: matches.length,
         newMatches: matches.filter((match) => match.status === "new").length
       },
       offers: hydrateOffers(offers, companies),
+      workers: hydrateWorkers(workers),
       applications: hydrateApplications(applications, offers, workers, companies),
       matches: hydrateMatches(matches, offers, workers, companies)
     });
