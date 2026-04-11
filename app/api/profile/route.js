@@ -19,6 +19,7 @@ export async function POST(request) {
   try {
     const { user, supabase } = await getUserFromRequest(request);
     const body = await request.json();
+    const effectiveProfileVisibility = body.profile_visibility || "visible";
     const selectedJobOption = body.job_option || body.profession || body.job_title || "";
     const otherJobTitle = body.job_title_other || body.otherProfession || "";
     const finalJobTitle =
@@ -50,7 +51,7 @@ export async function POST(request) {
           languages,
           summary: body.description || null,
           full_name: body.full_name || null,
-          profile_visibility: body.profile_visibility || "visible"
+          profile_visibility: effectiveProfileVisibility
         },
         { onConflict: "user_id" }
       );
@@ -66,7 +67,7 @@ export async function POST(request) {
     }).catch(() => {});
 
     // Notifier les employeurs dont les offres correspondent à ce profil (best-effort, non-bloquant)
-    if (body.profile_visibility === "visible") {
+    if (effectiveProfileVisibility === "visible") {
       notifyMatchingEmployers({
         userId: user.id,
         targetJob: finalJobTitle,

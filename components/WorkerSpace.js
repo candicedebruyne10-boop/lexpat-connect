@@ -609,7 +609,6 @@ function ProfileView({ token, locale, onNavigate }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Profile visibility" : "Visibilité du profil"}</span>
               <select className="field-input" value={values.profile_visibility || "visible"} onChange={(e) => set("profile_visibility", e.target.value)}>
                 <option value="visible">{isEn ? "Visible to employers" : "Visible par les employeurs"}</option>
-                <option value="review">{isEn ? "Visible after LEXPAT review" : "Visible après validation LEXPAT"}</option>
                 <option value="hidden">{isEn ? "Hidden" : "Masqué"}</option>
               </select>
             </label>
@@ -834,8 +833,8 @@ function SubmitCandidacyForm({ token, locale }) {
         <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Submit my application" : "Soumettre ma candidature"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
           {isEn
-            ? "Signal your interest to LEXPAT Connect. Your profile will be reviewed and introduced to Belgian employers that match your sector."
-            : "Signalez votre intérêt à LEXPAT Connect. Votre profil sera examiné et mis en relation avec les employeurs belges correspondant à votre secteur."}
+            ? "Signal your interest to LEXPAT Connect. Your profile can be shared directly with Belgian employers that match your sector."
+            : "Signalez votre intérêt à LEXPAT Connect. Votre profil pourra être présenté directement aux employeurs belges correspondant à votre secteur."}
         </p>
         <button
           onClick={() => {
@@ -961,7 +960,7 @@ function SubmitCandidacyForm({ token, locale }) {
 
         <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm leading-6 text-[#6b7b8f]">
-            {isEn ? "Your application will be reviewed by LEXPAT Connect. You will receive a confirmation by email." : "Votre candidature sera examinée par LEXPAT Connect. Vous recevrez une confirmation par email."}
+            {isEn ? "Your application will be sent to LEXPAT Connect. You will receive a confirmation by email." : "Votre candidature sera transmise à LEXPAT Connect. Vous recevrez une confirmation par email."}
           </p>
           <div className="flex gap-3">
             <button type="button" onClick={() => { setOpen(false); setError(""); }} className="secondary-button">{isEn ? "Cancel" : "Annuler"}</button>
