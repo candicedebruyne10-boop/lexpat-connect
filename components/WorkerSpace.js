@@ -615,7 +615,16 @@ function ProfileView({ token, locale, onNavigate }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setHasProfile(true);
-      setSaveMsg(isEn ? "Profile saved — your visibility is now active in the matching engine." : "Profil enregistré — votre visibilité est maintenant active dans le moteur de matching.");
+      const isVisible = (values.profile_visibility || "visible") === "visible";
+      setSaveMsg(
+        isEn
+          ? isVisible
+            ? "Profile saved — your profile is now active and visible to employers."
+            : "Profile saved — your profile is paused. Reactivate it at any time to appear in matching results."
+          : isVisible
+            ? "Profil enregistré — votre profil est actif et visible par les employeurs."
+            : "Profil enregistré — votre profil est en pause. Réactivez-le quand vous le souhaitez pour réapparaître dans les résultats."
+      );
     } catch (err) {
       setSaveMsg((isEn ? "Error: " : "Erreur : ") + err.message);
     } finally {
@@ -799,13 +808,18 @@ function ProfileView({ token, locale, onNavigate }) {
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Profile summary" : "Présentation"}</span>
               <textarea className="field-input min-h-[7rem]" rows={4} value={values.description || ""} onChange={(e) => set("description", e.target.value)} placeholder={isEn ? "Briefly describe your background, current situation and what you are looking for." : "Décrivez brièvement votre parcours, votre situation actuelle et vos attentes."} />
             </label>
-            <label>
+            <div>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Profile visibility" : "Visibilité du profil"}</span>
               <select className="field-input" value={values.profile_visibility || "visible"} onChange={(e) => set("profile_visibility", e.target.value)}>
-                <option value="visible">{isEn ? "Visible to employers" : "Visible par les employeurs"}</option>
-                <option value="hidden">{isEn ? "Hidden" : "Masqué"}</option>
+                <option value="visible">{isEn ? "Active — employers can find me" : "Actif — les employeurs peuvent me trouver"}</option>
+                <option value="hidden">{isEn ? "Paused — my profile is invisible" : "En pause — mon profil est invisible"}</option>
               </select>
-            </label>
+              <p className="mt-2 text-xs leading-5 text-[#5f7086]">
+                {(values.profile_visibility || "visible") === "visible"
+                  ? (isEn ? "Your profile appears in matching results and employers can contact you." : "Votre profil apparaît dans les résultats de matching et les employeurs peuvent vous contacter.")
+                  : (isEn ? "Your profile is saved but invisible. No employer will see it until you reactivate it." : "Votre profil est sauvegardé mais invisible. Aucun employeur ne le verra tant que vous ne le réactivez pas.")}
+              </p>
+            </div>
             <label className="md:col-span-2 rounded-[20px] border border-[#dce8f6] bg-[#f8fbff] px-4 py-4">
               <span className="flex items-start gap-3">
                 <input
