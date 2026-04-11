@@ -1356,12 +1356,13 @@ function CvView({ locale }) {
         <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">
           {isEn ? "Video introduction" : "Présentation vidéo"}
         </h2>
-        <textarea
-          className="field-input mt-6 min-h-32"
-          placeholder={isEn
-            ? "Add a video link or a short presentation if you want to enrich your profile."
-            : "Ajoutez un lien vidéo ou une courte présentation si vous souhaitez compléter votre profil."}
-          rows={5}
+        <label className="mt-6 block text-sm font-medium text-[#5f7086]">
+          {isEn ? "Video link (YouTube, Vimeo…)" : "Lien vidéo (YouTube, Vimeo…)"}
+        </label>
+        <input
+          type="url"
+          className="field-input mt-2"
+          placeholder="https://youtube.com/..."
           value={videoUrl}
           onChange={(e) => setVideoUrl(e.target.value)}
         />
