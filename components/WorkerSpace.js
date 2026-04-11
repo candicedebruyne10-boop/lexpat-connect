@@ -697,6 +697,11 @@ function ProfileView({ token, locale, onNavigate }) {
       </section>
 
       <form onSubmit={handleSave} className="space-y-6">
+        <div className="rounded-[22px] border border-[#dce8f6] bg-[#f4f8ff] px-5 py-4 text-sm leading-6 text-[#3c5473]">
+          {isEn
+            ? <span>Your profile becomes <strong>visible to employers</strong> only once you have filled in at least your <strong>target job</strong> and your <strong>sector</strong>. All other fields improve your matching score but are optional.</span>
+            : <span>Votre profil devient <strong>visible par les employeurs</strong> uniquement lorsque vous avez renseigné au minimum votre <strong>poste visé</strong> et votre <strong>secteur d'activité</strong>. Les autres champs améliorent votre score de matching mais sont optionnels.</span>}
+        </div>
         <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
           <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Matching information" : "Informations de matching"}</h2>
           <p className="mt-2 text-sm text-[#57b7af] font-medium">{isEn ? "These fields feed the matching engine directly." : "Ces champs alimentent directement le moteur de matching."}</p>
