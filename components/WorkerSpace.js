@@ -909,7 +909,9 @@ function ProfileView({ token, locale, onNavigate }) {
 function CvCollectionAccordion({ title, description, sectionKey, items, locale, data, onChange }) {
   const isEn = locale === "en";
   const templateFields = items[0]?.fields || [];
-  const baseLabel = items[0]?.label?.replace(/\s*\d+\s*$/, "").trim() || title;
+  // Use the LAST template item as the base for extra entries
+  const lastTemplateLabel = items[items.length - 1]?.label || title;
+  const baseLabel = lastTemplateLabel.replace(/\s*\d+\s*$/, "").trim();
 
   // Total number of rows = max(template count, saved data count, user-added count)
   const savedCount = Array.isArray(data) ? data.length : 0;
@@ -923,7 +925,11 @@ function CvCollectionAccordion({ title, description, sectionKey, items, locale, 
 
   function getLabel(idx) {
     if (idx < items.length) return items[idx].label;
-    return `${baseLabel} ${idx + 1}`;
+    // If the last template label already ends with a number (e.g. "Compétence 2"),
+    // continue the sequence naturally (3, 4…). Otherwise number the extras from 2.
+    const endsWithNumber = /\d+\s*$/.test(lastTemplateLabel);
+    const num = endsWithNumber ? idx + 1 : idx - items.length + 2;
+    return `${baseLabel} ${num}`;
   }
 
   function getFields(idx) {
