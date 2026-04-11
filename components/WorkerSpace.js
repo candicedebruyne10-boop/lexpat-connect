@@ -181,67 +181,219 @@ function Field({ field, locale = "fr" }) {
 }
 
 function DashboardView({ token, onNavigate, locale }) {
-  const [matchCount, setMatchCount] = useState(0);
   const isEn = locale === "en";
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [matches, setMatches] = useState([]);
+  const [matchesLoading, setMatchesLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!token) return;
+    fetch("/api/profile", { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => { setProfile(d.profile || null); setProfileLoading(false); })
+      .catch(() => setProfileLoading(false));
     fetch("/api/matches?role=worker", { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
-      .then((d) => setMatchCount(d.matches?.length || 0))
-      .catch(() => {});
+      .then((d) => { setMatches(d.matches || []); setMatchesLoading(false); })
+      .catch(() => setMatchesLoading(false));
   }, [token]);
 
-  const displayStats = [
-    { label: isEn ? "Matched jobs" : "Offres matchées", value: matchCount, tone: "teal" },
-    { label: isEn ? "Applications under review" : "Dossiers en examen", value: 0, tone: "amber" },
-    { label: isEn ? "Profile views" : "Vues du profil", value: 0, tone: "rose" },
-    { label: isEn ? "Shortlisted" : "Présélectionné", value: 0, tone: "green" }
-  ];
-  const matchingStatus =
-    matchCount > 0
-      ? isEn
-        ? `${matchCount} opening${matchCount > 1 ? "s" : ""} detected`
-        : `${matchCount} offre${matchCount > 1 ? "s" : ""} détectée${matchCount > 1 ? "s" : ""}`
-      : isEn
-        ? "No opening detected yet"
-        : "Aucune offre détectée pour l'instant";
+  async function handleDeleteProfile() {
+    const confirmed = window.confirm(
+      isEn
+        ? "Delete your worker profile? This cannot be undone."
+        : "Supprimer votre profil travailleur ? Cette action est irréversible."
+    );
+    if (!confirmed) return;
+    setDeleting(true);
+    const res = await fetch("/api/profile", { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+    if (res.ok) setProfile(null);
+    setDeleting(false);
+  }
+
+  const visibilityBadge = profile?.profile_visibility === "visible"
+    ? { label: isEn ? "Visible to employers" : "Visible aux employeurs", cls: "bg-[#eef9f1] text-[#2f9d57] border-[#c4e8cf]" }
+    : { label: isEn ? "Profile hidden" : "Profil masqué", cls: "bg-[#f5f7fa] text-[#607086] border-[#dde5ee]" };
 
   return (
     <div className="space-y-6">
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+          {isEn ? "Worker space" : "Espace travailleur"}
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">
+          {isEn ? "My dashboard" : "Mon tableau de bord"}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5f7086]">
+          {isEn
+            ? "View your profile, your CV and the job offers matched to your search."
+            : "Consultez votre profil, votre CV et les offres d'emploi correspondant à votre recherche."}
+        </p>
+      </section>
+
+      {/* ── Profile card ───────────────────────────────────────────────── */}
+      <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "Worker space" : "Espace travailleur"}</p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Candidate dashboard" : "Tableau de bord candidat"}</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5f7086]">
-              {isEn
-                ? "See your matched opportunities, complete your profile and monitor your visibility with Belgian employers."
-                : "Retrouvez vos offres matchées, complétez votre profil et suivez votre visibilité auprès des employeurs belges."}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              {isEn ? "My profile" : "Mon profil"}
             </p>
+            {profileLoading ? (
+              <div className="mt-4 h-5 w-40 animate-pulse rounded-full bg-[#edf3f7]" />
+            ) : profile ? (
+              <div className="mt-3 space-y-1">
+                <p className="text-xl font-semibold text-[#1d3b8b]">{profile.full_name || "—"}</p>
+                <p className="text-sm text-[#5f7086]">
+                  {profile.target_job || profile.job_title || "—"}
+                  {profile.target_sector ? ` · ${profile.target_sector}` : ""}
+                </p>
+                <p className="text-sm text-[#5f7086]">
+                  {profile.preferred_region || (isEn ? "Belgium" : "Toute la Belgique")}
+                  {profile.experience_level ? ` · ${profile.experience_level}` : ""}
+                </p>
+                <span className={`mt-2 inline-flex rounded-full border px-3 py-0.5 text-xs font-semibold ${visibilityBadge.cls}`}>
+                  {visibilityBadge.label}
+                </span>
+              </div>
+            ) : (
+              <div className="mt-3">
+                <p className="text-sm text-[#5f7086]">
+                  {isEn ? "Your profile hasn't been created yet." : "Votre profil n'a pas encore été créé."}
+                </p>
+              </div>
+            )}
           </div>
-          <div className="rounded-[24px] border border-[#d9ebe8] bg-[#f5fbfb] px-5 py-4 text-sm text-[#33566b]">
-            {isEn ? "Matching:" : "Matching :"} <span className="font-semibold text-[#1d3b8b]">{matchingStatus}</span>
+          <div className="flex shrink-0 gap-2">
+            <button
+              onClick={() => onNavigate("profile")}
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-[#d7e4f0] bg-white px-4 py-2 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#b0cadf] hover:shadow-sm"
+            >
+              ✏️ {profile ? (isEn ? "Edit" : "Modifier") : (isEn ? "Create my profile" : "Créer mon profil")}
+            </button>
+            {profile && (
+              <button
+                onClick={handleDeleteProfile}
+                disabled={deleting}
+                className="inline-flex items-center gap-1.5 rounded-2xl border border-[#f0d0d0] bg-white px-4 py-2 text-sm font-semibold text-[#af4b4b] transition hover:border-[#e0a0a0] hover:shadow-sm disabled:opacity-50"
+              >
+                🗑️ {isEn ? "Delete" : "Supprimer"}
+              </button>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-4">
-        {displayStats.map((item) => (
-          <article
-            key={item.label}
-            className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] cursor-pointer transition hover:shadow-[0_16px_36px_rgba(15,23,42,0.08)]"
-            onClick={() => item.label === (isEn ? "Matched jobs" : "Offres matchées") ? onNavigate("matches") : null}
+      {/* ── CV card ────────────────────────────────────────────────────── */}
+      <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+              {isEn ? "My CV" : "Mon CV"}
+            </p>
+            {profileLoading ? (
+              <div className="mt-4 h-5 w-40 animate-pulse rounded-full bg-[#edf3f7]" />
+            ) : profile?.cv_url ? (
+              <div className="mt-3 flex items-center gap-2">
+                <span className="text-lg">📄</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#1d3b8b]">
+                    {isEn ? "CV uploaded" : "CV déposé"}
+                  </p>
+                  <a
+                    href={profile.cv_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-[#57b7af] underline hover:text-[#3a9a92]"
+                  >
+                    {isEn ? "View my CV" : "Voir mon CV"}
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-[#5f7086]">
+                {isEn ? "No CV uploaded yet." : "Aucun CV déposé pour l'instant."}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={() => onNavigate("cv")}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-2xl border border-[#d7e4f0] bg-white px-4 py-2 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#b0cadf] hover:shadow-sm"
           >
-            <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-semibold ${toneClasses[item.tone]}`}>
-              {item.value}
-            </div>
-            <h3 className="mt-5 text-lg font-semibold tracking-tight text-[#1d3b8b]">{item.label}</h3>
-          </article>
-        ))}
+            {profile?.cv_url ? (isEn ? "Replace my CV" : "Remplacer mon CV") : (isEn ? "Upload my CV" : "Déposer mon CV")}
+          </button>
+        </div>
       </section>
 
-      <SubmitCandidacyForm token={token} locale={locale} />
+      {/* ── Matched offers ─────────────────────────────────────────────── */}
+      <section className="rounded-[30px] border border-[#e4edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
+            {isEn ? "Matched job offers" : "Offres matchées"}
+          </p>
+          {matches.length > 0 && (
+            <button
+              onClick={() => onNavigate("matches")}
+              className="text-xs font-semibold text-[#1d3b8b] underline hover:text-[#57b7af]"
+            >
+              {isEn ? "See all" : "Voir tout"}
+            </button>
+          )}
+        </div>
+        {matchesLoading ? (
+          <div className="mt-6 space-y-3">
+            {[1, 2].map((i) => <div key={i} className="h-16 animate-pulse rounded-2xl bg-[#f3f7fb]" />)}
+          </div>
+        ) : matches.length > 0 ? (
+          <div className="mt-4 space-y-3">
+            {matches.slice(0, 3).map((m) => (
+              <div
+                key={m.id}
+                onClick={() => onNavigate("matches")}
+                className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#e5edf4] px-5 py-4 transition hover:border-[#c0d5ea] hover:shadow-sm"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-[#1d3b8b]">{m.offer?.title || m.offer_title || "—"}</p>
+                  <p className="mt-0.5 text-xs text-[#5f7086]">{m.offer?.company_name || m.company_name || ""}</p>
+                </div>
+                <span className="shrink-0 rounded-full border border-[#dbe6ff] bg-[#eef4ff] px-3 py-1 text-xs font-semibold text-[#173a8a]">
+                  {m.score}/100
+                </span>
+              </div>
+            ))}
+            {matches.length > 3 && (
+              <button
+                onClick={() => onNavigate("matches")}
+                className="w-full rounded-2xl border border-dashed border-[#c0d5ea] py-3 text-sm font-semibold text-[#1d3b8b] transition hover:bg-[#f4f8fd]"
+              >
+                +{matches.length - 3} {isEn ? "more offers" : "offres supplémentaires"}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="mt-6 rounded-2xl border border-dashed border-[#d9e4ee] bg-[#fbfdff] px-6 py-10 text-center">
+            <p className="text-sm leading-7 text-[#6d7b8d]">
+              {!profile
+                ? (isEn
+                  ? "Create your profile so the matching engine can detect relevant offers."
+                  : "Créez votre profil pour que le moteur de matching détecte des offres correspondantes.")
+                : (isEn
+                  ? "No matching offer detected yet. We'll notify you as soon as one appears."
+                  : "Aucune offre matchée pour l'instant. Vous serez notifié dès qu'une offre correspond.")}
+            </p>
+            {!profile && (
+              <button
+                onClick={() => onNavigate("profile")}
+                className="mt-5 inline-flex items-center rounded-2xl bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+              >
+                {isEn ? "Create my profile" : "Créer mon profil"}
+              </button>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
