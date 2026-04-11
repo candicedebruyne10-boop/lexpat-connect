@@ -200,13 +200,13 @@ function DashboardView({ token, onNavigate, locale }) {
         <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Legal support" : "Relais juridique"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
           {isEn
-            ? "When a recruitment process moves into single permit or economic immigration territory, LEXPAT Law Firm steps in separately from the platform."
-            : "Quand un recrutement avance vers un permis unique ou une situation d'immigration économique, le cabinet LEXPAT intervient dans un périmètre séparé de la plateforme."}
+            ? "When a match is confirmed, LEXPAT Connect automatically shares the key legal information relevant to hiring a foreign national in Belgium — permit type, applicable procedure, estimated timeline."
+            : "Lorsqu'un match est confirmé, LEXPAT Connect transmet automatiquement les informations juridiques essentielles liées au recrutement d'un ressortissant étranger en Belgique — type de permis requis, procédure applicable, délai estimé."}
         </p>
         <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
           {isEn
-            ? "Each opening can trigger an automated legal review as soon as a foreign profile is shortlisted. You can also contact the firm directly at any stage of your recruitment process."
-            : "Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné. Vous pouvez également faire appel au cabinet à n'importe quelle étape de votre recrutement."}
+            ? "If you want to go further — obtain a formal legal opinion, prepare the permit application or get personalised advice — the LEXPAT Law Firm is available to support you directly."
+            : "Si vous souhaitez aller plus loin — obtenir un avis juridique formel, préparer la demande de permis ou bénéficier d'un accompagnement personnalisé — le cabinet LEXPAT est disponible pour vous accompagner directement."}
         </div>
         <div className="mt-4">
           <a
