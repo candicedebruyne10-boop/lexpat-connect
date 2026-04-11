@@ -204,7 +204,17 @@ function DashboardView({ token, onNavigate, locale }) {
             : "Quand un recrutement avance vers un permis unique ou une situation d'immigration économique, le cabinet LEXPAT intervient dans un périmètre séparé de la plateforme."}
         </p>
         <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
-          {isEn ? "Each opening can trigger an automated legal review as soon as a foreign profile is shortlisted." : "Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné."}
+          {isEn
+            ? "Each opening can trigger an automated legal review as soon as a foreign profile is shortlisted. You can also contact the firm directly at any stage of your recruitment process."
+            : "Chaque offre pourra déclencher une analyse juridique automatique dès qu'un profil étranger est présélectionné. Vous pouvez également faire appel au cabinet à n'importe quelle étape de votre recrutement."}
+        </div>
+        <div className="mt-4">
+          <a
+            href="mailto:contact@lexpat.be"
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(29,59,139,0.25)]"
+          >
+            ✉ {isEn ? "Contact LEXPAT Law Firm" : "Contacter le cabinet LEXPAT"}
+          </a>
         </div>
       </section>
     </div>
