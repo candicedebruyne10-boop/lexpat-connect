@@ -411,10 +411,10 @@ export default function AdminDashboard() {
               Admin LEXPAT Connect
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#173a8a] sm:text-5xl">
-              Vue d’ensemble des offres, candidatures et matchings
+              Vue d’ensemble des offres, travailleurs et matchings
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-[#607086]">
-              Un back-office pensé pour voir rapidement ce qui entre dans la plateforme, ce qui bouge côté recrutement et où se concentrent les premiers signaux de matching.
+              Un back-office pensé pour voir en un coup d’œil qui s’inscrit sur la plateforme, quelles offres sont actives et quels profils remontent dans le matching.
             </p>
           </div>
           <div className="min-w-[280px]">
