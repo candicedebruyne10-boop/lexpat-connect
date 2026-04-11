@@ -869,7 +869,7 @@ function ProfileView({ token, locale, onNavigate }) {
             )}
           </div>
           <button type="submit" disabled={saving} className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-8 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-70">
-            {saving ? (isEn ? "Saving…" : "Enregistrement…") : isEn ? "Save my profile" : "Enregistrer mon profil"}
+            {saving ? (isEn ? "Saving…" : "Enregistrement…") : isEn ? "Save" : "Enregistrer"}
           </button>
         </div>
       </form>
