@@ -303,7 +303,8 @@ async function sendNotificationEmails({ user, body }) {
         region: regionDisplay,
         contract: body.contract_type || "-",
         urgency: body.urgency || "-",
-        profileUrl: employerSpaceUrl
+        profileUrl: employerSpaceUrl,
+        recipientEmail: user.email
       })
     }).catch(() => {});
   }

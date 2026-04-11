@@ -96,7 +96,8 @@ export async function POST(request) {
         html: workerProfileIncompleteEmailHtml({
           locale,
           recipientName: body.full_name || user.user_metadata?.full_name || "",
-          profileUrl
+          profileUrl,
+          recipientEmail: user.email
         })
       }).catch(() => {});
     }
