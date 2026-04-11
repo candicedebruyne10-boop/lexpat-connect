@@ -153,7 +153,7 @@ export async function GET(request) {
 
     const { data: offers } = await supabase
       .from("job_offers")
-      .select("id, title, sector, region, contract_type, urgency, status, created_at")
+      .select("id, title, sector, region, contract_type, urgency, status, created_at, missions, shortage_job, shortage_job_other")
       .eq("employer_profile_id", membership.employer_profile_id)
       .order("created_at", { ascending: false });
 
@@ -162,6 +162,99 @@ export async function GET(request) {
         ...offer
       }))
     });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 401 });
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const { user, supabase } = await getUserFromRequest(request);
+    const body = await request.json();
+    const offerId = body.id;
+
+    if (!offerId) {
+      return NextResponse.json({ error: "Offre introuvable." }, { status: 400 });
+    }
+
+    const shortageJob = body.shortage_job || "";
+    const shortageJobOther = body.shortage_job_other || "";
+    const normalizedTitle = (shortageJob === "Autre profession" ? shortageJobOther : shortageJob) || body.title || "";
+    const normalizedSector = body.sector || findSectorForProfession(body.region, shortageJob) || null;
+    const selectedRegions = parseRegionSelection(body.region || body.regions);
+    const normalizedRegion =
+      selectedRegions.length > 1
+        ? "multi_region"
+        : regionToDb[selectedRegions[0]] || null;
+
+    const { data: membership, error: memberError } = await supabase
+      .from("employer_members")
+      .select("employer_profile_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (memberError || !membership) {
+      return NextResponse.json({ error: "Espace employeur introuvable." }, { status: 404 });
+    }
+
+    const { data: offer, error: offerError } = await supabase
+      .from("job_offers")
+      .update({
+        title: normalizedTitle,
+        sector: normalizedSector,
+        region: normalizedRegion,
+        shortage_job: shortageJob || null,
+        shortage_job_other: shortageJob === "Autre profession" ? shortageJobOther || null : null,
+        contract_type: body.contract_type || null,
+        urgency: body.urgency || null,
+        missions: body.description || null
+      })
+      .eq("id", offerId)
+      .eq("employer_profile_id", membership.employer_profile_id)
+      .select("id, title, sector, region, contract_type, urgency, status, created_at, missions, shortage_job, shortage_job_other")
+      .single();
+
+    if (offerError || !offer) {
+      return NextResponse.json({ error: offerError?.message || "Erreur de mise à jour." }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true, offer });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 401 });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const { user, supabase } = await getUserFromRequest(request);
+    const { searchParams } = new URL(request.url);
+    const offerId = searchParams.get("id");
+
+    if (!offerId) {
+      return NextResponse.json({ error: "Offre introuvable." }, { status: 400 });
+    }
+
+    const { data: membership, error: memberError } = await supabase
+      .from("employer_members")
+      .select("employer_profile_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (memberError || !membership) {
+      return NextResponse.json({ error: "Espace employeur introuvable." }, { status: 404 });
+    }
+
+    const { error } = await supabase
+      .from("job_offers")
+      .delete()
+      .eq("id", offerId)
+      .eq("employer_profile_id", membership.employer_profile_id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }

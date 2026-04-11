@@ -11,8 +11,10 @@ import {
   findSectorForProfession,
   getSectorOptions,
   getProfessionGroupsForRegions,
-  parseRegionSelection
+  parseRegionSelection,
+  stringifyRegionSelection
 } from "../lib/professions";
+import { normalizeRegion } from "../lib/matching";
 
 function getSidebarItems(locale) {
   if (locale === "en") {
@@ -594,9 +596,43 @@ function CreateOfferForm({ onSuccess, token, locale }) {
   );
 }
 
+function createOfferValues() {
+  return {
+    title: "",
+    profession: "",
+    otherProfession: "",
+    sector: "",
+    region: "",
+    contract: "",
+    urgency: "",
+    email: "",
+    description: ""
+  };
+}
+
+function mapOfferToFormValues(offer) {
+  const profession = offer.shortage_job || offer.title || "";
+  return {
+    title: offer.title || "",
+    profession,
+    otherProfession: offer.shortage_job === "Autre profession" ? (offer.shortage_job_other || offer.title || "") : "",
+    sector: offer.sector || "",
+    region: normalizeRegion(offer.region) || "",
+    contract: offer.contract_type || "",
+    urgency: offer.urgency || "",
+    email: "",
+    description: offer.missions || ""
+  };
+}
+
 function OffersView({ token, locale, onNavigate }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [offers, setOffers] = useState([]);
+  const [editingOfferId, setEditingOfferId] = useState(null);
+  const [editingValues, setEditingValues] = useState(createOfferValues());
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [deletingOfferId, setDeletingOfferId] = useState(null);
+  const [actionError, setActionError] = useState("");
   const isEn = locale === "en";
 
   const refreshOffers = useCallback(() => {
@@ -609,6 +645,120 @@ function OffersView({ token, locale, onNavigate }) {
 
   useEffect(() => { refreshOffers(); }, [refreshOffers]);
 
+  function setEditValue(key, value) {
+    setEditingValues((prev) => {
+      const next = { ...prev, [key]: value };
+
+      if (key === "region") {
+        next.profession = "";
+        next.otherProfession = "";
+        next.title = "";
+        if (next.sector !== "Autre secteur") {
+          next.sector = "";
+        }
+      }
+
+      if (key === "profession") {
+        if (value !== "Autre profession") {
+          next.otherProfession = "";
+          next.title = value;
+        }
+
+        const derivedSector = findSectorForProfession(next.region, value);
+        if (derivedSector) {
+          next.sector = derivedSector;
+        }
+      }
+
+      if (key === "otherProfession") {
+        next.title = value;
+      }
+
+      return next;
+    });
+  }
+
+  function startEditing(offer) {
+    setEditingOfferId(offer.id);
+    setEditingValues(mapOfferToFormValues(offer));
+    setActionError("");
+    setSuccessMsg("");
+  }
+
+  function cancelEditing() {
+    setEditingOfferId(null);
+    setEditingValues(createOfferValues());
+    setActionError("");
+  }
+
+  async function handleUpdateOffer(event) {
+    event.preventDefault();
+    setSavingEdit(true);
+    setActionError("");
+
+    try {
+      const res = await fetch("/api/offers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          id: editingOfferId,
+          title: editingValues.profession === "Autre profession" ? editingValues.otherProfession : editingValues.profession,
+          shortage_job: editingValues.profession,
+          shortage_job_other: editingValues.profession === "Autre profession" ? editingValues.otherProfession : "",
+          sector: editingValues.sector,
+          region: stringifyRegionSelection(editingValues.region, "Plusieurs régions"),
+          contract_type: editingValues.contract,
+          urgency: editingValues.urgency,
+          description: editingValues.description
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || (isEn ? "Unable to update this opening." : "Impossible de mettre à jour cette offre."));
+
+      setSuccessMsg(isEn ? "Opening updated." : "Offre mise à jour.");
+      cancelEditing();
+      refreshOffers();
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
+  async function handleDeleteOffer(offerId) {
+    const confirmed = window.confirm(
+      isEn
+        ? "Do you really want to delete this opening? Linked matches and applications will also be removed."
+        : "Voulez-vous vraiment supprimer cette offre ? Les matchs et candidatures liés seront aussi supprimés."
+    );
+
+    if (!confirmed) return;
+
+    setDeletingOfferId(offerId);
+    setActionError("");
+    setSuccessMsg("");
+
+    try {
+      const res = await fetch(`/api/offers?id=${offerId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || (isEn ? "Unable to delete this opening." : "Impossible de supprimer cette offre."));
+
+      if (editingOfferId === offerId) {
+        cancelEditing();
+      }
+      setSuccessMsg(isEn ? "Opening deleted." : "Offre supprimée.");
+      refreshOffers();
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setDeletingOfferId(null);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
@@ -620,6 +770,12 @@ function OffersView({ token, locale, onNavigate }) {
       {successMsg && (
         <div className="rounded-[24px] border border-[#c6e8e3] bg-[#f0fbf9] px-5 py-4 text-sm font-semibold text-[#1d7a6e]">
           {successMsg}
+        </div>
+      )}
+
+      {actionError && (
+        <div className="rounded-[24px] border border-[#f2c4c4] bg-[#fff5f5] px-5 py-4 text-sm font-semibold text-[#a33f3f]">
+          {actionError}
         </div>
       )}
 
@@ -653,13 +809,133 @@ function OffersView({ token, locale, onNavigate }) {
                 <div>
                   <h2 className="text-xl font-semibold tracking-tight text-[#1d3b8b]">{offer.title}</h2>
                   <p className="mt-2 text-sm leading-6 text-[#5f7086]">
-                    {[offer.sector, offer.region, offer.contract_type, offer.urgency].filter(Boolean).join(" · ")}
+                    {[offer.sector, normalizeRegion(offer.region), offer.contract_type, offer.urgency].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 <span className="rounded-full bg-[#eef5ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#1d3b8b]">
                   {offer.status === "published" ? (isEn ? "Published" : "Publiée") : offer.status === "draft" ? (isEn ? "Draft" : "Brouillon") : offer.status}
                 </span>
               </div>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => startEditing(offer)}
+                  className="inline-flex min-h-[2.75rem] items-center justify-center rounded-[16px] border border-[#c5d4f3] bg-[#eef5ff] px-4 py-2.5 text-sm font-semibold text-[#1d3b8b] transition hover:bg-[#e2ecff]"
+                >
+                  {isEn ? "Edit opening" : "Modifier l'offre"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteOffer(offer.id)}
+                  disabled={deletingOfferId === offer.id}
+                  className="inline-flex min-h-[2.75rem] items-center justify-center rounded-[16px] border border-[#f0c3c3] bg-[#fff5f5] px-4 py-2.5 text-sm font-semibold text-[#b54848] transition hover:bg-[#ffeaea] disabled:opacity-60"
+                >
+                  {deletingOfferId === offer.id
+                    ? (isEn ? "Deleting…" : "Suppression…")
+                    : (isEn ? "Delete opening" : "Supprimer l'offre")}
+                </button>
+              </div>
+
+              {editingOfferId === offer.id ? (
+                <form onSubmit={handleUpdateOffer} className="mt-6 grid gap-5 border-t border-[#e8eff5] pt-6 md:grid-cols-2">
+                  <label>
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Sector" : "Secteur"} *</span>
+                    <select className="field-input" required value={editingValues.sector} onChange={(e) => setEditValue("sector", e.target.value)}>
+                      <option value="" disabled>{isEn ? "Select a sector" : "Sélectionnez un secteur"}</option>
+                      {getSectorOptions(isEn ? "en" : "fr").map((option) => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Region" : "Région"} *</span>
+                    <RegionSelector
+                      value={parseRegionSelection(editingValues.region)}
+                      onChange={(nextRegions) => setEditValue("region", nextRegions)}
+                      helperText={isEn ? "Select one, two or three regions depending on your hiring scope." : "Sélectionnez une, deux ou trois régions selon votre besoin de recrutement."}
+                    />
+                  </label>
+
+                  <label className="md:col-span-2">
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Target role" : "Métier recherché"} *</span>
+                    {editingValues.region ? (
+                      <select className="field-input" required value={editingValues.profession} onChange={(e) => setEditValue("profession", e.target.value)}>
+                        <option value="" disabled>{isEn ? "Select the target role" : "Sélectionnez le métier visé"}</option>
+                        {getProfessionGroupsForRegions(editingValues.region, isEn ? "en" : "fr").map((group) => (
+                          <optgroup key={group.label} label={group.label}>
+                            {group.options.map((profession) => (
+                              <option key={`${group.label}-${profession.value}`} value={profession.value}>{profession.label}</option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
+                        {isEn ? "Select a region first to choose a role" : "Sélectionnez d'abord une région pour choisir un métier"}
+                      </div>
+                    )}
+                  </label>
+
+                  {editingValues.profession === "Autre profession" ? (
+                    <label className="md:col-span-2">
+                      <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Other role / details" : "Autre profession / précision"} *</span>
+                      <input className="field-input" type="text" required value={editingValues.otherProfession} onChange={(e) => setEditValue("otherProfession", e.target.value)} />
+                    </label>
+                  ) : null}
+
+                  <label>
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Contract type" : "Type de contrat"}</span>
+                    <select className="field-input" value={editingValues.contract} onChange={(e) => setEditValue("contract", e.target.value)}>
+                      <option value="" disabled>{isEn ? "Select a type" : "Sélectionnez un type"}</option>
+                      <option>CDI</option>
+                      <option>CDD</option>
+                      <option>Intérim</option>
+                      <option>Temps plein</option>
+                      <option>Temps partiel</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Urgency level" : "Niveau d'urgence"}</span>
+                    <select className="field-input" value={editingValues.urgency} onChange={(e) => setEditValue("urgency", e.target.value)}>
+                      <option value="" disabled>{isEn ? "Select a level" : "Sélectionnez un niveau"}</option>
+                      <option>Normal</option>
+                      <option>Urgent</option>
+                      <option>Très urgent</option>
+                    </select>
+                  </label>
+
+                  <label className="md:col-span-2">
+                    <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Opening summary" : "Description du besoin"}</span>
+                    <textarea
+                      className="field-input min-h-[8rem]"
+                      rows={5}
+                      value={editingValues.description}
+                      onChange={(e) => setEditValue("description", e.target.value)}
+                      placeholder={isEn ? "Expected skills, experience, context, preferred timing…" : "Compétences attendues, expérience, contexte, disponibilité souhaitée…"}
+                    />
+                  </label>
+
+                  <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                    <button
+                      type="button"
+                      onClick={cancelEditing}
+                      className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl border border-[#d7e3f2] bg-white px-5 py-3 text-sm font-semibold text-[#1d3b8b] transition hover:bg-[#f8fbff]"
+                    >
+                      {isEn ? "Cancel" : "Annuler"}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingEdit}
+                      className="inline-flex min-h-[3rem] items-center justify-center rounded-2xl bg-[#59B9B1] px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:opacity-70"
+                    >
+                      {savingEdit ? (isEn ? "Saving…" : "Enregistrement…") : (isEn ? "Save changes" : "Enregistrer les modifications")}
+                    </button>
+                  </div>
+                </form>
+              ) : null}
             </article>
           ))}
         </section>
