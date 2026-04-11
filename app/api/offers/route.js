@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { computeMatchScore, normalizeRegion } from "../../../lib/matching";
 import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection } from "../../../lib/professions";
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
-import { newOfferEmailHtml } from "../../../lib/email-templates";
+import { newOfferEmailHtml, offerPublishedConfirmationEmailHtml } from "../../../lib/email-templates";
 import { notifyWorkersForNewOffer } from "../../../lib/match-notifications";
 
 const regionToDb = {
@@ -76,8 +76,8 @@ export async function POST(request) {
       urgency: body.urgency
     }).catch(() => {});
 
-    // 4. Send notification email to LEXPAT (best-effort, non-blocking)
-    sendNotificationEmail(body).catch(() => {});
+    // 4. Send notification emails (best-effort, non-blocking)
+    sendNotificationEmails({ user, body }).catch(() => {});
 
     return NextResponse.json({
       ok: true,
@@ -260,19 +260,20 @@ export async function DELETE(request) {
   }
 }
 
-async function sendNotificationEmail(body) {
+async function sendNotificationEmails({ user, body }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
 
   const resend = new Resend(apiKey);
   const from = getSenderAddress();
-  const to = getNotificationRecipient();
+  const internalRecipient = getNotificationRecipient();
+  const locale = user?.user_metadata?.preferred_locale === "en" ? "en" : "fr";
 
   const regionDisplay = stringifyRegionSelection(body.region || body.regions, "Plusieurs régions") || "-";
   const title = body.title || body.shortage_job || "Poste non précisé";
 
   await resend.emails.send({
-    from, to,
+    from, to: internalRecipient,
     subject: `[LEXPAT Connect] Nouvelle offre : ${title}`,
     html: newOfferEmailHtml({
       title,
@@ -284,4 +285,26 @@ async function sendNotificationEmail(body) {
       companyName: body.companyName || null
     })
   });
+
+  if (user?.email) {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lexpat-connect.be";
+    const employerSpaceUrl = `${baseUrl}${locale === "en" ? "/en/employeurs/espace" : "/employeurs/espace"}`;
+
+    await resend.emails.send({
+      from,
+      to: user.email,
+      subject: locale === "en"
+        ? "Your opening is now live on LEXPAT Connect"
+        : "Votre offre est maintenant publiée sur LEXPAT Connect",
+      html: offerPublishedConfirmationEmailHtml({
+        locale,
+        title,
+        sector: body.sector || "-",
+        region: regionDisplay,
+        contract: body.contract_type || "-",
+        urgency: body.urgency || "-",
+        profileUrl: employerSpaceUrl
+      })
+    }).catch(() => {});
+  }
 }
