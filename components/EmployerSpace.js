@@ -151,9 +151,7 @@ function DashboardView({ token, onNavigate, locale }) {
 
   const displayStats = [
     { label: isEn ? "Published openings" : "Offres publiées", value: stats.offers, tone: "blue" },
-    { label: isEn ? "Matching profiles" : "Profils correspondants", value: stats.matches, tone: "teal" },
-    { label: isEn ? "Files to clarify" : "Dossiers à clarifier", value: 0, tone: "amber" },
-    { label: isEn ? "Completed hires" : "Recrutements finalisés", value: 0, tone: "green" }
+    { label: isEn ? "Matching profiles" : "Profils correspondants", value: stats.matches, tone: "teal" }
   ];
   const matchingStatus =
     stats.matches > 0
