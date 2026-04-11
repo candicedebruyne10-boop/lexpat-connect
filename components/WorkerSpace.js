@@ -51,6 +51,35 @@ function formatCompatibilityLabel(score, isEn, compact = false) {
   return `${label} ${score}/100`;
 }
 
+function InfoTooltip({ text, buttonTitle, closeLabel }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#57b7af] text-[11px] font-bold text-white shadow-[0_4px_10px_rgba(87,183,175,0.25)] transition hover:scale-105"
+        title={buttonTitle}
+      >
+        i
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full z-20 mt-2 w-72 rounded-2xl border border-[#dce9e7] bg-white p-3 text-[12px] leading-6 text-[#5f7086] shadow-[0_14px_36px_rgba(15,23,42,0.12)]">
+          {text}
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="mt-2 block text-[11px] font-semibold text-[#1d3b8b]"
+          >
+            {closeLabel}
+          </button>
+        </div>
+      )}
+    </span>
+  );
+}
+
 
 function getCvSections(locale) {
   const isEn = locale === "en";
@@ -429,11 +458,21 @@ function WorkerMatchesView({ token, locale }) {
     if (score >= 60) return "bg-[#ecfaf8] text-[#2f9f97]";
     return "bg-[#fff7e7] text-[#d08900]";
   };
+  const scoringInfo = isEn
+    ? "Compatibility reflects how closely the role, sector, region and experience align. It helps prioritize opportunities, but it is not a hiring guarantee on its own."
+    : "La compatibilité reflète la proximité entre le poste, le secteur, la région et l'expérience. Elle aide à prioriser les opportunités, sans constituer à elle seule une garantie de recrutement.";
 
   return (
     <div className="space-y-6">
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My matches" : "Mes matchs"}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">{isEn ? "My matches" : "Mes matchs"}</p>
+          <InfoTooltip
+            text={scoringInfo}
+            buttonTitle={isEn ? "What does the compatibility score mean?" : "Que signifie la compatibilité ?"}
+            closeLabel={isEn ? "Close" : "Fermer"}
+          />
+        </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#1d3b8b] sm:text-4xl">{isEn ? "Opportunities matching your profile" : "Opportunités correspondant à votre profil"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5f7086]">
           {isEn
