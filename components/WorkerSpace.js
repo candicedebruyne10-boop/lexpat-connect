@@ -43,6 +43,14 @@ const toneClasses = {
   green: "bg-[#eef9f1] text-[#2f9d57]"
 };
 
+function formatCompatibilityLabel(score, isEn, compact = false) {
+  const label = isEn
+    ? (compact ? "Match" : "Compatibility")
+    : (compact ? "Compat." : "Compatibilité");
+
+  return `${label} ${score}/100`;
+}
+
 const profileSections = [
   {
     title: "Informations principales",
@@ -359,7 +367,7 @@ function DashboardView({ token, onNavigate, locale }) {
                   <p className="mt-0.5 text-xs text-[#5f7086]">{m.offer?.company_name || m.company_name || ""}</p>
                 </div>
                 <span className="shrink-0 rounded-full border border-[#dbe6ff] bg-[#eef4ff] px-3 py-1 text-xs font-semibold text-[#173a8a]">
-                  {m.score}/100
+                  {formatCompatibilityLabel(m.score, isEn, true)}
                 </span>
               </div>
             ))}
@@ -491,7 +499,7 @@ function WorkerMatchesView({ token, locale }) {
                   </p>
                 </div>
                 <span className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-bold ${scoreColor(match.score)}`}>
-                  {match.score}/100
+                  {formatCompatibilityLabel(match.score, isEn)}
                 </span>
               </div>
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">

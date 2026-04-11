@@ -43,6 +43,10 @@ const toneClasses = {
   green: "bg-[#eef9f1] text-[#2f9d57]"
 };
 
+function formatCompatibilityLabel(score, isEn) {
+  return `${isEn ? "Compatibility" : "Compatibilité"} ${score}/100`;
+}
+
 function getCompanyFields(locale) {
   if (locale === "en") {
     return [
@@ -1042,7 +1046,7 @@ function MatchesView({ token, locale }) {
                   </p>
                 </div>
                 <span className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-bold ${scoreColor(match.score)}`}>
-                  Score {match.score}/100
+                  {formatCompatibilityLabel(match.score, isEn)}
                 </span>
               </div>
               <div className="mt-4 rounded-[20px] border border-[#ebf0f6] bg-[#f9fbfd] px-4 py-3 text-xs text-[#5f7086]">
