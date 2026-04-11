@@ -207,6 +207,43 @@ function addBulletsCard(slide, options) {
   );
 }
 
+function addCompactListCard(slide, { x, y, w, h, title, lines, fill = C.white, titleColor = C.navy, bodyColor = C.slate }) {
+  slide.addShape(pptx.ShapeType.roundRect, {
+    x,
+    y,
+    w,
+    h,
+    rectRadius: 0.08,
+    line: { color: C.line, pt: 1 },
+    fill: { color: fill },
+    shadow: { type: "outer", color: "CBD5E1", angle: 45, blur: 1, distance: 1, opacity: 0.1 }
+  });
+  slide.addText(title, {
+    x: x + 0.18,
+    y: y + 0.18,
+    w: w - 0.36,
+    h: 0.28,
+    fontFace: "Aptos Display",
+    fontSize: 12.5,
+    bold: true,
+    color: titleColor,
+    margin: 0
+  });
+  slide.addText(
+    lines.map((line) => ({ text: line, options: { bullet: { indent: 8 } } })),
+    {
+      x: x + 0.16,
+      y: y + 0.52,
+      w: w - 0.28,
+      h: h - 0.66,
+      fontSize: 8.2,
+      color: bodyColor,
+      margin: 0.01,
+      paraSpaceAfterPt: 2.5
+    }
+  );
+}
+
 function addFlowArrow(slide, x, y, w) {
   slide.addShape(pptx.ShapeType.chevron, {
     x,
@@ -386,19 +423,19 @@ addFooter(cover);
 const overview = pptx.addSlide();
 fullBleedBackground(overview, C.white);
 addSectionBand(overview, "VUE GLOBALE");
-addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 26 pages applicatives, réparties entre acquisition, conversion, activation membre, réassurance juridique et pilotage opérationnel.");
-addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 26, "blue");
-addMetric(overview, 2.55, 1.75, 1.7, "Acquisition", 14, "teal");
-addMetric(overview, 4.45, 1.75, 1.7, "Trust layer", 4, "sand");
-addMetric(overview, 6.35, 1.75, 1.7, "Member views", 5, "blue");
-addMetric(overview, 8.25, 1.75, 1.7, "Admin hub", 1, "teal");
-addMetric(overview, 10.15, 1.75, 1.2, "QA", 1, "sand");
+addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 52 pages applicatives : vitrine FR, vitrine EN, espaces membres, pages système, couche légale et contenus éditoriaux encore en prépublication.");
+addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 52, "blue");
+addMetric(overview, 2.55, 1.75, 1.7, "Routes FR", 29, "teal");
+addMetric(overview, 4.45, 1.75, 1.7, "Routes EN", 23, "sand");
+addMetric(overview, 6.35, 1.75, 1.7, "Espaces membres", 4, "blue");
+addMetric(overview, 8.25, 1.75, 1.7, "Interne / QA", 4, "teal");
+addMetric(overview, 10.15, 1.75, 1.2, "Pages retour", 2, "sand");
 addBulletsCard(overview, {
   x: 0.65,
   y: 3.2,
   w: 3.45,
   h: 3.1,
-  title: "Top of funnel",
+  title: "Pages publiques FR",
   fill: C.blueSoft,
   lines: [
     "Accueil",
@@ -422,7 +459,7 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.55,
   h: 3.1,
-  title: "Activation & retention",
+  title: "Pages membres & système",
   lines: [
     "Connexion",
     "Inscription",
@@ -439,7 +476,7 @@ addBulletsCard(overview, {
   y: 3.2,
   w: 3.65,
   h: 3.1,
-  title: "Trust & compliance",
+  title: "Confiance & contenus sensibles",
   fill: C.tealSoft,
   titleColor: C.tealDark,
   lines: [
@@ -447,10 +484,114 @@ addBulletsCard(overview, {
     "Politique de confidentialité",
     "Cookies",
     "Conditions d'utilisation",
-    "Architecture RGPD"
+    "Pages FR + EN sur le retour après départ",
+    "Contenus juridiques éditoriaux"
   ]
 });
 addFooter(overview);
+
+const inventory = pptx.addSlide();
+fullBleedBackground(inventory, C.bg);
+addSectionBand(inventory, "INVENTAIRE DES ROUTES");
+addHeader(inventory, "Liste actuelle des pages du site", "Inventaire complet des routes page.js présentes dans l'application, y compris les espaces membres, les pages internes et la page encore non publique sur le retour dans le pays d'origine.");
+addCompactListCard(inventory, {
+  x: 0.58,
+  y: 1.72,
+  w: 2.7,
+  h: 4.95,
+  title: "FR — vitrine & juridique",
+  fill: C.white,
+  lines: [
+    "/",
+    "/employeurs",
+    "/travailleurs",
+    "/simulateur-eligibilite",
+    "/metiers-en-penurie",
+    "/liste-metiers-penurie",
+    "/permis-unique",
+    "/travailleurs-hautement-qualifies",
+    "/accompagnement-juridique",
+    "/securite-conformite",
+    "/offres-d-emploi",
+    "/candidatures",
+    "/base-de-profils",
+    "/contact",
+    "/histoire-de-la-fondatrice",
+    "/employeurs/liege-metiers-en-penurie",
+    "/mentions-legales",
+    "/politique-de-confidentialite",
+    "/cookies",
+    "/conditions-utilisation"
+  ]
+});
+addCompactListCard(inventory, {
+  x: 3.48,
+  y: 1.72,
+  w: 2.7,
+  h: 4.95,
+  title: "FR — comptes & interne",
+  fill: C.blueSoft,
+  titleColor: C.navy,
+  lines: [
+    "/connexion",
+    "/inscription",
+    "/auth/session",
+    "/employeurs/espace",
+    "/travailleurs/espace",
+    "/messagerie",
+    "/admin",
+    "/retours-test",
+    "/revenir-en-belgique-apres-un-retour",
+    "Page éditoriale créée mais encore non promue publiquement"
+  ]
+});
+addCompactListCard(inventory, {
+  x: 6.38,
+  y: 1.72,
+  w: 2.7,
+  h: 4.95,
+  title: "EN — public pages",
+  fill: C.white,
+  lines: [
+    "/en",
+    "/en/employeurs",
+    "/en/travailleurs",
+    "/en/simulateur-eligibilite",
+    "/en/metiers-en-penurie",
+    "/en/permis-unique",
+    "/en/travailleurs-hautement-qualifies",
+    "/en/accompagnement-juridique",
+    "/en/securite-conformite",
+    "/en/offres-d-emploi",
+    "/en/candidatures",
+    "/en/base-de-profils",
+    "/en/contact",
+    "/en/histoire-de-la-fondatrice",
+    "/en/mentions-legales",
+    "/en/politique-de-confidentialite",
+    "/en/cookies",
+    "/en/conditions-utilisation"
+  ]
+});
+addCompactListCard(inventory, {
+  x: 9.28,
+  y: 1.72,
+  w: 2.14,
+  h: 4.95,
+  title: "EN — comptes & spécifique",
+  fill: C.tealSoft,
+  titleColor: C.tealDark,
+  lines: [
+    "/en/connexion",
+    "/en/inscription",
+    "/en/messagerie",
+    "/en/retours-test",
+    "/en/returning-to-belgium-after-leaving",
+    "Version EN de la page retour au pays d'origine",
+    "52 pages applicatives au total"
+  ]
+});
+addFooter(inventory);
 
 const routing = pptx.addSlide();
 fullBleedBackground(routing, C.bg);

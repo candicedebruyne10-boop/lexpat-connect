@@ -95,6 +95,12 @@ export default function SiteChrome({ children }) {
           description: isEn ? "Occupations opening faster international recruitment" : "Professions ouvrant des voies de recrutement international plus rapides",
           icon: "pin",
         },
+        {
+          href: "/revenir-en-belgique-apres-un-retour",
+          label: isEn ? "Return guarantees" : "Garanties de retour",
+          description: isEn ? "What happens if a worker leaves Belgium and hopes to come back later" : "Ce qu'il faut vérifier avant de quitter la Belgique en espérant y revenir plus tard",
+          icon: "globe",
+        },
       ],
     },
   };
