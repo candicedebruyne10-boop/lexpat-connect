@@ -50,7 +50,7 @@ export async function POST(request) {
           languages,
           summary: body.description || null,
           full_name: body.full_name || null,
-          profile_visibility: body.profile_visibility || "review"
+          profile_visibility: body.profile_visibility || "visible"
         },
         { onConflict: "user_id" }
       );

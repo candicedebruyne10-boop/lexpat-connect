@@ -409,7 +409,7 @@ function ProfileView({ token, locale, onNavigate }) {
   const isEn = locale === "en";
   const [values, setValues] = useState({
     full_name: "", profession: "", otherProfession: "", sector: "", regions: [],
-    experience: "", languages: "", description: "", profile_visibility: "review",
+    experience: "", languages: "", description: "", profile_visibility: "visible",
     preferred_locale: locale === "en" ? "en" : "fr",
     match_alerts_enabled: true
   });
@@ -607,7 +607,7 @@ function ProfileView({ token, locale, onNavigate }) {
             </label>
             <label>
               <span className="mb-2 block text-sm font-semibold text-[#17345d]">{isEn ? "Profile visibility" : "Visibilité du profil"}</span>
-              <select className="field-input" value={values.profile_visibility || "review"} onChange={(e) => set("profile_visibility", e.target.value)}>
+              <select className="field-input" value={values.profile_visibility || "visible"} onChange={(e) => set("profile_visibility", e.target.value)}>
                 <option value="visible">{isEn ? "Visible to employers" : "Visible par les employeurs"}</option>
                 <option value="review">{isEn ? "Visible after LEXPAT review" : "Visible après validation LEXPAT"}</option>
                 <option value="hidden">{isEn ? "Hidden" : "Masqué"}</option>
