@@ -47,6 +47,23 @@ function formatCompatibilityLabel(score, isEn) {
   return `${isEn ? "Compatibility" : "Compatibilité"} ${score}/100`;
 }
 
+function formatEmployerMatchStatus(status, isEn) {
+  switch ((status || "").toLowerCase()) {
+    case "contacted":
+      return isEn ? "Confirmed match" : "Match confirmé";
+    case "reviewed":
+      return isEn ? "Worker interested" : "Candidat intéressé";
+    case "interested":
+      return isEn ? "Interest sent" : "Intérêt envoyé";
+    case "pending":
+      return isEn ? "Pending review" : "En attente de validation";
+    case "new":
+      return isEn ? "New profile" : "Nouveau profil";
+    default:
+      return status || (isEn ? "Pending" : "En attente");
+  }
+}
+
 function InfoTooltip({ text, buttonTitle, closeLabel }) {
   const [open, setOpen] = useState(false);
 
@@ -1094,7 +1111,7 @@ function MatchesView({ token, locale }) {
               <div className="mt-4 rounded-[20px] border border-[#ebf0f6] bg-[#f9fbfd] px-4 py-3 text-xs text-[#5f7086]">
                 {match.status?.toLowerCase() === "contacted"
                   ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— Worker contact details are unlocked." : "— Les coordonnées travailleur sont débloquées."}</>
-                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status}</span> {isEn ? "— Worker contact details become available once the match is confirmed." : "— Les coordonnées travailleur deviennent accessibles après confirmation du match."}</>
+                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold">{formatEmployerMatchStatus(match.status, isEn)}</span> {isEn ? "— Worker contact details become available once the match is confirmed." : "— Les coordonnées travailleur deviennent accessibles après confirmation du match."}</>
                 }
               </div>
 

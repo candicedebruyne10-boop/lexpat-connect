@@ -51,6 +51,23 @@ function formatCompatibilityLabel(score, isEn, compact = false) {
   return `${label} ${score}/100`;
 }
 
+function formatWorkerMatchStatus(status, isEn) {
+  switch ((status || "").toLowerCase()) {
+    case "contacted":
+      return isEn ? "Confirmed match" : "Match confirmé";
+    case "interested":
+      return isEn ? "Employer interested" : "Employeur intéressé";
+    case "reviewed":
+      return isEn ? "Interest sent" : "Intérêt envoyé";
+    case "pending":
+      return isEn ? "Pending review" : "En attente de validation";
+    case "new":
+      return isEn ? "New opportunity" : "Nouvelle opportunité";
+    default:
+      return status || (isEn ? "Pending" : "En attente");
+  }
+}
+
 function InfoTooltip({ text, buttonTitle, closeLabel }) {
   const [open, setOpen] = useState(false);
 
@@ -507,7 +524,7 @@ function WorkerMatchesView({ token, locale }) {
               <div className="mt-4 rounded-[20px] border border-[#dce9e7] bg-[#f2fbfa] px-4 py-3 text-xs text-[#5f7086]">
                 {match.status?.toLowerCase() === "contacted"
                   ? <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold text-[#2f9d57]">{isEn ? "Confirmed match" : "Match confirmé"}</span> {isEn ? "— Employer contact details are unlocked." : "— Les coordonnées employeur sont débloquées."}</>
-                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold capitalize">{match.status === "pending" ? (isEn ? "Pending review" : "En attente de validation") : match.status}</span> {isEn ? "— Employer contact details become available once the match is confirmed." : "— Les coordonnées employeur deviennent accessibles après confirmation du match."}</>
+                  : <>{isEn ? "Status:" : "Statut :"} <span className="font-semibold">{formatWorkerMatchStatus(match.status, isEn)}</span> {isEn ? "— Employer contact details become available once the match is confirmed." : "— Les coordonnées employeur deviennent accessibles après confirmation du match."}</>
                 }
               </div>
 
