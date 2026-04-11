@@ -200,14 +200,9 @@ function DashboardView({ token, onNavigate, locale }) {
         <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Legal support" : "Relais juridique"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
           {isEn
-            ? "When a match is confirmed, LEXPAT Connect automatically shares the key legal information relevant to hiring a foreign national in Belgium — permit type, applicable procedure, estimated timeline."
-            : "Lorsqu'un match est confirmé, LEXPAT Connect transmet automatiquement les informations juridiques essentielles liées au recrutement d'un ressortissant étranger en Belgique — type de permis requis, procédure applicable, délai estimé."}
+            ? "The LEXPAT Law Firm is available to support you further with any legal questions related to hiring a foreign national in Belgium."
+            : "Le cabinet LEXPAT est disponible pour vous accompagner plus loin sur toute question juridique liée au recrutement d'un ressortissant étranger en Belgique."}
         </p>
-        <div className="mt-6 rounded-[22px] border border-[#dce8f6] bg-[#f8fbff] p-4 text-sm leading-7 text-[#3c5473]">
-          {isEn
-            ? "If you want to go further — obtain a formal legal opinion, prepare the permit application or get personalised advice — the LEXPAT Law Firm is available to support you directly."
-            : "Si vous souhaitez aller plus loin — obtenir un avis juridique formel, préparer la demande de permis ou bénéficier d'un accompagnement personnalisé — le cabinet LEXPAT est disponible pour vous accompagner directement."}
-        </div>
         <div className="mt-4">
           <a
             href="mailto:lexpat@lexpat.be"
