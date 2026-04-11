@@ -4,7 +4,7 @@ import { normalizeRegion, computeMatchScore } from "../../../lib/matching";
 import { parseRegionSelection } from "../../../lib/professions";
 import { Resend } from "resend";
 import { getSenderAddress } from "../../../lib/email-routing";
-import { newWorkerMatchEmailHtml } from "../../../lib/email-templates";
+import { newWorkerMatchEmailHtml, workerProfileIncompleteEmailHtml } from "../../../lib/email-templates";
 import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 
 const regionToDb = {
@@ -19,6 +19,7 @@ export async function POST(request) {
   try {
     const { user, supabase } = await getUserFromRequest(request);
     const body = await request.json();
+    const locale = body.preferred_locale === "en" ? "en" : "fr";
     const selectedJobOption = body.job_option || body.profession || body.job_title || "";
     const otherJobTitle = body.job_title_other || body.otherProfession || "";
     const finalJobTitle =
@@ -43,6 +44,12 @@ export async function POST(request) {
       ? (body.profile_visibility || "visible")
       : "hidden";
 
+    const { data: previousProfile } = await supabase
+      .from("worker_profiles")
+      .select("id, profile_visibility")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
     const { error } = await supabase
       .from("worker_profiles")
       .upsert(
@@ -66,10 +73,33 @@ export async function POST(request) {
     await supabase.auth.admin.updateUserById(user.id, {
       user_metadata: {
         ...(user.user_metadata || {}),
-        preferred_locale: body.preferred_locale === "en" ? "en" : "fr",
+        preferred_locale: locale,
         match_alerts_enabled: body.match_alerts_enabled !== false
       }
     }).catch(() => {});
+
+    const shouldSendIncompleteProfileEmail =
+      effectiveProfileVisibility === "hidden" &&
+      previousProfile?.profile_visibility !== "hidden";
+
+    if (shouldSendIncompleteProfileEmail && user.email && process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const profileUrlBase = process.env.NEXT_PUBLIC_SITE_URL || "https://lexpat-connect.be";
+      const profileUrl = `${profileUrlBase}${locale === "en" ? "/en/travailleurs/espace" : "/travailleurs/espace"}`;
+
+      resend.emails.send({
+        from: getSenderAddress(),
+        to: user.email,
+        subject: locale === "en"
+          ? "Complete your profile to make it visible"
+          : "Complétez votre profil pour le rendre visible",
+        html: workerProfileIncompleteEmailHtml({
+          locale,
+          recipientName: body.full_name || user.user_metadata?.full_name || "",
+          profileUrl
+        })
+      }).catch(() => {});
+    }
 
     // Notifier les employeurs dont les offres correspondent à ce profil (best-effort, non-bloquant)
     if (effectiveProfileVisibility === "visible") {
