@@ -385,12 +385,12 @@ export function ShortageJobsQuickLink({ locale = "fr" }) {
             <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[#1E3A78] sm:text-3xl">
               {locale === "en"
                 ? "Understand which shortage occupations really matter for your recruitment"
-                : "Comprenez quels métiers en pénurie comptent vraiment pour votre recrutement"}
+                : "Vérifiez si votre recrutement concerne un métier en pénurie"}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#607086]">
               {locale === "en"
                 ? "A single page helps you read the official regional lists, understand their impact on the single permit and spot the most promising sectors."
-                : "Une page unique vous aide à lire les listes régionales officielles, à comprendre leur impact sur le permis unique et à repérer les secteurs les plus porteurs."}
+                : "Cette page vous aide à lire les listes régionales officielles, à voir si votre poste y figure et à comprendre ce que cela change pour le permis unique."}
             </p>
           </div>
           <div className="mt-6 flex-shrink-0 lg:mt-0">
@@ -398,12 +398,12 @@ export function ShortageJobsQuickLink({ locale = "fr" }) {
               href={localizeHref("/metiers-en-penurie", locale)}
               className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#173A8A] px-7 py-4 text-base font-semibold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374]"
             >
-              {locale === "en" ? "Read the shortage occupations guide" : "Lire le guide métiers en pénurie"}
+              {locale === "en" ? "Read the shortage occupations guide" : "Vérifier les métiers en pénurie"}
             </Link>
             <p className="mt-3 text-xs leading-6 text-[#6c7b8f]">
               {locale === "en"
                 ? "Ideal for quickly checking whether your position can rely on an official regional shortage list."
-                : "Idéal pour vérifier rapidement si votre poste peut s’appuyer sur une liste régionale officielle."}
+                : "Utile pour savoir rapidement si votre poste concerne un métier repris sur une liste régionale officielle."}
             </p>
           </div>
         </div>
