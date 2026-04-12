@@ -18,7 +18,7 @@ function SolutionGrid({ items }) {
           className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7"
         >
           <p className="inline-flex rounded-full bg-[#f2fbfa] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-            Solution
+            {item.sectionLabel || "Solution"}
           </p>
           <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
           <p className="mt-3 text-sm leading-7 text-[#607086]">{item.text}</p>
@@ -37,7 +37,7 @@ function NarrativeSplit({ title, intro, points }) {
       </div>
       <div className="rounded-[30px] border border-[#dce7ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-8">
         <p className="inline-flex rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-          Points clés
+            {points.sectionLabel || "Points clés"}
         </p>
         <ul className="mt-5 grid gap-4">
           {points.map((point) => (
@@ -58,13 +58,13 @@ function LegalCallout({ title, intro, checklist }) {
       <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-start">
         <div>
           <p className="inline-flex rounded-full border border-[#d7e8e6] bg-[#f7fbfb] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-            Différenciation juridique
+            {checklist.sectionLabel || "Différenciation juridique"}
           </p>
           <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1d3b8b] sm:text-3xl">{title}</h3>
           <p className="mt-4 text-sm leading-8 text-[#607086]">{intro}</p>
         </div>
         <div className="rounded-[30px] border border-[#d9e5f0] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1E3A78]">Points à vérifier</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1E3A78]">{checklist.listLabel || "Points à vérifier"}</p>
           <ul className="mt-5 grid gap-4">
             {checklist.map((item) => (
               <li key={item} className="flex items-start gap-3">
@@ -90,7 +90,7 @@ function SectorGrid({ items }) {
           className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:p-7"
         >
           <p className="inline-flex rounded-full bg-[#eef1fb] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1E3A78]">
-            Secteur
+            {item.sectionLabel || "Secteur"}
           </p>
           <h3 className="mt-4 text-xl font-semibold tracking-tight text-[#1d3b8b]">{item.title}</h3>
           <p className="mt-3 text-sm leading-7 text-[#607086]">{item.text}</p>
@@ -121,14 +121,14 @@ function CompactReassurance({ items }) {
   );
 }
 
-function FinalCallToAction({ title, text, primaryHref, primaryLabel }) {
+function FinalCallToAction({ title, text, primaryHref, primaryLabel, badgeLabel }) {
   return (
     <section className="py-10 sm:py-14 lg:py-20">
       <div className="container-shell">
         <div className="overflow-hidden rounded-[36px] border border-[#dce8ee] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:p-8 lg:p-10">
           <div className="mx-auto max-w-4xl text-center">
             <p className="inline-flex rounded-full bg-[#f2fbfa] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-              Recrutement à Liège
+              {badgeLabel || "Recrutement à Liège"}
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">{title}</h2>
             <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#607086]">{text}</p>
@@ -145,6 +145,17 @@ function FinalCallToAction({ title, text, primaryHref, primaryLabel }) {
 }
 
 export default function EmployerRegionalLanding({ page }) {
+  const ui = page.ui || {};
+  const searchedProfiles = page.searchedProfiles.map((profile) =>
+    typeof profile === "string" ? { label: profile } : profile
+  );
+  const solutions = page.solutions.map((item) => ({ ...item, sectionLabel: ui.solutionLabel }));
+  const sectors = page.sectors.map((item) => ({ ...item, sectionLabel: ui.sectorLabel }));
+  const points = [...page.internationalRecruiting.points];
+  points.sectionLabel = ui.keyPointsLabel;
+  const checklist = [...page.legalDifferentiation.checklist];
+  checklist.sectionLabel = ui.legalDifferentiationLabel;
+  checklist.listLabel = ui.checklistLabel;
   return (
     <>
       <Hero
@@ -161,72 +172,72 @@ export default function EmployerRegionalLanding({ page }) {
       />
 
       <Section
-        title="Le vrai problème pour beaucoup d’employeurs liégeois"
-        intro="Quand certains postes restent vacants trop longtemps, les effets se ressentent vite sur la production, l’organisation et la croissance."
-        kicker="Constat terrain"
+        title={ui.challengeTitle || "Le vrai problème pour beaucoup d’employeurs liégeois"}
+        intro={ui.challengeIntro || "Quand certains postes restent vacants trop longtemps, les effets se ressentent vite sur la production, l’organisation et la croissance."}
+        kicker={ui.challengeKicker || "Constat terrain"}
       >
         <BulletList items={page.employerChallenges} />
       </Section>
 
       <Section
-        title="Profils aujourd’hui difficiles à recruter à Liège"
-        intro="Voici quelques fonctions pour lesquelles de nombreux employeurs peinent à trouver des candidats disponibles localement."
-        kicker="Profils recherchés"
+        title={ui.searchedTitle || "Profils aujourd’hui difficiles à recruter à Liège"}
+        intro={ui.searchedIntro || "Voici quelques fonctions pour lesquelles de nombreux employeurs peinent à trouver des candidats disponibles localement."}
+        kicker={ui.searchedKicker || "Profils recherchés"}
         muted
       >
         <ul className="flex flex-wrap justify-center gap-3">
-          {page.searchedProfiles.map((profile) => (
-            <ProfileTag key={profile} label={profile} />
+          {searchedProfiles.map((profile) => (
+            <ProfileTag key={profile.label} label={profile.label} />
           ))}
         </ul>
       </Section>
 
       <Section
-        title="LEXPAT Connect : une solution pensée pour les employeurs"
-        intro="L’objectif n’est pas seulement de rendre des profils visibles, mais de structurer un recrutement international crédible, plus lisible et juridiquement mieux encadré."
-        kicker="Solution"
+        title={ui.solutionTitle || "LEXPAT Connect : une solution pensée pour les employeurs"}
+        intro={ui.solutionIntro || "L’objectif n’est pas seulement de rendre des profils visibles, mais de structurer un recrutement international crédible, plus lisible et juridiquement mieux encadré."}
+        kicker={ui.solutionKicker || "Solution"}
       >
-        <SolutionGrid items={page.solutions} />
+        <SolutionGrid items={solutions} />
       </Section>
 
       <Section
         title={page.internationalRecruiting.title}
-        intro="Une ouverture à l’international n’est pertinente que si elle répond à un besoin concret. Lorsqu’elle est bien cadrée, elle peut devenir un vrai levier employeur."
-        kicker="Ouverture internationale"
+        intro={ui.internationalIntro || "Une ouverture à l’international n’est pertinente que si elle répond à un besoin concret. Lorsqu’elle est bien cadrée, elle peut devenir un vrai levier employeur."}
+        kicker={ui.internationalKicker || "Ouverture internationale"}
         muted
       >
         <NarrativeSplit
           title={page.internationalRecruiting.title}
           intro={page.internationalRecruiting.intro}
-          points={page.internationalRecruiting.points}
+          points={points}
         />
       </Section>
 
       <Section
-        title="Ce qui fait la différence entre une mise en relation et un recrutement sécurisé"
-        intro="Sur les métiers en pénurie, la dimension juridique devient vite décisive dès qu’un recrutement international hors UE entre en jeu."
-        kicker="Cadre juridique"
+        title={ui.legalTitle || "Ce qui fait la différence entre une mise en relation et un recrutement sécurisé"}
+        intro={ui.legalIntro || "Sur les métiers en pénurie, la dimension juridique devient vite décisive dès qu’un recrutement international hors UE entre en jeu."}
+        kicker={ui.legalKicker || "Cadre juridique"}
       >
         <LegalCallout
           title={page.legalDifferentiation.title}
           intro={page.legalDifferentiation.intro}
-          checklist={page.legalDifferentiation.checklist}
+          checklist={checklist}
         />
       </Section>
 
       <Section
-        title="Secteurs liégeois particulièrement concernés"
-        intro="Cette logique peut s’appliquer à plusieurs secteurs où la tension de recrutement ralentit directement l’activité."
-        kicker="Secteurs couverts"
+        title={ui.sectorsTitle || "Secteurs liégeois particulièrement concernés"}
+        intro={ui.sectorsIntro || "Cette logique peut s’appliquer à plusieurs secteurs où la tension de recrutement ralentit directement l’activité."}
+        kicker={ui.sectorsKicker || "Secteurs couverts"}
         muted
       >
-        <SectorGrid items={page.sectors} />
+        <SectorGrid items={sectors} />
       </Section>
 
       <Section
-        title="Pour les employeurs qui veulent recruter vite, sans improviser"
-        intro="Une page locale comme celle-ci doit avant tout rassurer : faisabilité, méthode, sécurité juridique et gain de temps."
-        kicker="Réassurance"
+        title={ui.reassuranceTitle || "Pour les employeurs qui veulent recruter vite, sans improviser"}
+        intro={ui.reassuranceIntro || "Une page locale comme celle-ci doit avant tout rassurer : faisabilité, méthode, sécurité juridique et gain de temps."}
+        kicker={ui.reassuranceKicker || "Réassurance"}
       >
         <CompactReassurance items={page.reassurance} />
       </Section>
@@ -236,12 +247,13 @@ export default function EmployerRegionalLanding({ page }) {
         text={page.finalCta.text}
         primaryHref={page.finalCta.primaryHref}
         primaryLabel={page.finalCta.primaryLabel}
+        badgeLabel={ui.finalCtaBadge}
       />
 
       <Section
-        title="Besoin d’un échange direct avant d’avancer ?"
-        intro="La plateforme reste le parcours principal. Ce formulaire est proposé comme solution secondaire pour les employeurs qui préfèrent être recontactés."
-        kicker="Contact employeur"
+        title={ui.contactTitle || "Besoin d’un échange direct avant d’avancer ?"}
+        intro={ui.contactIntro || "La plateforme reste le parcours principal. Ce formulaire est proposé comme solution secondaire pour les employeurs qui préfèrent être recontactés."}
+        kicker={ui.contactKicker || "Contact employeur"}
         muted
       >
         <div id="formulaire-contact">
