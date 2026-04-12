@@ -245,16 +245,24 @@ function DashboardView({ token, onNavigate, locale }) {
       <section className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.04)] sm:p-8">
         <h2 className="text-2xl font-semibold tracking-tight text-[#1d3b8b]">{isEn ? "Legal support" : "Relais juridique"}</h2>
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
-          {isEn
-            ? "The LEXPAT Law Firm is available to support you further with any legal questions related to hiring a foreign national in Belgium."
-            : "Le cabinet LEXPAT est disponible pour vous accompagner plus loin sur toute question juridique liée au recrutement d'un ressortissant étranger en Belgique."}
+          {isEn ? (
+            <>{"The law firm "}
+              <a href="https://www.lexpat.be" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1d3b8b] underline hover:text-[#57b7af]">lexpat.be</a>
+              {" is available to support you further with any legal questions related to hiring a foreign national in Belgium."}
+            </>
+          ) : (
+            <>{"Le cabinet d'avocats "}
+              <a href="https://www.lexpat.be" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1d3b8b] underline hover:text-[#57b7af]">lexpat.be</a>
+              {" est disponible pour vous accompagner plus loin sur toute question juridique liée au recrutement d'un ressortissant étranger en Belgique."}
+            </>
+          )}
         </p>
         <div className="mt-4">
           <a
-            href="mailto:contact@lexpat-connect.be"
+            href="mailto:lexpat@lexpat.be"
             className="inline-flex items-center gap-2 rounded-2xl bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(29,59,139,0.25)]"
           >
-            ✉ {isEn ? "Contact LEXPAT Law Firm" : "Contacter le cabinet LEXPAT"}
+            ✉ {isEn ? "Contact the law firm lexpat.be" : "Contacter le cabinet d'avocats lexpat.be"}
           </a>
         </div>
       </section>
