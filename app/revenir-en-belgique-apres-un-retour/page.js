@@ -2,57 +2,57 @@ import Script from "next/script";
 import { BulletList, CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 
 export const metadata = {
-  title: "Quitter la Belgique et revenir plus tard : y a-t-il une garantie ? | LEXPAT Connect",
+  title: "Retourner dans son pays pour obtenir un permis de travail en Belgique : ce qu’il faut savoir | LEXPAT Connect",
   description:
-    "Une réponse claire et prudente pour les personnes en séjour irrégulier qui se demandent si un retour dans le pays d’origine garantit un retour futur en Belgique."
+    "Vous êtes sans papiers en Belgique et vous voulez obtenir un permis de travail ? Voici ce que cela implique concrètement : pourquoi le retour est souvent nécessaire, et pourquoi les chances sont réelles si votre dossier est solide."
 };
 
 const keyPoints = [
   {
-    title: "Pas de garantie générale",
-    text: "Quitter la Belgique ne donne pas automatiquement le droit d’y revenir plus tard."
+    title: "Sans papiers en Belgique, le retour est souvent incontournable",
+    text: "Pour obtenir un permis unique (permis de travail + titre de séjour), la procédure se fait en principe depuis le pays d’origine. Si vous êtes en séjour irrégulier en Belgique, il est dans la plupart des cas très difficile — voire impossible — de régulariser votre situation sans d’abord retourner dans votre pays."
   },
   {
-    title: "Tout dépend de votre base légale",
-    text: "La vraie question est de savoir sur quelle base vous pourriez revenir : visa, nouvelle autorisation, regroupement familial, travail ou autre."
+    title: "Si toutes les conditions sont réunies, les chances sont réelles",
+    text: "Le permis unique peut être octroyé de manière quasi-automatique lorsque le dossier est complet et que toutes les conditions sont remplies : employeur engagé, secteur éligible, documents en ordre. Cela reste une décision administrative, et il y a toujours une part d’incertitude — mais un bon dossier change vraiment les choses."
   },
   {
-    title: "Une interdiction d’entrée peut exister",
-    text: "Selon votre situation, un ordre de quitter le territoire ou une interdiction d’entrée peut compliquer ou bloquer un retour."
+    title: "Vérifiez votre situation avant de partir",
+    text: "Un retour non préparé peut compliquer les choses : interdiction d’entrée, procédure en cours, documents manquants. Avant tout départ, il est important de vérifier votre situation exacte pour ne pas fermer une porte sans le savoir."
   }
 ];
 
 const concreteCases = [
   {
-    title: "Vous êtes aujourd’hui sans titre de séjour",
-    text: "Partir dans ce contexte ne vous donne pas un droit automatique de retour. Il faudra souvent reconstruire une base légale depuis l’étranger."
+    title: "Vous êtes sans titre de séjour en Belgique",
+    text: "C’est la situation la plus fréquente. Pour obtenir un permis unique, la procédure exige en principe que vous soyez dans votre pays d’origine au moment du dépôt de la demande. Partir est souvent une étape nécessaire, pas un abandon."
   },
   {
-    title: "Vous avez reçu une décision de retour",
-    text: "Il faut vérifier s’il existe aussi une interdiction d’entrée, car cela peut empêcher un retour en Belgique ou dans l’espace Schengen pendant une certaine durée."
+    title: "Vous avez un employeur prêt à vous recruter",
+    text: "C’est une condition essentielle. Sans promesse d’embauche, la procédure ne peut pas démarrer. Avec un employeur engagé dans un secteur éligible, vous avez une base légale concrète pour entamer les démarches."
   },
   {
-    title: "Vous espérez revenir pour travailler",
-    text: "En pratique, il faut généralement un employeur, une procédure adaptée et une décision favorable. Le simple fait d’avoir déjà vécu en Belgique ne suffit pas."
+    title: "Votre dossier est complet et les conditions sont remplies",
+    text: "Dans ce cas, les chances d’obtenir le permis sont sérieuses. L’administration belge peut octroyer le permis unique de manière quasi-automatique si tout est en ordre. Ce n’est pas une garantie absolue, mais ce n’est pas non plus un parcours du combattant sans issue."
   },
   {
-    title: "Vous avez un dossier ou une procédure en cours",
-    text: "Dans certains cas, partir peut compliquer une demande, un regroupement familial ou une autre situation administrative sensible."
+    title: "Vous avez reçu un ordre de quitter le territoire",
+    text: "Il faut vérifier attentivement si une interdiction d’entrée est associée à cette décision. Cela peut bloquer ou retarder un retour en Belgique. Une analyse de votre situation avant tout départ est indispensable."
   }
 ];
 
 const beforeLeaving = [
   {
-    title: "Vérifier votre situation exacte",
-    text: "Avant tout départ, il faut savoir si vous êtes simplement en séjour irrégulier, sous ordre de quitter le territoire, ou visé par une autre décision."
+    title: "Vérifiez si une interdiction d’entrée existe",
+    text: "Avant de partir, il faut s’assurer qu’aucune mesure ne bloquerait votre retour. Un ordre de quitter le territoire peut parfois être accompagné d’une interdiction d’entrée dans l’espace Schengen."
   },
   {
-    title: "Identifier une base concrète de retour",
-    text: "Il faut pouvoir répondre à une question simple : sur quelle base légale précise pourrais-je revenir plus tard ?"
+    title: "Assurez-vous d’avoir une base légale de retour",
+    text: "La base la plus fréquente est un employeur prêt à vous recruter dans un secteur éligible au permis unique. Sans cela, le retour reste possible administrativement, mais il n’y a pas de voie claire pour revenir légalement travailler."
   },
   {
-    title: "Éviter de fermer une porte",
-    text: "Partir sans analyse préalable peut parfois compliquer un futur projet de travail, de séjour ou de regroupement familial."
+    title: "Préparez votre dossier en amont",
+    text: "Un dossier solide — avec les bons documents, les bonnes démarches, et les bons délais — augmente significativement les chances d’un retour réussi. C’est là que LEXPAT Connect peut vous aider à trouver un employeur correspondant à votre profil."
   }
 ];
 
@@ -85,24 +85,24 @@ const sourceCards = [
 
 const faq = [
   {
-    question: "Si je pars volontairement, est-ce que cela me garantit un retour futur ?",
+    question: "Est-ce que je suis obligé de retourner dans mon pays pour obtenir un permis de travail ?",
     answer:
-      "Non. Partir volontairement n’ouvre pas automatiquement un droit au retour. Il faut toujours vérifier la base légale sur laquelle un retour pourrait être demandé ensuite."
+      "Dans la très grande majorité des cas, oui. La procédure de permis unique se fait depuis le pays d’origine ou de résidence légale. Si vous êtes en séjour irrégulier en Belgique, il est généralement très difficile d’obtenir une régularisation sans passer par ce retour. Ce n’est pas une punition : c’est souvent le seul chemin légal disponible."
   },
   {
-    question: "Un ordre de quitter le territoire veut-il toujours dire que je ne pourrai plus revenir ?",
+    question: "Est-ce que j’ai de bonnes chances de revenir si mon dossier est en ordre ?",
     answer:
-      "Pas forcément. Mais il faut vérifier très attentivement si une interdiction d’entrée existe ou peut être prononcée, car c’est ce point qui peut bloquer un retour futur."
+      "Oui, les chances sont sérieuses. Lorsque toutes les conditions sont réunies — un employeur engagé, un secteur éligible, un dossier complet — le permis unique peut être accordé de manière quasi-automatique. Il reste une décision administrative, et il n’existe jamais de garantie absolue, mais un dossier solide fait vraiment la différence."
   },
   {
-    question: "Puis-je revenir simplement si je trouve un employeur plus tard ?",
+    question: "Combien de temps peut durer la procédure ?",
     answer:
-      "Pas automatiquement. Un projet de travail peut parfois servir de base, mais il faut alors une procédure adaptée, des conditions remplies et une décision favorable des autorités compétentes."
+      "La procédure de permis unique prend en principe entre 3 et 4 mois une fois le dossier complet déposé. Les délais peuvent varier selon la région, le secteur et la charge de l’administration. C’est une période difficile, et il est important de bien s’y préparer avant de partir."
   },
   {
-    question: "Quel est le bon réflexe avant de quitter la Belgique ?",
+    question: "Un ordre de quitter le territoire veut-il dire que je ne pourrai plus jamais revenir ?",
     answer:
-      "Le bon réflexe est de vérifier votre situation exacte et la base juridique d’un éventuel retour avant de partir, au lieu de supposer que le retour sera possible plus tard."
+      "Pas nécessairement. Mais il faut vérifier attentivement si une interdiction d’entrée est associée à cette décision. C’est ce point précis qui peut bloquer ou retarder un retour légal, y compris dans le cadre d’un permis de travail. Cette vérification doit se faire avant tout départ."
   }
 ];
 
@@ -129,36 +129,36 @@ export default function RetourBelgiquePage() {
       />
 
       <Hero
-        badge="Question fréquente — séjour irrégulier"
+        badge="Séjour irrégulier & permis de travail"
         title={
           <>
-            Si vous retournez dans votre pays d’origine,
-            <span className="block text-[#57b7af]">vous n’avez pas une garantie de pouvoir revenir</span>
+            Retourner dans son pays pour revenir travailler en Belgique :
+            <span className="block text-[#57b7af]">c’est souvent la seule voie, et elle est plus accessible qu’on ne le croit</span>
           </>
         }
-        description="La possibilité de revenir en Belgique dépend de votre situation administrative exacte au moment du départ et de la base légale que vous auriez ensuite pour revenir."
+        description="Si vous êtes sans papiers en Belgique et que vous souhaitez régulariser votre situation par le travail, il vous faudra dans la plupart des cas retourner dans votre pays d’origine pour déposer votre demande de permis unique. C’est difficile à entendre — mais c’est aussi une procédure qui fonctionne, quand le dossier est bien préparé."
         primaryHref="/contact"
         primaryLabel="Poser ma question"
         secondaryHref="/permis-unique"
         secondaryLabel="Comprendre le permis unique"
         stats={[
-          { value: "Non", label: "Il n’existe pas de garantie générale de retour" },
-          { value: "Base légale", label: "Le retour dépend d’un visa, d’une autorisation ou d’un autre droit valable" },
-          { value: "Prudence", label: "Une interdiction d’entrée peut compliquer ou empêcher un retour" }
+          { value: "Retour", label: "Souvent nécessaire pour démarrer la procédure depuis le pays d’origine" },
+          { value: "Dossier solide", label: "Avec un employeur et les conditions remplies, les chances sont réelles" },
+          { value: "Prudence", label: "Il faut vérifier sa situation avant de partir pour ne pas fermer une porte" }
         ]}
       />
 
       <Section
-        title="Réponse courte"
-        intro="Retourner dans votre pays d’origine ne vous donne pas automatiquement le droit de revenir ensuite en Belgique. Le retour dépend toujours d’une base légale concrète."
-        kicker="En une phrase"
+        title="Ce qu’il faut comprendre"
+        intro="Deux réalités coexistent : le retour est souvent incontournable, mais il peut aussi ouvrir une vraie porte si votre situation le permet."
+        kicker="L’essentiel"
       >
         <CardGrid items={keyPoints} columns={3} />
       </Section>
 
       <Section
         title="Les situations les plus fréquentes"
-        intro="La réponse change selon votre situation exacte. Voici les cas les plus concrets."
+        intro="La procédure et les chances varient selon votre situation exacte. Voici ce que cela change concrètement."
         kicker="En pratique"
         muted
       >
@@ -167,15 +167,15 @@ export default function RetourBelgiquePage() {
 
       <Section
         title="Avant de partir"
-        intro="Le bon réflexe est de vérifier votre situation avant le départ, pas après."
-        kicker="3 vérifications minimales"
+        intro="Un départ bien préparé change tout. Voici les trois points à vérifier avant de prendre une décision."
+        kicker="3 étapes clés"
       >
         <Steps items={beforeLeaving} />
       </Section>
 
       <Section
         title="Questions fréquentes"
-        intro="Des réponses courtes pour éviter les confusions les plus fréquentes."
+        intro="Des réponses claires aux questions que beaucoup se posent, souvent seuls, avant de prendre une décision difficile."
         kicker="FAQ"
         muted
       >
@@ -184,15 +184,15 @@ export default function RetourBelgiquePage() {
 
       <Section
         title="Sources officielles"
-        intro="Quelques points de départ utiles pour comprendre la logique administrative belge."
+        intro="Quelques références pour comprendre la logique administrative belge autour du permis unique et du séjour irrégulier."
         kicker="Références"
       >
         <CardGrid items={sourceCards} columns={3} />
       </Section>
 
       <CtaBanner
-        title="Avant de prendre une décision de départ, il faut vérifier votre situation exacte"
-        text="Cette page donne une information générale. Si votre situation est sensible ou si vous voulez savoir sur quelle base un retour pourrait être envisagé, il faut une lecture individualisée."
+        title="Votre situation mérite une lecture attentive — pas une réponse générique"
+        text="Cette page donne une information générale et pédagogique. Si vous envisagez un retour dans votre pays pour entamer une procédure de permis unique, nous pouvons vous aider à trouver un employeur correspondant à votre profil — et le cabinet d’avocats lexpat.be peut vous accompagner sur les aspects juridiques."
         primaryHref="/contact"
         primaryLabel="Parler de ma situation"
         secondaryHref="/accompagnement-juridique"
