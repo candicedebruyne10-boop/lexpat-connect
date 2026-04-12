@@ -23,11 +23,11 @@ export default function ContactPage() {
         badge="Contact"
         title={
           <>
-            Une question sur la plateforme
-            <span className="block text-[#57b7af]">ou sur le relais juridique</span>
+            Une question ?
+            <span className="block text-[#57b7af]">Écrivez-nous, on vous répond.</span>
           </>
         }
-        description="Posez votre question ici pour être orienté vers le bon interlocuteur : plateforme, recrutement, profil candidat ou cabinet LEXPAT."
+        description="Que vous soyez employeur, travailleur ou que vous ayez une question juridique sur le permis unique ou le droit au travail — posez votre question ici et nous vous orienterons vers la bonne personne."
         primaryHref="#formulaire"
         primaryLabel="Poser ma question"
         secondaryHref="/"
