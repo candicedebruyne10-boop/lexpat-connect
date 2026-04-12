@@ -423,10 +423,10 @@ addFooter(cover);
 const overview = pptx.addSlide();
 fullBleedBackground(overview, C.white);
 addSectionBand(overview, "VUE GLOBALE");
-addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 52 pages applicatives : vitrine FR, vitrine EN, espaces membres, pages système, couche légale et contenus éditoriaux encore en prépublication.");
-addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 52, "blue");
+addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 54 pages applicatives : vitrine FR, vitrine EN, espaces membres, pages système, couche légale et contenus éditoriaux encore en prépublication.");
+addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 54, "blue");
 addMetric(overview, 2.55, 1.75, 1.7, "Routes FR", 29, "teal");
-addMetric(overview, 4.45, 1.75, 1.7, "Routes EN", 23, "sand");
+addMetric(overview, 4.45, 1.75, 1.7, "Routes EN", 25, "sand");
 addMetric(overview, 6.35, 1.75, 1.7, "Espaces membres", 4, "blue");
 addMetric(overview, 8.25, 1.75, 1.7, "Interne / QA", 4, "teal");
 addMetric(overview, 10.15, 1.75, 1.2, "Pages retour", 2, "sand");
@@ -588,7 +588,7 @@ addCompactListCard(inventory, {
     "/en/retours-test",
     "/en/returning-to-belgium-after-leaving",
     "Version EN de la page retour au pays d'origine",
-    "52 pages applicatives au total"
+    "54 pages applicatives au total"
   ]
 });
 addFooter(inventory);
@@ -613,6 +613,7 @@ addStepCard(routing, {
     "Guide métiers en pénurie",
     "Teaser sécurité & conformité",
     "Comment ça marche",
+    "Lanceur global de retour testeur",
     "CTA : Je recrute -> /employeurs",
     "CTA : Je postule -> /travailleurs"
   ]
@@ -678,7 +679,8 @@ addBulletsCard(forms, {
     "Missions principales",
     "Compétences recherchées",
     "Bouton : Envoyer le besoin -> /api/forms",
-    "Notification email via Resend -> contact@lexpat-connect.be"
+    "Notification email via Resend -> contact@lexpat-connect.be",
+    "Accusé de publication ensuite envoyé à l'employeur"
   ]
 });
 addBulletsCard(forms, {
@@ -699,7 +701,8 @@ addBulletsCard(forms, {
     "Compétences principales",
     "Message complémentaire",
     "Bouton : Envoyer mon profil -> /api/forms",
-    "Notification email via Resend -> contact@lexpat-connect.be"
+    "Notification email via Resend -> contact@lexpat-connect.be",
+    "Email automatique si profil enregistré mais encore incomplet"
   ]
 });
 addFooter(forms);
@@ -721,7 +724,8 @@ addBulletsCard(accounts, {
     "Entreprise si rôle employeur",
     "Email, mot de passe",
     "Bouton : Créer mon compte",
-    "Redirection vers bootstrap utilisateur"
+    "Redirection vers bootstrap utilisateur",
+    "1 email = 1 rôle unique (employeur ou travailleur)"
   ]
 });
 addBulletsCard(accounts, {
@@ -753,7 +757,8 @@ addBulletsCard(accounts, {
     "Messagerie -> /messagerie après match confirmé",
     "Admin -> /admin",
     "Les boutons verrouillés utilisent next= pour revenir au bon contenu",
-    "Exemple : permis unique membre -> retour sur la section débloquée"
+    "Exemple : permis unique membre -> retour sur la section débloquée",
+    "Empêche l'accès croisé employeur <-> travailleur"
   ]
 });
 addFooter(accounts);
@@ -773,10 +778,10 @@ addBulletsCard(employerSpace, {
     "Tableau de bord",
     "Mon entreprise",
     "Mes offres",
-    "Profils correspondants",
+    "Candidats pour mes offres",
     "Messagerie",
     "Cartes de synthèse cliquables",
-    "Statut matching actif"
+    "Compatibilité affichée + info-bulle explicative"
   ]
 });
 addBulletsCard(employerSpace, {
@@ -811,8 +816,10 @@ addBulletsCard(employerSpace, {
     "Urgence",
     "Description",
     "Bouton : Ajouter une offre / Publier -> /api/offers",
+    "Modifier / supprimer une offre depuis l'espace",
     "Déclenche le matching automatiquement",
-    "Alimente aussi la vitrine publique /offres-d-emploi"
+    "Alimente aussi la vitrine publique /offres-d-emploi",
+    "Email de confirmation envoyé à l'employeur après publication"
   ]
 });
 addFooter(employerSpace);
@@ -830,7 +837,7 @@ addBulletsCard(workerSpace, {
   fill: C.white,
   lines: [
     "Tableau de bord",
-    "Mes matchs",
+    "Offres pour mon profil",
     "Mon profil",
     "Mon CV",
     "Messagerie",
@@ -855,6 +862,8 @@ addBulletsCard(workerSpace, {
     "Description / présentation",
     "Visibilité du profil",
     "Bouton : Enregistrer -> /api/profile",
+    "Modifier / supprimer son profil",
+    "Visible par défaut si les champs-clés sont présents",
     "Alimente aussi la vitrine publique /candidatures"
   ]
 });
@@ -867,9 +876,10 @@ addBulletsCard(workerSpace, {
   fill: C.white,
   lines: [
     "Sections CV : formation, expériences, certificats, compétences",
-    "Vue Mes matchs : offres remontées avec score",
+    "Vue Offres pour mon profil : opportunités remontées avec compatibilité",
     "Le contact employeur reste protégé avant validation",
-    "Messagerie ouverte après match confirmé"
+    "Messagerie ouverte après match confirmé",
+    "Email si le profil reste invisible car incomplet"
   ]
 });
 addFooter(workerSpace);
@@ -904,7 +914,8 @@ addBulletsCard(memberViews, {
     "Recherche globale",
     "Onglets : Offres, Candidatures, Matchings",
     "Lecture consolidée du flux plateforme",
-    "Réservé à l'administratrice"
+    "Réservé à l'administratrice",
+    "Profils en attente désormais rendus visibles"
   ]
 });
 addBulletsCard(memberViews, {
@@ -924,7 +935,9 @@ addBulletsCard(memberViews, {
     "matches",
     "conversations",
     "messages",
-    "test_feedback"
+    "test_feedback",
+    "match_notification_logs",
+    "email_unsubscribes"
   ]
 });
 addFooter(memberViews);
@@ -940,7 +953,7 @@ addCard(governance, {
   h: 3.85,
   title: "Plateforme = moteur de croissance",
   fill: C.blueSoft,
-  text: "Attirer les employeurs et les talents\nStructurer les profils et les offres\nProduire des matchings et des vues membres\nMontrer des données publiques utiles sans exposer l'identité\nPiloter les flux via /admin"
+  text: "Attirer les employeurs et les talents\nStructurer les profils et les offres\nProduire des matchings et des vues membres\nDéclencher des notifications email bilatérales\nMontrer des données publiques utiles sans exposer l'identité\nPiloter les flux via /admin"
 });
 addCard(governance, {
   x: 6.05,
@@ -960,7 +973,7 @@ addBulletsCard(governance, {
   title: "Lecture stratégique",
   fill: C.white,
   lines: [
-    "LEXPAT Connect fonctionne comme une couche d'acquisition, de qualification et d'orchestration ; le cabinet ajoute ensuite la couche de sécurisation juridique là où la valeur est la plus forte."
+    "LEXPAT Connect fonctionne comme une couche d'acquisition, de qualification, de notification et d'orchestration ; le cabinet ajoute ensuite la couche de sécurisation juridique là où la valeur est la plus forte."
   ]
 });
 addFooter(governance, "LEXPAT Connect — acquisition, matching, orchestration et relais juridique");

@@ -99,7 +99,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          LEXPAT Connect cannot be held liable for recruitment decisions, absence of matching, refusal to hire, inaccurate information provided by users, or damage resulting directly from exchanges between an employer and a talent, except in the case of gross negligence or mandatory legal provisions to the contrary.
+          LEXPAT Connect cannot be held liable for recruitment decisions, absence of matching, refusal to hire, inaccurate information provided by users, or damage resulting directly from exchanges between an employer and a worker, except in the case of gross negligence or mandatory legal provisions to the contrary.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           The platform does not guarantee the outcome of any administrative process, the granting of a single permit, admission to residence, compliance with timeframes by authorities or the success of any recruitment. Users remain responsible for their own decisions, supporting documents, statements and steps taken on the basis of their own checks.

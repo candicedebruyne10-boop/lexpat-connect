@@ -382,7 +382,7 @@ function CompanyView({ token, locale }) {
                   />
                   <span>
                     <span className="block text-sm font-semibold text-[#17345d]">
-                      {isEn ? "Email me when a new talent matches one of my openings" : "M’envoyer un email quand un nouveau talent correspond à l’une de mes offres"}
+                      {isEn ? "Email me when a new worker matches one of my openings" : "M’envoyer un email quand un nouveau travailleur correspond à l’une de mes offres"}
                     </span>
                     <span className="mt-1 block text-xs leading-6 text-[#5f7086]">
                       {isEn

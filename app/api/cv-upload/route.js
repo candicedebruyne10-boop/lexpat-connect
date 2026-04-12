@@ -7,7 +7,7 @@ const ALLOWED_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 Mo
-const BUCKET = "cv-files";
+const BUCKET = "worker-documents";
 
 /**
  * POST /api/cv-upload

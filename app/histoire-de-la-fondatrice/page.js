@@ -15,14 +15,14 @@ const fieldObservations = [
     text: "Sur le terrain, beaucoup d’employeurs belges savent qu’ils doivent recruter, mais ne savent ni où trouver des profils internationaux crédibles, ni comment sécuriser ensuite le recrutement sur le plan du droit au travail."
   },
   {
-    kicker: "Côté talents",
+    kicker: "Côté travailleurs",
     title: "Des profils qualifiés, mais trop souvent invisibles",
     text: "Des travailleurs compétents, mobiles et motivés existent. Pourtant, sans réseau local, sans visibilité structurée et sans lecture claire des règles belges, ils restent souvent hors du radar des entreprises."
   },
   {
     kicker: "Côté système",
     title: "Un pont manquait entre recrutement, conformité et immigration",
-    text: "Le marché ne manquait ni de besoins ni de talents. Il manquait surtout un cadre simple, lisible et sérieux pour faire se rencontrer les deux, sans mélanger trop tôt le commercial, l’administratif et le juridique."
+    text: "Le marché ne manquait ni de besoins ni de travailleurs. Il manquait surtout un cadre simple, lisible et sérieux pour faire se rencontrer les deux, sans mélanger trop tôt le commercial, l’administratif et le juridique."
   }
 ];
 
@@ -47,12 +47,12 @@ const visionSteps = [
     text: "Permettre aux employeurs de comprendre rapidement quelle région est compétente, quels métiers sont réellement porteurs et comment avancer sans perdre de temps."
   },
   {
-    title: "Donner une vraie visibilité aux talents internationaux",
+    title: "Donner une vraie visibilité aux travailleurs internationaux",
     text: "Faire émerger des profils qui, aujourd’hui encore, restent trop souvent invisibles malgré leur qualification, leur mobilité et leur volonté de travailler en Belgique."
   },
   {
     title: "Installer une référence belge du recrutement international",
-    text: "Construire progressivement une plateforme de référence en Belgique, à la fois humaine, juridiquement sérieuse et capable de créer une vraie confiance entre entreprises et talents."
+    text: "Construire progressivement une plateforme de référence en Belgique, à la fois humaine, juridiquement sérieuse et capable de créer une vraie confiance entre entreprises et travailleurs."
   }
 ];
 
@@ -74,7 +74,7 @@ export default function HistoireFondatricePage() {
                     <span className="block text-[#204E97]">du terrain, pas d’une théorie</span>
                   </h1>
                   <p className="mt-6 max-w-xl text-base leading-8 text-[#4f6178] sm:text-lg">
-                    Derrière LEXPAT Connect, il y a l’expérience quotidienne de Maître Candice Debruyne, avocate en immigration économique, confrontée aux besoins concrets des employeurs belges et à l’invisibilité persistante de nombreux talents internationaux.
+                    Derrière LEXPAT Connect, il y a l’expérience quotidienne de Maître Candice Debruyne, avocate en immigration économique, confrontée aux besoins concrets des employeurs belges et à l’invisibilité persistante de nombreux travailleurs internationaux.
                   </p>
 
                   <blockquote className="mt-8 rounded-[28px] border border-[#e2ebf3] bg-white px-6 py-6 shadow-[0_12px_30px_rgba(24,53,101,0.05)]">
@@ -127,7 +127,7 @@ export default function HistoireFondatricePage() {
                       </span>
                     </div>
                     <p className="text-[15px] leading-8 text-[#4f6178]">
-                      Une approche née du terrain : écouter les employeurs, comprendre les blocages concrets et rendre enfin visibles les talents internationaux capables d’y répondre.
+                      Une approche née du terrain : écouter les employeurs, comprendre les blocages concrets et rendre enfin visibles les travailleurs internationaux capables d’y répondre.
                     </p>
                     <div className="rounded-[18px] bg-[#f3f7fc] px-4 py-4">
                       <p className="text-[1.05rem] font-semibold leading-8 tracking-[-0.02em] text-[#1E3A78]">
@@ -145,7 +145,7 @@ export default function HistoireFondatricePage() {
       <Section
         kicker="Le constat terrain"
         title="Ce que l’expérience d’avocate a rendu impossible à ignorer"
-        intro="Au fil des dossiers, un même décalage revenait sans cesse : d’un côté des employeurs belges réellement en tension, de l’autre des talents internationaux qualifiés qui restaient hors de portée."
+        intro="Au fil des dossiers, un même décalage revenait sans cesse : d’un côté des employeurs belges réellement en tension, de l’autre des travailleurs internationaux qualifiés qui restaient hors de portée."
       >
         <CardGrid items={fieldObservations} columns={3} />
       </Section>
@@ -158,7 +158,7 @@ export default function HistoireFondatricePage() {
       >
         <div className="mx-auto max-w-4xl rounded-[34px] border border-[#e5edf4] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-8 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-10">
           <p className="text-lg leading-9 text-[#3c4d63]">
-            Pendant longtemps, les employeurs devaient avancer à l’aveugle : recruter, comprendre les listes régionales, vérifier la faisabilité, puis seulement chercher un accompagnement juridique. En parallèle, les talents internationaux de qualité restaient trop souvent invisibles ou mal positionnés. Le déclic a été simple : <strong className="text-[#1E3A78]">créer une plateforme qui structure d’abord la rencontre, puis laisse le juridique intervenir au bon moment</strong>.
+            Pendant longtemps, les employeurs devaient avancer à l’aveugle : recruter, comprendre les listes régionales, vérifier la faisabilité, puis seulement chercher un accompagnement juridique. En parallèle, les travailleurs internationaux de qualité restaient trop souvent invisibles ou mal positionnés. Le déclic a été simple : <strong className="text-[#1E3A78]">créer une plateforme qui structure d’abord la rencontre, puis laisse le juridique intervenir au bon moment</strong>.
           </p>
         </div>
       </Section>
@@ -166,7 +166,7 @@ export default function HistoireFondatricePage() {
       <Section
         kicker="Pourquoi la plateforme"
         title="Pourquoi LEXPAT Connect a été créée"
-        intro="LEXPAT Connect a été pensée comme un outil de confiance : plus fluide pour les entreprises, plus visible pour les talents et plus cohérent avec la réalité belge du recrutement international."
+        intro="LEXPAT Connect a été pensée comme un outil de confiance : plus fluide pour les entreprises, plus visible pour les travailleurs et plus cohérent avec la réalité belge du recrutement international."
       >
         <CardGrid items={whyPlatform} columns={3} />
       </Section>
@@ -174,7 +174,7 @@ export default function HistoireFondatricePage() {
       <Section
         kicker="La vision"
         title="La vision derrière LEXPAT Connect"
-        intro="À terme, la plateforme vise à devenir une référence belge du recrutement international dans les métiers en pénurie : un point de rencontre crédible entre besoin économique, visibilité des talents et conformité."
+        intro="À terme, la plateforme vise à devenir une référence belge du recrutement international dans les métiers en pénurie : un point de rencontre crédible entre besoin économique, visibilité des travailleurs et conformité."
         muted
       >
         <Steps items={visionSteps} />
@@ -183,7 +183,7 @@ export default function HistoireFondatricePage() {
       <Section
         kicker="Une ambition belge"
         title="Construire un projet à la hauteur du terrain belge"
-        intro="LEXPAT Connect ne part pas d’une vision abstraite du recrutement. Le projet s’inscrit dans une réalité très concrète : trois régions, des règles propres, des entreprises sous pression et des talents qui doivent pouvoir être mieux repérés."
+        intro="LEXPAT Connect ne part pas d’une vision abstraite du recrutement. Le projet s’inscrit dans une réalité très concrète : trois régions, des règles propres, des entreprises sous pression et des travailleurs qui doivent pouvoir être mieux repérés."
       >
         <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <article className="rounded-[30px] border border-[#e5edf4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">

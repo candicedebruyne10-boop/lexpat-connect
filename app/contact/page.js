@@ -7,7 +7,7 @@ const contactPoints = [
     text: "Pour déposer un besoin, clarifier un recrutement ou comprendre comment utiliser la plateforme."
   },
   {
-    title: "Une question talent",
+    title: "Une question travailleur",
     text: "Pour rendre votre profil visible, mieux présenter votre parcours ou comprendre les opportunités."
   },
   {
@@ -51,14 +51,14 @@ export default function ContactPage() {
         <div id="formulaire">
           <FormCard
             title="Formulaire de contact"
-            intro="Employeur, talent, consultation juridique ou partenariat : choisissez le bon motif et décrivez votre besoin."
+            intro="Employeur, travailleur, consultation juridique ou partenariat : choisissez le bon motif et décrivez votre besoin."
             buttonLabel="Envoyer le message"
             formType="contact"
             fields={[
               { label: "Nom complet", placeholder: "Prénom Nom" },
               { label: "Email", type: "email", placeholder: "votre.email@example.com" },
               { label: "Téléphone", placeholder: "+32 ..." },
-              { label: "Type de demande", type: "select", placeholder: "Sélectionnez votre besoin", options: ["Question employeur", "Question talent", "Consultation juridique", "Partenariat", "Autre"] },
+              { label: "Type de demande", type: "select", placeholder: "Sélectionnez votre besoin", options: ["Question employeur", "Question travailleur", "Consultation juridique", "Partenariat", "Autre"] },
               { label: "Message", type: "textarea", placeholder: "Expliquez votre situation ou votre question...", wide: true }
             ]}
           />

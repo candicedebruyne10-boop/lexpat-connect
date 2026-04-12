@@ -14,14 +14,14 @@ const fieldObservations = [
     text: "On the ground, many Belgian employers know they need to recruit, but do not know where to find credible international profiles or how to secure the process later from a right-to-work perspective."
   },
   {
-    kicker: "Talents",
+    kicker: "Workers",
     title: "Qualified profiles, but still too invisible",
     text: "Competent, mobile and motivated workers do exist. Yet without a local network, structured visibility and a clear understanding of Belgian rules, they often remain invisible to companies."
   },
   {
     kicker: "System",
     title: "A bridge was missing between recruitment, compliance and immigration",
-    text: "The market was not lacking either need or talent. What it lacked was a simple, readable and credible framework to bring the two together without mixing commercial, administrative and legal issues too early."
+    text: "The market was not lacking either need or worker. What it lacked was a simple, readable and credible framework to bring the two together without mixing commercial, administrative and legal issues too early."
   }
 ];
 
@@ -46,12 +46,12 @@ const visionSteps = [
     text: "Help employers quickly understand which region is competent, which occupations are truly strategic and how to move forward without wasting time."
   },
   {
-    title: "Give international talent real visibility",
+    title: "Give international worker real visibility",
     text: "Bring forward profiles that are still too often invisible despite their qualifications, mobility and willingness to work in Belgium."
   },
   {
     title: "Build a Belgian reference in international recruitment",
-    text: "Gradually establish a platform that is both human and legally serious, able to create real trust between companies and international talent."
+    text: "Gradually establish a platform that is both human and legally serious, able to create real trust between companies and international worker."
   }
 ];
 
@@ -73,7 +73,7 @@ export default function FounderStoryPageEn() {
                     <span className="block text-[#204E97]">from field reality, not theory</span>
                   </h1>
                   <p className="mt-6 max-w-xl text-base leading-8 text-[#4f6178] sm:text-lg">
-                    Behind LEXPAT Connect lies the day-to-day experience of Maître Candice Debruyne, a lawyer in economic immigration confronted with the concrete needs of Belgian employers and the persistent invisibility of many international talents.
+                    Behind LEXPAT Connect lies the day-to-day experience of Maître Candice Debruyne, a lawyer in economic immigration confronted with the concrete needs of Belgian employers and the persistent invisibility of many international workers.
                   </p>
 
                   <blockquote className="mt-8 rounded-[28px] border border-[#e2ebf3] bg-white px-6 py-6 shadow-[0_12px_30px_rgba(24,53,101,0.05)]">
@@ -124,7 +124,7 @@ export default function FounderStoryPageEn() {
                       </span>
                     </div>
                     <p className="text-[15px] leading-8 text-[#4f6178]">
-                      An approach shaped by field experience: listening to employers, understanding concrete bottlenecks and finally making visible the international talents who can meet those needs.
+                      An approach shaped by field experience: listening to employers, understanding concrete bottlenecks and finally making visible the international workers who can meet those needs.
                     </p>
                     <div className="rounded-[18px] bg-[#f3f7fc] px-4 py-4">
                       <p className="text-[1.05rem] font-semibold leading-8 tracking-[-0.02em] text-[#1E3A78]">
@@ -142,7 +142,7 @@ export default function FounderStoryPageEn() {
       <Section
         kicker="Field reality"
         title="What legal practice made impossible to ignore"
-        intro="Across files and conversations, the same gap kept reappearing: on one side Belgian employers under real pressure, on the other qualified international talent still out of reach."
+        intro="Across files and conversations, the same gap kept reappearing: on one side Belgian employers under real pressure, on the other qualified international worker still out of reach."
       >
         <CardGrid items={fieldObservations} columns={3} />
       </Section>
@@ -155,7 +155,7 @@ export default function FounderStoryPageEn() {
       >
         <div className="mx-auto max-w-4xl rounded-[34px] border border-[#e5edf4] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfd_100%)] p-8 shadow-[0_14px_36px_rgba(15,23,42,0.04)] sm:p-10">
           <p className="text-lg leading-9 text-[#3c4d63]">
-            For too long, employers had to move forward almost blind: recruit, understand regional lists, assess feasibility, and only then look for legal support. At the same time, high-quality international talent remained too often invisible or poorly positioned. The turning point was simple: <strong className="text-[#1E3A78]">create a platform that structures the connection first, and lets legal work step in only at the right moment</strong>.
+            For too long, employers had to move forward almost blind: recruit, understand regional lists, assess feasibility, and only then look for legal support. At the same time, high-quality international worker remained too often invisible or poorly positioned. The turning point was simple: <strong className="text-[#1E3A78]">create a platform that structures the connection first, and lets legal work step in only at the right moment</strong>.
           </p>
         </div>
       </Section>
@@ -163,7 +163,7 @@ export default function FounderStoryPageEn() {
       <Section
         kicker="Why the platform"
         title="Why LEXPAT Connect was created"
-        intro="LEXPAT Connect was designed as a trust-based tool: smoother for companies, more visible for talent and more consistent with the Belgian reality of international recruitment."
+        intro="LEXPAT Connect was designed as a trust-based tool: smoother for companies, more visible for worker and more consistent with the Belgian reality of international recruitment."
       >
         <CardGrid items={whyPlatform} columns={3} />
       </Section>
@@ -171,7 +171,7 @@ export default function FounderStoryPageEn() {
       <Section
         kicker="Vision"
         title="The vision behind LEXPAT Connect"
-        intro="Over time, the platform aims to become a Belgian reference for international recruitment in shortage occupations: a credible meeting point between economic need, talent visibility and compliance."
+        intro="Over time, the platform aims to become a Belgian reference for international recruitment in shortage occupations: a credible meeting point between economic need, worker visibility and compliance."
         muted
       >
         <Steps items={visionSteps} />
@@ -180,7 +180,7 @@ export default function FounderStoryPageEn() {
       <Section
         kicker="A Belgian ambition"
         title="Building a project that fits the Belgian field reality"
-        intro="LEXPAT Connect does not begin with an abstract theory of recruitment. It is rooted in something very concrete: three regions, distinct rules, companies under pressure and talent that needs to be found more easily."
+        intro="LEXPAT Connect does not begin with an abstract theory of recruitment. It is rooted in something very concrete: three regions, distinct rules, companies under pressure and worker that needs to be found more easily."
       >
         <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <article className="rounded-[30px] border border-[#e5edf4] bg-white p-7 shadow-[0_14px_36px_rgba(15,23,42,0.05)]">

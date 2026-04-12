@@ -99,7 +99,7 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          LEXPAT Connect ne peut être tenue responsable des décisions de recrutement, de l’absence de matching, d’un refus d’embauche, de l’inexactitude des informations fournies par les utilisateurs ou d’un préjudice résultant directement d’un échange entre employeur et talent, sauf faute lourde ou disposition légale impérative contraire.
+          LEXPAT Connect ne peut être tenue responsable des décisions de recrutement, de l’absence de matching, d’un refus d’embauche, de l’inexactitude des informations fournies par les utilisateurs ou d’un préjudice résultant directement d’un échange entre employeur et travailleur, sauf faute lourde ou disposition légale impérative contraire.
         </p>
         <p className="text-base leading-8 text-[#5c6e84]">
           La plateforme ne garantit ni l’issue d’une procédure administrative, ni l’obtention d’un permis unique, ni l’admission au séjour, ni le respect d’un délai par les autorités, ni la réussite d’un recrutement. Les utilisateurs demeurent responsables de leurs décisions, de leurs pièces, de leurs déclarations et des démarches engagées sur la base de leurs propres vérifications.

@@ -7,7 +7,7 @@ const contactPoints = [
     text: "To submit a hiring need, clarify a recruitment issue or understand how to use the platform."
   },
   {
-    title: "A talent question",
+    title: "A worker question",
     text: "To make your profile visible, present your background more clearly or understand the opportunities available."
   },
   {
@@ -58,7 +58,7 @@ export default function ContactPageEn() {
           <FormCard
             locale="en"
             title="Contact form"
-            intro="Employer, talent, legal consultation or partnership: choose the right topic and tell us what you need."
+            intro="Employer, worker, legal consultation or partnership: choose the right topic and tell us what you need."
             buttonLabel="Send message"
             formType="contact"
             fields={[
@@ -69,7 +69,7 @@ export default function ContactPageEn() {
                 label: "Request type",
                 type: "select",
                 placeholder: "Select your request",
-                options: ["Employer question", "Talent question", "Legal consultation", "Partnership", "Other"]
+                options: ["Employer question", "Worker question", "Legal consultation", "Partnership", "Other"]
               },
               { label: "Message", type: "textarea", placeholder: "Explain your question or situation...", wide: true }
             ]}
