@@ -61,9 +61,9 @@ const groupTitleMap = {
 };
 
 const regionCanonicalMap = {
-  "Région de Bruxelles-Capitale": "Bruxelles-Capitale",
-  "Région wallonne": "Wallonie",
-  "Région flamande": "Flandre"
+  "Région de Bruxelles-Capitale": "Brussels-Capital Region",
+  "Région wallonne": "Wallonia",
+  "Région flamande": "Flanders"
 };
 
 function tRegionLabel(region) {
