@@ -2,57 +2,57 @@ import Script from "next/script";
 import { BulletList, CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 
 export const metadata = {
-  title: "If I leave Belgium, am I guaranteed to come back later? | LEXPAT Connect",
+  title: "Returning to your country to get a work permit in Belgium: what you need to know | LEXPAT Connect",
   description:
-    "A clear and cautious answer for people in an irregular stay who wonder whether leaving Belgium guarantees a future return."
+    "Undocumented in Belgium and want to get a work permit? Here is what it means in practice: why returning is often necessary, and why your chances are real if your file is solid."
 };
 
 const keyPoints = [
   {
-    title: "There is no general guarantee",
-    text: "Leaving Belgium does not automatically give you the right to come back later."
+    title: "If undocumented in Belgium, returning is often unavoidable",
+    text: "To obtain a single permit (work permit + residence title), the procedure is in principle initiated from the country of origin. If you are in an irregular stay in Belgium, it is in most cases very difficult — or impossible — to regularise your situation without first returning to your home country."
   },
   {
-    title: "Everything depends on your legal basis",
-    text: "The real question is what legal basis you would have to return later: visa, new authorization, family reunification, work or another valid route."
+    title: "If all conditions are met, your chances are real",
+    text: "The single permit can be granted in a near-automatic way when the file is complete and all conditions are met: an engaged employer, an eligible sector, documents in order. This is still an administrative decision, and there is always some uncertainty — but a solid file genuinely makes a difference."
   },
   {
-    title: "An entry ban may exist",
-    text: "Depending on your situation, a return decision or entry ban may complicate or block a future return."
+    title: "Check your situation before you leave",
+    text: "An unprepared departure can complicate things: entry ban, pending procedure, missing documents. Before any departure, it is important to verify your exact situation so you do not unknowingly close a door."
   }
 ];
 
 const concreteCases = [
   {
-    title: "You currently have no valid residence document",
-    text: "Leaving in that situation does not create an automatic right to return. A future return often requires building a new legal basis from abroad."
+    title: "You have no valid residence document in Belgium",
+    text: "This is the most common situation. To obtain a single permit, the procedure in principle requires you to be in your country of origin when the application is filed. Leaving is often a necessary step, not an abandonment."
   },
   {
-    title: "You have received a return decision",
-    text: "You need to check whether an entry ban also exists, because that may prevent a future return to Belgium or the Schengen area for a period of time."
+    title: "You have an employer ready to hire you",
+    text: "This is an essential condition. Without a job offer, the procedure cannot begin. With an employer committed in an eligible sector, you have a concrete legal basis to start the process."
   },
   {
-    title: "You hope to come back for work",
-    text: "In practice, this usually requires an employer, the right procedure and a positive decision. Having already lived in Belgium is not enough by itself."
+    title: "Your file is complete and all conditions are met",
+    text: "In that case, your chances of obtaining the permit are serious. The Belgian administration can grant the single permit in a near-automatic way when everything is in order. It is not an absolute guarantee, but it is not an impossible journey either."
   },
   {
-    title: "You have a pending file or procedure",
-    text: "In some cases, leaving may complicate an application, a family reunification project or another sensitive administrative situation."
+    title: "You have received an order to leave the territory",
+    text: "You need to check very carefully whether an entry ban is attached to this decision. This can block or delay a legal return to Belgium — including through a work permit. This check must be done before any departure."
   }
 ];
 
 const beforeLeaving = [
   {
-    title: "Check your exact status",
-    text: "Before leaving, you need to know whether you are simply in an irregular stay, subject to a return order, or affected by another formal decision."
+    title: "Check whether an entry ban exists",
+    text: "Before leaving, make sure no measure would block your return. An order to leave the territory can sometimes come with an entry ban across the entire Schengen area."
   },
   {
-    title: "Identify a concrete legal route back",
-    text: "You should be able to answer one simple question: on what precise legal basis could I come back later?"
+    title: "Make sure you have a legal route back",
+    text: "The most common route is an employer ready to hire you in a sector eligible for the single permit. Without that, returning remains administratively possible, but there is no clear path to come back and work legally."
   },
   {
-    title: "Avoid closing a door",
-    text: "Leaving without checking first may sometimes weaken a future work, residence or family-based project."
+    title: "Prepare your file in advance",
+    text: "A solid file — with the right documents, the right steps and the right timelines — significantly increases the chances of a successful return. This is where LEXPAT Connect can help you find an employer matching your profile."
   }
 ];
 
@@ -85,24 +85,24 @@ const sourceCards = [
 
 const faq = [
   {
-    question: "If I leave voluntarily, does that guarantee that I will be able to come back later?",
+    question: "Am I required to return to my home country to get a work permit?",
     answer:
-      "No. Leaving voluntarily does not automatically create a right to return. You still need to identify the legal basis on which a future return could be requested."
+      "In the vast majority of cases, yes. The single permit procedure is initiated from the country of origin or legal residence. If you are in an irregular stay in Belgium, it is generally very difficult to regularise your situation without going through that return. This is not a punishment — it is often the only legal path available."
   },
   {
-    question: "Does an order to leave always mean that I will never be able to come back?",
+    question: "Do I have a good chance of coming back if my file is in order?",
     answer:
-      "Not necessarily. But you must check very carefully whether an entry ban exists or may be imposed, because that is what can block a future return."
+      "Yes, your chances are serious. When all conditions are met — an engaged employer, an eligible sector, a complete file — the single permit can be granted in a near-automatic way. It remains an administrative decision, and there is never an absolute guarantee, but a solid file genuinely makes a difference."
   },
   {
-    question: "Can I simply come back later if I find an employer?",
+    question: "How long does the procedure take?",
     answer:
-      "Not automatically. A work project may sometimes support a future return, but it still requires the right procedure, the relevant conditions and a positive decision."
+      "The single permit procedure typically takes between 3 and 4 months once the complete file has been submitted. Timelines can vary depending on the region, the sector and the administration's workload. This is a difficult period, and it is important to prepare for it well before leaving."
   },
   {
-    question: "What is the right reflex before leaving Belgium?",
+    question: "Does an order to leave always mean I can never come back?",
     answer:
-      "The right reflex is to verify your exact situation and the legal basis of any future return before leaving, instead of assuming that coming back will be possible later."
+      "Not necessarily. But you must check very carefully whether an entry ban is attached to that decision. That is the specific point that can block or delay a legal return — including through a work permit application. This check must happen before any departure."
   }
 ];
 
@@ -129,36 +129,36 @@ export default function ReturningToBelgiumPage() {
       />
 
       <Hero
-        badge="Frequent question — irregular stay"
+        badge="Irregular stay & work permit"
         title={
           <>
-            If you return to your country of origin,
-            <span className="block text-[#57b7af]">you are not generally guaranteed to come back to Belgium</span>
+            Returning home to come back and work in Belgium:
+            <span className="block text-[#57b7af]">it is often the only path — and more achievable than you might think</span>
           </>
         }
-        description="The possibility of returning to Belgium depends on your exact administrative situation at the time of departure and on the legal basis you would later have to return."
+        description="If you are undocumented in Belgium and want to regularise your situation through work, you will in most cases need to return to your home country to file your single permit application. That is hard to hear — but it is also a procedure that works, when the file is well prepared."
         primaryHref="/en/contact"
         primaryLabel="Ask my question"
         secondaryHref="/en/permis-unique"
         secondaryLabel="Understand the single permit"
         stats={[
-          { value: "No", label: "There is no general guarantee of return" },
-          { value: "Legal basis", label: "A future return depends on a visa, an authorization or another valid route" },
-          { value: "Caution", label: "An entry ban may complicate or block a return" }
+          { value: "Return", label: "Often necessary to start the procedure from the country of origin" },
+          { value: "Solid file", label: "With an employer and the right conditions, your chances are real" },
+          { value: "Caution", label: "Check your situation before leaving so you do not close a door" }
         ]}
       />
 
       <Section
-        title="Short answer"
-        intro="Returning to your country of origin does not automatically give you the right to come back later to Belgium. A future return always depends on a concrete legal basis."
-        kicker="In one sentence"
+        title="What you need to understand"
+        intro="Two realities coexist: returning is often unavoidable, but it can also open a real door if your situation allows it."
+        kicker="The essentials"
       >
         <CardGrid items={keyPoints} columns={3} />
       </Section>
 
       <Section
         title="Most common situations"
-        intro="The answer changes depending on your exact situation. These are the most practical cases."
+        intro="The procedure and the chances vary depending on your exact situation. Here is what changes in practice."
         kicker="In practice"
         muted
       >
@@ -167,15 +167,15 @@ export default function ReturningToBelgiumPage() {
 
       <Section
         title="Before leaving"
-        intro="The right reflex is to verify your situation before departure, not after."
-        kicker="3 minimum checks"
+        intro="A well-prepared departure changes everything. Here are the three key points to check before making a decision."
+        kicker="3 key steps"
       >
         <Steps items={beforeLeaving} />
       </Section>
 
       <Section
         title="Frequently asked questions"
-        intro="Short answers to avoid the most common misunderstandings."
+        intro="Clear answers to questions that many people face alone before making a difficult decision."
         kicker="FAQ"
         muted
       >
@@ -184,15 +184,15 @@ export default function ReturningToBelgiumPage() {
 
       <Section
         title="Official sources"
-        intro="A few useful starting points to understand the Belgian administrative logic."
+        intro="A few references to understand the Belgian administrative logic around the single permit and irregular stay."
         kicker="References"
       >
         <CardGrid items={sourceCards} columns={3} />
       </Section>
 
       <CtaBanner
-        title="Before deciding to leave, your exact situation needs to be checked"
-        text="This page provides general information only. If your situation is sensitive or if you want to know on what basis a future return could be considered, you need an individual review."
+        title="Your situation deserves careful attention — not a generic answer"
+        text="This page provides general, educational information. If you are considering returning to your home country to start a single permit procedure, we can help you find an employer matching your profile — and the lexpat.be law firm can support you on the legal aspects."
         primaryHref="/en/contact"
         primaryLabel="Discuss my situation"
         secondaryHref="/en/accompagnement-juridique"
