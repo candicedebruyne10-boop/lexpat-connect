@@ -100,7 +100,7 @@ export async function POST(request) {
           user_id: user.id,
           full_name: fullName,
           email,
-          profile_visibility: 'visible'
+          profile_visibility: 'hidden'
         });
 
         if (workerError) {

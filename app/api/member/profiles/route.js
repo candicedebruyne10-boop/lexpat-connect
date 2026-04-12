@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../../lib/supabase/server";
 import { normalizeRegion } from "../../../../lib/matching";
+import { getEffectiveWorkerProfileVisibility } from "../../../../lib/worker-profile-visibility";
 
 /**
  * GET /api/member/profiles
@@ -21,7 +22,9 @@ export async function GET(request) {
 
     // Profils anonymisés : aucune donnée identifiante n'est exposée.
     // L'objectif est d'inciter les employeurs à déposer une offre pour être mis en relation.
-    const profiles = (data || []).map((p, i) => ({
+    const profiles = (data || [])
+      .filter((p) => getEffectiveWorkerProfileVisibility(p) === "visible")
+      .map((p, i) => ({
       id:         p.id,
       index:      i + 1,
       jobTitle:   p.target_job || "Métier non renseigné",
@@ -32,7 +35,7 @@ export async function GET(request) {
                     ? p.languages.join(", ")
                     : (p.languages || "Non renseignées"),
       updatedAt:  p.updated_at,
-    }));
+      }));
 
     return NextResponse.json({
       summary: {

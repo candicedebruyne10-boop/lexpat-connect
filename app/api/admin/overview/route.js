@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../../lib/supabase/server";
 import { normalizeRegion } from "../../../../lib/matching";
+import { getEffectiveWorkerProfileVisibility } from "../../../../lib/worker-profile-visibility";
 
 const fallbackAdminEmails = ["contact@lexpat-connect.be"];
 
@@ -31,7 +32,7 @@ function hydrateWorkers(workers) {
     targetSector: worker.target_sector || "Secteur non renseigné",
     preferredRegion: normalizeRegion(worker.preferred_region),
     experienceLevel: worker.experience_level || "Non renseigné",
-    profileVisibility: worker.profile_visibility || "hidden",
+    profileVisibility: getEffectiveWorkerProfileVisibility(worker),
     createdAt: worker.created_at
   }));
 }
@@ -155,7 +156,7 @@ export async function GET(request) {
         offers: offers.length,
         publishedOffers: offers.filter((offer) => offer.status === "published").length,
         workers: workers.length,
-        visibleWorkers: workers.filter((w) => w.profile_visibility === "visible").length,
+        visibleWorkers: workers.filter((w) => getEffectiveWorkerProfileVisibility(w) === "visible").length,
         matches: matches.length,
         newMatches: matches.filter((match) => match.status === "new").length
       },

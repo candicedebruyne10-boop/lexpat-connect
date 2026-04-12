@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServiceClient } from "../../../../lib/supabase/server";
 import { normalizeRegion } from "../../../../lib/matching";
+import { getEffectiveWorkerProfileVisibility } from "../../../../lib/worker-profile-visibility";
 
 /**
  * GET /api/public/profiles
@@ -20,7 +21,9 @@ export async function GET() {
 
     if (error) throw error;
 
-    const profiles = (data || []).map((p, i) => ({
+    const profiles = (data || [])
+      .filter((p) => getEffectiveWorkerProfileVisibility(p) === "visible")
+      .map((p, i) => ({
       // Pas d'ID réel exposé publiquement
       index:      i + 1,
       jobTitle:   p.target_job     || "Métier non précisé",
@@ -30,7 +33,7 @@ export async function GET() {
       languages:  Array.isArray(p.languages)
                     ? p.languages.join(", ")
                     : (p.languages || "Non renseignées"),
-    }));
+      }));
 
     return NextResponse.json({
       summary: {

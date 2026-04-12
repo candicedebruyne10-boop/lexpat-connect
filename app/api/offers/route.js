@@ -6,6 +6,7 @@ import { findSectorForProfession, parseRegionSelection, stringifyRegionSelection
 import { getNotificationRecipient, getSenderAddress } from "../../../lib/email-routing";
 import { newOfferEmailHtml, offerPublishedConfirmationEmailHtml } from "../../../lib/email-templates";
 import { notifyWorkersForNewOffer } from "../../../lib/match-notifications";
+import { getEffectiveWorkerProfileVisibility } from "../../../lib/worker-profile-visibility";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -101,6 +102,7 @@ async function runMatchingForOffer(supabase, offer) {
   if (workersError || !workers?.length) return;
 
   const matchedWorkers = workers
+    .filter((worker) => getEffectiveWorkerProfileVisibility(worker) === "visible")
     .map((worker) => ({
       worker,
       job_offer_id: offer.id,

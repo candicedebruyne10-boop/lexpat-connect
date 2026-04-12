@@ -6,6 +6,7 @@ import { Resend } from "resend";
 import { getSenderAddress } from "../../../lib/email-routing";
 import { newWorkerMatchEmailHtml, workerProfileIncompleteEmailHtml } from "../../../lib/email-templates";
 import { isUnsubscribed } from "../../../lib/email-unsubscribe";
+import { getEffectiveWorkerProfileVisibility, hasWorkerVisibilityRequirements } from "../../../lib/worker-profile-visibility";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -39,10 +40,15 @@ export async function POST(request) {
           .filter(Boolean);
 
     // A profile can only be visible if the two fields required for matching are present
-    const hasRequiredFields = !!(finalJobTitle?.trim() && body.sector?.trim());
-    const effectiveProfileVisibility = hasRequiredFields
-      ? (body.profile_visibility || "visible")
-      : "hidden";
+    const hasRequiredFields = hasWorkerVisibilityRequirements({
+      target_job: finalJobTitle,
+      target_sector: body.sector
+    });
+    const effectiveProfileVisibility = getEffectiveWorkerProfileVisibility({
+      target_job: finalJobTitle,
+      target_sector: body.sector,
+      profile_visibility: body.profile_visibility
+    });
 
     const { data: previousProfile } = await supabase
       .from("worker_profiles")
@@ -247,6 +253,7 @@ export async function GET(request) {
             experience: data.experience_level || "",
             languages: Array.isArray(data.languages) ? data.languages.join(", ") : data.languages || "",
             description: data.summary || "",
+            profile_visibility: getEffectiveWorkerProfileVisibility(data),
             preferred_locale: user.user_metadata?.preferred_locale === "en" ? "en" : "fr",
             match_alerts_enabled: user.user_metadata?.match_alerts_enabled !== false
           }
