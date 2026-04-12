@@ -29,15 +29,15 @@ export default function ContactPageEn() {
         badge="Contact"
         title={
           <>
-            A question about the platform
-            <span className="block text-[#57b7af]">or about the legal relay</span>
+            A question?
+            <span className="block text-[#57b7af]">Write to us — we will get back to you.</span>
           </>
         }
-        description="Use this page to reach the right contact point: platform, recruitment, candidate profile or the LEXPAT law firm."
+        description="Whether you are an employer, a worker, or have a legal question about the single permit or the right to work — send us your question and we will point you in the right direction."
         primaryHref="#form"
-        primaryLabel="Contact us"
+        primaryLabel="Ask my question"
         secondaryHref="/en"
-        secondaryLabel="Back to LEXPAT Connect"
+        secondaryLabel="Back to home"
       />
 
       <Section
