@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import {
+  extractReferralInput,
+  resolveReferralCode,
+  resolveReferralByName,
+  createReferral,
+  generateUniqueReferralCode,
+  logReferralEvent
+} from '../../../lib/referral';
 
 const allowedRoles = new Set(['worker', 'employer']);
 
@@ -16,6 +24,128 @@ function getServiceClient() {
       persistSession: false,
       autoRefreshToken: false
     }
+  });
+}
+
+/**
+ * Attribue un parrainage au nouveau travailleur inscrit.
+ * Exécuté de manière asynchrone (best-effort) après la création du compte.
+ *
+ * Sources d'attribution (par ordre de priorité) :
+ * 1. referral_code dans le body (depuis cookie/URL — source 'link')
+ * 2. referral_input dans le body (saisie libre — code ou nom)
+ */
+async function handleReferralAttribution({ supabase, body, refereeUserId, refereeWorkerProfileId }) {
+  const { code, source, rawInput } = extractReferralInput(body);
+
+  let referrerInfo = null;
+
+  // Cas 1 : code de parrainage (depuis lien ou saisie code)
+  if (code) {
+    referrerInfo = await resolveReferralCode(supabase, code);
+    if (referrerInfo) {
+      // Guard auto-parrainage
+      if (referrerInfo.referrer_user_id === refereeUserId) {
+        await logReferralEvent(supabase, {
+          event_type: 'referral_invalid',
+          referral_code: code,
+          attribution_source: source,
+          referrer_user_id: referrerInfo.referrer_user_id,
+          referee_user_id: refereeUserId,
+          metadata: { reason: 'self_referral' }
+        });
+        return;
+      }
+
+      const referral = await createReferral(supabase, {
+        referrer_user_id: referrerInfo.referrer_user_id,
+        referrer_worker_profile_id: referrerInfo.referrer_worker_profile_id,
+        referee_user_id: refereeUserId,
+        referee_worker_profile_id: refereeWorkerProfileId,
+        referral_code: code,
+        attribution_source: source,
+        referrer_name_input: null
+      });
+
+      if (referral) {
+        await logReferralEvent(supabase, {
+          referral_id: referral.id,
+          event_type: 'referral_attributed',
+          referral_code: code,
+          attribution_source: source,
+          referrer_user_id: referrerInfo.referrer_user_id,
+          referee_user_id: refereeUserId,
+          metadata: { referee_worker_profile_id: refereeWorkerProfileId }
+        });
+      }
+      return;
+    }
+    // Code non résolu → on log et on continue vers le fallback nom
+    await logReferralEvent(supabase, {
+      event_type: 'signup_completed',
+      referral_code: code,
+      attribution_source: source,
+      referee_user_id: refereeUserId,
+      raw_input: rawInput,
+      metadata: { resolved: false, reason: 'code_not_found' }
+    });
+    return;
+  }
+
+  // Cas 2 : saisie libre (nom) → lookup + pending_review si ambigu
+  if (source === 'manual_name' && rawInput) {
+    referrerInfo = await resolveReferralByName(supabase, rawInput);
+
+    const finalStatus = referrerInfo ? 'registered' : 'pending_review';
+    const resolvedCode = referrerInfo
+      ? `MANUAL-${referrerInfo.referrer_user_id.slice(0, 8).toUpperCase()}`
+      : 'MANUAL-UNRESOLVED';
+
+    // Guard auto-parrainage
+    if (referrerInfo && referrerInfo.referrer_user_id === refereeUserId) {
+      return;
+    }
+
+    const referral = await createReferral(supabase, {
+      referrer_user_id: referrerInfo?.referrer_user_id || null,
+      referrer_worker_profile_id: referrerInfo?.referrer_worker_profile_id || null,
+      referee_user_id: refereeUserId,
+      referee_worker_profile_id: refereeWorkerProfileId,
+      referral_code: resolvedCode,
+      attribution_source: 'manual_name',
+      referrer_name_input: rawInput,
+      // Override le statut si non résolu
+      ...(finalStatus === 'pending_review' && { _override_status: 'pending_review' })
+    });
+
+    if (referral && finalStatus === 'pending_review') {
+      // Forcer le statut pending_review si non résolu
+      await supabase
+        .from('referrals')
+        .update({ status: 'pending_review' })
+        .eq('id', referral.id);
+    }
+
+    if (referral) {
+      await logReferralEvent(supabase, {
+        referral_id: referral.id,
+        event_type: referrerInfo ? 'referral_attributed' : 'signup_completed',
+        attribution_source: 'manual_name',
+        raw_input: rawInput,
+        referrer_user_id: referrerInfo?.referrer_user_id || null,
+        referee_user_id: refereeUserId,
+        metadata: { resolved: !!referrerInfo, pending_review: !referrerInfo }
+      });
+    }
+    return;
+  }
+
+  // Cas 3 : aucun parrainage → log simple
+  await logReferralEvent(supabase, {
+    event_type: 'signup_completed',
+    attribution_source: 'unknown',
+    referee_user_id: refereeUserId,
+    metadata: { referral: false }
   });
 }
 
@@ -91,22 +221,52 @@ export async function POST(request) {
     if (role === 'worker') {
       const { data: existingWorker } = await supabase
         .from('worker_profiles')
-        .select('id')
+        .select('id, referral_code')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (!existingWorker) {
-        const { error: workerError } = await supabase.from('worker_profiles').insert({
-          user_id: user.id,
-          full_name: fullName,
-          email,
-          profile_visibility: 'hidden'
-        });
+      let workerProfileId = existingWorker?.id;
+      let isNewWorker = false;
 
-        if (workerError) {
-          return NextResponse.json({ error: workerError.message }, { status: 500 });
+      if (!existingWorker) {
+        isNewWorker = true;
+        // Générer un code de parrainage pour le nouveau travailleur
+        let newReferralCode = null;
+        try {
+          newReferralCode = await generateUniqueReferralCode(supabase);
+        } catch (err) {
+          console.error('[bootstrap] referral code generation failed:', err.message);
         }
+
+        const { data: newWorker, error: workerError } = await supabase
+          .from('worker_profiles')
+          .insert({
+            user_id: user.id,
+            full_name: fullName,
+            email,
+            profile_visibility: 'hidden',
+            referral_code: newReferralCode
+          })
+          .select('id')
+          .single();
+
+        if (workerError || !newWorker) {
+          return NextResponse.json({ error: workerError?.message || 'Worker profile creation failed.' }, { status: 500 });
+        }
+
+        workerProfileId = newWorker.id;
       }
+
+      // ── Attribution du parrainage (best-effort, non-bloquant) ───────────────
+      if (isNewWorker) {
+        handleReferralAttribution({
+          supabase,
+          body,
+          refereeUserId: user.id,
+          refereeWorkerProfileId: workerProfileId
+        }).catch(err => console.error('[bootstrap] referral attribution error:', err.message));
+      }
+      // ────────────────────────────────────────────────────────────────────────
 
       return NextResponse.json({ redirectTo: '/travailleurs/espace' });
     }

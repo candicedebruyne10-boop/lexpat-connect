@@ -6,6 +6,42 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { getSupabaseBrowserClient } from '../lib/supabase/client';
 import { localizeHref } from '../lib/i18n';
+import ReferralInput from './ReferralInput';
+
+// ── Helpers parrainage ───────────────────────────────────────────────────────
+
+const REFERRAL_COOKIE = 'lexpat_ref';
+const REFERRAL_LS_KEY = 'lexpat_ref';
+const REFERRAL_TTL_DAYS = 30;
+
+function readReferralFromStorage() {
+  if (typeof window === 'undefined') return null;
+  // 1. Cookie (prioritaire)
+  const cookieMatch = document.cookie.match(new RegExp(`(?:^|;\\s*)${REFERRAL_COOKIE}=([^;]+)`));
+  if (cookieMatch) return decodeURIComponent(cookieMatch[1]);
+  // 2. localStorage
+  try {
+    const raw = localStorage.getItem(REFERRAL_LS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.code && parsed.ts && Date.now() - parsed.ts < REFERRAL_TTL_DAYS * 86400 * 1000) {
+        return parsed.code;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function writeReferralToStorage(code) {
+  if (typeof window === 'undefined' || !code) return;
+  const maxAge = REFERRAL_TTL_DAYS * 86400;
+  document.cookie = `${REFERRAL_COOKIE}=${encodeURIComponent(code)}; max-age=${maxAge}; path=/; SameSite=Lax`;
+  try {
+    localStorage.setItem(REFERRAL_LS_KEY, JSON.stringify({ code, ts: Date.now() }));
+  } catch {}
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 
 export default function AuthForm({ mode = 'login', locale = 'fr' }) {
   const isSignup = mode === 'signup';
@@ -30,6 +66,12 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [nextPath, setNextPath] = useState('');
+  // ── Parrainage ──────────────────────────────────────────────────────────────
+  // referralCode : code détecté depuis cookie/URL → champ verrouillé
+  const [referralCode, setReferralCode] = useState(null);
+  // referralInput : saisie libre (code ou nom) si pas de lien automatique
+  const [referralInput, setReferralInput] = useState('');
+  // ───────────────────────────────────────────────────────────────────────────
   const roleOptions = locale === 'en'
     ? [
         {
@@ -74,7 +116,24 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
     if (err === 'session_invalide' || err === 'session_manquante') {
       setError(locale === 'en' ? 'Session expired. Please sign in again.' : 'Session expirée. Veuillez vous reconnecter.');
     }
-  }, [locale]);
+
+    // ── Parrainage : lecture du code depuis l'URL ou le stockage ──────────────
+    if (isSignup) {
+      const urlRef = params.get('ref');
+      if (urlRef && /^LP-[A-Z0-9]{6}$/i.test(urlRef.trim())) {
+        const normalized = urlRef.trim().toUpperCase();
+        writeReferralToStorage(normalized);
+        setReferralCode(normalized);
+      } else {
+        // Pas de ref dans l'URL → lire depuis cookie/localStorage
+        const stored = readReferralFromStorage();
+        if (stored && /^LP-[A-Z0-9]{6}$/.test(stored)) {
+          setReferralCode(stored);
+        }
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+  }, [locale, isSignup]);
 
   function getSafeRedirect(fallback) {
     const next = nextPath;
@@ -85,6 +144,14 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
   }
 
   async function bootstrapUser(session, bootstrapRole) {
+    // Préparer les données de parrainage
+    // Priorité : code auto (lien) > saisie libre
+    const referralPayload = referralCode
+      ? { referral_code: referralCode }
+      : referralInput?.trim()
+        ? { referral_input: referralInput.trim() }
+        : {};
+
     const response = await fetch('/api/auth/bootstrap', {
       method: 'POST',
       headers: {
@@ -95,7 +162,8 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
         role: bootstrapRole,
         fullName,
         companyName,
-        email
+        email,
+        ...referralPayload
       })
     });
 
@@ -265,6 +333,16 @@ export default function AuthForm({ mode = 'login', locale = 'fr' }) {
           <span className="mb-2 block text-sm font-semibold text-[#17345d]">{locale === 'en' ? 'Password' : 'Mot de passe'}</span>
           <input className="field-input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={locale === 'en' ? 'Minimum 6 characters' : 'Minimum 6 caractères'} required />
         </label>
+
+        {/* Champ parrainage — visible uniquement à l'inscription, rôle travailleur */}
+        {isSignup && role === 'worker' ? (
+          <ReferralInput
+            referralCode={referralCode}
+            value={referralInput}
+            onChange={setReferralInput}
+            locale={locale}
+          />
+        ) : null}
 
         {(error || message) ? (
           <div className={`md:col-span-2 rounded-[20px] border px-4 py-4 text-sm leading-6 ${error ? 'border-[#f2c4c4] bg-[#fff5f5] text-[#a33f3f]' : 'border-[#dcebe8] bg-[#f5fbfb] text-[#33566b]'}`}>

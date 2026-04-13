@@ -423,10 +423,10 @@ addFooter(cover);
 const overview = pptx.addSlide();
 fullBleedBackground(overview, C.white);
 addSectionBand(overview, "VUE GLOBALE");
-addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 54 pages applicatives : vitrine FR, vitrine EN, espaces membres, pages système, couche légale et contenus éditoriaux encore en prépublication.");
-addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 54, "blue");
-addMetric(overview, 2.55, 1.75, 1.7, "Routes FR", 29, "teal");
-addMetric(overview, 4.45, 1.75, 1.7, "Routes EN", 25, "sand");
+addHeader(overview, "Vue d'ensemble du produit", "Le produit se compose aujourd'hui de 60 pages applicatives : vitrine FR, vitrine EN, espaces membres, pages système, aliases de redirection et contenus éditoriaux.");
+addMetric(overview, 0.65, 1.75, 1.7, "Pages totales", 60, "blue");
+addMetric(overview, 2.55, 1.75, 1.7, "Routes FR", 30, "teal");
+addMetric(overview, 4.45, 1.75, 1.7, "Routes EN", 30, "sand");
 addMetric(overview, 6.35, 1.75, 1.7, "Espaces membres", 4, "blue");
 addMetric(overview, 8.25, 1.75, 1.7, "Interne / QA", 4, "teal");
 addMetric(overview, 10.15, 1.75, 1.2, "Pages retour", 2, "sand");
@@ -588,7 +588,7 @@ addCompactListCard(inventory, {
     "/en/retours-test",
     "/en/returning-to-belgium-after-leaving",
     "Version EN de la page retour au pays d'origine",
-    "54 pages applicatives au total"
+    "60 pages applicatives au total"
   ]
 });
 addFooter(inventory);

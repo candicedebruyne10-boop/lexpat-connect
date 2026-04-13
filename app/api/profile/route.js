@@ -7,6 +7,7 @@ import { getSenderAddress } from "../../../lib/email-routing";
 import { newWorkerMatchEmailHtml, workerProfileIncompleteEmailHtml } from "../../../lib/email-templates";
 import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 import { getEffectiveWorkerProfileVisibility, hasWorkerVisibilityRequirements } from "../../../lib/worker-profile-visibility";
+import { updateReferralStatus, logReferralEvent } from "../../../lib/referral";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",
@@ -75,6 +76,28 @@ export async function POST(request) {
       );
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // ── Mise à jour du statut de parrainage (best-effort) ─────────────────────
+    // On utilise le service client pour bypasser le RLS sur referrals
+    const serviceClient = getServiceClient();
+    if (effectiveProfileVisibility === 'visible') {
+      updateReferralStatus(serviceClient, user.id, 'profile_visible')
+        .then(() => logReferralEvent(serviceClient, {
+          event_type: 'profile_visible',
+          referee_user_id: user.id,
+          metadata: { profile_completion: body.profile_completion }
+        }))
+        .catch(() => {});
+    } else if (body.profile_completion >= 70 && effectiveProfileVisibility !== 'visible') {
+      updateReferralStatus(serviceClient, user.id, 'profile_completed')
+        .then(() => logReferralEvent(serviceClient, {
+          event_type: 'profile_completed',
+          referee_user_id: user.id,
+          metadata: { profile_completion: body.profile_completion }
+        }))
+        .catch(() => {});
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     await supabase.auth.admin.updateUserById(user.id, {
       user_metadata: {
