@@ -83,6 +83,7 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [disabled, setDisabled] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedMsg, setCopiedMsg] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -96,6 +97,11 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
       });
       if (!res.ok) throw new Error();
       const json = await res.json();
+      if (json?.disabled) {
+        setDisabled(true);
+        setData(null);
+        return;
+      }
       setData(json);
     } catch {
       setError(t.error);
@@ -129,6 +135,8 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
       </div>
     );
   }
+
+  if (disabled) return null;
 
   if (error) {
     return (

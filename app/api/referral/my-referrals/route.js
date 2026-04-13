@@ -13,7 +13,7 @@
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { buildReferralUrl, buildShareMessage } from 'lib/referral';
+import { buildReferralUrl, buildShareMessage, isMissingReferralColumnError } from 'lib/referral';
 
 export async function GET(request) {
   try {
@@ -22,11 +22,22 @@ export async function GET(request) {
     const locale = new URL(request.url).searchParams.get('locale') || 'fr';
 
     // Récupérer le profil et le code de parrainage
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('worker_profiles')
       .select('id, referral_code')
       .eq('user_id', user.id)
       .maybeSingle();
+
+    if (isMissingReferralColumnError(profileError)) {
+      return NextResponse.json({
+        disabled: true,
+        referral_code: null,
+        referral_url: null,
+        share_message: null,
+        stats: { total: 0, registered: 0, profile_visible: 0, validated: 0 },
+        referrals: []
+      });
+    }
 
     if (!profile) {
       return NextResponse.json({ error: 'Profil non trouvé.' }, { status: 404 });

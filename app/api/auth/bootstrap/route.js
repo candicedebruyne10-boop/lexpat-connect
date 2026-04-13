@@ -6,7 +6,8 @@ import {
   resolveReferralByName,
   createReferral,
   generateUniqueReferralCode,
-  logReferralEvent
+  logReferralEvent,
+  isMissingReferralColumnError
 } from 'lib/referral';
 
 const allowedRoles = new Set(['worker', 'employer']);
@@ -221,7 +222,7 @@ export async function POST(request) {
     if (role === 'worker') {
       const { data: existingWorker } = await supabase
         .from('worker_profiles')
-        .select('id, referral_code')
+        .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -238,17 +239,32 @@ export async function POST(request) {
           console.error('[bootstrap] referral code generation failed:', err.message);
         }
 
-        const { data: newWorker, error: workerError } = await supabase
+        const workerPayload = {
+          user_id: user.id,
+          full_name: fullName,
+          email,
+          profile_visibility: 'hidden',
+          referral_code: newReferralCode
+        };
+
+        let { data: newWorker, error: workerError } = await supabase
           .from('worker_profiles')
-          .insert({
-            user_id: user.id,
-            full_name: fullName,
-            email,
-            profile_visibility: 'hidden',
-            referral_code: newReferralCode
-          })
+          .insert(workerPayload)
           .select('id')
           .single();
+
+        if (workerError && isMissingReferralColumnError(workerError)) {
+          ({ data: newWorker, error: workerError } = await supabase
+            .from('worker_profiles')
+            .insert({
+              user_id: user.id,
+              full_name: fullName,
+              email,
+              profile_visibility: 'hidden'
+            })
+            .select('id')
+            .single());
+        }
 
         if (workerError || !newWorker) {
           return NextResponse.json({ error: workerError?.message || 'Worker profile creation failed.' }, { status: 500 });

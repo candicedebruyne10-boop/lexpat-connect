@@ -8,7 +8,7 @@
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { generateUniqueReferralCode, buildReferralUrl } from 'lib/referral';
+import { generateUniqueReferralCode, buildReferralUrl, isMissingReferralColumnError } from 'lib/referral';
 
 export async function POST(request) {
   try {
@@ -21,6 +21,13 @@ export async function POST(request) {
       .select('id, referral_code')
       .eq('user_id', user.id)
       .maybeSingle();
+
+    if (isMissingReferralColumnError(profileError)) {
+      return NextResponse.json(
+        { error: 'Le système de parrainage n’est pas encore activé sur cet environnement.', disabled: true },
+        { status: 503 }
+      );
+    }
 
     if (profileError || !profile) {
       return NextResponse.json(
