@@ -7,7 +7,7 @@ import {
   createReferral,
   generateUniqueReferralCode,
   logReferralEvent
-} from '../../../lib/referral';
+} from 'lib/referral';
 
 const allowedRoles = new Set(['worker', 'employer']);
 

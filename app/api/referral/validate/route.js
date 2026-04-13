@@ -9,7 +9,7 @@
 
 import { NextResponse } from 'next/server';
 import { getServiceClient } from '../../../../lib/supabase/server';
-import { resolveReferralCode, resolveReferralByName } from '../../../../lib/referral';
+import { resolveReferralCode, resolveReferralByName } from 'lib/referral';
 
 export async function POST(request) {
   try {

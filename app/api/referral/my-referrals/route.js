@@ -13,7 +13,7 @@
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { buildReferralUrl, buildShareMessage } from '../../../../lib/referral';
+import { buildReferralUrl, buildShareMessage } from 'lib/referral';
 
 export async function GET(request) {
   try {
@@ -35,7 +35,7 @@ export async function GET(request) {
     // Si pas encore de code → on en génère un automatiquement
     let code = profile.referral_code;
     if (!code) {
-      const { generateUniqueReferralCode } = await import('../../../../lib/referral');
+      const { generateUniqueReferralCode } = await import('lib/referral');
       code = await generateUniqueReferralCode(supabase);
       await supabase
         .from('worker_profiles')

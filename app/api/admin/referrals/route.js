@@ -9,7 +9,7 @@
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { logReferralEvent } from '../../../../lib/referral';
+import { logReferralEvent } from 'lib/referral';
 
 async function requireAdmin(request) {
   const { user } = await getUserFromRequest(request);

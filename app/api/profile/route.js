@@ -7,7 +7,7 @@ import { getSenderAddress } from "../../../lib/email-routing";
 import { newWorkerMatchEmailHtml, workerProfileIncompleteEmailHtml } from "../../../lib/email-templates";
 import { isUnsubscribed } from "../../../lib/email-unsubscribe";
 import { getEffectiveWorkerProfileVisibility, hasWorkerVisibilityRequirements } from "../../../lib/worker-profile-visibility";
-import { updateReferralStatus, logReferralEvent } from "../../../lib/referral";
+import { updateReferralStatus, logReferralEvent } from "lib/referral";
 
 const regionToDb = {
   "Bruxelles-Capitale": "brussels",

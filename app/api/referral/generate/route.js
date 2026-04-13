@@ -8,7 +8,7 @@
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { generateUniqueReferralCode, buildReferralUrl } from '../../../../lib/referral';
+import { generateUniqueReferralCode, buildReferralUrl } from 'lib/referral';
 
 export async function POST(request) {
   try {
