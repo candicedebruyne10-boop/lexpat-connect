@@ -13,11 +13,23 @@ const copy = {
   fr: {
     kicker: 'Parrainage',
     title: 'Invitez vos contacts sur LEXPAT Connect',
-    subtitle: 'Chaque personne que vous recommandez enrichit la communauté. Copiez votre lien et partagez-le par message, email ou LinkedIn.',
-    yourLink: 'Votre lien personnel',
+    subtitle: 'Partagez soit votre lien direct, soit simplement votre code. Le lien est le plus simple : le code est utile si la personne arrive plus tard sur le site.',
+    howToShare: 'Deux façons de parrainer',
+    optionLinkTitle: '1. Partager le lien direct',
+    optionLinkText: 'La personne clique sur votre lien et le code est repris automatiquement pendant l’inscription.',
+    optionCodeTitle: '2. Donner uniquement le code',
+    optionCodeText: 'La personne peut venir directement sur le site et saisir ce code au moment de créer son compte.',
+    yourLink: 'Lien direct à partager',
+    linkHelp: 'À privilégier si vous envoyez le lien par message, email, WhatsApp ou LinkedIn.',
     copy: 'Copier le lien',
     copied: 'Copié !',
-    copyMessage: 'Copier le message',
+    yourCode: 'Code à transmettre',
+    copyCode: 'Copier le code',
+    codeCopied: 'Code copié !',
+    codeHelp: 'À donner si la personne veut s’inscrire plus tard elle-même sur LEXPAT Connect.',
+    previewTitle: 'Message prêt à partager',
+    previewText: 'Vous pouvez relire ce message avant de le copier.',
+    copyMessage: 'Copier ce message',
     messageCopied: 'Message copié !',
     stats: {
       invited: 'invité(s)',
@@ -39,11 +51,23 @@ const copy = {
   en: {
     kicker: 'Referral',
     title: 'Invite your contacts to LEXPAT Connect',
-    subtitle: 'Every person you recommend enriches the community. Copy your link and share it by message, email or LinkedIn.',
-    yourLink: 'Your personal link',
+    subtitle: 'You can share either your direct link or simply your code. The link is easiest; the code is useful if the person visits the site later.',
+    howToShare: 'Two ways to refer someone',
+    optionLinkTitle: '1. Share the direct link',
+    optionLinkText: 'The person clicks your link and the referral code is carried automatically during sign-up.',
+    optionCodeTitle: '2. Share only the code',
+    optionCodeText: 'The person can go directly to the site and enter this code while creating an account.',
+    yourLink: 'Direct link to share',
+    linkHelp: 'Best option if you are sending the referral by message, email, WhatsApp or LinkedIn.',
     copy: 'Copy link',
     copied: 'Copied!',
-    copyMessage: 'Copy message',
+    yourCode: 'Referral code to share',
+    copyCode: 'Copy code',
+    codeCopied: 'Code copied!',
+    codeHelp: 'Useful if the person prefers to visit LEXPAT Connect later on their own.',
+    previewTitle: 'Ready-to-share message',
+    previewText: 'You can review the message before copying it.',
+    copyMessage: 'Copy this message',
     messageCopied: 'Message copied!',
     stats: {
       invited: 'invited',
@@ -85,6 +109,7 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [copiedMsg, setCopiedMsg] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -125,6 +150,14 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
     navigator.clipboard.writeText(data.share_message).then(() => {
       setCopiedMsg(true);
       setTimeout(() => setCopiedMsg(false), 2500);
+    });
+  }
+
+  function handleCopyCode() {
+    if (!data?.referral_code) return;
+    navigator.clipboard.writeText(data.referral_code).then(() => {
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2500);
     });
   }
 
@@ -176,43 +209,95 @@ export default function ReferralBanner({ locale = 'fr', accessToken }) {
         ))}
       </div>
 
-      {/* Lien */}
+      {/* Zone pédagogique */}
       <div className="px-6 py-5">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8fa0b3]">
-          {t.yourLink}
-        </p>
-        <div className="flex items-center gap-2 rounded-[14px] border border-[#e5edf4] bg-[#f7fafd] px-4 py-2.5">
-          <p className="flex-1 truncate text-sm font-mono text-[#1d3b8b] select-all">
-            {data?.referral_url}
+        <div className="rounded-[18px] border border-[#e8eef5] bg-[#fbfdff] p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8fa0b3]">
+            {t.howToShare}
           </p>
-          <button
-            onClick={handleCopyLink}
-            className={`shrink-0 rounded-[10px] px-3 py-1.5 text-xs font-semibold transition ${
-              copiedLink
-                ? 'bg-[#eef9f1] text-[#2f9d57]'
-                : 'bg-[#1d3b8b] text-white hover:bg-[#2a52c9]'
-            }`}
-          >
-            {copiedLink ? t.copied : t.copy}
-          </button>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <div className="rounded-[16px] border border-[#dfe8f1] bg-white p-4">
+              <p className="text-sm font-semibold text-[#1d3b8b]">{t.optionLinkTitle}</p>
+              <p className="mt-1 text-sm leading-6 text-[#5d6e83]">{t.optionLinkText}</p>
+            </div>
+            <div className="rounded-[16px] border border-[#dfe8f1] bg-white p-4">
+              <p className="text-sm font-semibold text-[#1d3b8b]">{t.optionCodeTitle}</p>
+              <p className="mt-1 text-sm leading-6 text-[#5d6e83]">{t.optionCodeText}</p>
+            </div>
+          </div>
         </div>
 
-        {/* Code */}
-        <p className="mt-2 text-xs text-[#8fa0b3]">
-          Code : <span className="font-mono font-medium text-[#57b7af]">{data?.referral_code}</span>
-        </p>
+        <div className="mt-5 space-y-5">
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8fa0b3]">
+              {t.yourLink}
+            </p>
+            <div className="flex items-center gap-2 rounded-[14px] border border-[#e5edf4] bg-[#f7fafd] px-4 py-2.5">
+              <p className="flex-1 truncate text-sm font-mono text-[#1d3b8b] select-all">
+                {data?.referral_url}
+              </p>
+              <button
+                onClick={handleCopyLink}
+                className={`shrink-0 rounded-[10px] px-3 py-1.5 text-xs font-semibold transition ${
+                  copiedLink
+                    ? 'bg-[#eef9f1] text-[#2f9d57]'
+                    : 'bg-[#1d3b8b] text-white hover:bg-[#2a52c9]'
+                }`}
+              >
+                {copiedLink ? t.copied : t.copy}
+              </button>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-[#8fa0b3]">{t.linkHelp}</p>
+          </div>
 
-        {/* Bouton message */}
-        <button
-          onClick={handleCopyMessage}
-          className={`mt-4 w-full rounded-[14px] border px-4 py-2.5 text-sm font-medium transition ${
-            copiedMsg
-              ? 'border-[#dcebe8] bg-[#f5fbfb] text-[#33566b]'
-              : 'border-[#e5edf4] bg-white text-[#5d6e83] hover:border-[#57b7af] hover:text-[#57b7af]'
-          }`}
-        >
-          {copiedMsg ? `✓ ${t.messageCopied}` : `💬 ${t.copyMessage}`}
-        </button>
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8fa0b3]">
+              {t.yourCode}
+            </p>
+            <div className="flex items-center gap-2 rounded-[14px] border border-[#dfe8f1] bg-white px-4 py-2.5">
+              <p className="flex-1 text-sm font-mono font-semibold text-[#57b7af] select-all">
+                {data?.referral_code}
+              </p>
+              <button
+                onClick={handleCopyCode}
+                className={`shrink-0 rounded-[10px] px-3 py-1.5 text-xs font-semibold transition ${
+                  copiedCode
+                    ? 'bg-[#eef9f1] text-[#2f9d57]'
+                    : 'border border-[#dce7ef] bg-white text-[#1d3b8b] hover:border-[#c9d7ea] hover:bg-[#f6f9fc]'
+                }`}
+              >
+                {copiedCode ? t.codeCopied : t.copyCode}
+              </button>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-[#8fa0b3]">{t.codeHelp}</p>
+          </div>
+
+          <div className="rounded-[18px] border border-[#e5edf4] bg-[#fcfdff] p-4">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8fa0b3]">
+                  {t.previewTitle}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#8fa0b3]">{t.previewText}</p>
+              </div>
+              <button
+                onClick={handleCopyMessage}
+                className={`mt-3 rounded-[12px] border px-4 py-2 text-sm font-medium transition sm:mt-0 ${
+                  copiedMsg
+                    ? 'border-[#dcebe8] bg-[#f5fbfb] text-[#33566b]'
+                    : 'border-[#e5edf4] bg-white text-[#5d6e83] hover:border-[#57b7af] hover:text-[#57b7af]'
+                }`}
+              >
+                {copiedMsg ? `✓ ${t.messageCopied}` : `💬 ${t.copyMessage}`}
+              </button>
+            </div>
+            <div className="mt-4 rounded-[14px] border border-[#e8eef5] bg-white px-4 py-3">
+              <p className="whitespace-pre-wrap text-sm leading-6 text-[#35506f]">
+                {data?.share_message}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Liste filleuls (si au moins 1) */}
