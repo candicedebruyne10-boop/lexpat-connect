@@ -1,15 +1,11 @@
 /**
  * GET  /api/admin/referrals — Liste tous les parrainages (admin uniquement)
- * PATCH /api/admin/referrals — Met à jour le statut d'un parrainage (validated / invalid)
- *
- * Paramètres GET :
- *   ?status=pending_review  (filtre optionnel)
- *   ?page=0&limit=50
+ * PATCH /api/admin/referrals — Met à jour le statut d'un parrainage
  */
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { logReferralEvent } from 'lib/referral';
+import { logReferralEvent } from '../../../../lib/referral';
 
 async function requireAdmin(request) {
   const { user } = await getUserFromRequest(request);
@@ -79,7 +75,7 @@ export async function GET(request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Compteurs par statut pour le résumé admin
+    // Compteurs par statut
     const { data: statusCounts } = await supabase
       .from('referrals')
       .select('status');
@@ -143,18 +139,13 @@ export async function PATCH(request) {
       return NextResponse.json({ error: updateError?.message || 'Referral non trouvé.' }, { status: 404 });
     }
 
-    // Logger l'action admin
     await logReferralEvent(supabase, {
       referral_id,
       event_type: action === 'validate' ? 'referral_validated' : 'referral_invalid',
       referral_code: updated.referral_code,
       referrer_user_id: updated.referrer_user_id,
       referee_user_id: updated.referee_user_id,
-      metadata: {
-        action,
-        admin_user_id: user.id,
-        admin_notes: admin_notes || null
-      }
+      metadata: { action, admin_user_id: user.id, admin_notes: admin_notes || null }
     });
 
     return NextResponse.json({ ok: true, referral: updated });

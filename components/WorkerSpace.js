@@ -8,6 +8,7 @@ import Image from "next/image";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { useAuth } from "./AuthProvider";
 import RegionSelector from "./RegionSelector";
+import ReferralBanner from "./ReferralBanner";
 import {
   getProfessionGroupsForRegions,
   getSectorOptions,
@@ -411,6 +412,9 @@ function DashboardView({ token, onNavigate, locale }) {
           </div>
         )}
       </section>
+
+      {/* ── Parrainage ─────────────────────────────────────────────────── */}
+      <ReferralBanner accessToken={token} locale={locale} />
     </div>
   );
 }

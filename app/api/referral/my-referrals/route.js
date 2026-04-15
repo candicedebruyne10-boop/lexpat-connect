@@ -2,18 +2,16 @@
  * GET /api/referral/my-referrals
  * Retourne la liste des filleuls du travailleur connecté,
  * avec les compteurs de statut.
- *
- * Réponse : {
- *   referral_code: string,
- *   referral_url: string,
- *   stats: { total, registered, profile_visible, validated },
- *   referrals: Array<{...}>
- * }
  */
 
 import { NextResponse } from 'next/server';
 import { getUserFromRequest, getServiceClient } from '../../../../lib/supabase/server';
-import { buildReferralUrl, buildShareMessage, isMissingReferralColumnError } from 'lib/referral';
+import {
+  buildReferralUrl,
+  buildShareMessage,
+  generateUniqueReferralCode,
+  isMissingReferralColumnError
+} from '../../../../lib/referral';
 
 export async function GET(request) {
   try {
@@ -28,6 +26,12 @@ export async function GET(request) {
       .eq('user_id', user.id)
       .maybeSingle();
 
+    // Log pour diagnostic
+    if (profileError) {
+      console.error('[my-referrals] profileError:', profileError.message, profileError.code, profileError.details);
+    }
+
+    // Migration SQL pas encore appliquée → désactiver silencieusement
     if (isMissingReferralColumnError(profileError)) {
       return NextResponse.json({
         disabled: true,
@@ -43,22 +47,25 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Profil non trouvé.' }, { status: 404 });
     }
 
-    // Si pas encore de code → on en génère un automatiquement
+    // Si pas encore de code → en générer un automatiquement
     let code = profile.referral_code;
     if (!code) {
-      const { generateUniqueReferralCode } = await import('lib/referral');
-      code = await generateUniqueReferralCode(supabase);
-      await supabase
-        .from('worker_profiles')
-        .update({ referral_code: code })
-        .eq('id', profile.id);
+      try {
+        code = await generateUniqueReferralCode(supabase);
+        await supabase
+          .from('worker_profiles')
+          .update({ referral_code: code })
+          .eq('id', profile.id);
+      } catch (err) {
+        console.error('[my-referrals] code generation failed:', err.message);
+      }
     }
 
-    const referralUrl = buildReferralUrl(code, locale);
-    const shareMessage = buildShareMessage(referralUrl, locale);
+    const referralUrl = code ? buildReferralUrl(code, locale) : null;
+    const shareMessage = referralUrl ? buildShareMessage(referralUrl, locale) : null;
 
     // Récupérer les parrainages de ce membre
-    const { data: referrals } = await supabase
+    const { data: referrals, error: referralsError } = await supabase
       .from('referrals')
       .select(`
         id,
@@ -80,9 +87,33 @@ export async function GET(request) {
       .not('status', 'eq', 'invalid')
       .order('created_at', { ascending: false });
 
+    // Log pour diagnostic
+    if (referralsError) {
+      console.error('[my-referrals] referrals query error:', referralsError.message, referralsError.code, referralsError.details);
+      // Si la table n'existe vraiment pas → désactivation silencieuse
+      if (referralsError.message?.includes('does not exist') || referralsError.code === '42P01') {
+        return NextResponse.json({
+          disabled: true,
+          referral_code: code,
+          referral_url: referralUrl,
+          share_message: shareMessage,
+          stats: { total: 0, registered: 0, profile_visible: 0, validated: 0 },
+          referrals: []
+        });
+      }
+      // Autre erreur → on retourne quand même le banner avec les stats vides (pas disabled)
+      return NextResponse.json({
+        referral_code: code,
+        referral_url: referralUrl,
+        share_message: shareMessage,
+        stats: { total: 0, registered: 0, profile_visible: 0, validated: 0 },
+        referrals: [],
+        _debug_error: referralsError.message
+      });
+    }
+
     const safeReferrals = referrals || [];
 
-    // Calculer les stats
     const stats = {
       total: safeReferrals.length,
       registered: safeReferrals.filter(r =>
@@ -94,7 +125,6 @@ export async function GET(request) {
       validated: safeReferrals.filter(r => r.status === 'validated').length
     };
 
-    // Formater pour le front
     const formattedReferrals = safeReferrals.map(r => ({
       id: r.id,
       status: r.status,
@@ -103,7 +133,6 @@ export async function GET(request) {
       profile_visible_at: r.profile_visible_at,
       validated_at: r.validated_at,
       created_at: r.created_at,
-      // Données filleul (anonymisées : prénom uniquement pour MVP)
       referee_name: r.referee_worker_profile_id?.full_name
         ? r.referee_worker_profile_id.full_name.split(' ')[0]
         : null,

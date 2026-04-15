@@ -1,15 +1,14 @@
 /**
  * POST /api/referral/validate
  * Valide un code ou un nom de parrain saisi manuellement.
- * Utilisé pour le feedback en temps réel dans le formulaire d'inscription.
- *
- * Body : { input: string }
- * Réponse : { valid: boolean, source: string, display_name?: string, message: string }
  */
 
 import { NextResponse } from 'next/server';
 import { getServiceClient } from '../../../../lib/supabase/server';
-import { resolveReferralCode, resolveReferralByName } from 'lib/referral';
+import {
+  resolveReferralCode,
+  resolveReferralByName
+} from '../../../../lib/referral';
 
 export async function POST(request) {
   try {
@@ -28,13 +27,12 @@ export async function POST(request) {
 
     const supabase = getServiceClient();
 
-    // Tentative 1 : résolution par code LP-XXXXXX
+    // Tentative 1 : code LP-XXXXXX
     if (/^LP-?[A-Z0-9]{6}$/i.test(input.replace(/\s/g, ''))) {
       const normalized = input.trim().toUpperCase().replace(/\s/g, '');
       const result = await resolveReferralCode(supabase, normalized);
 
       if (result) {
-        // Récupérer le nom du parrain pour affichage
         const { data: profile } = await supabase
           .from('worker_profiles')
           .select('full_name')
@@ -60,7 +58,7 @@ export async function POST(request) {
       });
     }
 
-    // Tentative 2 : résolution par nom
+    // Tentative 2 : recherche par nom
     if (input.length >= 3) {
       const result = await resolveReferralByName(supabase, input);
 
@@ -81,9 +79,9 @@ export async function POST(request) {
         });
       }
 
-      // Nom saisi mais non trouvé exactement → pending_review
+      // Non trouvé exactement → accepté pour vérification admin
       return NextResponse.json({
-        valid: true, // On accepte quand même la saisie pour vérification admin
+        valid: true,
         source: 'manual_name_unresolved',
         message: isEn
           ? 'Name not found exactly. Our team will verify.'
