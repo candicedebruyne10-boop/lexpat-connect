@@ -24,7 +24,7 @@ async function assertAdminAccess(supabase, user) {
   return roleRow?.role === "admin";
 }
 
-function hydrateWorkers(workers) {
+function hydrateWorkers(workers, referralCounts = new Map()) {
   return workers.map((worker) => ({
     id: worker.id,
     fullName: worker.full_name || "Nom non renseigné",
@@ -33,6 +33,7 @@ function hydrateWorkers(workers) {
     preferredRegion: normalizeRegion(worker.preferred_region),
     experienceLevel: worker.experience_level || "Non renseigné",
     profileVisibility: getEffectiveWorkerProfileVisibility(worker),
+    activeReferralLinks: referralCounts.get(worker.user_id) || 0,
     createdAt: worker.created_at
   }));
 }
@@ -116,7 +117,8 @@ export async function GET(request) {
       applicationsResponse,
       matchesResponse,
       workersResponse,
-      companiesResponse
+      companiesResponse,
+      referralsResponse
     ] = await Promise.all([
       supabase
         .from("job_offers")
@@ -132,11 +134,15 @@ export async function GET(request) {
         .order("created_at", { ascending: false }),
       supabase
         .from("worker_profiles")
-        .select("id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility, created_at")
+        .select("id, user_id, full_name, target_job, target_sector, preferred_region, experience_level, profile_visibility, created_at")
         .order("created_at", { ascending: false }),
       supabase
         .from("employer_profiles")
-        .select("id, company_name")
+        .select("id, company_name"),
+      supabase
+        .from("referrals")
+        .select("referrer_user_id, status")
+        .neq("status", "invalid")
     ]);
 
     if (offersResponse.error) throw offersResponse.error;
@@ -144,12 +150,20 @@ export async function GET(request) {
     if (matchesResponse.error) throw matchesResponse.error;
     if (workersResponse.error) throw workersResponse.error;
     if (companiesResponse.error) throw companiesResponse.error;
+    if (referralsResponse.error) throw referralsResponse.error;
 
     const offers = offersResponse.data || [];
     const applications = applicationsResponse.data || [];
     const matches = matchesResponse.data || [];
     const workers = workersResponse.data || [];
     const companies = companiesResponse.data || [];
+    const referrals = referralsResponse.data || [];
+    const referralCounts = referrals.reduce((map, referral) => {
+      const key = referral.referrer_user_id;
+      if (!key) return map;
+      map.set(key, (map.get(key) || 0) + 1);
+      return map;
+    }, new Map());
 
     return NextResponse.json({
       summary: {
@@ -161,7 +175,7 @@ export async function GET(request) {
         newMatches: matches.filter((match) => match.status === "new").length
       },
       offers: hydrateOffers(offers, companies),
-      workers: hydrateWorkers(workers),
+      workers: hydrateWorkers(workers, referralCounts),
       applications: hydrateApplications(applications, offers, workers, companies),
       matches: hydrateMatches(matches, offers, workers, companies)
     });

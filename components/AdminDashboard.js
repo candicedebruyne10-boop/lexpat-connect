@@ -37,6 +37,7 @@ const copy = {
     preferredRegion: "Région souhaitée",
     experience: "Expérience",
     profile: "Profil",
+    activeReferrals: "Parrainages actifs",
     registered: "Inscrit le",
     backOffice: "Back-office",
     adminAccess: "Accès administrateur requis",
@@ -84,6 +85,7 @@ const copy = {
     preferredRegion: "Preferred region",
     experience: "Experience",
     profile: "Profile",
+    activeReferrals: "Active referrals",
     registered: "Registered on",
     backOffice: "Back office",
     adminAccess: "Administrator access required",
@@ -266,17 +268,18 @@ function WorkersTable({ rows, locale = "fr" }) {
 
   return (
     <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-      <div className="hidden grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
+      <div className="hidden grid-cols-[2fr_1.3fr_1fr_1fr_1fr_0.9fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
         <div>{t.worker}</div>
         <div>{t.sector}</div>
         <div>{t.preferredRegion}</div>
         <div>{t.experience}</div>
         <div>{t.profile}</div>
+        <div>{t.activeReferrals}</div>
         <div>{t.registered}</div>
       </div>
       <div className="divide-y divide-[#edf3f7]">
         {rows.map((row) => (
-          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] lg:items-center lg:gap-4">
+          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[2fr_1.3fr_1fr_1fr_1fr_0.9fr_1fr] lg:items-center lg:gap-4">
             <div>
               <p className="text-base font-semibold text-[#173a8a]">{row.fullName}</p>
               <p className="mt-1 text-sm text-[#6d7b8d]">{row.targetJob}</p>
@@ -287,6 +290,11 @@ function WorkersTable({ rows, locale = "fr" }) {
             <div>
               <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${visibilityClasses[row.profileVisibility] || "bg-[#f5f7fa] text-[#607086]"}`}>
                 {visibilityLabel[row.profileVisibility] || row.profileVisibility}
+              </span>
+            </div>
+            <div>
+              <span className="inline-flex min-w-[2.5rem] items-center justify-center rounded-full border border-[#dbe6ff] bg-[#eef4ff] px-3 py-1 text-xs font-semibold text-[#173a8a]">
+                {row.activeReferralLinks || 0}
               </span>
             </div>
             <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt, locale)}</div>
