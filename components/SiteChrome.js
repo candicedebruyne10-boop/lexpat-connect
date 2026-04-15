@@ -394,7 +394,7 @@ export default function SiteChrome({ children }) {
               >
                 {isEn ? "The founder's story" : "L'histoire de la fondatrice"}
               </Link>
-              <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 {legalLinks.map((item) => (
                   <Link
                     key={item.href}
@@ -404,6 +404,14 @@ export default function SiteChrome({ children }) {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  href={localizeHref("/admin", locale)}
+                  aria-label={isEn ? "Open admin" : "Ouvrir l'administration"}
+                  title={isEn ? "Admin access" : "Accès administration"}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-[#a5b2c4] transition hover:border-[#dce7ef] hover:bg-[#f0f4f8] hover:text-[#1E3A78]"
+                >
+                  <span aria-hidden="true" className="text-[13px] leading-none">🔒</span>
+                </Link>
               </div>
             </div>
           </div>
