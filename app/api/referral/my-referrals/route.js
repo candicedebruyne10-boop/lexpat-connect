@@ -135,7 +135,9 @@ export async function GET(request) {
       created_at: r.created_at,
       referee_name: r.referee_worker_profile_id?.full_name
         ? r.referee_worker_profile_id.full_name.split(' ')[0]
-        : null,
+        : locale === 'en'
+          ? 'Profile in progress'
+          : 'Profil en cours',
       referee_job: r.referee_worker_profile_id?.target_job || null,
       referee_profile_completion: r.referee_worker_profile_id?.profile_completion || 0
     }));

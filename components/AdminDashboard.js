@@ -378,6 +378,112 @@ function MatchesTable({ rows, locale = "fr" }) {
   );
 }
 
+// ─── Panneau d'envoi email ────────────────────────────────────────────────
+
+function EmailSendPanel({ token }) {
+  const [status, setStatus]     = useState("idle"); // idle | loading | done | error
+  const [result, setResult]     = useState(null);
+  const [reminder, setReminder] = useState(false);
+
+  async function handleSend(dryRun = false) {
+    setStatus("loading");
+    setResult(null);
+    try {
+      const res = await fetch("/api/admin/send-visibility-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reminder, dry_run: dryRun }),
+      });
+      const json = await res.json();
+      setResult(json);
+      setStatus(res.ok ? "done" : "error");
+    } catch (err) {
+      setResult({ error: err.message });
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section className="mt-8 rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.04)] sm:p-8">
+      <div className="flex flex-col gap-2 mb-6">
+        <h2 className="text-xl font-semibold tracking-tight text-[#173a8a]">
+          📧 Envoyer un email aux profils masqués
+        </h2>
+        <p className="text-sm text-[#607086]">
+          Envoie automatiquement l'email "Rendez votre profil visible" à tous les travailleurs dont le profil est masqué.
+        </p>
+      </div>
+
+      {/* Option rappel */}
+      <label className="flex items-center gap-3 mb-6 cursor-pointer w-fit">
+        <input
+          type="checkbox"
+          checked={reminder}
+          onChange={e => setReminder(e.target.checked)}
+          className="h-4 w-4 rounded border-[#c5d5e8] accent-[#173a8a]"
+        />
+        <span className="text-sm text-[#3d5470]">
+          Mode rappel <span className="text-[#8fa0b3]">(sujet : "Rappel : rendez votre profil visible...")</span>
+        </span>
+      </label>
+
+      {/* Boutons */}
+      <div className="flex flex-wrap gap-3">
+        <button
+          onClick={() => handleSend(true)}
+          disabled={status === "loading"}
+          className="rounded-[12px] border border-[#c5d5e8] bg-white px-5 py-2.5 text-sm font-semibold text-[#3d5470] transition hover:border-[#173a8a] hover:text-[#173a8a] disabled:opacity-50"
+        >
+          {status === "loading" ? "En cours..." : "🔍 Simuler (sans envoyer)"}
+        </button>
+        <button
+          onClick={() => handleSend(false)}
+          disabled={status === "loading"}
+          className="rounded-[12px] bg-[#173a8a] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(23,58,138,0.2)] transition hover:bg-[#1e4ba8] disabled:opacity-50"
+        >
+          {status === "loading" ? "Envoi en cours..." : "🚀 Envoyer à tous les profils masqués"}
+        </button>
+      </div>
+
+      {/* Résultat */}
+      {result && (
+        <div className={`mt-6 rounded-[16px] p-4 text-sm ${status === "error" ? "bg-[#fff5f5] border border-[#f0d0d0] text-[#a33f3f]" : "bg-[#f0faf5] border border-[#c0e8d0] text-[#1a5c3a]"}`}>
+          {result.error ? (
+            <p>❌ Erreur : {result.error}</p>
+          ) : (
+            <>
+              <p className="font-semibold mb-2">
+                {result.dry_run ? "✅ Simulation terminée" : "✅ Envoi terminé"}
+              </p>
+              <p>Profils masqués trouvés : <strong>{result.total_hidden}</strong></p>
+              <p>Emails {result.dry_run ? "à envoyer" : "envoyés"} : <strong>{result.sent}</strong></p>
+              {result.failed > 0 && <p>Échecs : <strong>{result.failed}</strong></p>}
+              {result.skipped > 0 && <p>Ignorés (pas d'email) : <strong>{result.skipped}</strong></p>}
+              {result.recipients?.length > 0 && (
+                <details className="mt-3">
+                  <summary className="cursor-pointer text-xs font-semibold text-[#2d7a50]">Voir la liste</summary>
+                  <ul className="mt-2 space-y-1">
+                    {result.recipients.map((r, i) => (
+                      <li key={i} className="text-xs text-[#3d5470]">
+                        {r.dry ? "○" : "✓"} {r.email} <span className="text-[#8fa0b3]">({r.locale})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ─── Dashboard principal ──────────────────────────────────────────────────
+
 export default function AdminDashboard({ locale = "fr" }) {
   const t = copy[locale] || copy.fr;
   const router = useRouter();
@@ -550,6 +656,8 @@ export default function AdminDashboard({ locale = "fr" }) {
           </article>
         ))}
       </section>
+
+      <EmailSendPanel token={session?.access_token} />
 
       <section className="mt-8 rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.04)] sm:p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
