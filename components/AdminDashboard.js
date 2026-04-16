@@ -212,6 +212,26 @@ export default function AdminDashboard({ initialData }) {
   const [emailName, setEmailName]         = useState("");
   const [emailLocale, setEmailLocale]     = useState("auto");
   const [emailCustomBody, setEmailCustomBody] = useState("");
+  const customBodyRef = { current: null };
+
+  function insertVariable(tag) {
+    const textarea = customBodyRef.current;
+    if (!textarea) {
+      setEmailCustomBody(prev => prev + tag);
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end   = textarea.selectionEnd;
+    const before = emailCustomBody.slice(0, start);
+    const after  = emailCustomBody.slice(end);
+    const newVal = before + tag + after;
+    setEmailCustomBody(newVal);
+    // Remettre le curseur après le tag inséré
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + tag.length;
+    }, 0);
+  }
   const [emailLoading, setEmailLoading]   = useState(false);
   const [emailResult, setEmailResult]     = useState(null);
   const [showConfirm, setShowConfirm]     = useState(false);
@@ -663,6 +683,7 @@ export default function AdminDashboard({ initialData }) {
                   <div>
                     <label style={labelStyle}>Corps du message</label>
                     <textarea
+                      ref={el => { customBodyRef.current = el; }}
                       rows={8}
                       placeholder={`Bonjour {{name}},\n\nVotre message ici…\n\nL'équipe LEXPAT Connect`}
                       value={emailCustomBody}
@@ -678,13 +699,17 @@ export default function AdminDashboard({ initialData }) {
                           { tag: "{{referral_url}}", desc: "Son lien d'affiliation" },
                           { tag: "{{email}}",        desc: "Son adresse email" },
                         ].map(v => (
-                          <span
+                          <button
                             key={v.tag}
-                            title={v.desc}
-                            style={{ background: "#f0f4fb", border: "1px solid #d0dcf0", borderRadius: 6, padding: "3px 8px", fontSize: 11, color: "#1E3A78", fontFamily: "monospace", cursor: "default" }}
+                            type="button"
+                            onClick={() => insertVariable(v.tag)}
+                            title={`Cliquer pour insérer ${v.tag}`}
+                            style={{ background: "#f0f4fb", border: "1px solid #d0dcf0", borderRadius: 6, padding: "4px 10px", fontSize: 11, color: "#1E3A78", fontFamily: "monospace", cursor: "pointer", transition: "background .15s" }}
+                            onMouseEnter={e => e.currentTarget.style.background = "#e2eaf8"}
+                            onMouseLeave={e => e.currentTarget.style.background = "#f0f4fb"}
                           >
                             {v.tag} <span style={{ color: "#8a9db8", fontFamily: "inherit" }}>— {v.desc}</span>
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>
