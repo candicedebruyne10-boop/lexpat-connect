@@ -236,6 +236,8 @@ export default function AdminDashboard({ initialData }) {
   const [emailResult, setEmailResult]     = useState(null);
   const [showConfirm, setShowConfirm]     = useState(false);
   const [pendingDryRun, setPendingDryRun] = useState(false);
+  const [previewHtml, setPreviewHtml]     = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   // ── History state ───────────────────────────────────────────────────────────
   const [campaigns, setCampaigns]             = useState([]);
@@ -740,6 +742,21 @@ export default function AdminDashboard({ initialData }) {
                 )}
 
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    style={{ ...btn.base, ...btn.ghost }}
+                    disabled={previewLoading}
+                    onClick={async () => {
+                      setPreviewLoading(true);
+                      const params = new URLSearchParams({ template: emailTemplate, locale: emailLocale === "auto" ? "fr" : emailLocale });
+                      if (emailTemplate === "custom" && emailCustomBody) params.set("custom_html", emailCustomBody);
+                      const res = await fetch(`/api/admin/campaigns/preview?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+                      const html = await res.text();
+                      setPreviewHtml(html);
+                      setPreviewLoading(false);
+                    }}
+                  >
+                    {previewLoading ? "⏳" : "👁️"} Aperçu
+                  </button>
                   <button style={{ ...btn.base, ...btn.ghost }} disabled={emailLoading} onClick={() => sendCampaign(true)}>
                     {emailLoading ? "⏳ Simulation…" : "🧪 Simuler"}
                   </button>
@@ -1003,6 +1020,34 @@ export default function AdminDashboard({ initialData }) {
           </div>
         )}
       </div>
+
+      {/* ── Modale de prévisualisation ── */}
+      {previewHtml && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 998 }}>
+          <div style={{ background: "#fff", borderRadius: 20, width: "min(720px, 95vw)", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 20px 60px rgba(0,0,0,0.3)", overflow: "hidden" }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", borderBottom: "1px solid #e8eef8", flexShrink: 0 }}>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78" }}>Aperçu de l'email</div>
+                <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>Données fictives — destinataire : Marie Dupont</div>
+              </div>
+              <button
+                onClick={() => setPreviewHtml(null)}
+                style={{ background: "#f0f4fb", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontWeight: 700, color: "#1E3A78", fontSize: 13 }}
+              >
+                ✕ Fermer
+              </button>
+            </div>
+            {/* iframe */}
+            <iframe
+              srcDoc={previewHtml}
+              style={{ flex: 1, border: "none", width: "100%", minHeight: 500 }}
+              title="Aperçu email"
+              sandbox="allow-same-origin"
+            />
+          </div>
+        </div>
+      )}
 
       {/* ── Modale de confirmation ── */}
       {showConfirm && (
