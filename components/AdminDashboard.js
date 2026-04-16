@@ -1,696 +1,972 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
-import { useAuth } from "./AuthProvider";
 
-const copy = {
-  fr: {
-    tabs: [
-      { id: "offers", label: "Offres" },
-      { id: "workers", label: "Travailleurs" },
-      { id: "matches", label: "Matchings" }
-    ],
-    summaryCards: [
-      { key: "publishedOffers", label: "Offres publiées", tone: "blue" },
-      { key: "workers", label: "Travailleurs inscrits", tone: "teal" },
-      { key: "visibleWorkers", label: "Profils visibles", tone: "amber" },
-      { key: "newMatches", label: "Nouveaux matchs", tone: "green" }
-    ],
-    searchSr: "Rechercher",
-    searchPlaceholder: "Rechercher un poste, une entreprise, un candidat...",
-    searchLabel: "Filtrer",
-    empty: (label) => `Aucun élément à afficher pour l’instant dans l’onglet ${label.toLowerCase()}.`,
-    offers: "Offres",
-    workers: "Travailleurs",
-    matches: "Matchings",
-    offer: "Poste",
-    sector: "Secteur",
-    company: "Entreprise",
-    region: "Région",
-    contract: "Contrat",
-    status: "Statut",
-    created: "Créée le",
-    worker: "Travailleur",
-    preferredRegion: "Région souhaitée",
-    experience: "Expérience",
-    profile: "Profil",
-    activeReferrals: "Parrainages actifs",
-    registered: "Inscrit le",
-    backOffice: "Back-office",
-    adminAccess: "Accès administrateur requis",
-    adminAccessText:
-      "Connectez-vous avec votre compte administratrice pour consulter les offres, les candidatures et les matchings dans un seul écran.",
-    signIn: "Se connecter",
-    home: "Retour à l’accueil",
-    denied: "Accès refusé",
-    unavailable: "Tableau de bord indisponible",
-    badge: "Admin LEXPAT Connect",
-    heroTitle: "Vue d’ensemble des offres, travailleurs et matchings",
-    heroText:
-      "Un back-office pensé pour voir en un coup d’œil qui s’inscrit sur la plateforme, quelles offres sont actives et quels profils remontent dans le matching.",
-    sectionTitle: "Pilotage opérationnel",
-    sectionText:
-      "Passez d’un flux à l’autre sans perdre le fil : offres créées, candidatures déposées, profils remontés par le matching."
+// ─── Constantes ────────────────────────────────────────────────────────────────
+
+const TABS = [
+  { id: "overview",    label: "Vue d'ensemble",  icon: "📊" },
+  { id: "contacts",   label: "Contacts",         icon: "👥" },
+  { id: "emailing",   label: "Emailing",         icon: "✉️" },
+  { id: "operations", label: "Opérationnel",     icon: "⚙️" },
+  { id: "history",    label: "Historique",       icon: "📋" },
+];
+
+const SEGMENT_GROUPS = {
+  "Travailleurs": [
+    { id: "workers_all",        label: "Tous les travailleurs" },
+    { id: "workers_visible",    label: "Profils visibles" },
+    { id: "workers_hidden",     label: "Profils masqués" },
+    { id: "workers_incomplete", label: "Profils incomplets" },
+    { id: "workers_recent",     label: "Inscrits récemment (30j)" },
+    { id: "workers_inactive",   label: "Inactifs (90j)" },
+  ],
+  "Employeurs": [
+    { id: "employers_all",             label: "Tous les employeurs" },
+    { id: "employers_with_offers",     label: "Avec offres publiées" },
+    { id: "employers_without_offers",  label: "Sans offre publiée" },
+    { id: "employers_recent",          label: "Inscrits récemment (30j)" },
+  ],
+  "Autres": [
+    { id: "unsubscribed", label: "Désinscrits email" },
+  ],
+};
+
+const TEMPLATES = [
+  { id: "visibility_initial",     label: "Rendre son profil visible (1ère relance)",  description: "Invite les travailleurs à rendre leur profil visible avant lundi." },
+  { id: "visibility_reminder",    label: "Rendre son profil visible (rappel)",         description: "Rappel : profil toujours masqué, dernière chance." },
+  { id: "complete_profile",       label: "Compléter son profil",                       description: "Pour les profils incomplets : les encourage à renseigner les infos manquantes." },
+  { id: "employer_publish_offer", label: "Employeur — Publier une offre",              description: "Invite les employeurs sans offre publiée à créer leur première offre." },
+  { id: "inactivity_reminder",    label: "Rappel d'inactivité",                        description: "Rappel pour les membres inactifs depuis 90+ jours." },
+  { id: "custom",                 label: "Message personnalisé",                       description: "Envoyez un message libre sur n'importe quel segment." },
+];
+
+// ─── Styles partagés ──────────────────────────────────────────────────────────
+
+const card = {
+  background: "#ffffff",
+  borderRadius: 16,
+  border: "1px solid #e8eef8",
+  padding: "24px 28px",
+  boxShadow: "0 2px 16px rgba(30,58,120,0.06)",
+};
+
+const btn = {
+  base: {
+    display: "inline-flex", alignItems: "center", gap: 6,
+    padding: "9px 18px", borderRadius: 10, fontWeight: 700,
+    fontSize: 13, cursor: "pointer", border: "none", transition: "opacity .15s",
   },
-  en: {
-    tabs: [
-      { id: "offers", label: "Openings" },
-      { id: "workers", label: "Workers" },
-      { id: "matches", label: "Matches" }
-    ],
-    summaryCards: [
-      { key: "publishedOffers", label: "Published openings", tone: "blue" },
-      { key: "workers", label: "Registered workers", tone: "teal" },
-      { key: "visibleWorkers", label: "Visible profiles", tone: "amber" },
-      { key: "newMatches", label: "New matches", tone: "green" }
-    ],
-    searchSr: "Search",
-    searchPlaceholder: "Search for a role, a company or a candidate...",
-    searchLabel: "Filter",
-    empty: (label) => `Nothing to show yet in the ${label.toLowerCase()} tab.`,
-    offers: "Openings",
-    workers: "Workers",
-    matches: "Matches",
-    offer: "Role",
-    sector: "Sector",
-    company: "Company",
-    region: "Region",
-    contract: "Contract",
-    status: "Status",
-    created: "Created on",
-    worker: "Worker",
-    preferredRegion: "Preferred region",
-    experience: "Experience",
-    profile: "Profile",
-    activeReferrals: "Active referrals",
-    registered: "Registered on",
-    backOffice: "Back office",
-    adminAccess: "Administrator access required",
-    adminAccessText:
-      "Sign in with your administrator account to review openings, applications and matches in one place.",
-    signIn: "Sign in",
-    home: "Back to home",
-    denied: "Access denied",
-    unavailable: "Dashboard unavailable",
-    badge: "LEXPAT Connect admin",
-    heroTitle: "Overview of openings, workers and matches",
-    heroText:
-      "A back office designed to quickly see who joined the platform, which openings are active and which profiles surfaced in matching.",
-    sectionTitle: "Operational overview",
-    sectionText:
-      "Move from one workflow to another without losing the thread: openings created, applications submitted and profiles surfaced by matching."
-  }
+  primary: { background: "linear-gradient(135deg,#1E3A78,#2a5ca8)", color: "#fff" },
+  danger:  { background: "linear-gradient(135deg,#B5121B,#c9282f)", color: "#fff" },
+  ghost:   { background: "#f0f4fb", color: "#1E3A78", border: "1px solid #d0dcf0" },
+  teal:    { background: "linear-gradient(135deg,#3da89f,#57B7AF)", color: "#fff" },
 };
 
-const toneClasses = {
-  blue: "bg-[#eef4ff] text-[#173a8a] border-[#d7e4ff]",
-  teal: "bg-[#ecfaf8] text-[#2b8f88] border-[#cdece8]",
-  amber: "bg-[#fff7e8] text-[#c48014] border-[#f7e2b8]",
-  green: "bg-[#eef9f1] text-[#2f9d57] border-[#d7efdf]"
+const badgeStyle = {
+  base:        { display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700 },
+  visible:     { background: "#e6faf7", color: "#0d7c6e" },
+  hidden:      { background: "#fef3f2", color: "#b91c1c" },
+  incomplete:  { background: "#fff8e6", color: "#92400e" },
+  unsubscribed:{ background: "#f5f5f5", color: "#555" },
+  worker:      { background: "#eff6ff", color: "#1d4ed8" },
+  employer:    { background: "#faf5ff", color: "#6b21a8" },
 };
 
-const statusClasses = {
-  draft: "bg-[#f5f7fa] text-[#607086]",
-  review: "bg-[#fff7e8] text-[#c48014]",
-  published: "bg-[#eef4ff] text-[#173a8a]",
-  paused: "bg-[#fff3e8] text-[#b25b14]",
-  closed: "bg-[#f5f7fa] text-[#607086]",
-  submitted: "bg-[#eef4ff] text-[#173a8a]",
-  reviewing: "bg-[#fff7e8] text-[#c48014]",
-  shortlisted: "bg-[#eef9f1] text-[#2f9d57]",
-  contacted: "bg-[#ecfaf8] text-[#2b8f88]",
-  rejected: "bg-[#fff1f1] text-[#af4b4b]",
-  hired: "bg-[#eef9f1] text-[#2f9d57]",
-  new: "bg-[#eef4ff] text-[#173a8a]",
-  reviewed: "bg-[#fff7e8] text-[#c48014]",
-  interested: "bg-[#ecfaf8] text-[#2b8f88]",
-  legal_review: "bg-[#f4efff] text-[#6c49b8]"
+const labelStyle = {
+  display: "block", fontSize: 12, fontWeight: 700, color: "#1E3A78",
+  marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5,
 };
 
-const statusLabels = {
-  // Offres
-  draft: "Brouillon",
-  review: "En révision",
-  published: "Publiée",
-  paused: "En pause",
-  closed: "Clôturée",
-  // Matchings
-  new: "Nouveau",
-  reviewed: "Travailleur intéressé",
-  interested: "Employeur intéressé",
-  contacted: "Contact établi",
-  legal_review: "Vérification légale",
-  // Autres
-  submitted: "Soumise",
-  reviewing: "En cours",
-  shortlisted: "Présélectionné",
-  rejected: "Refusé",
-  hired: "Recruté"
+const inputStyle = {
+  width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #d0dcf0",
+  fontSize: 13, color: "#1E3A78", outline: "none", boxSizing: "border-box",
+  background: "#fff",
 };
 
-const statusLabelsEn = {
-  draft: "Draft",
-  review: "In review",
-  published: "Published",
-  paused: "Paused",
-  closed: "Closed",
-  new: "New",
-  reviewed: "Worker interested",
-  interested: "Employer interested",
-  contacted: "Contact established",
-  legal_review: "Legal review",
-  submitted: "Submitted",
-  reviewing: "Reviewing",
-  shortlisted: "Shortlisted",
-  rejected: "Rejected",
-  hired: "Hired"
-};
+// ─── Utilitaires ──────────────────────────────────────────────────────────────
 
-function StatusBadge({ status, locale = "fr" }) {
-  const labels = locale === "en" ? statusLabelsEn : statusLabels;
-  const label = labels[status] || status;
-  const cls = statusClasses[status] || "bg-[#f5f7fa] text-[#607086]";
-  return (
-    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${cls}`}>
-      {label}
-    </span>
-  );
+function formatDate(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-function formatDate(value, locale = "fr") {
-  if (!value) return locale === "en" ? "Not provided" : "Non renseignée";
-
-  return new Intl.DateTimeFormat(locale === "en" ? "en-BE" : "fr-BE", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  }).format(new Date(value));
+function formatDateTime(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleString("fr-BE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-function SearchInput({ value, onChange, locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
-  return (
-    <label className="relative block">
-      <span className="sr-only">{t.searchSr}</span>
-      <input
-        className="field-input pr-12"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={t.searchPlaceholder}
-      />
-      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#7a8898]">
-        {t.searchLabel}
-      </span>
-    </label>
-  );
-}
+// ─── Petits composants ────────────────────────────────────────────────────────
 
-function EmptyState({ label, locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
+function KpiCard({ label, value, color = "#1E3A78", icon }) {
   return (
-    <div className="rounded-[28px] border border-dashed border-[#d9e4ee] bg-[#fbfdff] px-6 py-12 text-center text-sm leading-7 text-[#6d7b8d]">
-      {t.empty(label)}
+    <div style={{ ...card, display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
+      <div style={{ fontSize: 32, fontWeight: 900, color, lineHeight: 1 }}>{value ?? "—"}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78", marginTop: 4 }}>{label}</div>
     </div>
   );
 }
 
-function OffersTable({ rows, locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
-  if (!rows.length) return <EmptyState label={t.offers} locale={locale} />;
-
+function Alert({ type = "info", children }) {
+  const s = {
+    info:    { background: "#eff6ff", borderLeft: "3px solid #3b82f6", color: "#1d4ed8" },
+    success: { background: "#f0fdf4", borderLeft: "3px solid #22c55e", color: "#166534" },
+    warning: { background: "#fff8e6", borderLeft: "3px solid #f59e0b", color: "#92400e" },
+    error:   { background: "#fef2f2", borderLeft: "3px solid #ef4444", color: "#b91c1c" },
+  };
   return (
-    <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-      <div className="hidden grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
-        <div>{t.offer}</div>
-        <div>{t.company}</div>
-        <div>{t.region}</div>
-        <div>{t.contract}</div>
-        <div>{t.status}</div>
-        <div>{t.created}</div>
-      </div>
-      <div className="divide-y divide-[#edf3f7]">
-        {rows.map((row) => (
-          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[2fr_1.3fr_1fr_1fr_1fr_1fr] lg:items-center lg:gap-4">
-            <div>
-              <p className="text-base font-semibold text-[#173a8a]">{row.title}</p>
-              <p className="mt-1 text-sm text-[#6d7b8d]">{row.sector}</p>
-            </div>
-            <div className="text-sm text-[#334155]">{row.companyName}</div>
-            <div className="text-sm text-[#334155]">{row.region}</div>
-            <div className="text-sm text-[#334155]">{row.contractType}</div>
-            <div><StatusBadge status={row.status} locale={locale} /></div>
-            <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt, locale)}</div>
-          </article>
-        ))}
-      </div>
+    <div style={{ ...s[type], borderRadius: "0 8px 8px 0", padding: "12px 16px", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
+      {children}
     </div>
   );
 }
 
-const visibilityLabel = {
-  visible: "Visible",
-  hidden: "Masqué",
-  review: "En attente"
-};
-
-const visibilityClasses = {
-  visible: "bg-[#eef9f1] text-[#2f9d57]",
-  hidden: "bg-[#f5f7fa] text-[#607086]",
-  review: "bg-[#fff7e8] text-[#c48014]"
-};
-
-function WorkersTable({ rows, locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
-  if (!rows.length) return <EmptyState label={t.workers} locale={locale} />;
-
+function SectionCard({ title, count, children }) {
+  const [open, setOpen] = useState(true);
   return (
-    <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-      <div className="hidden grid-cols-[2fr_1.3fr_1fr_1fr_1fr_0.9fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
-        <div>{t.worker}</div>
-        <div>{t.sector}</div>
-        <div>{t.preferredRegion}</div>
-        <div>{t.experience}</div>
-        <div>{t.profile}</div>
-        <div>{t.activeReferrals}</div>
-        <div>{t.registered}</div>
-      </div>
-      <div className="divide-y divide-[#edf3f7]">
-        {rows.map((row) => (
-          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[2fr_1.3fr_1fr_1fr_1fr_0.9fr_1fr] lg:items-center lg:gap-4">
-            <div>
-              <p className="text-base font-semibold text-[#173a8a]">{row.fullName}</p>
-              <p className="mt-1 text-sm text-[#6d7b8d]">{row.targetJob}</p>
-            </div>
-            <div className="text-sm text-[#334155]">{row.targetSector}</div>
-            <div className="text-sm text-[#334155]">{row.preferredRegion}</div>
-            <div className="text-sm text-[#334155]">{row.experienceLevel}</div>
-            <div>
-              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${visibilityClasses[row.profileVisibility] || "bg-[#f5f7fa] text-[#607086]"}`}>
-                {visibilityLabel[row.profileVisibility] || row.profileVisibility}
-              </span>
-            </div>
-            <div>
-              <span className="inline-flex min-w-[2.5rem] items-center justify-center rounded-full border border-[#dbe6ff] bg-[#eef4ff] px-3 py-1 text-xs font-semibold text-[#173a8a]">
-                {row.activeReferralLinks || 0}
-              </span>
-            </div>
-            <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt, locale)}</div>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ApplicationsTable({ rows }) {
-  if (!rows.length) return <EmptyState label="Candidatures" />;
-
-  return (
-    <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-      <div className="hidden grid-cols-[1.8fr_1.2fr_1.3fr_1fr_1fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
-        <div>Candidat</div>
-        <div>Entreprise</div>
-        <div>Poste</div>
-        <div>Région</div>
-        <div>Statut</div>
-        <div>Déposée le</div>
-      </div>
-      <div className="divide-y divide-[#edf3f7]">
-        {rows.map((row) => (
-          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[1.8fr_1.2fr_1.3fr_1fr_1fr_1fr] lg:items-center lg:gap-4">
-            <div>
-              <p className="text-base font-semibold text-[#173a8a]">{row.candidateName}</p>
-              <p className="mt-1 text-sm text-[#6d7b8d]">
-                {row.candidateJob} · {row.candidateSector}
-              </p>
-            </div>
-            <div className="text-sm text-[#334155]">{row.companyName}</div>
-            <div className="text-sm text-[#334155]">{row.offerTitle}</div>
-            <div className="text-sm text-[#334155]">{row.candidateRegion}</div>
-            <div><StatusBadge status={row.status} /></div>
-            <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt)}</div>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MatchesTable({ rows, locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
-  if (!rows.length) return <EmptyState label={t.matches} locale={locale} />;
-
-  return (
-    <div className="overflow-hidden rounded-[28px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.04)]">
-      <div className="hidden grid-cols-[1.8fr_1.3fr_1.3fr_0.7fr_1fr_1fr] gap-4 border-b border-[#edf3f7] bg-[#f9fbfd] px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#607086] lg:grid">
-        <div>{locale === "en" ? "Candidate" : "Candidat"}</div>
-        <div>{t.company}</div>
-        <div>{t.offer}</div>
-        <div>{locale === "en" ? "Score" : "Score"}</div>
-        <div>{t.status}</div>
-        <div>{t.created}</div>
-      </div>
-      <div className="divide-y divide-[#edf3f7]">
-        {rows.map((row) => (
-          <article key={row.id} className="grid gap-3 px-6 py-5 lg:grid-cols-[1.8fr_1.3fr_1.3fr_0.7fr_1fr_1fr] lg:items-center lg:gap-4">
-            <div>
-              <p className="text-base font-semibold text-[#173a8a]">{row.candidateName}</p>
-              <p className="mt-1 text-sm text-[#6d7b8d]">
-                {row.candidateJob} · {row.candidateRegion}
-              </p>
-            </div>
-            <div className="text-sm text-[#334155]">{row.companyName}</div>
-            <div className="text-sm text-[#334155]">{row.offerTitle}</div>
-            <div>
-              <span className="inline-flex rounded-full border border-[#dbe6ff] bg-[#eef4ff] px-3 py-1 text-xs font-semibold text-[#173a8a]">
-                {row.score}/100
-              </span>
-            </div>
-            <div><StatusBadge status={row.status} locale={locale} /></div>
-            <div className="text-sm text-[#6d7b8d]">{formatDate(row.createdAt, locale)}</div>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── Panneau d'envoi email ────────────────────────────────────────────────
-
-function EmailSendPanel({ token }) {
-  const [status, setStatus]     = useState("idle"); // idle | loading | done | error
-  const [result, setResult]     = useState(null);
-  const [reminder, setReminder] = useState(false);
-
-  async function handleSend(dryRun = false) {
-    setStatus("loading");
-    setResult(null);
-    try {
-      const res = await fetch("/api/admin/send-visibility-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ reminder, dry_run: dryRun }),
-      });
-      const json = await res.json();
-      setResult(json);
-      setStatus(res.ok ? "done" : "error");
-    } catch (err) {
-      setResult({ error: err.message });
-      setStatus("error");
-    }
-  }
-
-  return (
-    <section className="mt-8 rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.04)] sm:p-8">
-      <div className="flex flex-col gap-2 mb-6">
-        <h2 className="text-xl font-semibold tracking-tight text-[#173a8a]">
-          📧 Envoyer un email aux profils masqués
-        </h2>
-        <p className="text-sm text-[#607086]">
-          Envoie automatiquement l'email "Rendez votre profil visible" à tous les travailleurs dont le profil est masqué.
-        </p>
-      </div>
-
-      {/* Option rappel */}
-      <label className="flex items-center gap-3 mb-6 cursor-pointer w-fit">
-        <input
-          type="checkbox"
-          checked={reminder}
-          onChange={e => setReminder(e.target.checked)}
-          className="h-4 w-4 rounded border-[#c5d5e8] accent-[#173a8a]"
-        />
-        <span className="text-sm text-[#3d5470]">
-          Mode rappel <span className="text-[#8fa0b3]">(sujet : "Rappel : rendez votre profil visible...")</span>
-        </span>
-      </label>
-
-      {/* Boutons */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={() => handleSend(true)}
-          disabled={status === "loading"}
-          className="rounded-[12px] border border-[#c5d5e8] bg-white px-5 py-2.5 text-sm font-semibold text-[#3d5470] transition hover:border-[#173a8a] hover:text-[#173a8a] disabled:opacity-50"
-        >
-          {status === "loading" ? "En cours..." : "🔍 Simuler (sans envoyer)"}
-        </button>
-        <button
-          onClick={() => handleSend(false)}
-          disabled={status === "loading"}
-          className="rounded-[12px] bg-[#173a8a] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(23,58,138,0.2)] transition hover:bg-[#1e4ba8] disabled:opacity-50"
-        >
-          {status === "loading" ? "Envoi en cours..." : "🚀 Envoyer à tous les profils masqués"}
-        </button>
-      </div>
-
-      {/* Résultat */}
-      {result && (
-        <div className={`mt-6 rounded-[16px] p-4 text-sm ${status === "error" ? "bg-[#fff5f5] border border-[#f0d0d0] text-[#a33f3f]" : "bg-[#f0faf5] border border-[#c0e8d0] text-[#1a5c3a]"}`}>
-          {result.error ? (
-            <p>❌ Erreur : {result.error}</p>
-          ) : (
-            <>
-              <p className="font-semibold mb-2">
-                {result.dry_run ? "✅ Simulation terminée" : "✅ Envoi terminé"}
-              </p>
-              <p>Profils masqués trouvés : <strong>{result.total_hidden}</strong></p>
-              <p>Emails {result.dry_run ? "à envoyer" : "envoyés"} : <strong>{result.sent}</strong></p>
-              {result.failed > 0 && <p>Échecs : <strong>{result.failed}</strong></p>}
-              {result.skipped > 0 && <p>Ignorés (pas d'email) : <strong>{result.skipped}</strong></p>}
-              {result.recipients?.length > 0 && (
-                <details className="mt-3">
-                  <summary className="cursor-pointer text-xs font-semibold text-[#2d7a50]">Voir la liste</summary>
-                  <ul className="mt-2 space-y-1">
-                    {result.recipients.map((r, i) => (
-                      <li key={i} className="text-xs text-[#3d5470]">
-                        {r.dry ? "○" : "✓"} {r.email} <span className="text-[#8fa0b3]">({r.locale})</span>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-            </>
-          )}
+    <div style={{ border: "1px solid #e8eef8", borderRadius: 16, overflow: "hidden", marginBottom: 20, background: "#fff" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", cursor: "pointer", borderBottom: open ? "1px solid #e8eef8" : "none", background: "#f8faff" }}
+        onClick={() => setOpen(o => !o)}
+      >
+        <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78" }}>{title}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {count != null && <span style={{ fontSize: 12, color: "#8a9db8", fontWeight: 600 }}>{count} éléments</span>}
+          <span style={{ color: "#8a9db8", fontSize: 12 }}>{open ? "▲" : "▼"}</span>
         </div>
-      )}
-    </section>
+      </div>
+      {open && <div style={{ overflowX: "auto" }}>{children}</div>}
+    </div>
   );
 }
 
-// ─── Dashboard principal ──────────────────────────────────────────────────
+function SimpleTable({ cols, rows }) {
+  return (
+    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+      <thead>
+        <tr style={{ background: "#f8faff" }}>
+          {cols.map(c => <th key={c} style={{ padding: "8px 14px", textAlign: "left", fontWeight: 700, color: "#6b7280", borderBottom: "1px solid #e8eef8" }}>{c}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, i) => (
+          <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb" }}>
+            {row.map((cell, j) => <td key={j} style={{ padding: "8px 14px", color: "#3d5470" }}>{cell}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
-export default function AdminDashboard({ locale = "fr" }) {
-  const t = copy[locale] || copy.fr;
-  const router = useRouter();
-  const { user, session, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState("offers");
-  const [query, setQuery] = useState("");
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+function EmptyState({ text }) {
+  return <div style={{ padding: "24px 20px", color: "#8a9db8", fontSize: 13, textAlign: "center" }}>{text}</div>;
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
+export default function AdminDashboard({ initialData }) {
+  const data = initialData || {};
+
+  // Session récupérée côté client
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setToken(session?.access_token || null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setToken(session?.access_token || null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
-    if (loading) return;
-    if (!user || !session?.access_token) {
-      setIsLoading(false);
-      return;
+    if (!token) return;
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data?.user?.email || null));
+  }, [token]);
+
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // ── Overview state ──────────────────────────────────────────────────────────
+  const [kpis, setKpis]               = useState(null);
+  const [kpisLoading, setKpisLoading] = useState(true);
+
+  // ── Contacts state ──────────────────────────────────────────────────────────
+  const [segment, setSegment]             = useState("workers_all");
+  const [contacts, setContacts]           = useState([]);
+  const [contactStats, setContactStats]   = useState(null);
+  const [contactsLoading, setContactsLoading] = useState(false);
+  const [selectedIds, setSelectedIds]     = useState(new Set());
+  const [search, setSearch]               = useState("");
+
+  // ── Emailing state ──────────────────────────────────────────────────────────
+  const [emailSegment, setEmailSegment]   = useState("workers_hidden");
+  const [emailTemplate, setEmailTemplate] = useState("visibility_initial");
+  const [emailSubject, setEmailSubject]   = useState("");
+  const [emailName, setEmailName]         = useState("");
+  const [emailLocale, setEmailLocale]     = useState("auto");
+  const [emailLoading, setEmailLoading]   = useState(false);
+  const [emailResult, setEmailResult]     = useState(null);
+  const [showConfirm, setShowConfirm]     = useState(false);
+  const [pendingDryRun, setPendingDryRun] = useState(false);
+
+  // ── History state ───────────────────────────────────────────────────────────
+  const [campaigns, setCampaigns]             = useState([]);
+  const [campaignsTotal, setCampaignsTotal]   = useState(0);
+  const [campaignsPage, setCampaignsPage]     = useState(1);
+  const [campaignsLoading, setCampaignsLoading] = useState(false);
+  const [expandedCampaign, setExpandedCampaign] = useState(null);
+
+  // ── Fetch KPIs ──────────────────────────────────────────────────────────────
+
+  const fetchKpis = useCallback(async () => {
+    setKpisLoading(true);
+    try {
+      const [wRes, eRes] = await Promise.all([
+        fetch("/api/admin/crm?segment=workers_all",    { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/crm?segment=employers_all",  { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const [wData, eData] = await Promise.all([wRes.json(), eRes.json()]);
+      const workers   = wData.contacts  || [];
+      const employers = eData.contacts  || [];
+      const now = Date.now();
+
+      setKpis({
+        workers_total:      workers.length,
+        workers_visible:    workers.filter(w => w.visibility === "visible").length,
+        workers_hidden:     workers.filter(w => w.visibility === "hidden").length,
+        workers_incomplete: workers.filter(w => (w.completion || 0) < 60).length,
+        workers_inactive:   workers.filter(w =>
+          now - new Date(w.created_at).getTime() > 90 * 86400000 && w.visibility !== "visible"
+        ).length,
+        employers_total:    employers.length,
+        unsubscribed:       wData.stats?.unsubscribed || 0,
+        no_email:           wData.stats?.noEmail || 0,
+      });
+    } catch (e) {
+      console.error("KPI fetch failed", e);
+    } finally {
+      setKpisLoading(false);
     }
+  }, [token]);
 
-    let cancelled = false;
+  useEffect(() => { fetchKpis(); }, [fetchKpis]);
 
-    async function loadOverview() {
-      setIsLoading(true);
-      setError("");
+  // ── Fetch contacts ──────────────────────────────────────────────────────────
 
-      try {
-        const response = await fetch("/api/admin/overview", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
-        });
-
-        const payload = await response.json();
-
-        if (!response.ok) {
-          throw new Error(payload.error || "Impossible de charger le back-office.");
-        }
-
-        if (!cancelled) {
-          setData(payload);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err.message || "Impossible de charger le back-office.");
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
+  const fetchContacts = useCallback(async (seg) => {
+    setContactsLoading(true);
+    setSelectedIds(new Set());
+    try {
+      const res  = await fetch(`/api/admin/crm?segment=${seg}`, { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      setContacts(json.contacts || []);
+      setContactStats(json.stats || null);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setContactsLoading(false);
     }
+  }, [token]);
 
-    loadOverview();
-    return () => {
-      cancelled = true;
-    };
-  }, [loading, session?.access_token, user]);
+  useEffect(() => {
+    if (activeTab === "contacts") fetchContacts(segment);
+  }, [activeTab, segment, fetchContacts]);
 
-  const filtered = useMemo(() => {
-    if (!data) {
-      return { offers: [], workers: [], applications: [], matches: [] };
+  // ── Fetch campaigns ─────────────────────────────────────────────────────────
+
+  const fetchCampaigns = useCallback(async (page = 1) => {
+    setCampaignsLoading(true);
+    try {
+      const res  = await fetch(`/api/admin/campaigns?page=${page}&limit=20`, { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      setCampaigns(json.campaigns || []);
+      setCampaignsTotal(json.total || 0);
+      setCampaignsPage(page);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCampaignsLoading(false);
     }
+  }, [token]);
 
-    const needle = query.trim().toLowerCase();
-    if (!needle) {
-      return data;
+  useEffect(() => {
+    if (activeTab === "history") fetchCampaigns(1);
+  }, [activeTab, fetchCampaigns]);
+
+  // ── Send campaign ───────────────────────────────────────────────────────────
+
+  const sendCampaign = async (isDryRun) => {
+    setEmailLoading(true);
+    setEmailResult(null);
+    setShowConfirm(false);
+    try {
+      const res  = await fetch("/api/admin/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          segment:     emailSegment,
+          template:    emailTemplate,
+          subject:     emailSubject,
+          name:        emailName,
+          locale:      emailLocale,
+          dry_run:     isDryRun,
+          contact_ids: selectedIds.size > 0 ? [...selectedIds] : null,
+        }),
+      });
+      const json = await res.json();
+      setEmailResult({ ...json, isDryRun });
+      if (!isDryRun) fetchCampaigns(1);
+    } catch (e) {
+      setEmailResult({ error: e.message, isDryRun });
+    } finally {
+      setEmailLoading(false);
     }
-
-    const includesAny = (values) =>
-      values.some((value) => String(value || "").toLowerCase().includes(needle));
-
-    return {
-      ...data,
-      offers: data.offers.filter((row) =>
-        includesAny([row.title, row.companyName, row.sector, row.region, row.status])
-      ),
-      workers: (data.workers || []).filter((row) =>
-        includesAny([row.fullName, row.targetJob, row.targetSector, row.preferredRegion, row.profileVisibility])
-      ),
-      applications: (data.applications || []).filter((row) =>
-        includesAny([row.candidateName, row.candidateJob, row.companyName, row.offerTitle, row.status])
-      ),
-      matches: data.matches.filter((row) =>
-        includesAny([row.candidateName, row.candidateJob, row.companyName, row.offerTitle, row.status, row.score])
-      )
-    };
-  }, [data, query]);
-
-  const counts = filtered.summary || data?.summary || {
-    offers: 0,
-    publishedOffers: 0,
-    applications: 0,
-    newMatches: 0
   };
 
-  if (loading || isLoading) {
+  // ── Contact helpers ─────────────────────────────────────────────────────────
+
+  const filteredContacts = contacts.filter(c => {
+    if (!search) return true;
+    const q = search.toLowerCase();
     return (
-      <div className="container-shell py-16">
-        <div className="flex min-h-[40vh] items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#173A8A] border-t-transparent" />
+      (c.name  || "").toLowerCase().includes(q) ||
+      (c.email || "").toLowerCase().includes(q) ||
+      (c.job   || "").toLowerCase().includes(q)
+    );
+  });
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredContacts.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredContacts.map(c => c.id)));
+    }
+  };
+
+  const useSelectionForEmail = () => {
+    setEmailSegment(segment);
+    setActiveTab("emailing");
+  };
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // RENDER
+  // ────────────────────────────────────────────────────────────────────────────
+
+  // Attendre la session
+  if (token === null) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f4fb", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ textAlign: "center", color: "#1E3A78" }}>
+          <div style={{ fontSize: 28, marginBottom: 12 }}>LEXPAT <span style={{ color: "#57B7AF" }}>CONNECT</span></div>
+          <div style={{ fontSize: 13, color: "#8a9db8" }}>Chargement de la session…</div>
         </div>
-      </div>
-    );
-  }
-
-  if (!user || !session?.access_token) {
-    return (
-      <div className="container-shell py-16">
-        <section className="mx-auto max-w-3xl rounded-[34px] border border-[#e5edf4] bg-white p-8 text-center shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-10">
-          <p className="inline-flex rounded-full bg-[#eef4ff] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#173a8a]">
-            {t.backOffice}
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#173a8a] sm:text-4xl">
-            {t.adminAccess}
-          </h1>
-          <p className="mt-4 text-sm leading-7 text-[#607086]">
-            {t.adminAccessText}
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href={locale === "en" ? "/en/connexion?next=/en/admin" : "/connexion?next=/admin"} className="primary-button">
-              {t.signIn}
-            </Link>
-            <button onClick={() => router.push(locale === "en" ? "/en" : "/")} className="secondary-button">
-              {t.home}
-            </button>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container-shell py-16">
-        <section className="mx-auto max-w-3xl rounded-[34px] border border-[#f0d0d0] bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#af4b4b]">{t.denied}</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#173a8a]">{t.unavailable}</h1>
-          <p className="mt-4 text-sm leading-7 text-[#607086]">{error}</p>
-        </section>
       </div>
     );
   }
 
   return (
-    <div className="container-shell py-10 sm:py-14">
-      <section className="rounded-[34px] border border-[#e5edf4] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_100%)] p-8 shadow-[0_18px_45px_rgba(15,23,42,0.05)] sm:p-10">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-3xl">
-            <p className="inline-flex rounded-full bg-[#eef4ff] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#173a8a]">
-              {t.badge}
-            </p>
-            <h1 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#173a8a] sm:text-5xl">
-              {t.heroTitle}
-            </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-[#607086]">
-              {t.heroText}
-            </p>
+    <div style={{ fontFamily: "'Open Sans', Arial, sans-serif", background: "#f0f4fb", minHeight: "100vh" }}>
+
+      {/* ── Topbar ── */}
+      <div style={{ background: "linear-gradient(135deg,#1a3368,#1E3A78)", padding: "0 32px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontWeight: 900, fontSize: 20, color: "#fff", letterSpacing: -0.5 }}>LEXPAT</span>
+            <span style={{ fontWeight: 700, fontSize: 11, color: "#57B7AF", letterSpacing: 4 }}>CONNECT</span>
+            <span style={{ marginLeft: 16, background: "rgba(255,255,255,0.12)", borderRadius: 6, padding: "3px 10px", fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>ADMIN</span>
           </div>
-          <div className="min-w-[280px]">
-            <SearchInput value={query} onChange={setQuery} locale={locale} />
-          </div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{userEmail || ""}</div>
         </div>
-      </section>
+      </div>
 
-      <section className="mt-8 grid gap-4 xl:grid-cols-4">
-        {t.summaryCards.map((card) => (
-          <article key={card.key} className="rounded-[26px] border border-[#e5edf4] bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
-            <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${toneClasses[card.tone]}`}>
-              {card.label}
-            </span>
-            <p className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-[#173a8a]">{counts[card.key] || 0}</p>
-          </article>
-        ))}
-      </section>
+      {/* ── Tabs ── */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e8eef8" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", padding: "0 32px" }}>
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: "16px 20px", fontSize: 13, fontWeight: 700,
+                color: activeTab === tab.id ? "#1E3A78" : "#8a9db8",
+                borderBottom: activeTab === tab.id ? "3px solid #1E3A78" : "3px solid transparent",
+                display: "flex", alignItems: "center", gap: 6, transition: "color .15s",
+              }}
+            >
+              <span>{tab.icon}</span> {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <EmailSendPanel token={session?.access_token} />
+      {/* ── Content ── */}
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px" }}>
 
-      <section className="mt-8 rounded-[32px] border border-[#e5edf4] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.04)] sm:p-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        {/* ════════════════════════════════════════════════════
+            ONGLET 1 — VUE D'ENSEMBLE
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "overview" && (
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-[#173a8a]">{t.sectionTitle}</h2>
-            <p className="mt-2 text-sm leading-7 text-[#607086]">
-              {t.sectionText}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {t.tabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                  activeTab === tab.id
-                    ? "bg-[#173a8a] text-white shadow-[0_10px_24px_rgba(23,58,138,0.18)]"
-                    : "border border-[#e1e9f1] bg-white text-[#607086] hover:border-[#bfd3ea] hover:text-[#173a8a]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+            <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Vue d'ensemble</h2>
 
-        <div className="mt-8">
-          {activeTab === "offers" ? <OffersTable rows={filtered.offers || []} locale={locale} /> : null}
-          {activeTab === "workers" ? <WorkersTable rows={filtered.workers || []} locale={locale} /> : null}
-          {activeTab === "matches" ? <MatchesTable rows={filtered.matches || []} locale={locale} /> : null}
+            {kpisLoading ? (
+              <div style={{ color: "#8a9db8", fontSize: 14 }}>Chargement des indicateurs…</div>
+            ) : !kpis ? (
+              <Alert type="error">Impossible de charger les KPIs.</Alert>
+            ) : (
+              <>
+                <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Travailleurs</h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 28 }}>
+                  <KpiCard icon="👤" label="Total inscrits"   value={kpis.workers_total}      color="#1E3A78" />
+                  <KpiCard icon="✅" label="Profils visibles" value={kpis.workers_visible}    color="#0d7c6e" />
+                  <KpiCard icon="🔒" label="Profils masqués"  value={kpis.workers_hidden}     color="#b91c1c" />
+                  <KpiCard icon="⚠️" label="Incomplets"       value={kpis.workers_incomplete} color="#92400e" />
+                  <KpiCard icon="💤" label="Inactifs (90j)"   value={kpis.workers_inactive}   color="#6b7280" />
+                </div>
+
+                <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Employeurs & plateforme</h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 32 }}>
+                  <KpiCard icon="🏢" label="Employeurs"        value={kpis.employers_total} color="#6b21a8" />
+                  <KpiCard icon="🔕" label="Désinscrits email" value={kpis.unsubscribed}    color="#6b7280" />
+                  <KpiCard icon="📭" label="Sans email"        value={kpis.no_email}        color="#6b7280" />
+                </div>
+
+                <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Actions rapides</h3>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <button style={{ ...btn.base, ...btn.primary }} onClick={() => { setEmailSegment("workers_hidden"); setEmailTemplate("visibility_initial"); setActiveTab("emailing"); }}>
+                    ✉️ Campagne profils masqués
+                  </button>
+                  <button style={{ ...btn.base, ...btn.teal }} onClick={() => { setSegment("workers_incomplete"); setActiveTab("contacts"); }}>
+                    👥 Voir profils incomplets
+                  </button>
+                  <button style={{ ...btn.base, ...btn.ghost }} onClick={() => { setSegment("employers_without_offers"); setActiveTab("contacts"); }}>
+                    🏢 Employeurs sans offre
+                  </button>
+                  <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setActiveTab("history")}>
+                    📋 Historique campagnes
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET 2 — CONTACTS
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "contacts" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre de contacts</h2>
+              {selectedIds.size > 0 && (
+                <button style={{ ...btn.base, ...btn.primary }} onClick={useSelectionForEmail}>
+                  ✉️ Campagne pour les {selectedIds.size} sélectionnés
+                </button>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+
+              {/* Sidebar segments */}
+              <div style={{ width: 220, flexShrink: 0 }}>
+                {Object.entries(SEGMENT_GROUPS).map(([group, segs]) => (
+                  <div key={group} style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, paddingLeft: 12 }}>{group}</div>
+                    {segs.map(s => (
+                      <button
+                        key={s.id}
+                        onClick={() => { setSegment(s.id); setSearch(""); }}
+                        style={{
+                          display: "block", width: "100%", textAlign: "left",
+                          padding: "8px 12px", borderRadius: 8, border: "none", cursor: "pointer",
+                          background: segment === s.id ? "#eff6ff" : "transparent",
+                          color: segment === s.id ? "#1E3A78" : "#6b7280",
+                          fontWeight: segment === s.id ? 700 : 500,
+                          fontSize: 13, marginBottom: 2, transition: "background .15s",
+                        }}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Contact list */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+
+                {/* Stats bar */}
+                {contactStats && (
+                  <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+                    {[
+                      { label: "Total", value: contactStats.total, color: "#1E3A78" },
+                      { label: "Joignables", value: contactStats.reachable, color: "#0d7c6e" },
+                      { label: "Désinscrits", value: contactStats.unsubscribed, color: "#b91c1c" },
+                      { label: "Sans email", value: contactStats.noEmail, color: "#6b7280" },
+                    ].map(s => (
+                      <div key={s.label} style={{ ...card, padding: "10px 16px", display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 20, fontWeight: 900, color: s.color }}>{s.value}</span>
+                        <span style={{ fontSize: 12, color: "#8a9db8" }}>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Search + select all */}
+                <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
+                  <input
+                    type="text"
+                    placeholder="Rechercher nom, email, métier…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{ ...inputStyle, flex: 1, minWidth: 200 }}
+                  />
+                  {filteredContacts.length > 0 && (
+                    <button style={{ ...btn.base, ...btn.ghost, fontSize: 12 }} onClick={toggleSelectAll}>
+                      {selectedIds.size === filteredContacts.length ? "Tout désélectionner" : `Tout sélectionner (${filteredContacts.length})`}
+                    </button>
+                  )}
+                </div>
+
+                {contactsLoading ? (
+                  <div style={{ color: "#8a9db8", fontSize: 14, padding: 20 }}>Chargement…</div>
+                ) : filteredContacts.length === 0 ? (
+                  <div style={{ ...card, color: "#8a9db8", fontSize: 14, textAlign: "center", padding: 40 }}>
+                    Aucun contact dans ce segment.
+                  </div>
+                ) : (
+                  <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
+                          <th style={{ padding: "10px 14px", width: 36, textAlign: "center" }}>
+                            <input type="checkbox" checked={selectedIds.size === filteredContacts.length && filteredContacts.length > 0} onChange={toggleSelectAll} />
+                          </th>
+                          {["Nom / Email", "Métier / Secteur", "Statut", "Région", "Inscrit"].map(h => (
+                            <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 700, color: "#6b7280" }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredContacts.map((c, i) => (
+                          <tr
+                            key={c.id}
+                            style={{
+                              background: selectedIds.has(c.id) ? "#f0f6ff" : i % 2 === 0 ? "#fff" : "#fafbff",
+                              borderBottom: "1px solid #f0f4fb", cursor: "pointer",
+                            }}
+                            onClick={() => toggleSelect(c.id)}
+                          >
+                            <td style={{ padding: "10px 14px", textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                              <input type="checkbox" checked={selectedIds.has(c.id)} onChange={() => toggleSelect(c.id)} />
+                            </td>
+                            <td style={{ padding: "10px 14px" }}>
+                              <div style={{ fontWeight: 700, color: "#1E3A78" }}>{c.name || "—"}</div>
+                              <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>{c.email || "—"}</div>
+                            </td>
+                            <td style={{ padding: "10px 14px" }}>
+                              <div style={{ color: "#3d5470" }}>{c.job || "—"}</div>
+                              <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>{c.sector || ""}</div>
+                            </td>
+                            <td style={{ padding: "10px 14px" }}>
+                              {c.unsubscribed
+                                ? <span style={{ ...badgeStyle.base, ...badgeStyle.unsubscribed }}>Désinscrit</span>
+                                : c.type === "worker"
+                                  ? c.visibility === "visible"
+                                    ? <span style={{ ...badgeStyle.base, ...badgeStyle.visible }}>Visible</span>
+                                    : <span style={{ ...badgeStyle.base, ...badgeStyle.hidden }}>Masqué</span>
+                                  : <span style={{ ...badgeStyle.base, ...badgeStyle.employer }}>Employeur</span>
+                              }
+                              {c.completion != null && c.type === "worker" && (
+                                <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>{c.completion}% complet</div>
+                              )}
+                            </td>
+                            <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{c.region || "—"}</td>
+                            <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{formatDate(c.created_at)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {selectedIds.size > 0 && (
+                  <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 13, color: "#1E3A78", fontWeight: 700 }}>{selectedIds.size} contact(s) sélectionné(s)</span>
+                    <button style={{ ...btn.base, ...btn.primary }} onClick={useSelectionForEmail}>✉️ Créer une campagne pour cette sélection</button>
+                    <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setSelectedIds(new Set())}>Désélectionner tout</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET 3 — EMAILING
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "emailing" && (
+          <div>
+            <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre d'emailing</h2>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+
+              {/* Config panneau */}
+              <div style={{ ...card, display: "flex", flexDirection: "column", gap: 18 }}>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>Configuration</h3>
+
+                <div>
+                  <label style={labelStyle}>Nom de la campagne (optionnel)</label>
+                  <input type="text" placeholder="Ex : Relance profils masqués — avril 2026" value={emailName} onChange={e => setEmailName(e.target.value)} style={inputStyle} />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Segment cible</label>
+                  <select value={emailSegment} onChange={e => setEmailSegment(e.target.value)} style={inputStyle}>
+                    {Object.entries(SEGMENT_GROUPS).map(([group, segs]) => (
+                      <optgroup key={group} label={group}>
+                        {segs.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+                      </optgroup>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Template d'email</label>
+                  <select value={emailTemplate} onChange={e => setEmailTemplate(e.target.value)} style={inputStyle}>
+                    {TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                  </select>
+                  <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 6 }}>
+                    {TEMPLATES.find(t => t.id === emailTemplate)?.description}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Sujet personnalisé (laissez vide pour le sujet par défaut)</label>
+                  <input type="text" placeholder="Sujet de l'email…" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} style={inputStyle} />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Langue</label>
+                  <select value={emailLocale} onChange={e => setEmailLocale(e.target.value)} style={inputStyle}>
+                    <option value="auto">Automatique (langue du contact)</option>
+                    <option value="fr">Français uniquement</option>
+                    <option value="en">Anglais uniquement</option>
+                  </select>
+                </div>
+
+                {selectedIds.size > 0 && (
+                  <Alert type="info">
+                    📌 Envoi limité aux <strong>{selectedIds.size} contacts sélectionnés</strong> depuis l'onglet Contacts.{" "}
+                    <button style={{ background: "none", border: "none", cursor: "pointer", color: "#1d4ed8", fontWeight: 700, padding: 0 }} onClick={() => setSelectedIds(new Set())}>
+                      Annuler la sélection
+                    </button>
+                  </Alert>
+                )}
+
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button style={{ ...btn.base, ...btn.ghost }} disabled={emailLoading} onClick={() => sendCampaign(true)}>
+                    {emailLoading ? "⏳ Simulation…" : "🧪 Simuler"}
+                  </button>
+                  <button style={{ ...btn.base, ...btn.primary }} disabled={emailLoading} onClick={() => { setPendingDryRun(false); setShowConfirm(true); }}>
+                    {emailLoading ? "⏳ Envoi…" : "🚀 Envoyer pour de vrai"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Résultats panneau */}
+              <div>
+                {!emailResult && !emailLoading && (
+                  <div style={{ ...card, textAlign: "center", color: "#8a9db8", fontSize: 14, padding: 48 }}>
+                    Configurez votre campagne à gauche, puis simulez ou envoyez.
+                  </div>
+                )}
+
+                {emailLoading && (
+                  <div style={{ ...card, textAlign: "center", color: "#1E3A78", fontSize: 14, padding: 48 }}>
+                    ⏳ Traitement en cours…
+                  </div>
+                )}
+
+                {emailResult && !emailLoading && (
+                  <div style={card}>
+                    <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>
+                      {emailResult.isDryRun ? "🧪 Résultat de la simulation" : "✅ Campagne envoyée"}
+                    </h3>
+
+                    {emailResult.error && <Alert type="error">{emailResult.error}</Alert>}
+
+                    {!emailResult.error && (
+                      <>
+                        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+                          {[
+                            { label: "Envoyés",  value: emailResult.sent,    color: "#0d7c6e" },
+                            { label: "Ignorés",  value: emailResult.skipped, color: "#92400e" },
+                            { label: "Échecs",   value: emailResult.failed,  color: "#b91c1c" },
+                          ].map(s => (
+                            <div key={s.label} style={{ flex: 1, background: "#f8faff", borderRadius: 10, padding: "12px 16px", textAlign: "center" }}>
+                              <div style={{ fontSize: 26, fontWeight: 900, color: s.color }}>{s.value ?? 0}</div>
+                              <div style={{ fontSize: 11, color: "#8a9db8" }}>{s.label}</div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {emailResult.isDryRun && (
+                          <Alert type="warning">
+                            Mode simulation — aucun email n'a été envoyé.
+                          </Alert>
+                        )}
+
+                        {emailResult.campaign_id && (
+                          <div style={{ fontSize: 12, color: "#8a9db8", marginBottom: 12 }}>
+                            Campagne enregistrée : <em>{emailResult.campaign_name}</em>
+                          </div>
+                        )}
+
+                        {(emailResult.recipients || []).length > 0 && (
+                          <details style={{ marginTop: 8 }}>
+                            <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 700, color: "#1E3A78", marginBottom: 8 }}>
+                              Destinataires ({emailResult.recipients.length})
+                            </summary>
+                            <div style={{ maxHeight: 200, overflowY: "auto", marginTop: 8 }}>
+                              {emailResult.recipients.map((r, i) => (
+                                <div key={i} style={{ fontSize: 12, padding: "5px 0", borderBottom: "1px solid #f0f4fb", color: "#3d5470" }}>
+                                  {r.name || r.email}{" "}
+                                  <span style={{ color: "#8a9db8" }}>— {r.email}</span>
+                                  {r.locale && <span style={{ marginLeft: 8, ...badgeStyle.base, ...badgeStyle.worker }}>{r.locale}</span>}
+                                  {r.dry && <span style={{ marginLeft: 8, color: "#f59e0b", fontSize: 11 }}>(simulation)</span>}
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+
+                        {(emailResult.failures || []).length > 0 && (
+                          <details style={{ marginTop: 8 }}>
+                            <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 700, color: "#b91c1c", marginBottom: 8 }}>
+                              Erreurs ({emailResult.failures.length})
+                            </summary>
+                            <div style={{ maxHeight: 160, overflowY: "auto", marginTop: 8 }}>
+                              {emailResult.failures.map((f, i) => (
+                                <div key={i} style={{ fontSize: 12, padding: "5px 0", borderBottom: "1px solid #f0f4fb", color: "#b91c1c" }}>
+                                  {f.email} — {f.error}
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET 4 — OPÉRATIONNEL
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "operations" && (
+          <div>
+            <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Opérationnel</h2>
+
+            <SectionCard title="Offres d'emploi" count={data.jobOffers?.length}>
+              {data.jobOffers?.length ? (
+                <SimpleTable
+                  cols={["Poste", "Employeur", "Région", "Statut", "Date"]}
+                  rows={(data.jobOffers || []).map(o => [
+                    o.title || "—",
+                    o.employer_profiles?.company_name || "—",
+                    o.region || "—",
+                    o.status || "—",
+                    formatDate(o.created_at),
+                  ])}
+                />
+              ) : <EmptyState text="Aucune offre." />}
+            </SectionCard>
+
+            <SectionCard title="Travailleurs" count={data.workers?.length}>
+              {data.workers?.length ? (
+                <SimpleTable
+                  cols={["Nom", "Métier", "Secteur", "Région", "Visibilité", "Complétion", "Inscrit"]}
+                  rows={(data.workers || []).map(w => [
+                    w.full_name || "—",
+                    w.target_job || "—",
+                    w.target_sector || "—",
+                    w.preferred_region || "—",
+                    w.profile_visibility || "—",
+                    `${w.profile_completion || 0}%`,
+                    formatDate(w.created_at),
+                  ])}
+                />
+              ) : <EmptyState text="Aucun travailleur." />}
+            </SectionCard>
+
+            <SectionCard title="Matchings récents" count={data.matchings?.length}>
+              {data.matchings?.length ? (
+                <SimpleTable
+                  cols={["Score", "Offre", "Travailleur", "Date"]}
+                  rows={(data.matchings || []).map(m => [
+                    `${m.score || 0}/100`,
+                    m.job_offers?.title || "—",
+                    m.worker_profiles?.full_name || "—",
+                    formatDate(m.created_at),
+                  ])}
+                />
+              ) : <EmptyState text="Aucun matching." />}
+            </SectionCard>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET 5 — HISTORIQUE
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "history" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Historique des campagnes</h2>
+              <span style={{ fontSize: 12, color: "#8a9db8" }}>{campaignsTotal} campagne(s)</span>
+            </div>
+
+            {campaignsLoading ? (
+              <div style={{ color: "#8a9db8", fontSize: 14 }}>Chargement…</div>
+            ) : campaigns.length === 0 ? (
+              <div style={{ ...card, textAlign: "center", color: "#8a9db8", fontSize: 14, padding: 48 }}>
+                Aucune campagne pour l'instant. Lancez votre première depuis l'onglet Emailing.
+              </div>
+            ) : (
+              <>
+                <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                    <thead>
+                      <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
+                        {["Nom", "Segment", "Template", "Envoyés", "Ignorés", "Échecs", "Mode", "Statut", "Date"].map(h => (
+                          <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 700, color: "#6b7280", whiteSpace: "nowrap" }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {campaigns.map((c, i) => (
+                        <>
+                          <tr
+                            key={c.id}
+                            style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb", cursor: "pointer" }}
+                            onClick={() => setExpandedCampaign(expandedCampaign === c.id ? null : c.id)}
+                          >
+                            <td style={{ padding: "10px 14px", fontWeight: 700, color: "#1E3A78", maxWidth: 200 }}>{c.name}</td>
+                            <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{c.segment}</td>
+                            <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{c.template}</td>
+                            <td style={{ padding: "10px 14px", fontWeight: 700, color: "#0d7c6e" }}>{c.sent_count}</td>
+                            <td style={{ padding: "10px 14px", color: "#92400e" }}>{c.skipped_count}</td>
+                            <td style={{ padding: "10px 14px", color: "#b91c1c" }}>{c.failed_count}</td>
+                            <td style={{ padding: "10px 14px" }}>
+                              {c.dry_run
+                                ? <span style={{ ...badgeStyle.base, ...badgeStyle.incomplete }}>Simulation</span>
+                                : <span style={{ ...badgeStyle.base, ...badgeStyle.visible }}>Réel</span>}
+                            </td>
+                            <td style={{ padding: "10px 14px" }}>
+                              <span style={{ ...badgeStyle.base, ...(c.status === "done" ? badgeStyle.visible : c.status === "partial" ? badgeStyle.incomplete : badgeStyle.hidden) }}>
+                                {c.status}
+                              </span>
+                            </td>
+                            <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280", whiteSpace: "nowrap" }}>{formatDateTime(c.created_at)}</td>
+                          </tr>
+                          {expandedCampaign === c.id && (
+                            <tr key={`${c.id}-detail`}>
+                              <td colSpan={9} style={{ padding: "12px 24px 20px", background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
+                                <div style={{ display: "flex", gap: 24 }}>
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
+                                      Destinataires ({(c.recipients || []).length})
+                                    </div>
+                                    <div style={{ maxHeight: 180, overflowY: "auto" }}>
+                                      {(c.recipients || []).slice(0, 50).map((r, j) => (
+                                        <div key={j} style={{ fontSize: 12, color: "#3d5470", padding: "4px 0", borderBottom: "1px solid #f0f4fb" }}>
+                                          {r.name || r.email} <span style={{ color: "#8a9db8" }}>— {r.email}</span>
+                                        </div>
+                                      ))}
+                                      {(c.recipients || []).length > 50 && (
+                                        <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 6 }}>…et {c.recipients.length - 50} autres</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {(c.failures || []).length > 0 && (
+                                    <div style={{ flex: 1 }}>
+                                      <div style={{ fontSize: 11, fontWeight: 700, color: "#b91c1c", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
+                                        Échecs ({c.failures.length})
+                                      </div>
+                                      <div style={{ maxHeight: 180, overflowY: "auto" }}>
+                                        {c.failures.map((f, j) => (
+                                          <div key={j} style={{ fontSize: 12, color: "#b91c1c", padding: "4px 0", borderBottom: "1px solid #f0f4fb" }}>
+                                            {f.email} — {f.error}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                {campaignsTotal > 20 && (
+                  <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+                    <button style={{ ...btn.base, ...btn.ghost }} disabled={campaignsPage <= 1} onClick={() => fetchCampaigns(campaignsPage - 1)}>← Préc.</button>
+                    <span style={{ padding: "9px 14px", fontSize: 13, color: "#1E3A78" }}>Page {campaignsPage} / {Math.ceil(campaignsTotal / 20)}</span>
+                    <button style={{ ...btn.base, ...btn.ghost }} disabled={campaignsPage * 20 >= campaignsTotal} onClick={() => fetchCampaigns(campaignsPage + 1)}>Suiv. →</button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── Modale de confirmation ── */}
+      {showConfirm && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: 32, maxWidth: 440, width: "90%", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+            <h3 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>Confirmer l'envoi réel</h3>
+            <p style={{ margin: "0 0 8px", fontSize: 14, color: "#3d5470", lineHeight: 1.7 }}>
+              Segment : <strong>{emailSegment}</strong>
+              {selectedIds.size > 0 && ` (${selectedIds.size} contacts sélectionnés)`}<br />
+              Template : <strong>{TEMPLATES.find(t => t.id === emailTemplate)?.label}</strong>
+            </p>
+            <p style={{ margin: "0 0 24px", fontSize: 14, color: "#b91c1c" }}>
+              ⚠️ Cette action enverra des emails réels. Elle est irréversible.
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
+              <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setShowConfirm(false)}>Annuler</button>
+              <button style={{ ...btn.base, ...btn.danger }} onClick={() => sendCampaign(false)}>
+                Oui, envoyer
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
+      )}
     </div>
   );
 }
