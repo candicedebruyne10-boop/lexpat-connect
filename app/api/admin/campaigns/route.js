@@ -26,6 +26,7 @@ import {
   employerPublishOfferEmailHtml,
   inactivityReminderEmailHtml,
   genericCampaignEmailHtml,
+  customCampaignEmailHtml,
 } from "../../../../lib/email-templates";
 
 // ─── Accès admin ─────────────────────────────────────────────────────────────
@@ -419,11 +420,15 @@ async function buildEmailHtml({ template, contact, supabase, baseUrl, locale, cu
     ? `${baseUrl}${isEn ? "/en/employeurs/espace" : "/employeurs/espace"}`
     : `${baseUrl}${isEn ? "/en/travailleurs/espace" : "/travailleurs/espace"}`;
 
-  if (template === "custom" && custom_html) {
-    return custom_html
+  if (template === "custom") {
+    const bodyText = (custom_html || "")
       .replace(/\{\{name\}\}/g, contact.name || "")
-      .replace(/\{\{email\}\}/g, contact.email || "")
-      .replace(/\{\{locale\}\}/g, locale);
+      .replace(/\{\{email\}\}/g, contact.email || "");
+    return customCampaignEmailHtml({
+      locale,
+      bodyText,
+      recipientEmail: contact.email,
+    });
   }
 
   if (template === "visibility_initial" || template === "visibility_reminder") {

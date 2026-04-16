@@ -211,6 +211,7 @@ export default function AdminDashboard({ initialData }) {
   const [emailSubject, setEmailSubject]   = useState("");
   const [emailName, setEmailName]         = useState("");
   const [emailLocale, setEmailLocale]     = useState("auto");
+  const [emailCustomBody, setEmailCustomBody] = useState("");
   const [emailLoading, setEmailLoading]   = useState(false);
   const [emailResult, setEmailResult]     = useState(null);
   const [showConfirm, setShowConfirm]     = useState(false);
@@ -318,6 +319,7 @@ export default function AdminDashboard({ initialData }) {
           locale:      emailLocale,
           dry_run:     isDryRun,
           contact_ids: selectedIds.size > 0 ? [...selectedIds] : null,
+          custom_html: emailTemplate === "custom" && emailCustomBody ? emailCustomBody : null,
         }),
       });
       const json = await res.json();
@@ -656,6 +658,23 @@ export default function AdminDashboard({ initialData }) {
                     {TEMPLATES.find(t => t.id === emailTemplate)?.description}
                   </div>
                 </div>
+
+                {emailTemplate === "custom" && (
+                  <div>
+                    <label style={labelStyle}>Corps du message</label>
+                    <textarea
+                      rows={8}
+                      placeholder={`Bonjour {{name}},\n\nVotre message ici…\n\nL'équipe LEXPAT Connect`}
+                      value={emailCustomBody}
+                      onChange={e => setEmailCustomBody(e.target.value)}
+                      style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit" }}
+                    />
+                    <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>
+                      Vous pouvez utiliser <code style={{ background: "#f0f4fb", padding: "1px 4px", borderRadius: 4 }}>{"{{name}}"}</code> pour insérer le prénom du contact.
+                      Le texte sera mis en forme automatiquement avec l'entête et le bas de page LEXPAT Connect.
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <label style={labelStyle}>Sujet personnalisé (laissez vide pour le sujet par défaut)</label>
