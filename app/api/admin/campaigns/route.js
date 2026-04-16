@@ -164,8 +164,9 @@ export async function POST(request) {
       name       = "",
       locale     = "auto",
       dry_run    = false,
-      contact_ids = null,
-      custom_html = null,  // pour template "custom"
+      contact_ids  = null,
+      retry_emails = null,  // liste d'emails à réessayer (depuis l'historique)
+      custom_html  = null,
     } = body;
 
     const resend  = new Resend(process.env.RESEND_API_KEY);
@@ -179,9 +180,13 @@ export async function POST(request) {
     // Appel interne via Supabase directement (pas HTTP)
     const contacts = await resolveContacts(supabase, segment, baseUrl);
 
-    // 2. Filtrer si une sélection manuelle est passée
+    // 2. Filtrer selon la sélection
     let targets = contacts;
-    if (contact_ids && Array.isArray(contact_ids) && contact_ids.length > 0) {
+    if (retry_emails && Array.isArray(retry_emails) && retry_emails.length > 0) {
+      // Réessai : filtrer uniquement les emails en échec
+      const emailSet = new Set(retry_emails.map(e => e.toLowerCase()));
+      targets = contacts.filter(c => c.email && emailSet.has(c.email.toLowerCase()));
+    } else if (contact_ids && Array.isArray(contact_ids) && contact_ids.length > 0) {
       const idSet = new Set(contact_ids);
       targets = contacts.filter(c => idSet.has(c.id));
     }

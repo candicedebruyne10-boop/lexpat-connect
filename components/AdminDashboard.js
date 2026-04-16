@@ -388,6 +388,40 @@ export default function AdminDashboard({ initialData }) {
     setActiveTab("emailing");
   };
 
+  const [retryLoading, setRetryLoading] = useState(null); // campaign id en cours
+
+  const retryFailures = async (campaign) => {
+    if (!campaign.failures?.length) return;
+    setRetryLoading(campaign.id);
+    try {
+      // Construire la liste des emails en échec
+      const failedEmails = campaign.failures.map(f => f.email).filter(Boolean);
+
+      // On passe les emails directement — l'API accepte contact_ids OU on crée
+      // un envoi ciblé via le segment + filtre côté serveur
+      const res = await fetch("/api/admin/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          segment:      campaign.segment,
+          template:     campaign.template,
+          subject:      campaign.subject,
+          name:         `Réessai — ${campaign.name}`,
+          locale:       campaign.locale,
+          dry_run:      false,
+          retry_emails: failedEmails,
+        }),
+      });
+      const json = await res.json();
+      alert(`Réessai terminé : ${json.sent} envoyés, ${json.failed} échecs, ${json.skipped} ignorés.`);
+      fetchCampaigns(campaignsPage);
+    } catch (e) {
+      alert("Erreur : " + e.message);
+    } finally {
+      setRetryLoading(null);
+    }
+  };
+
   // ────────────────────────────────────────────────────────────────────────────
   // RENDER
   // ────────────────────────────────────────────────────────────────────────────
@@ -934,7 +968,7 @@ export default function AdminDashboard({ initialData }) {
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                     <thead>
                       <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
-                        {["Nom", "Segment", "Template", "Envoyés", "Ignorés", "Échecs", "Mode", "Statut", "Date"].map(h => (
+                        {["Nom", "Segment", "Template", "Envoyés", "Ignorés", "Échecs", "Mode", "Statut", "Date", ""].map(h => (
                           <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 700, color: "#6b7280", whiteSpace: "nowrap" }}>{h}</th>
                         ))}
                       </tr>
@@ -964,6 +998,17 @@ export default function AdminDashboard({ initialData }) {
                               </span>
                             </td>
                             <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280", whiteSpace: "nowrap" }}>{formatDateTime(c.created_at)}</td>
+                            <td style={{ padding: "10px 14px" }}>
+                              {(c.failures?.length > 0 && !c.dry_run) && (
+                                <button
+                                  style={{ ...btn.base, ...btn.amber, fontSize: 12, padding: "5px 12px" }}
+                                  disabled={retryLoading === c.id}
+                                  onClick={e => { e.stopPropagation(); retryFailures(c); }}
+                                >
+                                  {retryLoading === c.id ? "⏳" : "🔁"} Réessayer ({c.failures.length})
+                                </button>
+                              )}
+                            </td>
                           </tr>
                           {expandedCampaign === c.id && (
                             <tr key={`${c.id}-detail`}>
