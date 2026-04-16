@@ -234,7 +234,9 @@ export async function POST(request) {
         continue;
       }
 
-      // Envoi réel
+      // Envoi réel — pause de 250ms entre chaque email (limite Resend : 5/sec)
+      await new Promise(r => setTimeout(r, 250));
+
       const { error: sendError } = await resend.emails.send({
         from,
         to: contact.email,
@@ -243,7 +245,18 @@ export async function POST(request) {
       });
 
       if (sendError) {
-        failed.push({ email: contact.email, name: contact.name, error: sendError.message });
+        // Retry automatique si rate limit (attendre 1s et réessayer une fois)
+        if (sendError.message?.includes("Too many requests")) {
+          await new Promise(r => setTimeout(r, 1200));
+          const { error: retryError } = await resend.emails.send({ from, to: contact.email, subject: resolvedSubject, html });
+          if (retryError) {
+            failed.push({ email: contact.email, name: contact.name, error: retryError.message });
+          } else {
+            sent.push({ email: contact.email, name: contact.name, locale: contactLocale });
+          }
+        } else {
+          failed.push({ email: contact.email, name: contact.name, error: sendError.message });
+        }
       } else {
         sent.push({ email: contact.email, name: contact.name, locale: contactLocale });
       }
