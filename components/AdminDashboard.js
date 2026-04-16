@@ -34,13 +34,13 @@ const SEGMENT_GROUPS = {
 };
 
 const TEMPLATES = [
-  { id: "visibility_initial",     label: "Rendre son profil visible (1ère relance)",  description: "Invite les travailleurs à rendre leur profil visible avant lundi." },
-  { id: "visibility_reminder",    label: "Rendre son profil visible (rappel)",         description: "Rappel : profil toujours masqué, dernière chance." },
-  { id: "complete_profile",       label: "Compléter son profil",                       description: "Pour les profils incomplets : les encourage à renseigner les infos manquantes." },
-  { id: "employer_publish_offer", label: "Employeur — Publier une offre",              description: "Invite les employeurs sans offre publiée à créer leur première offre." },
-  { id: "inactivity_reminder",    label: "Rappel d'inactivité",                        description: "Rappel pour les membres inactifs depuis 90+ jours." },
-  { id: "referral_share",         label: "Partager son lien de référencement",         description: "Invite les profils visibles à partager leur lien à 3 contacts qualifiés." },
-  { id: "custom",                 label: "Message personnalisé",                       description: "Envoyez un message libre sur n'importe quel segment." },
+  { id: "visibility_initial",     label: "Rendre son profil visible (1ère relance)",  description: "Invite les travailleurs à rendre leur profil visible avant lundi.",              subject_fr: "Rendez votre profil visible avant lundi",                  subject_en: "Make your profile visible before Monday" },
+  { id: "visibility_reminder",    label: "Rendre son profil visible (rappel)",         description: "Rappel : profil toujours masqué, dernière chance.",                              subject_fr: "Rappel : rendez votre profil visible avant lundi",          subject_en: "Reminder: make your profile visible before Monday" },
+  { id: "complete_profile",       label: "Compléter son profil",                       description: "Pour les profils incomplets : les encourage à renseigner les infos manquantes.", subject_fr: "Complétez votre profil LEXPAT Connect",                     subject_en: "Complete your LEXPAT Connect profile" },
+  { id: "employer_publish_offer", label: "Employeur — Publier une offre",              description: "Invite les employeurs sans offre publiée à créer leur première offre.",          subject_fr: "Publiez votre première offre sur LEXPAT Connect",           subject_en: "Publish your first opening on LEXPAT Connect" },
+  { id: "inactivity_reminder",    label: "Rappel d'inactivité",                        description: "Rappel pour les membres inactifs depuis 90+ jours.",                             subject_fr: "Votre profil LEXPAT Connect vous attend",                   subject_en: "Your LEXPAT Connect profile is waiting for you" },
+  { id: "referral_share",         label: "Partager son lien de référencement",         description: "Invite les profils visibles à partager leur lien à 3 contacts qualifiés.",       subject_fr: "Boostez votre visibilité en 1 geste",                       subject_en: "Boost your visibility in 1 step" },
+  { id: "custom",                 label: "Message personnalisé",                       description: "Envoyez un message libre sur n'importe quel segment.",                           subject_fr: "",                                                          subject_en: "" },
 ];
 
 // ─── Styles partagés ──────────────────────────────────────────────────────────
@@ -1029,8 +1029,11 @@ export default function AdminDashboard({ initialData }) {
             {/* Header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", borderBottom: "1px solid #e8eef8", flexShrink: 0 }}>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78" }}>Aperçu de l'email</div>
-                <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>Données fictives — destinataire : Marie Dupont</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Aperçu de l'email</div>
+                <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78", marginBottom: 4 }}>
+                  {emailSubject || TEMPLATES.find(t => t.id === emailTemplate)?.[emailLocale === "en" ? "subject_en" : "subject_fr"] || "—"}
+                </div>
+                <div style={{ fontSize: 11, color: "#8a9db8" }}>Données fictives — destinataire : Marie Dupont</div>
               </div>
               <button
                 onClick={() => setPreviewHtml(null)}
