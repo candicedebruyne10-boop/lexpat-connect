@@ -669,9 +669,24 @@ export default function AdminDashboard({ initialData }) {
                       onChange={e => setEmailCustomBody(e.target.value)}
                       style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit" }}
                     />
-                    <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>
-                      Vous pouvez utiliser <code style={{ background: "#f0f4fb", padding: "1px 4px", borderRadius: 4 }}>{"{{name}}"}</code> pour insérer le prénom du contact.
-                      Le texte sera mis en forme automatiquement avec l'entête et le bas de page LEXPAT Connect.
+                    <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 8, lineHeight: 1.8 }}>
+                      Variables disponibles — seront remplacées automatiquement pour chaque destinataire :
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                        {[
+                          { tag: "{{name}}",         desc: "Prénom du contact" },
+                          { tag: "{{profile_url}}",  desc: "Lien vers son espace" },
+                          { tag: "{{referral_url}}", desc: "Son lien d'affiliation" },
+                          { tag: "{{email}}",        desc: "Son adresse email" },
+                        ].map(v => (
+                          <span
+                            key={v.tag}
+                            title={v.desc}
+                            style={{ background: "#f0f4fb", border: "1px solid #d0dcf0", borderRadius: 6, padding: "3px 8px", fontSize: 11, color: "#1E3A78", fontFamily: "monospace", cursor: "default" }}
+                          >
+                            {v.tag} <span style={{ color: "#8a9db8", fontFamily: "inherit" }}>— {v.desc}</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}

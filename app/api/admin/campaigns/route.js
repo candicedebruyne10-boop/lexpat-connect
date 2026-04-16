@@ -421,9 +421,25 @@ async function buildEmailHtml({ template, contact, supabase, baseUrl, locale, cu
     : `${baseUrl}${isEn ? "/en/travailleurs/espace" : "/travailleurs/espace"}`;
 
   if (template === "custom") {
+    // Assurer un code de parrainage si le contact est un travailleur
+    let referralUrl = "";
+    if (contact.type === "worker") {
+      let referral_code = contact.referral_code;
+      if (!referral_code) {
+        try {
+          referral_code = await generateUniqueReferralCode(supabase);
+          await supabase.from("worker_profiles").update({ referral_code }).eq("id", contact.id);
+        } catch { referral_code = null; }
+      }
+      if (referral_code) referralUrl = buildReferralUrl(referral_code, locale);
+    }
+
     const bodyText = (custom_html || "")
       .replace(/\{\{name\}\}/g, contact.name || "")
-      .replace(/\{\{email\}\}/g, contact.email || "");
+      .replace(/\{\{email\}\}/g, contact.email || "")
+      .replace(/\{\{profile_url\}\}/g, spaceUrl)
+      .replace(/\{\{referral_url\}\}/g, referralUrl || spaceUrl);
+
     return customCampaignEmailHtml({
       locale,
       bodyText,
