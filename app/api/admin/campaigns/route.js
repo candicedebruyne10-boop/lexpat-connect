@@ -23,6 +23,7 @@ import {
   workerVisibilityPriorityEmailHtml,
   workerProfileIncompleteEmailHtml,
   workerCompleteProfileEmailHtml,
+  workerReferralShareEmailHtml,
   employerPublishOfferEmailHtml,
   inactivityReminderEmailHtml,
   genericCampaignEmailHtml,
@@ -91,6 +92,15 @@ export const TEMPLATES = [
     locale: "auto",
     subject_fr: "Votre profil LEXPAT Connect vous attend",
     subject_en: "Your LEXPAT Connect profile is waiting for you",
+  },
+  {
+    id: "referral_share",
+    label: "Partager son lien de référencement",
+    description: "Invite les profils visibles à partager leur lien à 3 contacts qualifiés pour être mis en avant.",
+    segments: ["workers_visible", "workers_all"],
+    locale: "auto",
+    subject_fr: "Invitez 3 contacts et boostez votre visibilité",
+    subject_en: "Invite 3 contacts and boost your visibility",
   },
   {
     id: "custom",
@@ -483,6 +493,26 @@ async function buildEmailHtml({ template, contact, supabase, baseUrl, locale, cu
       locale,
       recipientName: contact.name,
       profileUrl: spaceUrl,
+      recipientEmail: contact.email,
+    });
+  }
+
+  if (template === "referral_share") {
+    let referral_code = contact.referral_code;
+    if (!referral_code && contact.type === "worker") {
+      try {
+        referral_code = await generateUniqueReferralCode(supabase);
+        await supabase.from("worker_profiles").update({ referral_code }).eq("id", contact.id);
+      } catch { referral_code = null; }
+    }
+    const referralUrl = referral_code
+      ? buildReferralUrl(referral_code, locale)
+      : spaceUrl;
+    return workerReferralShareEmailHtml({
+      locale,
+      recipientName: contact.name,
+      profileUrl: spaceUrl,
+      referralUrl,
       recipientEmail: contact.email,
     });
   }

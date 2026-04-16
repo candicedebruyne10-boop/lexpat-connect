@@ -39,6 +39,7 @@ const TEMPLATES = [
   { id: "complete_profile",       label: "Compléter son profil",                       description: "Pour les profils incomplets : les encourage à renseigner les infos manquantes." },
   { id: "employer_publish_offer", label: "Employeur — Publier une offre",              description: "Invite les employeurs sans offre publiée à créer leur première offre." },
   { id: "inactivity_reminder",    label: "Rappel d'inactivité",                        description: "Rappel pour les membres inactifs depuis 90+ jours." },
+  { id: "referral_share",         label: "Partager son lien de référencement",         description: "Invite les profils visibles à partager leur lien à 3 contacts qualifiés." },
   { id: "custom",                 label: "Message personnalisé",                       description: "Envoyez un message libre sur n'importe quel segment." },
 ];
 

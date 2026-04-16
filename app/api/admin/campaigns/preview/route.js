@@ -11,6 +11,7 @@ import {
   workerVisibilityPriorityEmailHtml,
   workerProfileIncompleteEmailHtml,
   workerCompleteProfileEmailHtml,
+  workerReferralShareEmailHtml,
   employerPublishOfferEmailHtml,
   inactivityReminderEmailHtml,
   genericCampaignEmailHtml,
@@ -87,6 +88,14 @@ export async function GET(request) {
         locale,
         recipientName: demoContact.name,
         profileUrl,
+        recipientEmail: demoContact.email,
+      });
+    } else if (template === "referral_share") {
+      html = workerReferralShareEmailHtml({
+        locale,
+        recipientName: demoContact.name,
+        profileUrl,
+        referralUrl,
         recipientEmail: demoContact.email,
       });
     } else if (template === "custom") {
