@@ -235,6 +235,7 @@ stats={[
           />
         </div>
       </Section>
+      </div>
 
       <CtaBanner
         title="Une fois la mise en relation engagée, le juridique peut prendre le relais"

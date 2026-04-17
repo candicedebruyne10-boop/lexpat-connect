@@ -223,6 +223,7 @@ stats={[
           />
         </div>
       </Section>
+      </div>
 
       <CtaBanner
         title="Une question de séjour ou de droit au travail peut être traitée ensuite"
