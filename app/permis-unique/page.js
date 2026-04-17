@@ -203,6 +203,34 @@ stats={[
         ]}
       />
 
+      {/* ── Sommaire ── */}
+      <div className="bg-white border-y border-[#e5edf4]">
+        <div className="mx-auto max-w-5xl px-6 py-8">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Sur cette page</p>
+          <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { href: "#principes-generaux",      label: "Les principes généraux" },
+              { href: "#paysage-institutionnel",   label: "Pourquoi le système paraît complexe" },
+              { href: "#autorisations-travail",    label: "Trois lectures très différentes" },
+              { href: "#cote-employeur",           label: "Ce que l’employeur doit retenir" },
+              { href: "#etapes",                   label: "Comment fonctionne un permis unique" },
+              { href: "#cabinet-lexpat",           label: "Quand le cabinet LEXPAT intervient" },
+              { href: "#faq",                      label: "FAQ permis unique" },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-center gap-3 rounded-xl border border-[#e5edf4] bg-[#f8faff] px-4 py-3 text-sm font-medium text-[#1d3b8b] transition hover:border-[#57b7af] hover:bg-[#f0fbfa]"
+              >
+                <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#57b7af] transition group-hover:scale-125" />
+                {label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="principes-generaux">
       <Section
         title="Les principes généraux"
         intro="Pour travailler en Belgique, il faut une base valable. Parfois elle existe déjà. Parfois il faut un permis unique."
@@ -210,7 +238,9 @@ stats={[
       >
         <CardGrid items={basicCards} columns={3} />
       </Section>
+      </div>
 
+      <div id="paysage-institutionnel">
       <Section
         title="Pourquoi le système paraît complexe"
         intro="Le permis unique n’est pas géré par une seule autorité. C’est ce qui rend le système parfois difficile à lire."
@@ -219,7 +249,9 @@ stats={[
       >
         <CardGrid items={landscapeCards} columns={3} />
       </Section>
+      </div>
 
+      <div id="autorisations-travail">
       <Section
         title="Trois lectures très différentes"
         intro="Avant de parler de permis unique, il faut distinguer trois cas : accès direct, accès facilité ou vraie analyse du marché de l’emploi."
@@ -284,16 +316,20 @@ stats={[
           ))}
         </div>
       </Section>
+      </div>
 
+      <div id="cote-employeur">
       <Section
-        title="Ce que l'employeur doit retenir"
+        title="Ce que l’employeur doit retenir"
         intro="Le point clé : vérifier avant l’entrée en fonction."
         kicker="Côté employeur"
         muted
       >
         <CardGrid items={employerPoints} columns={3} />
       </Section>
+      </div>
 
+      <div id="etapes">
       <Section
         title="Concrètement, comment fonctionne un permis unique"
         intro="Le dossier suit trois étapes simples : qualifier, préparer, déposer."
@@ -301,7 +337,9 @@ stats={[
       >
         <Steps items={permitSteps} />
       </Section>
+      </div>
 
+      <div id="cabinet-lexpat">
       <Section
         title="Quand le cabinet LEXPAT intervient"
         intro="La plateforme clarifie le besoin. Le cabinet intervient quand il faut sécuriser juridiquement le dossier."
@@ -329,9 +367,11 @@ stats={[
           </article>
         </div>
       </Section>
+      </div>
 
       <MemberLockedPermitContent />
 
+      <div id="faq">
       <Section
         title="FAQ permis unique"
         intro="Les réponses courtes aux questions les plus fréquentes côté employeur."
@@ -339,6 +379,7 @@ stats={[
       >
         <Faq items={permitFaq} />
       </Section>
+      </div>
 
       <CtaBanner
         title="Vous voulez savoir si votre recrutement passe par un permis unique ?"
