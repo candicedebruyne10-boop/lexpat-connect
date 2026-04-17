@@ -168,6 +168,180 @@ function EmptyState({ text }) {
   return <div style={{ padding: "24px 20px", color: "#8a9db8", fontSize: 13, textAlign: "center" }}>{text}</div>;
 }
 
+// ─── Coach IA — Analyse Trafic ────────────────────────────────────────────────
+
+const TRAFFIC_THRESHOLDS = { high: 80, medium: 25 }; // visiteurs/7j
+
+function classifyTraffic(visitors) {
+  if (visitors >= TRAFFIC_THRESHOLDS.high)   return "high";
+  if (visitors >= TRAFFIC_THRESHOLDS.medium)  return "medium";
+  return "low";
+}
+
+function deriveTrafficInsights(pages) {
+  if (!pages?.length) return [];
+
+  const insights   = [];
+  const maxVisitors = Math.max(...pages.map(p => p.visitors), 1);
+
+  // Tri par visiteurs décroissant
+  const sorted = [...pages].sort((a, b) => b.visitors - a.visitors);
+
+  let criticalCount    = 0; // max 1
+  let opportunityCount = 0; // max 2
+
+  for (const page of sorted) {
+    const traffic = classifyTraffic(page.visitors);
+    const isKey   = page.priority === "critical";
+
+    // ── Règle 8 : Simulateur + trafic élevé ──────────────────────────────────
+    if (page.path.includes("simulateur") && traffic !== "low" && opportunityCount < 2) {
+      insights.push({
+        id: `trafic_simulateur`,
+        type: "opportunite",
+        icon: "🔮",
+        page: page.path, label: page.label, visitors: page.visitors,
+        message: "Le simulateur attire du trafic.",
+        action: "Transformer la fin du simulateur en machine à conversion : CTA 'Voir les profils' et 'Créer mon compte' bien visibles.",
+        impact: "très fort",
+      });
+      opportunityCount++;
+      continue;
+    }
+
+    // ── Règle 7 : Page Liège + trafic élevé ──────────────────────────────────
+    if (page.path.includes("liege") && traffic !== "low" && opportunityCount < 2) {
+      insights.push({
+        id: `trafic_liege`,
+        type: "opportunite",
+        icon: "🏙️",
+        page: page.path, label: page.label, visitors: page.visitors,
+        message: "La page Liège attire des employeurs potentiels.",
+        action: "Ajouter des profils visibles dans ce secteur, des témoignages et un CTA simulateur en haut de page.",
+        impact: "très fort",
+      });
+      opportunityCount++;
+      continue;
+    }
+
+    // ── Règle 1+2 : Trafic élevé → problème potentiel CTR ────────────────────
+    if (traffic === "high" && (page.path === "/" || page.path === "/en") && criticalCount < 1) {
+      insights.push({
+        id: `trafic_home_ctr`,
+        type: "probleme",
+        icon: "⚠️",
+        page: page.path, label: page.label, visitors: page.visitors,
+        message: "La homepage génère du trafic mais les visiteurs ne passent pas encore suffisamment à l'action.",
+        action: "Clarifier la promesse principale et placer un CTA 'Voir les profils' ou 'Tester la faisabilité' dès le dessus du fold.",
+        impact: "très fort",
+      });
+      criticalCount++;
+      continue;
+    }
+
+    // ── Règle 3 : Page qui performe bien ─────────────────────────────────────
+    if (traffic === "medium" && opportunityCount < 2) {
+      insights.push({
+        id: `trafic_performing_${page.path}`,
+        type: "opportunite",
+        icon: "✅",
+        page: page.path, label: page.label, visitors: page.visitors,
+        message: "Cette page génère un trafic régulier.",
+        action: "Optimiser la conversion : ajouter témoignages, CTA et profils visibles pour transformer les visiteurs en leads.",
+        impact: "fort",
+      });
+      opportunityCount++;
+      continue;
+    }
+
+    // ── Règle 4 : Trafic faible → SEO ────────────────────────────────────────
+    if (traffic === "low" && isKey && opportunityCount < 2) {
+      insights.push({
+        id: `trafic_low_${page.path}`,
+        type: "opportunite",
+        icon: "📈",
+        page: page.path, label: page.label, visitors: page.visitors,
+        message: "Cette page clé n'attire pas encore de trafic.",
+        action: "Améliorer le SEO (méta-description, H1 ciblé, maillage interne) ou partager sur LinkedIn et par email.",
+        impact: "moyen",
+      });
+      opportunityCount++;
+      continue;
+    }
+  }
+
+  // Cap : 1 problème critique + 2 opportunités max
+  const critical     = insights.filter(i => i.type === "probleme").slice(0, 1);
+  const opportunities = insights.filter(i => i.type === "opportunite").slice(0, 2);
+  return [...critical, ...opportunities];
+}
+
+// ─── Coach IA — carte trafic ──────────────────────────────────────────────────
+
+function TrafficCard({ insight, siteUrl }) {
+  const typeTheme = {
+    probleme:   { bg: "#fff1f2", border: "#fca5a5", badgeBg: "#fee2e2", badgeText: "#b91c1c", label: "Problème" },
+    opportunite:{ bg: "#f0fdf4", border: "#86efac", badgeBg: "#dcfce7", badgeText: "#166534", label: "Opportunité" },
+    insight:    { bg: "#eff6ff", border: "#bfdbfe", badgeBg: "#dbeafe", badgeText: "#1d4ed8", label: "Insight" },
+    alerte:     { bg: "#fffbeb", border: "#fcd34d", badgeBg: "#fef3c7", badgeText: "#92400e", label: "Alerte" },
+  };
+  const th = typeTheme[insight.type] || typeTheme.insight;
+
+  const impactColor = {
+    "très fort": "#b91c1c",
+    "fort":      "#0d7c6e",
+    "moyen":     "#92400e",
+  }[insight.impact] || "#6b7280";
+
+  return (
+    <div style={{ background: th.bg, border: `1.5px solid ${th.border}`, borderRadius: 18, padding: "20px 22px", display: "flex", flexDirection: "column", gap: 12 }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <span style={{ fontSize: 22, lineHeight: 1.2 }}>{insight.icon}</span>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 14, color: "#1E3A78", lineHeight: 1.3 }}>{insight.label}</div>
+            <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2, fontFamily: "monospace" }}>{insight.page}</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+          <span style={{ display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700, background: th.badgeBg, color: th.badgeText }}>{th.label}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: impactColor }}>impact {insight.impact}</span>
+        </div>
+      </div>
+
+      {/* Visiteurs badge */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: 0.5 }}>7 derniers jours</span>
+        <span style={{ fontWeight: 900, fontSize: 18, color: "#1E3A78" }}>{insight.visitors.toLocaleString("fr-BE")}</span>
+        <span style={{ fontSize: 12, color: "#8a9db8" }}>visiteurs</span>
+      </div>
+
+      {/* Message */}
+      <p style={{ margin: 0, fontSize: 13, color: "#3d5470", lineHeight: 1.65 }}>{insight.message}</p>
+
+      {/* Action */}
+      <div style={{ background: "rgba(255,255,255,0.72)", borderRadius: 10, padding: "10px 14px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Action concrète</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#1E3A78" }}>{insight.action}</div>
+      </div>
+
+      {/* CTA */}
+      {siteUrl && (
+        <a
+          href={`${siteUrl}${insight.page}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ ...btn.base, ...btn.ghost, textDecoration: "none", fontSize: 12, alignSelf: "flex-start" }}
+        >
+          🔗 Ouvrir la page
+        </a>
+      )}
+    </div>
+  );
+}
+
 // ─── Écran de connexion admin ─────────────────────────────────────────────────
 
 function AdminLoginScreen() {
@@ -626,6 +800,28 @@ export default function AdminDashboard({ initialData }) {
   const [previewHtml, setPreviewHtml]     = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
+  // ── Traffic state ───────────────────────────────────────────────────────────
+  const [trafficData, setTrafficData]           = useState(null);   // null | { configured, pages, error }
+  const [trafficLoading, setTrafficLoading]     = useState(false);
+
+  const fetchTraffic = useCallback(async () => {
+    if (!token) return;
+    setTrafficLoading(true);
+    try {
+      const res  = await fetch("/api/admin/traffic", { headers: { Authorization: `Bearer ${token}` } });
+      const json = await res.json();
+      setTrafficData(json);
+    } catch (e) {
+      setTrafficData({ configured: false, error: e.message, pages: [] });
+    } finally {
+      setTrafficLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (activeTab === "coach" && !trafficData) fetchTraffic();
+  }, [activeTab, trafficData, fetchTraffic]);
+
   // ── History state ───────────────────────────────────────────────────────────
   const [campaigns, setCampaigns]             = useState([]);
   const [campaignsTotal, setCampaignsTotal]   = useState(0);
@@ -1029,6 +1225,139 @@ export default function AdminDashboard({ initialData }) {
                 </>
               );
             })()}
+
+            {/* ════ SECTION TRAFIC ════ */}
+            <div style={{ marginTop: 40 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>📊 Coach IA — Optimisation trafic</h3>
+                  <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Analyse page par page des 7 derniers jours via Vercel Analytics.</p>
+                </div>
+                <button style={{ ...btn.base, ...btn.ghost, fontSize: 12 }} onClick={fetchTraffic} disabled={trafficLoading}>
+                  {trafficLoading ? "⏳" : "🔄"} Actualiser
+                </button>
+              </div>
+
+              {trafficLoading ? (
+                <div style={{ color: "#8a9db8", fontSize: 14 }}>Récupération des données trafic…</div>
+
+              ) : !trafficData ? (
+                <div style={{ color: "#8a9db8", fontSize: 14 }}>Cliquez sur Actualiser pour charger l'analyse trafic.</div>
+
+              ) : !trafficData.configured ? (
+                /* ── Non configuré ── */
+                <div style={{ ...card, background: "#fffbeb", border: "1.5px solid #fcd34d", borderRadius: 16 }}>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: "#92400e", marginBottom: 8 }}>⚙️ Configuration requise</div>
+                  <p style={{ margin: "0 0 12px", fontSize: 13, color: "#3d5470", lineHeight: 1.7 }}>
+                    Pour activer l'analyse trafic, ajoutez ces variables dans votre fichier <code style={{ background: "#fef3c7", borderRadius: 4, padding: "1px 6px" }}>.env.local</code> :
+                  </p>
+                  <div style={{ background: "#1E3A78", borderRadius: 10, padding: "14px 18px", fontFamily: "monospace", fontSize: 12, color: "#93c5fd", lineHeight: 2 }}>
+                    {(trafficData.missing || ["VERCEL_API_TOKEN", "VERCEL_PROJECT_ID"]).map(k => (
+                      <div key={k}>{k}=<span style={{ color: "#fbbf24" }}>votre_valeur</span></div>
+                    ))}
+                    <div style={{ color: "#6b7280", marginTop: 4 }}># VERCEL_TEAM_ID=xxx  ← optionnel (compte équipe)</div>
+                  </div>
+                  <div style={{ marginTop: 12, fontSize: 12, color: "#8a9db8", lineHeight: 1.7 }}>
+                    Trouvez votre <strong>VERCEL_API_TOKEN</strong> dans <em>vercel.com → Account → Tokens</em>.<br />
+                    Trouvez votre <strong>VERCEL_PROJECT_ID</strong> dans <em>vercel.com → Projet → Settings → General</em>.
+                  </div>
+                </div>
+
+              ) : trafficData.error && !trafficData.pages?.length ? (
+                /* ── Erreur API ── */
+                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 18px", fontSize: 13, color: "#b91c1c" }}>
+                  ❌ Erreur Vercel API : {trafficData.error}
+                </div>
+
+              ) : (() => {
+                const pages          = trafficData.pages || [];
+                const trafficInsights = deriveTrafficInsights(pages);
+                const totalVisitors   = trafficData.totalVisitors ?? pages.reduce((s, p) => s + p.visitors, 0);
+                const siteUrl         = process.env.NEXT_PUBLIC_SITE_URL || "";
+
+                return (
+                  <>
+                    {/* Mini stats bar */}
+                    <div style={{ display: "flex", gap: 12, marginBottom: 22, flexWrap: "wrap" }}>
+                      <div style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 20 }}>👁️</span>
+                        <div>
+                          <div style={{ fontSize: 22, fontWeight: 900, color: "#1E3A78", lineHeight: 1 }}>{totalVisitors.toLocaleString("fr-BE")}</div>
+                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>visiteurs totaux (7j)</div>
+                        </div>
+                      </div>
+                      <div style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 20 }}>📄</span>
+                        <div>
+                          <div style={{ fontSize: 22, fontWeight: 900, color: "#1E3A78", lineHeight: 1 }}>{pages.length}</div>
+                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>pages surveillées</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mini tableau des pages */}
+                    <div style={{ ...card, padding: 0, overflow: "hidden", marginBottom: 24 }}>
+                      <div style={{ padding: "12px 18px", background: "#f8faff", borderBottom: "1px solid #e8eef8", fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>
+                        Pages surveillées
+                      </div>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                        <thead>
+                          <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
+                            {["Page", "Visiteurs (7j)", "Niveau"].map(h => (
+                              <th key={h} style={{ padding: "8px 16px", textAlign: "left", fontWeight: 700, color: "#6b7280", fontSize: 12 }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {[...pages].sort((a, b) => b.visitors - a.visitors).map((p, i) => {
+                            const lvl = classifyTraffic(p.visitors);
+                            const lvlStyle = {
+                              high:   { color: "#0d7c6e", bg: "#e6faf7" },
+                              medium: { color: "#92400e", bg: "#fef3c7" },
+                              low:    { color: "#6b7280", bg: "#f5f5f5" },
+                            }[lvl];
+                            return (
+                              <tr key={p.path} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb" }}>
+                                <td style={{ padding: "8px 16px" }}>
+                                  <div style={{ fontWeight: 600, color: "#1E3A78" }}>{p.label}</div>
+                                  <div style={{ fontSize: 11, color: "#8a9db8", fontFamily: "monospace" }}>{p.path}</div>
+                                </td>
+                                <td style={{ padding: "8px 16px", fontWeight: 900, fontSize: 16, color: "#1E3A78" }}>
+                                  {p.visitors.toLocaleString("fr-BE")}
+                                </td>
+                                <td style={{ padding: "8px 16px" }}>
+                                  <span style={{ display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700, background: lvlStyle.bg, color: lvlStyle.color }}>
+                                    {lvl === "high" ? "Élevé" : lvl === "medium" ? "Moyen" : "Faible"}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Insights trafic */}
+                    {trafficInsights.length === 0 ? (
+                      <div style={{ ...card, textAlign: "center", padding: 36, color: "#8a9db8", fontSize: 13 }}>
+                        Pas assez de données trafic pour générer des recommandations. Revenez dans quelques jours.
+                      </div>
+                    ) : (
+                      <>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78", marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.8 }}>
+                          Recommandations ({trafficInsights.length})
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
+                          {trafficInsights.map(ins => (
+                            <TrafficCard key={ins.id} insight={ins} siteUrl={siteUrl} />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
           </div>
         )}
 
