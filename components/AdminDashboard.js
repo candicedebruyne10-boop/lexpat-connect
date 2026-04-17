@@ -168,6 +168,153 @@ function EmptyState({ text }) {
   return <div style={{ padding: "24px 20px", color: "#8a9db8", fontSize: 13, textAlign: "center" }}>{text}</div>;
 }
 
+// ─── Écran de connexion admin ─────────────────────────────────────────────────
+
+function AdminLoginScreen() {
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+  const [sent, setSent]         = useState(false);
+  const [mode, setMode]         = useState("password"); // "password" | "magic"
+
+  const handlePasswordLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+      if (err) setError(err.message);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMagicLink = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: err } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/admin` },
+      });
+      if (err) setError(err.message);
+      else setSent(true);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f4fb", fontFamily: "'Open Sans', Arial, sans-serif" }}>
+      <div style={{ background: "#fff", borderRadius: 20, padding: "40px 44px", maxWidth: 420, width: "90%", boxShadow: "0 8px 40px rgba(30,58,120,0.10)", border: "1px solid #e8eef8" }}>
+
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "#1E3A78", letterSpacing: -0.5 }}>
+            LEXPAT <span style={{ color: "#57B7AF" }}>CONNECT</span>
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: 2, marginTop: 4 }}>
+            Accès administrateur
+          </div>
+        </div>
+
+        {sent ? (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>📬</div>
+            <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78", marginBottom: 8 }}>Lien envoyé !</div>
+            <div style={{ fontSize: 13, color: "#8a9db8", lineHeight: 1.7 }}>
+              Un lien de connexion a été envoyé à <strong>{email}</strong>.<br />
+              Cliquez dessus pour accéder au dashboard.
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Toggle mode */}
+            <div style={{ display: "flex", background: "#f0f4fb", borderRadius: 10, padding: 3, marginBottom: 24 }}>
+              {[
+                { id: "password", label: "Mot de passe" },
+                { id: "magic",    label: "Lien magique" },
+              ].map(m => (
+                <button
+                  key={m.id}
+                  onClick={() => { setMode(m.id); setError(null); }}
+                  style={{
+                    flex: 1, border: "none", borderRadius: 8, padding: "8px 0",
+                    fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all .15s",
+                    background: mode === m.id ? "#fff" : "transparent",
+                    color: mode === m.id ? "#1E3A78" : "#8a9db8",
+                    boxShadow: mode === m.id ? "0 1px 6px rgba(30,58,120,0.10)" : "none",
+                  }}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={mode === "password" ? handlePasswordLogin : handleMagicLink}>
+              <div style={{ marginBottom: 16 }}>
+                <label style={labelStyle}>Email</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="admin@lexpat-connect.be"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  style={inputStyle}
+                  autoComplete="email"
+                />
+              </div>
+
+              {mode === "password" && (
+                <div style={{ marginBottom: 20 }}>
+                  <label style={labelStyle}>Mot de passe</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    style={inputStyle}
+                    autoComplete="current-password"
+                  />
+                </div>
+              )}
+
+              {mode === "magic" && (
+                <div style={{ marginBottom: 20, fontSize: 12, color: "#8a9db8", lineHeight: 1.6 }}>
+                  Un lien de connexion sera envoyé à votre adresse email.
+                </div>
+              )}
+
+              {error && (
+                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#b91c1c", marginBottom: 16 }}>
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{ ...btn.base, ...btn.primary, width: "100%", justifyContent: "center", fontSize: 14, padding: "12px 0", opacity: loading ? 0.7 : 1 }}
+              >
+                {loading ? "⏳ Connexion…" : mode === "password" ? "Se connecter" : "Envoyer le lien"}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Coach IA — logique de diagnostic ────────────────────────────────────────
 
 function deriveInsights(kpis) {
@@ -410,14 +557,15 @@ export default function AdminDashboard({ initialData }) {
   const data = initialData || {};
 
   // Session récupérée côté client
-  const [token, setToken] = useState(null);
+  // undefined = vérification en cours | null = non connecté | string = token actif
+  const [token, setToken] = useState(undefined);
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setToken(session?.access_token || null);
+      setToken(session?.access_token ?? null);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setToken(session?.access_token || null);
+      setToken(session?.access_token ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -675,8 +823,8 @@ export default function AdminDashboard({ initialData }) {
   // RENDER
   // ────────────────────────────────────────────────────────────────────────────
 
-  // Attendre la session
-  if (token === null) {
+  // Vérification en cours
+  if (token === undefined) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f4fb", fontFamily: "Arial, sans-serif" }}>
         <div style={{ textAlign: "center", color: "#1E3A78" }}>
@@ -685,6 +833,11 @@ export default function AdminDashboard({ initialData }) {
         </div>
       </div>
     );
+  }
+
+  // Pas de session active — afficher le formulaire de connexion
+  if (token === null) {
+    return <AdminLoginScreen />;
   }
 
   return (
