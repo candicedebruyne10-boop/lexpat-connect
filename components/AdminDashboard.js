@@ -7,6 +7,7 @@ import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const TABS = [
   { id: "overview",    label: "Vue d'ensemble",  icon: "📊" },
+  { id: "coach",       label: "Coach IA",         icon: "🤖" },
   { id: "contacts",   label: "Contacts",         icon: "👥" },
   { id: "emailing",   label: "Emailing",         icon: "✉️" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
@@ -167,6 +168,242 @@ function EmptyState({ text }) {
   return <div style={{ padding: "24px 20px", color: "#8a9db8", fontSize: 13, textAlign: "center" }}>{text}</div>;
 }
 
+// ─── Coach IA — logique de diagnostic ────────────────────────────────────────
+
+function deriveInsights(kpis) {
+  if (!kpis) return [];
+  const insights = [];
+
+  // 1. Profils masqués
+  if ((kpis.workers_hidden || 0) > 0) {
+    insights.push({
+      id: "hidden_profiles",
+      icon: "🔒",
+      severity: kpis.workers_hidden > 10 ? "high" : "medium",
+      title: "Profils masqués",
+      description: `${kpis.workers_hidden} travailleur(s) inscrits n'ont pas rendu leur profil visible. Ils sont invisibles pour tous les employeurs.`,
+      action: "Relancer par email pour activer la visibilité.",
+      count: kpis.workers_hidden,
+      segment: "workers_hidden",
+      template: "visibility_initial",
+      subject_fr: "Votre profil est prêt — rendez-le visible",
+      subject_en: "Your profile is ready — make it visible",
+    });
+  }
+
+  // 2. Profils incomplets
+  if ((kpis.workers_incomplete || 0) > 0) {
+    insights.push({
+      id: "incomplete_profiles",
+      icon: "⚠️",
+      severity: kpis.workers_incomplete > 5 ? "medium" : "low",
+      title: "Profils incomplets",
+      description: `${kpis.workers_incomplete} profil(s) à moins de 60% de complétion. Un profil incomplet est moins attractif pour les employeurs.`,
+      action: "Encourager les membres à ajouter leurs expériences, CV et langues.",
+      count: kpis.workers_incomplete,
+      segment: "workers_incomplete",
+      template: "complete_profile",
+      subject_fr: "Complétez votre profil pour être contacté",
+      subject_en: "Complete your profile to be contacted",
+    });
+  }
+
+  // 3. Employeurs sans offre
+  if ((kpis.employers_without_offers || 0) > 0) {
+    insights.push({
+      id: "employers_no_offers",
+      icon: "🏢",
+      severity: kpis.employers_without_offers > 3 ? "high" : "medium",
+      title: "Employeurs sans offre publiée",
+      description: `${kpis.employers_without_offers} employeur(s) inscrit(s) n'ont pas encore publié de besoin. Leur espace est vide.`,
+      action: "Inviter à publier leur première offre pour accéder aux profils.",
+      count: kpis.employers_without_offers,
+      segment: "employers_without_offers",
+      template: "employer_publish_offer",
+      subject_fr: "Publiez votre première recherche",
+      subject_en: "Publish your first search",
+    });
+  }
+
+  // 4. Travailleurs inactifs (>90j, profil non visible)
+  if ((kpis.workers_inactive || 0) > 0) {
+    insights.push({
+      id: "inactive_workers",
+      icon: "💤",
+      severity: "medium",
+      title: "Travailleurs inactifs",
+      description: `${kpis.workers_inactive} travailleur(s) inactifs depuis plus de 90 jours sans profil visible.`,
+      action: "Rappel doux pour les réengager.",
+      count: kpis.workers_inactive,
+      segment: "workers_inactive",
+      template: "inactivity_reminder",
+      subject_fr: "De nouvelles opportunités sont disponibles",
+      subject_en: "New opportunities are available",
+    });
+  }
+
+  // 5. Opportunité de croissance (référencement)
+  if ((kpis.workers_visible || 0) >= 5) {
+    insights.push({
+      id: "referral_opportunity",
+      icon: "🚀",
+      severity: "low",
+      title: "Opportunité de croissance",
+      description: `${kpis.workers_visible} profils visibles prêts à recommander la plateforme. Activer le bouche-à-oreille.`,
+      action: "Inviter les profils visibles à partager leur lien de référencement.",
+      count: kpis.workers_visible,
+      segment: "workers_visible",
+      template: "referral_share",
+      subject_fr: "Boostez votre visibilité en 1 geste",
+      subject_en: "Boost your visibility in 1 step",
+    });
+  }
+
+  return insights;
+}
+
+// ─── Coach IA — carte d'action ────────────────────────────────────────────────
+
+function CoachCard({ insight, token, onViewSegment, onSent }) {
+  const [phase, setPhase] = useState("idle"); // idle | confirming | sending | done | error
+  const [result, setResult] = useState(null);
+
+  const severityTheme = {
+    high:   { bg: "#fff1f2", border: "#fca5a5", badgeBg: "#fee2e2", badgeText: "#b91c1c", badgeLabel: "Priorité haute" },
+    medium: { bg: "#fffbeb", border: "#fcd34d", badgeBg: "#fef3c7", badgeText: "#92400e", badgeLabel: "À traiter"       },
+    low:    { bg: "#f0fdf4", border: "#86efac", badgeBg: "#dcfce7", badgeText: "#166534", badgeLabel: "Opportunité"     },
+  };
+  const th = severityTheme[insight.severity] || severityTheme.medium;
+
+  const sendEmail = async () => {
+    setPhase("sending");
+    try {
+      const res = await fetch("/api/admin/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          segment:  insight.segment,
+          template: insight.template,
+          subject:  insight.subject_fr,
+          name:     `Coach IA — ${insight.title}`,
+          locale:   "auto",
+          dry_run:  false,
+        }),
+      });
+      const json = await res.json();
+      setResult(json);
+      setPhase(json.error ? "error" : "done");
+      if (!json.error && onSent) onSent();
+    } catch (e) {
+      setResult({ error: e.message });
+      setPhase("error");
+    }
+  };
+
+  return (
+    <div style={{ background: th.bg, border: `1.5px solid ${th.border}`, borderRadius: 18, padding: "22px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <span style={{ fontSize: 24, lineHeight: 1.2 }}>{insight.icon}</span>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78", lineHeight: 1.3 }}>{insight.title}</div>
+            <span style={{ display: "inline-block", marginTop: 5, borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700, background: th.badgeBg, color: th.badgeText }}>
+              {th.badgeLabel}
+            </span>
+          </div>
+        </div>
+        <div style={{ fontSize: 30, fontWeight: 900, color: "#1E3A78", flexShrink: 0, lineHeight: 1 }}>{insight.count}</div>
+      </div>
+
+      {/* Description */}
+      <p style={{ margin: 0, fontSize: 13, color: "#3d5470", lineHeight: 1.65 }}>{insight.description}</p>
+
+      {/* Action recommandée */}
+      <div style={{ background: "rgba(255,255,255,0.72)", borderRadius: 10, padding: "10px 14px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>Action recommandée</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#1E3A78" }}>{insight.action}</div>
+        <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 3 }}>
+          Objet FR : <em>{insight.subject_fr}</em>
+        </div>
+      </div>
+
+      {/* ── IDLE ── */}
+      {phase === "idle" && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            style={{ ...btn.base, ...btn.primary, flex: 1, justifyContent: "center", minWidth: 180 }}
+            onClick={() => setPhase("confirming")}
+          >
+            👉 Envoyer l'email recommandé
+          </button>
+          <button
+            style={{ ...btn.base, ...btn.ghost }}
+            onClick={() => onViewSegment(insight.segment)}
+          >
+            👥 Voir le segment
+          </button>
+        </div>
+      )}
+
+      {/* ── CONFIRMING ── */}
+      {phase === "confirming" && (
+        <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e8eef8", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: "#1E3A78" }}>Confirmer l'envoi ?</div>
+          <div style={{ fontSize: 12, color: "#3d5470", lineHeight: 1.7 }}>
+            Segment : <strong>{insight.segment}</strong> · <strong>{insight.count}</strong> contact(s)<br />
+            Template : <strong>{TEMPLATES.find(t => t.id === insight.template)?.label || insight.template}</strong><br />
+            Objet : <em>{insight.subject_fr}</em>
+          </div>
+          <div style={{ fontSize: 11, color: "#b91c1c", fontWeight: 600 }}>⚠️ Envoi réel — irréversible.</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button style={{ ...btn.base, ...btn.danger, flex: 1, justifyContent: "center" }} onClick={sendEmail}>
+              Oui, envoyer
+            </button>
+            <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setPhase("idle")}>
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── SENDING ── */}
+      {phase === "sending" && (
+        <div style={{ textAlign: "center", padding: "12px 0", color: "#1E3A78", fontSize: 13, fontWeight: 700 }}>
+          ⏳ Envoi en cours…
+        </div>
+      )}
+
+      {/* ── DONE ── */}
+      {phase === "done" && result && (
+        <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 10, padding: "14px 16px" }}>
+          <div style={{ fontWeight: 800, color: "#166534", fontSize: 14, marginBottom: 6 }}>✅ Campagne envoyée</div>
+          <div style={{ fontSize: 13, color: "#3d5470" }}>
+            <strong style={{ color: "#0d7c6e" }}>{result.sent ?? 0}</strong> envoyés &nbsp;·&nbsp;
+            <strong style={{ color: "#92400e" }}>{result.skipped ?? 0}</strong> ignorés &nbsp;·&nbsp;
+            <strong style={{ color: "#b91c1c" }}>{result.failed ?? 0}</strong> échecs
+          </div>
+          <button style={{ ...btn.base, ...btn.ghost, marginTop: 10, fontSize: 12 }} onClick={() => { setPhase("idle"); setResult(null); }}>
+            ↩ Réinitialiser
+          </button>
+        </div>
+      )}
+
+      {/* ── ERROR ── */}
+      {phase === "error" && (
+        <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "14px 16px" }}>
+          <div style={{ fontWeight: 800, color: "#b91c1c", fontSize: 14, marginBottom: 6 }}>❌ Erreur lors de l'envoi</div>
+          <div style={{ fontSize: 12, color: "#3d5470" }}>{result?.error || "Erreur inconnue"}</div>
+          <button style={{ ...btn.base, ...btn.ghost, marginTop: 10, fontSize: 12 }} onClick={() => { setPhase("idle"); setResult(null); }}>
+            Réessayer
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function AdminDashboard({ initialData }) {
@@ -254,30 +491,32 @@ export default function AdminDashboard({ initialData }) {
   const fetchKpis = useCallback(async () => {
     setKpisLoading(true);
     try {
-      const [wRes, eRes, ovRes] = await Promise.all([
-        fetch("/api/admin/crm?segment=workers_all",   { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("/api/admin/crm?segment=employers_all", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("/api/admin/overview",                  { headers: { Authorization: `Bearer ${token}` } }),
+      const [wRes, eRes, ovRes, ewRes] = await Promise.all([
+        fetch("/api/admin/crm?segment=workers_all",            { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/crm?segment=employers_all",          { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/overview",                           { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/crm?segment=employers_without_offers", { headers: { Authorization: `Bearer ${token}` } }),
       ]);
-      const [wData, eData, ovData] = await Promise.all([wRes.json(), eRes.json(), ovRes.json()]);
+      const [wData, eData, ovData, ewData] = await Promise.all([wRes.json(), eRes.json(), ovRes.json(), ewRes.json()]);
       const workers   = wData.contacts || [];
       const employers = eData.contacts || [];
       const now = Date.now();
 
       setKpis({
-        workers_total:      workers.length,
-        workers_visible:    workers.filter(w => w.visibility === "visible").length,
-        workers_hidden:     workers.filter(w => w.visibility === "hidden").length,
-        workers_incomplete: workers.filter(w => (w.completion || 0) < 60).length,
-        workers_inactive:   workers.filter(w =>
+        workers_total:           workers.length,
+        workers_visible:         workers.filter(w => w.visibility === "visible").length,
+        workers_hidden:          workers.filter(w => w.visibility === "hidden").length,
+        workers_incomplete:      workers.filter(w => (w.completion || 0) < 60).length,
+        workers_inactive:        workers.filter(w =>
           now - new Date(w.created_at).getTime() > 90 * 86400000 && w.visibility !== "visible"
         ).length,
-        employers_total:    employers.length,
-        unsubscribed:       wData.stats?.unsubscribed || 0,
-        no_email:           wData.stats?.noEmail || 0,
-        matches_total:      ovData.summary?.matches || 0,
-        matches_new:        ovData.summary?.newMatches || 0,
-        offers_published:   ovData.summary?.publishedOffers || 0,
+        employers_total:         employers.length,
+        employers_without_offers:(ewData.contacts || []).length,
+        unsubscribed:            wData.stats?.unsubscribed || 0,
+        no_email:                wData.stats?.noEmail || 0,
+        matches_total:           ovData.summary?.matches || 0,
+        matches_new:             ovData.summary?.newMatches || 0,
+        offers_published:        ovData.summary?.publishedOffers || 0,
       });
     } catch (e) {
       console.error("KPI fetch failed", e);
@@ -540,6 +779,103 @@ export default function AdminDashboard({ initialData }) {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET COACH IA
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "coach" && (
+          <div>
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Coach IA</h2>
+              <p style={{ margin: 0, fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
+                Diagnostics automatiques basés sur vos KPIs. Cliquez sur une action pour envoyer directement l'email ciblé — sans aller dans l'onglet Emailing.
+              </p>
+            </div>
+
+            {kpisLoading ? (
+              <div style={{ color: "#8a9db8", fontSize: 14 }}>Analyse en cours…</div>
+            ) : !kpis ? (
+              <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "0 8px 8px 0", padding: "12px 16px", fontSize: 13, color: "#b91c1c", marginBottom: 16 }}>
+                Impossible de charger les données. Vérifiez votre connexion.
+              </div>
+            ) : (() => {
+              const insights = deriveInsights(kpis);
+              const problems = insights.filter(i => i.severity !== "low");
+              const opportunities = insights.filter(i => i.severity === "low");
+              return (
+                <>
+                  {/* Barre de synthèse */}
+                  <div style={{ display: "flex", gap: 12, marginBottom: 28, flexWrap: "wrap", alignItems: "center" }}>
+                    <div style={{ ...card, padding: "14px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+                      <span style={{ fontSize: 26 }}>🔴</span>
+                      <div>
+                        <div style={{ fontSize: 26, fontWeight: 900, color: "#b91c1c", lineHeight: 1 }}>{problems.length}</div>
+                        <div style={{ fontSize: 12, color: "#8a9db8", marginTop: 2 }}>Problème{problems.length > 1 ? "s" : ""} détecté{problems.length > 1 ? "s" : ""}</div>
+                      </div>
+                    </div>
+                    <div style={{ ...card, padding: "14px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+                      <span style={{ fontSize: 26 }}>🟢</span>
+                      <div>
+                        <div style={{ fontSize: 26, fontWeight: 900, color: "#166534", lineHeight: 1 }}>{opportunities.length}</div>
+                        <div style={{ fontSize: 12, color: "#8a9db8", marginTop: 2 }}>Opportunité{opportunities.length > 1 ? "s" : ""}</div>
+                      </div>
+                    </div>
+                    <button style={{ ...btn.base, ...btn.ghost, marginLeft: "auto" }} onClick={fetchKpis}>
+                      🔄 Rafraîchir le diagnostic
+                    </button>
+                  </div>
+
+                  {insights.length === 0 ? (
+                    <div style={{ ...card, textAlign: "center", padding: 56, color: "#0d7c6e" }}>
+                      <div style={{ fontSize: 36, marginBottom: 12 }}>✅</div>
+                      <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78", marginBottom: 6 }}>Tout semble en ordre</div>
+                      <div style={{ fontSize: 13, color: "#8a9db8" }}>Aucune action prioritaire détectée pour l'instant.</div>
+                    </div>
+                  ) : (
+                    <>
+                      {problems.length > 0 && (
+                        <>
+                          <h3 style={{ margin: "0 0 14px", fontSize: 13, fontWeight: 700, color: "#b91c1c", textTransform: "uppercase", letterSpacing: 1 }}>
+                            🔴 Problèmes à traiter ({problems.length})
+                          </h3>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 18, marginBottom: 32 }}>
+                            {problems.map(insight => (
+                              <CoachCard
+                                key={insight.id}
+                                insight={insight}
+                                token={token}
+                                onViewSegment={seg => { setSegment(seg); setActiveTab("contacts"); }}
+                                onSent={fetchKpis}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {opportunities.length > 0 && (
+                        <>
+                          <h3 style={{ margin: "0 0 14px", fontSize: 13, fontWeight: 700, color: "#166534", textTransform: "uppercase", letterSpacing: 1 }}>
+                            🟢 Opportunités ({opportunities.length})
+                          </h3>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 18 }}>
+                            {opportunities.map(insight => (
+                              <CoachCard
+                                key={insight.id}
+                                insight={insight}
+                                token={token}
+                                onViewSegment={seg => { setSegment(seg); setActiveTab("contacts"); }}
+                                onSent={fetchKpis}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
