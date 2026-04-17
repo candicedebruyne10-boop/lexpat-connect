@@ -207,10 +207,13 @@ stats={[
       <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
         <div className="mx-auto max-w-5xl px-6 py-12">
 
-          <div className="mb-8 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Dans ce guide</p>
-              <h2 className="mt-1 text-xl font-bold text-[#1d3b8b]">Ce que vous allez découvrir</h2>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Sur cette page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Les sujets traités<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> sur le permis unique</span>
+              </h2>
             </div>
             <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
               ⏱ Lecture : ~5 min
