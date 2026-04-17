@@ -25,13 +25,69 @@ export default function HomePageEn() {
         primaryHref="/en/employeurs"
         secondaryHref="/en/travailleurs"
       />
-      <DualEntry locale="en" />
-      <ShortageJobsQuickLink locale="en" />
-      <HowItWorksPremium locale="en" />
-      <MatchingPreview locale="en" />
+
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> on the platform</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#acces", title: "Employers & workers", desc: "Two distinct portals depending on your profile and need." },
+              { n: "02", href: "#metiers-en-penurie", title: "Shortage occupations", desc: "Quick access to regional lists by sector." },
+              { n: "03", href: "#comment-ca-marche", title: "How it works", desc: "How the platform works in a few clear steps." },
+              { n: "04", href: "#mise-en-relation", title: "The matching platform", desc: "How employers and workers get in touch." },
+              { n: "05", href: "#secteurs", title: "Sectors covered", desc: "The fields of activity present on LEXPAT Connect." },
+              { n: "06", href: "#lexpat", title: "The LEXPAT law firm", desc: "Legal relay available if the case requires it." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="acces">
+        <DualEntry locale="en" />
+      </div>
+
+      <div id="metiers-en-penurie">
+        <ShortageJobsQuickLink locale="en" />
+      </div>
+
+      <div id="comment-ca-marche">
+        <HowItWorksPremium locale="en" />
+      </div>
+
+      <div id="mise-en-relation">
+        <MatchingPreview locale="en" />
+      </div>
+
       <PresentationVideoSection locale="en" />
-      <JobSectors locale="en" />
-      <LexpatStrip locale="en" />
+
+      <div id="secteurs">
+        <JobSectors locale="en" />
+      </div>
+
+      <div id="lexpat">
+        <LexpatStrip locale="en" />
+      </div>
+
       <TestimonialsStrip locale="en" />
       <CtaBannerDark
         locale="en"
