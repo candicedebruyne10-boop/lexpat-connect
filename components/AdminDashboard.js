@@ -252,13 +252,14 @@ export default function AdminDashboard({ initialData }) {
   const fetchKpis = useCallback(async () => {
     setKpisLoading(true);
     try {
-      const [wRes, eRes] = await Promise.all([
-        fetch("/api/admin/crm?segment=workers_all",    { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("/api/admin/crm?segment=employers_all",  { headers: { Authorization: `Bearer ${token}` } }),
+      const [wRes, eRes, ovRes] = await Promise.all([
+        fetch("/api/admin/crm?segment=workers_all",   { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/crm?segment=employers_all", { headers: { Authorization: `Bearer ${token}` } }),
+        fetch("/api/admin/overview",                  { headers: { Authorization: `Bearer ${token}` } }),
       ]);
-      const [wData, eData] = await Promise.all([wRes.json(), eRes.json()]);
-      const workers   = wData.contacts  || [];
-      const employers = eData.contacts  || [];
+      const [wData, eData, ovData] = await Promise.all([wRes.json(), eRes.json(), ovRes.json()]);
+      const workers   = wData.contacts || [];
+      const employers = eData.contacts || [];
       const now = Date.now();
 
       setKpis({
@@ -272,6 +273,9 @@ export default function AdminDashboard({ initialData }) {
         employers_total:    employers.length,
         unsubscribed:       wData.stats?.unsubscribed || 0,
         no_email:           wData.stats?.noEmail || 0,
+        matches_total:      ovData.summary?.matches || 0,
+        matches_new:        ovData.summary?.newMatches || 0,
+        offers_published:   ovData.summary?.publishedOffers || 0,
       });
     } catch (e) {
       console.error("KPI fetch failed", e);
@@ -500,10 +504,17 @@ export default function AdminDashboard({ initialData }) {
                 </div>
 
                 <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Employeurs & plateforme</h3>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 32 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 28 }}>
                   <KpiCard icon="🏢" label="Employeurs"        value={kpis.employers_total} color="#6b21a8" />
                   <KpiCard icon="🔕" label="Désinscrits email" value={kpis.unsubscribed}    color="#6b7280" />
                   <KpiCard icon="📭" label="Sans email"        value={kpis.no_email}        color="#6b7280" />
+                </div>
+
+                <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Mise en relation</h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 32 }}>
+                  <KpiCard icon="🤝" label="Matchings total"   value={kpis.matches_total}    color="#1E3A78" />
+                  <KpiCard icon="✨" label="Nouveaux matchings" value={kpis.matches_new}      color="#0d7c6e" />
+                  <KpiCard icon="📄" label="Offres publiées"   value={kpis.offers_published}  color="#6b21a8" />
                 </div>
 
                 <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Actions rapides</h3>
