@@ -129,7 +129,6 @@ export default function RetourBelgiquePage() {
       />
 
       <Hero
-        badge="Séjour irrégulier & permis de travail"
         title={
           <>
             Retourner dans son pays pour revenir travailler en Belgique :
@@ -148,6 +147,49 @@ export default function RetourBelgiquePage() {
         ]}
       />
 
+      {/* ── Sommaire ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Sur cette page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Les sujets traités<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> sur le retour en Belgique</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Lecture : ~5 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#essentiel",        title: "Ce qu’il faut comprendre",          desc: "Le retour est souvent nécessaire — et la procédure peut fonctionner." },
+              { n: "02", href: "#situations",        title: "Les situations les plus fréquentes", desc: "Ce que votre situation exacte change concrètement." },
+              { n: "03", href: "#avant-de-partir",   title: "Avant de partir",                   desc: "Les trois points à vérifier absolument avant de prendre une décision." },
+              { n: "04", href: "#faq",               title: "Questions fréquentes",              desc: "Des réponses claires aux doutes les plus courants." },
+              { n: "05", href: "#sources",           title: "Sources officielles",               desc: "Les références administratives belges pour comprendre le cadre légal." },
+            ].map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="essentiel">
       <Section
         title="Ce qu’il faut comprendre"
         intro="Deux réalités coexistent : le retour est souvent incontournable, mais il peut aussi ouvrir une vraie porte si votre situation le permet."
@@ -155,7 +197,9 @@ export default function RetourBelgiquePage() {
       >
         <CardGrid items={keyPoints} columns={3} />
       </Section>
+      </div>
 
+      <div id="situations">
       <Section
         title="Les situations les plus fréquentes"
         intro="La procédure et les chances varient selon votre situation exacte. Voici ce que cela change concrètement."
@@ -164,7 +208,9 @@ export default function RetourBelgiquePage() {
       >
         <BulletList items={concreteCases} />
       </Section>
+      </div>
 
+      <div id="avant-de-partir">
       <Section
         title="Avant de partir"
         intro="Un départ bien préparé change tout. Voici les trois points à vérifier avant de prendre une décision."
@@ -172,7 +218,9 @@ export default function RetourBelgiquePage() {
       >
         <Steps items={beforeLeaving} />
       </Section>
+      </div>
 
+      <div id="faq">
       <Section
         title="Questions fréquentes"
         intro="Des réponses claires aux questions que beaucoup se posent, souvent seuls, avant de prendre une décision difficile."
@@ -181,7 +229,9 @@ export default function RetourBelgiquePage() {
       >
         <Faq items={faq} />
       </Section>
+      </div>
 
+      <div id="sources">
       <Section
         title="Sources officielles"
         intro="Quelques références pour comprendre la logique administrative belge autour du permis unique et du séjour irrégulier."
@@ -189,6 +239,7 @@ export default function RetourBelgiquePage() {
       >
         <CardGrid items={sourceCards} columns={3} />
       </Section>
+      </div>
 
       <CtaBanner
         title="Votre situation mérite une lecture attentive — pas une réponse générique"

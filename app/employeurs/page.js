@@ -71,7 +71,6 @@ export default function EmployeursPage() {
   return (
     <>
       <Hero
-        badge="Espace employeurs"
         title={
           <>
             Trouvez des travailleurs internationaux
@@ -102,6 +101,49 @@ stats={[
         ]}
       />
 
+      {/* ── Sommaire ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Sur cette page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Les sujets traités<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> pour les employeurs</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Lecture : ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#pourquoi",         title: "Pourquoi déposer votre besoin ici",       desc: "Ce que la plateforme vous apporte concrètement." },
+              { n: "02", href: "#comment-ca-marche", title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
+              { n: "03", href: "#espace-employeur",  title: "L'espace employeur en préparation",       desc: "Aperçu de l'interface dédiée aux recruteurs." },
+              { n: "04", href: "#formulaire",        title: "Déposer un besoin de recrutement",        desc: "Formulaire direct pour soumettre votre offre." },
+              { n: "05", href: "#faq",               title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
+            ].map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="pourquoi">
       <Section
         title="Pourquoi déposer votre besoin ici"
         intro="La plateforme est conçue pour vous aider à passer plus vite d'un besoin de recrutement à une mise en relation utile."
@@ -121,7 +163,9 @@ stats={[
           </Link>
         </div>
       </Section>
+      </div>
 
+      <div id="comment-ca-marche">
       <Section
         title="Comment ça marche"
         intro="Un parcours direct, sans jargon, centré sur le recrutement."
@@ -130,7 +174,9 @@ stats={[
       >
         <Steps items={employerSteps} />
       </Section>
+      </div>
 
+      <div id="espace-employeur">
       <Section
         title="Un espace employeur en préparation"
         intro="Nous préparons une interface dédiée pour structurer vos offres, votre fiche entreprise et le suivi des profils."
@@ -155,14 +201,16 @@ stats={[
           <BulletList items={employerPreview} />
         </div>
       </Section>
+      </div>
 
+      <div id="formulaire">
       <Section
         title="Déposer un besoin de recrutement"
         intro="Plus votre demande est précise, plus la mise en relation sera efficace."
         kicker="Formulaire"
         muted
       >
-        <div id="formulaire">
+        <div>
           <FormCard
             title="Formulaire employeur"
             intro="Décrivez votre besoin pour permettre une première lecture claire et exploitable."
@@ -197,9 +245,11 @@ stats={[
         secondaryLabel="Poser une question"
       />
 
+      <div id="faq">
       <Section title="Questions fréquentes des employeurs" kicker="FAQ">
         <Faq items={employerFaq} />
       </Section>
+      </div>
     </>
   );
 }

@@ -32,7 +32,6 @@ export default function MetiersPage() {
   return (
     <>
       <Hero
-        badge="Base régionale 2026"
         title={
           <>
             Professions en pénurie en Belgique,
@@ -50,6 +49,46 @@ stats={[
           { value: "Maj", label: "Mise à jour continue" }
         ]}
       />
+
+      {/* ── Sommaire ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Sur cette page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Les professions en pénurie<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> par région</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              📋 Base 2026
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#bruxelles", title: "Bruxelles-Capitale",  desc: "Les professions en pénurie reconnues par Actiris." },
+              { n: "02", href: "#wallonie",  title: "Région wallonne",     desc: "Les professions en pénurie reconnues par le Forem." },
+              { n: "03", href: "#flandre",   title: "Région flamande",     desc: "Les professions en pénurie reconnues par le VDAB." },
+            ].map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
 
       <Section
         title="Accès rapide par région"

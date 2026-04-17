@@ -184,7 +184,6 @@ export default function PermisUniquePage() {
       />
 
       <Hero
-        badge="Guide employeur — Permis unique"
         title={
           <>
             Permis unique en Belgique :

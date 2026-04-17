@@ -71,7 +71,6 @@ export default function TravailleursPage() {
   return (
     <>
       <Hero
-        badge="Espace travailleurs internationaux"
         title={
           <>
             Rendez votre profil visible
@@ -102,6 +101,49 @@ stats={[
         ]}
       />
 
+      {/* ── Sommaire ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Sur cette page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Les sujets traités<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> pour les travailleurs</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Lecture : ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#pourquoi",          title: "Pourquoi créer votre profil",             desc: "Ce que la plateforme vous apporte concrètement." },
+              { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
+              { n: "03", href: "#espace-travailleur", title: "L'espace travailleur en préparation",     desc: "Aperçu de l'interface dédiée aux candidats." },
+              { n: "04", href: "#formulaire",         title: "Créer mon profil",                        desc: "Formulaire direct pour soumettre votre candidature." },
+              { n: "05", href: "#faq",                title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
+            ].map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="pourquoi">
       <Section
         title="Pourquoi créer votre profil"
         intro="La plateforme est pensée pour vous rendre plus visible, plus lisible et plus crédible auprès d'employeurs belges."
@@ -109,7 +151,9 @@ stats={[
       >
         <BulletList items={candidateBenefits} />
       </Section>
+      </div>
 
+      <div id="comment-ca-marche">
       <Section
         title="Comment ça marche"
         intro="Un parcours simple, centré sur votre visibilité et la mise en relation."
@@ -118,7 +162,9 @@ stats={[
       >
         <Steps items={candidateSteps} />
       </Section>
+      </div>
 
+      <div id="espace-travailleur">
       <Section
         title="Un espace travailleur en préparation"
         intro="Nous préparons une interface dédiée pour gérer votre profil, votre CV et votre visibilité de façon plus professionnelle."
@@ -143,13 +189,15 @@ stats={[
           <BulletList items={candidatePreview} />
         </div>
       </Section>
+      </div>
 
+      <div id="formulaire">
       <Section
         title="Créer mon profil"
         intro="Le statut administratif indiqué permet simplement de mieux comprendre votre point de départ. Il ne vaut jamais validation juridique."
         kicker="Formulaire"
       >
-        <div id="formulaire">
+        <div>
           <FormCard
             title="Formulaire candidat"
             intro="Présentez les informations utiles de votre parcours pour augmenter votre visibilité."
@@ -185,9 +233,11 @@ stats={[
         secondaryLabel="Nous écrire"
       />
 
+      <div id="faq">
       <Section title="Questions fréquentes des travailleurs" kicker="FAQ">
         <Faq items={candidateFaq} />
       </Section>
+      </div>
     </>
   );
 }
