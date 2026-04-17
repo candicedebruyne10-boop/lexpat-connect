@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
@@ -63,6 +63,7 @@ const btn = {
   danger:  { background: "linear-gradient(135deg,#B5121B,#c9282f)", color: "#fff" },
   ghost:   { background: "#f0f4fb", color: "#1E3A78", border: "1px solid #d0dcf0" },
   teal:    { background: "linear-gradient(135deg,#3da89f,#57B7AF)", color: "#fff" },
+  amber:   { background: "linear-gradient(135deg,#d97706,#f59e0b)", color: "#fff" },
 };
 
 const badgeStyle = {
@@ -245,6 +246,7 @@ export default function AdminDashboard({ initialData }) {
   const [campaignsTotal, setCampaignsTotal]   = useState(0);
   const [campaignsPage, setCampaignsPage]     = useState(1);
   const [campaignsLoading, setCampaignsLoading] = useState(false);
+  const [campaignsError, setCampaignsError]   = useState(null);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
 
   // ── Fetch KPIs ──────────────────────────────────────────────────────────────
@@ -310,15 +312,19 @@ export default function AdminDashboard({ initialData }) {
   // ── Fetch campaigns ─────────────────────────────────────────────────────────
 
   const fetchCampaigns = useCallback(async (page = 1) => {
+    if (!token) return;
     setCampaignsLoading(true);
+    setCampaignsError(null);
     try {
       const res  = await fetch(`/api/admin/campaigns?page=${page}&limit=20`, { headers: { Authorization: `Bearer ${token}` } });
       const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
       setCampaigns(json.campaigns || []);
       setCampaignsTotal(json.total || 0);
       setCampaignsPage(page);
     } catch (e) {
       console.error(e);
+      setCampaignsError(e.message);
     } finally {
       setCampaignsLoading(false);
     }
@@ -969,6 +975,11 @@ export default function AdminDashboard({ initialData }) {
 
             {campaignsLoading ? (
               <div style={{ color: "#8a9db8", fontSize: 14 }}>Chargement…</div>
+            ) : campaignsError ? (
+              <Alert type="error">
+                Erreur lors du chargement : {campaignsError}
+                <button style={{ ...btn.base, ...btn.ghost, marginLeft: 16, fontSize: 12 }} onClick={() => fetchCampaigns(1)}>Réessayer</button>
+              </Alert>
             ) : campaigns.length === 0 ? (
               <div style={{ ...card, textAlign: "center", color: "#8a9db8", fontSize: 14, padding: 48 }}>
                 Aucune campagne pour l'instant. Lancez votre première depuis l'onglet Emailing.
@@ -986,9 +997,8 @@ export default function AdminDashboard({ initialData }) {
                     </thead>
                     <tbody>
                       {campaigns.map((c, i) => (
-                        <>
+                        <React.Fragment key={c.id}>
                           <tr
-                            key={c.id}
                             style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb", cursor: "pointer" }}
                             onClick={() => setExpandedCampaign(expandedCampaign === c.id ? null : c.id)}
                           >
@@ -1022,7 +1032,7 @@ export default function AdminDashboard({ initialData }) {
                             </td>
                           </tr>
                           {expandedCampaign === c.id && (
-                            <tr key={`${c.id}-detail`}>
+                            <tr>
                               <td colSpan={9} style={{ padding: "12px 24px 20px", background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
                                 <div style={{ display: "flex", gap: 24 }}>
                                   <div style={{ flex: 1 }}>
@@ -1058,7 +1068,7 @@ export default function AdminDashboard({ initialData }) {
                               </td>
                             </tr>
                           )}
-                        </>
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
