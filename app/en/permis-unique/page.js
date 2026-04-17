@@ -184,7 +184,6 @@ export default function PermisUniquePageEn() {
       />
 
       <Hero
-        badge="Employer guide — Single permit"
         title={
           <>
             Single permit in Belgium:
@@ -203,6 +202,44 @@ export default function PermisUniquePageEn() {
         ]}
       />
 
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> on the single permit</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~5 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#principes-generaux", title: "General principles", desc: "Who needs a single permit and when the right to work already exists." },
+              { n: "02", href: "#paysage-institutionnel", title: "Why the system feels complex", desc: "How EU rules, the federal state and the Regions share competences." },
+              { n: "03", href: "#autorisations-travail", title: "Three different situations", desc: "Immediate access, facilitated access, or a labour market assessment." },
+              { n: "04", href: "#cote-employeur", title: "What employers must remember", desc: "Verifying the right to work before the start date is non-negotiable." },
+              { n: "05", href: "#etapes", title: "How a single permit works", desc: "Qualify the role, prepare the file, submit and follow the procedure." },
+              { n: "06", href: "#cabinet-lexpat", title: "When LEXPAT steps in", desc: "The platform clarifies the need. The law firm handles the legal part." },
+              { n: "07", href: "#faq", title: "Frequently asked questions", desc: "Short answers to the questions employers ask most often." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="principes-generaux">
       <Section
         title="General principles"
         intro="To work in Belgium, a person needs a valid legal basis. Sometimes that basis already exists. Sometimes a single permit is required."
@@ -210,7 +247,9 @@ export default function PermisUniquePageEn() {
       >
         <CardGrid items={basicCards} columns={3} />
       </Section>
+      </div>
 
+      <div id="paysage-institutionnel">
       <Section
         title="Why the system feels complex"
         intro="The single permit is not handled by a single authority. That is why it can be difficult to read at first."
@@ -219,7 +258,9 @@ export default function PermisUniquePageEn() {
       >
         <CardGrid items={landscapeCards} columns={3} />
       </Section>
+      </div>
 
+      <div id="autorisations-travail">
       <Section
         title="Three very different situations"
         intro="Before discussing the single permit, it helps to distinguish three cases: immediate access, facilitated access, or a real labour market assessment."
@@ -280,7 +321,9 @@ export default function PermisUniquePageEn() {
           ))}
         </div>
       </Section>
+      </div>
 
+      <div id="cote-employeur">
       <Section
         title="What employers should remember"
         intro="The key point is simple: verify before the person starts working."
@@ -289,7 +332,9 @@ export default function PermisUniquePageEn() {
       >
         <CardGrid items={employerPoints} columns={3} />
       </Section>
+      </div>
 
+      <div id="etapes">
       <Section
         title="In practice, how a single permit works"
         intro="The file usually follows three simple stages: qualify, prepare, submit."
@@ -297,7 +342,9 @@ export default function PermisUniquePageEn() {
       >
         <Steps items={permitSteps} />
       </Section>
+      </div>
 
+      <div id="cabinet-lexpat">
       <Section
         title="When the LEXPAT law firm steps in"
         intro="The platform clarifies the hiring need. The law firm steps in when the file needs legal security."
@@ -326,8 +373,11 @@ export default function PermisUniquePageEn() {
         </div>
       </Section>
 
+      </div>
+
       <MemberLockedPermitContent locale="en" />
 
+      <div id="faq">
       <Section
         title="Single permit FAQ"
         intro="Short answers to the questions employers ask most often."
@@ -335,6 +385,7 @@ export default function PermisUniquePageEn() {
       >
         <Faq items={permitFaq} />
       </Section>
+      </div>
 
       <CtaBanner
         title="Do you want to know whether your recruitment requires a single permit?"

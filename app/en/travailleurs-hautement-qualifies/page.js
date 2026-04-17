@@ -131,6 +131,43 @@ export default function HighlyQualifiedWorkersPage() {
         </div>
       </section>
 
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> on highly qualified workers</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~5 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#principe", title: "A simpler route, stricter conditions", desc: "No labour market test, but strict qualification and salary thresholds." },
+              { n: "02", href: "#regions", title: "Regional thresholds", desc: "The conditions vary between Brussels, Flanders and Wallonia." },
+              { n: "03", href: "#carte-bleue", title: "The EU Blue Card", desc: "A comparable status with higher thresholds and easier employer mobility." },
+              { n: "04", href: "#avantages", title: "What this status changes in practice", desc: "Longer permits, simplified mobility and no local search requirement." },
+              { n: "05", href: "#procedure", title: "How it works", desc: "Three steps: the employer files, the candidate must have a valid status." },
+              { n: "06", href: "#faq", title: "Frequently asked questions", desc: "The most common questions from employers and candidates." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="principe">
       <Section kicker="Overview" title="A simpler route, but stricter conditions">
         <div className="prose-lexpat max-w-3xl">
           <p className="text-base leading-8 text-[#4a5b6e]">
@@ -141,7 +178,9 @@ export default function HighlyQualifiedWorkersPage() {
           </p>
         </div>
       </Section>
+      </div>
 
+      <div id="regions">
       <Section kicker="Conditions" title="Regional thresholds" muted>
         <div className="grid gap-6 md:grid-cols-3">
           {regionCards.map((card) => (
@@ -165,7 +204,9 @@ export default function HighlyQualifiedWorkersPage() {
           ))}
         </div>
       </Section>
+      </div>
 
+      <div id="carte-bleue">
       <Section kicker="Alternative" title="The EU Blue Card">
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
@@ -187,7 +228,9 @@ export default function HighlyQualifiedWorkersPage() {
           </div>
         </div>
       </Section>
+      </div>
 
+      <div id="avantages">
       <Section kicker="Benefits" title="What this status changes in practice" muted>
         <div className="grid gap-6 md:grid-cols-3">
           {advantages.map((advantage) => (
@@ -199,7 +242,9 @@ export default function HighlyQualifiedWorkersPage() {
           ))}
         </div>
       </Section>
+      </div>
 
+      <div id="procedure">
       <Section kicker="Process" title="How it works">
         <div className="max-w-2xl space-y-5">
           {[
@@ -231,8 +276,11 @@ export default function HighlyQualifiedWorkersPage() {
           ))}
         </div>
       </Section>
+      </div>
 
+      <div id="faq">
       <Faq items={faqItems} />
+      </div>
 
       <section className="border-t border-[#edf1f5] bg-white py-16">
         <div className="container-shell">

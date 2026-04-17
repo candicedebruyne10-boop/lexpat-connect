@@ -76,7 +76,6 @@ export default function EmployeursPageEn() {
   return (
     <>
       <Hero
-        badge="Employer space"
         title={
           <>
             Find international workers
@@ -107,6 +106,42 @@ export default function EmployeursPageEn() {
         ]}
       />
 
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> for employers</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#pourquoi", title: "Why submit your hiring need here", desc: "How the platform helps you move faster from a need to a connection." },
+              { n: "02", href: "#comment-ca-marche", title: "How it works", desc: "Three steps: submit, match, connect — without jargon." },
+              { n: "03", href: "#espace-employeur", title: "Employer space preview", desc: "A dedicated interface taking shape for managing your openings." },
+              { n: "04", href: "#formulaire", title: "Submit a hiring need", desc: "The direct form to describe your role and reach international workers." },
+              { n: "05", href: "#faq", title: "Frequently asked questions", desc: "The questions employers ask most often about the platform." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="pourquoi">
       <Section
         title="Why submit your hiring need here"
         intro="The platform is designed to help you move faster from a recruitment need to a useful connection."
@@ -126,7 +161,9 @@ export default function EmployeursPageEn() {
           </Link>
         </div>
       </Section>
+      </div>
 
+      <div id="comment-ca-marche">
       <Section
         title="How it works"
         intro="A direct process, without jargon, focused on recruitment."
@@ -135,7 +172,9 @@ export default function EmployeursPageEn() {
       >
         <Steps items={employerSteps} />
       </Section>
+      </div>
 
+      <div id="espace-employeur">
       <Section
         title="An employer space is already taking shape"
         intro="We are building a dedicated interface to structure your openings, your company profile and the follow-up of relevant profiles."
@@ -160,14 +199,16 @@ export default function EmployeursPageEn() {
           <BulletList items={employerPreview} />
         </div>
       </Section>
+      </div>
 
+      <div id="formulaire">
       <Section
         title="Submit a hiring need"
         intro="The more precise your request, the more useful the connection will be."
         kicker="Form"
         muted
       >
-        <div id="formulaire">
+        <div>
           <FormCard
             title="Employer form"
             intro="Describe your need so it can be understood and used clearly from the start."
@@ -194,6 +235,7 @@ export default function EmployeursPageEn() {
           />
         </div>
       </Section>
+      </div>
 
       <CtaBanner
         title="Once the first connection exists, legal support can take over"
@@ -204,9 +246,11 @@ export default function EmployeursPageEn() {
         secondaryLabel="Ask a question"
       />
 
+      <div id="faq">
       <Section title="Employers’ frequently asked questions" kicker="FAQ">
         <Faq items={employerFaq} />
       </Section>
+      </div>
     </>
   );
 }

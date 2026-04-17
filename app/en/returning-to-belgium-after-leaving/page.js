@@ -129,7 +129,6 @@ export default function ReturningToBelgiumPage() {
       />
 
       <Hero
-        badge="Irregular stay & work permit"
         title={
           <>
             Returning home to come back and work in Belgium:
@@ -148,6 +147,42 @@ export default function ReturningToBelgiumPage() {
         ]}
       />
 
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> on returning to Belgium</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~4 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#essentiel", title: "What you need to understand", desc: "Two realities: returning is often unavoidable, but the chances are real." },
+              { n: "02", href: "#situations", title: "Most common situations", desc: "What changes depending on your residence status and available options." },
+              { n: "03", href: "#avant-de-partir", title: "Before leaving", desc: "Three key points to check before making any decision." },
+              { n: "04", href: "#faq", title: "Frequently asked questions", desc: "Clear answers to questions many people face alone." },
+              { n: "05", href: "#sources", title: "Official sources", desc: "Belgian administrative references on permits and irregular stay." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="essentiel">
       <Section
         title="What you need to understand"
         intro="Two realities coexist: returning is often unavoidable, but it can also open a real door if your situation allows it."
@@ -155,7 +190,9 @@ export default function ReturningToBelgiumPage() {
       >
         <CardGrid items={keyPoints} columns={3} />
       </Section>
+      </div>
 
+      <div id="situations">
       <Section
         title="Most common situations"
         intro="The procedure and the chances vary depending on your exact situation. Here is what changes in practice."
@@ -164,7 +201,9 @@ export default function ReturningToBelgiumPage() {
       >
         <BulletList items={concreteCases} />
       </Section>
+      </div>
 
+      <div id="avant-de-partir">
       <Section
         title="Before leaving"
         intro="A well-prepared departure changes everything. Here are the three key points to check before making a decision."
@@ -172,7 +211,9 @@ export default function ReturningToBelgiumPage() {
       >
         <Steps items={beforeLeaving} />
       </Section>
+      </div>
 
+      <div id="faq">
       <Section
         title="Frequently asked questions"
         intro="Clear answers to questions that many people face alone before making a difficult decision."
@@ -181,7 +222,9 @@ export default function ReturningToBelgiumPage() {
       >
         <Faq items={faq} />
       </Section>
+      </div>
 
+      <div id="sources">
       <Section
         title="Official sources"
         intro="A few references to understand the Belgian administrative logic around the single permit and irregular stay."
@@ -189,6 +232,7 @@ export default function ReturningToBelgiumPage() {
       >
         <CardGrid items={sourceCards} columns={3} />
       </Section>
+      </div>
 
       <CtaBanner
         title="Your situation deserves careful attention — not a generic answer"

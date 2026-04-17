@@ -76,7 +76,6 @@ export default function TravailleursPageEn() {
   return (
     <>
       <Hero
-        badge="International workers"
         title={
           <>
             Make your profile visible
@@ -107,6 +106,42 @@ export default function TravailleursPageEn() {
         ]}
       />
 
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">On this page</p>
+              <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> for workers</span>
+              </h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#pourquoi", title: "Why create your profile", desc: "What the platform gives you to become more visible and credible." },
+              { n: "02", href: "#comment-ca-marche", title: "How it works", desc: "A simple process in 3 steps, focused on your visibility." },
+              { n: "03", href: "#espace-travailleur", title: "Worker space preview", desc: "A dedicated interface taking shape to manage your profile and CV." },
+              { n: "04", href: "#formulaire", title: "Create my profile", desc: "The direct form to present your background to Belgian employers." },
+              { n: "05", href: "#faq", title: "Frequently asked questions", desc: "Common doubts about the platform, the permit and the law firm." },
+            ].map(({ n, href, title, desc }) => (
+              <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="pourquoi">
       <Section
         title="Why create your profile"
         intro="The platform is designed to make you more visible, more readable and more credible to Belgian employers."
@@ -114,7 +149,9 @@ export default function TravailleursPageEn() {
       >
         <BulletList items={candidateBenefits} />
       </Section>
+      </div>
 
+      <div id="comment-ca-marche">
       <Section
         title="How it works"
         intro="A simple process focused on your visibility and on useful introductions."
@@ -123,7 +160,9 @@ export default function TravailleursPageEn() {
       >
         <Steps items={candidateSteps} />
       </Section>
+      </div>
 
+      <div id="espace-travailleur">
       <Section
         title="A worker space is already taking shape"
         intro="We are building a dedicated interface to manage your profile, your CV and your visibility in a more professional way."
@@ -148,13 +187,15 @@ export default function TravailleursPageEn() {
           <BulletList items={candidatePreview} />
         </div>
       </Section>
+      </div>
 
+      <div id="formulaire">
       <Section
         title="Create my profile"
         intro="The administrative status here only helps clarify your starting point. It never replaces legal validation."
         kicker="Form"
       >
-        <div id="formulaire">
+        <div>
           <FormCard
             title="Candidate form"
             intro="Present the useful elements of your background to improve your visibility."
@@ -181,6 +222,7 @@ export default function TravailleursPageEn() {
           />
         </div>
       </Section>
+      </div>
 
       <CtaBanner
         title="A residence or right-to-work question can be handled afterwards"
@@ -191,9 +233,11 @@ export default function TravailleursPageEn() {
         secondaryLabel="Write to us"
       />
 
+      <div id="faq">
       <Section title="Workers’ frequently asked questions" kicker="FAQ">
         <Faq items={candidateFaq} />
       </Section>
+      </div>
     </>
   );
 }
