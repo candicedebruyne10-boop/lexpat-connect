@@ -204,26 +204,42 @@ stats={[
       />
 
       {/* ── Sommaire ── */}
-      <div className="bg-white border-y border-[#e5edf4]">
-        <div className="mx-auto max-w-5xl px-6 py-8">
-          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Sur cette page</p>
-          <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+
+          <div className="mb-8 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#57b7af]">Dans ce guide</p>
+              <h2 className="mt-1 text-xl font-bold text-[#1d3b8b]">Ce que vous allez découvrir</h2>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Lecture : ~5 min
+            </span>
+          </div>
+
+          <nav className="grid gap-3 sm:grid-cols-2">
             {[
-              { href: "#principes-generaux",      label: "Les principes généraux" },
-              { href: "#paysage-institutionnel",   label: "Pourquoi le système paraît complexe" },
-              { href: "#autorisations-travail",    label: "Trois lectures très différentes" },
-              { href: "#cote-employeur",           label: "Ce que l’employeur doit retenir" },
-              { href: "#etapes",                   label: "Comment fonctionne un permis unique" },
-              { href: "#cabinet-lexpat",           label: "Quand le cabinet LEXPAT intervient" },
-              { href: "#faq",                      label: "FAQ permis unique" },
-            ].map(({ href, label }) => (
+              { n: "01", href: "#principes-generaux",    title: "Les principes généraux",                   desc: "À quoi sert le permis unique et à qui il s’applique." },
+              { n: "02", href: "#paysage-institutionnel", title: "Pourquoi le système paraît complexe",      desc: "UE, État fédéral, Régions : qui décide de quoi." },
+              { n: "03", href: "#autorisations-travail",  title: "Trois façons d’accéder au marché du travail", desc: "Accès direct, accès facilité ou analyse du marché." },
+              { n: "04", href: "#cote-employeur",         title: "Ce que l’employeur doit retenir",          desc: "Vérifier avant l’entrée en fonction, éviter les sanctions." },
+              { n: "05", href: "#etapes",                 title: "Comment fonctionne un permis unique",      desc: "Qualifier le poste, monter le dossier, suivre la procédure." },
+              { n: "06", href: "#cabinet-lexpat",         title: "Quand faire appel au cabinet LEXPAT",      desc: "Les situations où un avocat spécialisé fait la différence." },
+              { n: "07", href: "#faq",                    title: "Questions fréquentes",                     desc: "Réponses courtes aux doutes les plus courants côté employeur." },
+            ].map(({ n, href, title, desc }) => (
               <a
                 key={href}
                 href={href}
-                className="group flex items-center gap-3 rounded-xl border border-[#e5edf4] bg-[#f8faff] px-4 py-3 text-sm font-medium text-[#1d3b8b] transition hover:border-[#57b7af] hover:bg-[#f0fbfa]"
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
               >
-                <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#57b7af] transition group-hover:scale-125" />
-                {label}
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
               </a>
             ))}
           </nav>
