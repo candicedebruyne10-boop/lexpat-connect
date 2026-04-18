@@ -285,12 +285,12 @@ function DashboardView({ token, onNavigate, locale }) {
             )}
           </div>
           <div className="flex shrink-0 gap-2">
-            <button
-              onClick={() => onNavigate("profile")}
+            <a
+              href={isEn ? "/en/travailleurs/rejoindre" : "/travailleurs/rejoindre"}
               className="inline-flex items-center gap-1.5 rounded-2xl border border-[#d7e4f0] bg-white px-4 py-2 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#b0cadf] hover:shadow-sm"
             >
-              ✏️ {profile ? (isEn ? "Edit" : "Modifier") : (isEn ? "Create my profile" : "Créer mon profil")}
-            </button>
+              ✏️ {profile ? (isEn ? "Edit my profile" : "Modifier mon profil") : (isEn ? "Create my profile" : "Créer mon profil")}
+            </a>
             {profile && (
               <button
                 onClick={handleDeleteProfile}

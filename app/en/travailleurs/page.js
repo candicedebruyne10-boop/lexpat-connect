@@ -1,11 +1,6 @@
 import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
-import FormCard from "../../../components/FormCard";
-import {
-  getSectorOptions,
-  professionSectorByRegion,
-} from "../../../lib/professions";
 
 export const metadata = {
   title: "Workers | LEXPAT Connect",
@@ -99,27 +94,10 @@ export default function TravailleursPageEn() {
           </>
         }
         description="Present your experience, your skills and your availability in a clearer, more credible and more useful format to access opportunities in Belgium."
-        primaryHref="#formulaire"
+        primaryHref="/en/travailleurs/rejoindre"
         primaryLabel="Create my profile"
         secondaryHref="/en/metiers-en-penurie"
         secondaryLabel="See shortage occupations"
-        stats={[
-          { value: "Profile", label: "A clearer presentation of your professional background" },
-          { value: "Belgium", label: "Visibility designed for Belgian employers" },
-          { value: "Opportunities", label: "More chances to trigger a serious first contact" }
-        ]}
-        panels={[
-          {
-            kicker: "Immediate benefit",
-            title: "Present what an employer actually needs to see",
-            text: "Your occupation, skills, languages and availability are highlighted in a more actionable format."
-          },
-          {
-            kicker: "Next step",
-            title: "Bring in LEXPAT only when it is needed",
-            text: "If a job opportunity raises a single permit or right-to-work issue, the law firm can step in afterwards."
-          }
-        ]}
       />
 
       <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
@@ -141,7 +119,7 @@ export default function TravailleursPageEn() {
               { n: "01", href: "#pourquoi", title: "Why create your profile", desc: "What the platform gives you to become more visible and credible." },
               { n: "02", href: "#comment-ca-marche", title: "How it works", desc: "A simple process in 3 steps, focused on your visibility." },
               { n: "03", href: "#espace-travailleur", title: "Worker space preview", desc: "A dedicated interface taking shape to manage your profile and CV." },
-              { n: "04", href: "#formulaire", title: "Create my profile", desc: "The direct form to present your background to Belgian employers." },
+              { n: "04", href: "/en/travailleurs/rejoindre", title: "Create my profile", desc: "Guided 4-step form to present your background to Belgian employers." },
               { n: "05", href: "#faq", title: "Frequently asked questions", desc: "Common doubts about the platform, the permit and the law firm." },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
@@ -195,7 +173,7 @@ export default function TravailleursPageEn() {
               <Link href="/en/travailleurs/espace" className="primary-button">
                 View worker space
               </Link>
-              <Link href="#formulaire" className="secondary-button">
+              <Link href="/en/travailleurs/rejoindre" className="secondary-button">
                 Start now
               </Link>
             </div>
@@ -208,34 +186,20 @@ export default function TravailleursPageEn() {
       <div id="formulaire">
       <Section
         title="Create my profile"
-        intro="The administrative status here only helps clarify your starting point. It never replaces legal validation."
-        kicker="Form"
+        intro="A guided 4-step form to present your occupation, region and skills in a clear, actionable format."
+        kicker="Wizard"
+        muted
       >
-        <div>
-          <FormCard
-            title="Candidate form"
-            intro="Present the useful elements of your background to improve your visibility."
-            buttonLabel="Send my profile"
-            formType="candidat"
-            locale="en"
-            successMessage="Your profile has been sent successfully."
-            fields={[
-              { label: "Full name", placeholder: "First name Last name" },
-              { label: "Email", type: "email", placeholder: "your.email@example.com" },
-              { label: "Phone", placeholder: "+32 / +..." },
-              { label: "Country of residence", placeholder: "Current country" },
-              { name: "region", label: "Preferred region or city in Belgium", type: "region-multi", helperText: "Select one or more Belgian regions depending on your mobility." },
-              { name: "secteur", label: "Target sector", type: "select", placeholder: "Select a sector", options: getSectorOptions("en") },
-              { name: "autreSecteur", label: "Other sector / detail", placeholder: "Add another sector if needed", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", locale: "en", deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
-              { name: "autreProfession", label: "Other occupation / detail", placeholder: "Add another occupation if needed", showWhen: { field: "profession", value: "Autre profession" } },
-              { label: "Availability", placeholder: "Immediate, 1 month, 3 months..." },
-              { label: "Languages spoken", placeholder: "French, English, Dutch..." },
-              { label: "Administrative status", type: "select", placeholder: "Select your status", options: ["Single permit", "Permit A", "Annex 15", "Annex 35", "No current permit", "Other", "I do not know"] },
-              { label: "Main skills", type: "textarea", placeholder: "Skills, diplomas, certificates, experience...", wide: true },
-              { label: "Additional message", type: "textarea", placeholder: "Explain your project or any information you need...", wide: true }
-            ]}
-          />
+        <div className="flex flex-col items-center gap-6 py-4">
+          <Link
+            href="/en/travailleurs/rejoindre"
+            className="primary-button px-10 py-4 text-base"
+          >
+            Create my profile →
+          </Link>
+          <p className="text-xs text-[#8a9db8]">
+            About 3 minutes · Account required · Mobile-optimised
+          </p>
         </div>
       </Section>
       </div>
