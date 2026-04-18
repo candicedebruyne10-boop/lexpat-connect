@@ -846,8 +846,26 @@ function CoachCard({ insight, token, onViewSegment, onSent }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+// Emails autorisés à accéder au back-office (vérification côté client en complément du check serveur)
+const ADMIN_EMAILS = ["lexpat@lexpat.be", "contact@lexpat-connect.be"];
+
+function AdminForbiddenScreen({ email }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f4fb", fontFamily: "Arial, sans-serif", padding: "32px 24px", textAlign: "center" }}>
+      <div style={{ fontSize: 52, marginBottom: 16 }}>🔒</div>
+      <div style={{ fontSize: 24, fontWeight: 900, color: "#1E3A78", marginBottom: 8 }}>Accès refusé</div>
+      <div style={{ fontSize: 14, color: "#5d6e83", maxWidth: 340, lineHeight: 1.7, marginBottom: 24 }}>
+        Le compte <strong>{email}</strong> n'est pas autorisé à accéder à cette interface.
+      </div>
+      <a href="/" style={{ padding: "12px 24px", borderRadius: 10, background: "#1E3A78", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
+        Retour à l'accueil
+      </a>
+    </div>
+  );
+}
+
 export default function AdminDashboard({ initialData }) {
-  const data = initialData || {};
+  void initialData; // data is now fetched client-side via auth-protected API routes
 
   // Session récupérée côté client
   // undefined = vérification en cours | null = non connecté | string = token actif
@@ -863,10 +881,14 @@ export default function AdminDashboard({ initialData }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const [userEmail, setUserEmail] = useState(null);
+  // undefined = vérification en cours | null = non connecté/inconnu | string = email chargé
+  const [userEmail, setUserEmail] = useState(undefined);
 
   useEffect(() => {
-    if (!token) return;
+    // token === undefined : auth pas encore connue, on attend
+    if (token === undefined) return;
+    // token === null : pas connecté, on passe userEmail à null pour débloquer le guard
+    if (token === null) { setUserEmail(null); return; }
     const supabase = getSupabaseBrowserClient();
     supabase.auth.getUser().then(({ data }) => setUserEmail(data?.user?.email || null));
   }, [token]);
@@ -1185,6 +1207,23 @@ export default function AdminDashboard({ initialData }) {
   // Pas de session active — afficher le formulaire de connexion
   if (token === null) {
     return <AdminLoginScreen />;
+  }
+
+  // Email en cours de récupération (token présent mais userEmail pas encore chargé)
+  if (userEmail === undefined) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f4fb", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ textAlign: "center", color: "#1E3A78" }}>
+          <div style={{ fontSize: 28, marginBottom: 12 }}>LEXPAT <span style={{ color: "#57B7AF" }}>CONNECT</span></div>
+          <div style={{ fontSize: 13, color: "#8a9db8" }}>Vérification des droits d'accès…</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Email déterminé mais non autorisé (ou inconnu)
+  if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
+    return <AdminForbiddenScreen email={userEmail || "inconnu"} />;
   }
 
   return (
