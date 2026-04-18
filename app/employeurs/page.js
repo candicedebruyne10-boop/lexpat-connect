@@ -94,7 +94,7 @@ export default function EmployeursPage() {
           </>
         }
         description="Déposez votre besoin, gagnez en visibilité et accélérez la mise en relation avec des profils internationaux qualifiés."
-        primaryHref="#formulaire"
+        primaryHref="/employeurs/rejoindre"
         primaryLabel="Déposer un besoin"
         secondaryHref="/travailleurs"
         secondaryLabel="Voir le parcours travailleurs"
@@ -137,7 +137,7 @@ stats={[
               { n: "01", href: "#pourquoi",         title: "Pourquoi déposer votre besoin ici",       desc: "Ce que la plateforme vous apporte concrètement." },
               { n: "02", href: "#comment-ca-marche", title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
               { n: "03", href: "#espace-employeur",  title: "L'espace employeur en préparation",       desc: "Aperçu de l'interface dédiée aux recruteurs." },
-              { n: "04", href: "#formulaire",        title: "Déposer un besoin de recrutement",        desc: "Formulaire direct pour soumettre votre offre." },
+              { n: "04", href: "/employeurs/rejoindre", title: "Déposer un besoin de recrutement",        desc: "Formulaire guidé en 4 étapes pour soumettre votre besoin." },
               { n: "05", href: "#faq",               title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
             ].map(({ n, href, title, desc }) => (
               <a
