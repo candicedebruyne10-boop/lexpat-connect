@@ -95,7 +95,7 @@ export default function EmployeursPage() {
         }
         description="Déposez votre besoin, gagnez en visibilité et accélérez la mise en relation avec des profils internationaux qualifiés."
         primaryHref="/employeurs/rejoindre"
-        primaryLabel="Déposer un besoin"
+        primaryLabel="Trouver un travailleur"
         secondaryHref="/travailleurs"
         secondaryLabel="Voir le parcours travailleurs"
 stats={[
@@ -134,10 +134,10 @@ stats={[
           </div>
           <nav className="grid gap-3 sm:grid-cols-2">
             {[
-              { n: "01", href: "#pourquoi",         title: "Pourquoi déposer votre besoin ici",       desc: "Ce que la plateforme vous apporte concrètement." },
+              { n: "01", href: "#pourquoi",         title: "Pourquoi chercher ici",                   desc: "Ce que la plateforme vous apporte concrètement." },
               { n: "02", href: "#comment-ca-marche", title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
               { n: "03", href: "#espace-employeur",  title: "L'espace employeur en préparation",       desc: "Aperçu de l'interface dédiée aux recruteurs." },
-              { n: "04", href: "/employeurs/rejoindre", title: "Déposer un besoin de recrutement",        desc: "Formulaire guidé en 4 étapes pour soumettre votre besoin." },
+              { n: "04", href: "/employeurs/rejoindre", title: "Trouver un travailleur",                  desc: "Formulaire guidé en 4 étapes pour décrire le profil recherché." },
               { n: "05", href: "#faq",               title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
             ].map(({ n, href, title, desc }) => (
               <a
@@ -161,7 +161,7 @@ stats={[
 
       <div id="pourquoi">
       <Section
-        title="Pourquoi déposer votre besoin ici"
+        title="Pourquoi chercher un travailleur ici"
         intro="La plateforme est conçue pour vous aider à passer plus vite d'un besoin de recrutement à une mise en relation utile."
         kicker="Employeurs"
       >
@@ -221,7 +221,7 @@ stats={[
 
       <div id="formulaire">
       <Section
-        title="Déposer un besoin de recrutement"
+        title="Trouver un travailleur"
         intro="Plus votre demande est précise, plus la mise en relation sera efficace."
         kicker="Formulaire"
         muted
@@ -240,7 +240,7 @@ stats={[
           <FormCard
             title="Formulaire employeur"
             intro="Décrivez votre besoin pour permettre une première lecture claire et exploitable."
-            buttonLabel="Envoyer le besoin"
+            buttonLabel="Trouver un travailleur"
             formType="employeur"
             fields={[
               { label: "Nom du contact", placeholder: "Prénom Nom" },

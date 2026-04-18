@@ -341,7 +341,7 @@ export default function EmployeurWizard() {
             ? "Envoi en cours…"
             : step < STEPS.length - 1
               ? "Continuer →"
-              : "Envoyer mon besoin ✓"}
+              : "Trouver un travailleur ✓"}
         </button>
       </div>
     </div>
