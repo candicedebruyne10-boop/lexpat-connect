@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import RegionSelector from "./RegionSelector";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import {
@@ -154,8 +154,8 @@ export default function EmployeurWizard() {
   const pathname = usePathname() || "/";
   const locale = pathname.startsWith("/en") ? "en" : "fr";
   const t = T[locale];
-  const router = useRouter();
   const [authStatus, setAuthStatus] = useState("loading"); // loading | authenticated | unauthenticated
+  // (useRouter removed — navigation done via <a href> to avoid SSR issues)
   const [step, setStep] = useState(0);
   const [values, setValues] = useState({
     contactName: "", company: "", email: "", phone: "",
@@ -170,22 +170,28 @@ export default function EmployeurWizard() {
   // ── Vérification de l'authentification ────────────────────────────────────
   useEffect(() => {
     let isMounted = true;
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!isMounted) return;
-      if (session) {
-        setAuthStatus("authenticated");
-        const meta = session.user?.user_metadata || {};
-        setValues(prev => ({
-          ...prev,
-          contactName: prev.contactName || meta.full_name || "",
-          email: prev.email || session.user.email || "",
-          company: prev.company || meta.company_name || "",
-        }));
-      } else {
-        setAuthStatus("unauthenticated");
-      }
-    });
+    try {
+      const supabase = getSupabaseBrowserClient();
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!isMounted) return;
+        if (session) {
+          setAuthStatus("authenticated");
+          const meta = session.user?.user_metadata || {};
+          setValues(prev => ({
+            ...prev,
+            contactName: prev.contactName || meta.full_name || "",
+            email: prev.email || session.user.email || "",
+            company: prev.company || meta.company_name || "",
+          }));
+        } else {
+          setAuthStatus("unauthenticated");
+        }
+      }).catch(() => {
+        if (isMounted) setAuthStatus("unauthenticated");
+      });
+    } catch {
+      if (isMounted) setAuthStatus("unauthenticated");
+    }
     return () => { isMounted = false; };
   }, []);
 
