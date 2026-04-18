@@ -103,24 +103,50 @@ export default function EmployeursPageEn() {
         primaryLabel="Submit a hiring need"
         secondaryHref="/en/travailleurs"
         secondaryLabel="See the worker journey"
-        stats={[
-          { value: "Role", label: "A clearer need, structured from the start" },
-          { value: "Belgium", label: "An approach designed for shortage occupations and regional realities" },
-          { value: "Contact", label: "A faster first connection with relevant workers" }
-        ]}
-        panels={[
-          {
-            kicker: "Immediate benefit",
-            title: "Make your recruitment readable and actionable",
-            text: "You quickly clarify the role, expectations and context so everyone gains time."
-          },
-          {
-            kicker: "Next step",
-            title: "Bring in LEXPAT only when it is needed",
-            text: "The law firm steps in later, only if the case raises a single permit or economic immigration issue."
-          }
-        ]}
       />
+
+      {/* ── Table of contents ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">≡ On this page — navigation</p>
+              <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                Topics covered<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> for employers</span>
+              </h2>
+              <p className="mt-2 text-xs text-[#8a9db8]">Click on any section below to jump directly ↓</p>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              ⏱ Reading: ~3 min
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2">
+            {[
+              { n: "01", href: "#pourquoi",          title: "Why submit your hiring need here",   desc: "How the platform helps you move faster from a need to a connection." },
+              { n: "02", href: "#comment-ca-marche",  title: "How it works",                       desc: "Three steps: submit, match, connect — without jargon." },
+              { n: "03", href: "#espace-employeur",   title: "Employer space preview",             desc: "A dedicated interface taking shape for managing your openings." },
+              { n: "04", href: "/en/employeurs/rejoindre", title: "Submit a hiring need",          desc: "Guided 4-step form to describe the profile you are looking for." },
+              { n: "05", href: "#faq",                title: "Frequently asked questions",         desc: "The questions employers ask most often about the platform." },
+            ].map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
 
       <div id="pourquoi">
       <Section

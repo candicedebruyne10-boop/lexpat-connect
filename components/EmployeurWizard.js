@@ -214,7 +214,7 @@ export default function EmployeurWizard() {
   function next() {
     const e = validate(step);
     if (Object.keys(e).length) { setErrors(e); return; }
-    setStep(s => Math.min(s + 1, STEPS.length - 1));
+    setStep(s => Math.min(s + 1, t.steps.length - 1));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -391,7 +391,10 @@ export default function EmployeurWizard() {
   const professionGroups = values.region?.length
     ? getProfessionGroupsForRegions(values.region, locale)
     : [];
-  const localeSectorOptions = locale === "en" ? getSectorOptions("en").map(o => o.label) : sectorOptions;
+  // For EN: keep French DB values but display EN labels
+  const localeSectorOptions = locale === "en"
+    ? getSectorOptions("en") // [{value: "Santé", label: "Healthcare"}, ...]
+    : sectorOptions.map(s => ({ value: s, label: s }));
 
   // ── Rendu principal ─────────────────────────────────────────────────────────
   return (
@@ -484,7 +487,7 @@ export default function EmployeurWizard() {
               <select value={values.sector} onChange={e => set("sector", e.target.value)} style={inputSt}>
                 <option value="">{t.sectorPh}</option>
                 {localeSectorOptions.map(o => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
             </Field>
