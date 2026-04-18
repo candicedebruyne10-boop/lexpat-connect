@@ -1244,7 +1244,6 @@ export default function AdminDashboard({ initialData }) {
                   <KpiCard icon="👤" label="Total inscrits"   value={kpis.workers_total}      color="#1E3A78" />
                   <KpiCard icon="✅" label="Profils visibles" value={kpis.workers_visible}    color="#0d7c6e" />
                   <KpiCard icon="🔒" label="Profils masqués"  value={kpis.workers_hidden}     color="#b91c1c" />
-                  <KpiCard icon="⚠️" label="Incomplets"       value={kpis.workers_incomplete} color="#92400e" />
                   <KpiCard icon="💤" label="Inactifs (90j)"   value={kpis.workers_inactive}   color="#6b7280" />
                 </div>
 
@@ -1252,7 +1251,6 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: 28 }}>
                   <KpiCard icon="🏢" label="Employeurs"        value={kpis.employers_total} color="#6b21a8" />
                   <KpiCard icon="🔕" label="Désinscrits email" value={kpis.unsubscribed}    color="#6b7280" />
-                  <KpiCard icon="📭" label="Sans email"        value={kpis.no_email}        color="#6b7280" />
                 </div>
 
                 <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Mise en relation</h3>
@@ -1266,9 +1264,6 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   <button style={{ ...btn.base, ...btn.primary }} onClick={() => { setEmailSegment("workers_hidden"); setEmailTemplate("visibility_initial"); setActiveTab("emailing"); }}>
                     ✉️ Campagne profils masqués
-                  </button>
-                  <button style={{ ...btn.base, ...btn.teal }} onClick={() => { setSegment("workers_incomplete"); setActiveTab("contacts"); }}>
-                    👥 Voir profils incomplets
                   </button>
                   <button style={{ ...btn.base, ...btn.ghost }} onClick={() => { setSegment("employers_without_offers"); setActiveTab("contacts"); }}>
                     🏢 Employeurs sans offre

@@ -501,9 +501,12 @@ function CreateOfferForm({ onSuccess, token, locale }) {
         <p className="mt-3 text-sm leading-7 text-[#5f7086]">
           {isEn ? "Submit your hiring need. It will be sent directly to LEXPAT Connect for review and matching." : "Déposez votre besoin de recrutement. Il sera transmis directement à LEXPAT Connect pour traitement et mise en relation."}
         </p>
-        <button onClick={() => setOpen(true)} className="primary-button mt-5">
+        <a
+          href={isEn ? "/en/employeurs/rejoindre" : "/employeurs/rejoindre"}
+          className="primary-button mt-5 inline-block text-center"
+        >
           {isEn ? "Add an opening" : "Ajouter une offre"}
-        </button>
+        </a>
       </section>
     );
   }
