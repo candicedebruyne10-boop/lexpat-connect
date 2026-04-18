@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import RegionSelector from "./RegionSelector";
+import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import {
   sectorOptions,
   getProfessionGroupsForRegions,
@@ -15,6 +17,13 @@ const STEPS = [
   { icon: "📍", title: "Où se situe le poste ?", subtitle: "Région et lieu de travail" },
   { icon: "💼", title: "Quel poste ?",            subtitle: "Le métier et le type de contrat" },
   { icon: "📝", title: "Décrivez le rôle",        subtitle: "Missions et compétences attendues (optionnel)" },
+];
+
+const URGENCY_OPTIONS = [
+  "Urgent (moins de 2 semaines)",
+  "Sous 1 mois",
+  "Sous 3 mois",
+  "Flexible / À définir",
 ];
 
 // ─── Styles partagés ──────────────────────────────────────────────────────────
@@ -50,16 +59,41 @@ function Field({ label, children, error, helper, optional }) {
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function EmployeurWizard() {
+  const router = useRouter();
+  const [authStatus, setAuthStatus] = useState("loading"); // loading | authenticated | unauthenticated
   const [step, setStep] = useState(0);
   const [values, setValues] = useState({
     contactName: "", company: "", email: "", phone: "",
     region: [], location: "",
-    sector: "", profession: "", contractType: "", hours: "",
+    sector: "", profession: "", contractType: "", hours: "", urgency: "",
     responsibilities: "", skills: "",
   });
   const [errors, setErrors]   = useState({});
   const [status, setStatus]   = useState("idle"); // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState("");
+
+  // ── Vérification de l'authentification ────────────────────────────────────
+  useEffect(() => {
+    let isMounted = true;
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
+      if (session) {
+        setAuthStatus("authenticated");
+        // Pré-remplir les champs avec les données du profil si disponible
+        const meta = session.user?.user_metadata || {};
+        setValues(prev => ({
+          ...prev,
+          contactName: prev.contactName || meta.full_name || "",
+          email: prev.email || session.user.email || "",
+          company: prev.company || meta.company_name || "",
+        }));
+      } else {
+        setAuthStatus("unauthenticated");
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   function set(key, val) {
     setValues(prev => ({ ...prev, [key]: val }));
@@ -95,37 +129,148 @@ export default function EmployeurWizard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // ── Soumission ──────────────────────────────────────────────────────────────
+  // ── Soumission → Supabase ───────────────────────────────────────────────────
   async function submit() {
     setStatus("submitting");
-    const fields = [
-      { label: "Nom du contact",                name: "contactName",      value: values.contactName },
-      { label: "Entreprise",                    name: "company",          value: values.company },
-      { label: "Email professionnel",           name: "email",            value: values.email },
-      { label: "Téléphone",                     name: "phone",            value: values.phone },
-      { label: "Région concernée",              name: "region",           value: stringifyRegionSelection(values.region, "Non précisé") },
-      { label: "Lieu de travail",               name: "location",         value: values.location },
-      { label: "Secteur",                       name: "sector",           value: values.sector },
-      { label: "Métier recherché",              name: "profession",       value: values.profession },
-      { label: "Type de contrat",               name: "contractType",     value: values.contractType },
-      { label: "Heures hebdomadaires",          name: "hours",            value: values.hours },
-      { label: "Missions principales",          name: "responsibilities", value: values.responsibilities },
-      { label: "Compétences recherchées",       name: "skills",           value: values.skills },
-    ].filter(f => f.value.trim());
-
+    setErrorMsg("");
     try {
-      const res  = await fetch("/api/forms", {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        setAuthStatus("unauthenticated");
+        setStatus("idle");
+        return;
+      }
+
+      const token = session.access_token;
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      };
+
+      // 1. Bootstrap : crée l'espace employeur si inexistant
+      const bootstrapRes = await fetch("/api/auth/bootstrap", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formType: "employeur", title: "Formulaire employeur (mobile)", fields }),
+        headers,
+        body: JSON.stringify({
+          role: "employer",
+          companyName: values.company.trim(),
+          fullName: values.contactName.trim(),
+          email: values.email.trim(),
+        }),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Erreur lors de l'envoi.");
+
+      if (!bootstrapRes.ok) {
+        const err = await bootstrapRes.json().catch(() => ({}));
+        // 409 = rôle déjà défini comme travailleur
+        if (bootstrapRes.status === 409) {
+          throw new Error("Ce compte est configuré comme travailleur. Utilisez un compte employeur.");
+        }
+        throw new Error(err.error || "Impossible de créer l'espace employeur.");
+      }
+
+      // 2. Mise à jour du profil employeur (infos entreprise + contact)
+      const primaryRegion = values.region?.[0] || "";
+      const profileRes = await fetch("/api/employer-profile", {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          companyName: values.company.trim(),
+          contactName: values.contactName.trim(),
+          email: values.email.trim(),
+          phone: values.phone.trim(),
+          sector: values.sector,
+          region: primaryRegion,
+        }),
+      });
+
+      if (!profileRes.ok) {
+        const err = await profileRes.json().catch(() => ({}));
+        throw new Error(err.error || "Erreur lors de la mise à jour du profil.");
+      }
+
+      // 3. Création de l'offre d'emploi
+      const description = [values.responsibilities, values.skills]
+        .map(s => s.trim())
+        .filter(Boolean)
+        .join("\n\n");
+
+      const offerRes = await fetch("/api/offers", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          shortage_job: values.profession || values.sector,
+          sector: values.sector,
+          region: values.region,
+          contract_type: values.contractType || null,
+          urgency: values.urgency || null,
+          description: description || null,
+          title: values.profession || values.sector,
+        }),
+      });
+
+      if (!offerRes.ok) {
+        const err = await offerRes.json().catch(() => ({}));
+        throw new Error(err.error || "Erreur lors de la publication de l'offre.");
+      }
+
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err.message);
+      setErrorMsg(err.message || "Une erreur est survenue.");
     }
+  }
+
+  // ── Écran de chargement ─────────────────────────────────────────────────────
+  if (authStatus === "loading") {
+    return (
+      <div style={{
+        minHeight: "100svh", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "#f8faff",
+      }}>
+        <div style={{ fontSize: 14, color: "#8a9db8" }}>Chargement…</div>
+      </div>
+    );
+  }
+
+  // ── Écran non connecté ──────────────────────────────────────────────────────
+  if (authStatus === "unauthenticated") {
+    return (
+      <div style={{
+        minHeight: "100svh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        padding: "32px 24px", textAlign: "center", background: "#f8faff",
+      }}>
+        <div style={{ fontSize: 56, marginBottom: 20 }}>🔒</div>
+        <h2 style={{ fontSize: 24, fontWeight: 900, color: "#1E3A78", margin: "0 0 12px" }}>
+          Connexion requise
+        </h2>
+        <p style={{ fontSize: 15, color: "#3d5470", lineHeight: 1.65, maxWidth: 320, margin: "0 auto 28px" }}>
+          Pour publier une offre et créer votre espace employeur, vous devez être connecté.
+        </p>
+        <a
+          href={`/connexion?redirect=/employeurs/rejoindre`}
+          style={{
+            display: "inline-block", padding: "14px 28px", borderRadius: 12,
+            background: "#1E3A78", color: "#fff", fontWeight: 700, fontSize: 15,
+            textDecoration: "none", marginBottom: 12,
+          }}
+        >
+          Se connecter
+        </a>
+        <a
+          href="/inscription?role=employer&redirect=/employeurs/rejoindre"
+          style={{
+            display: "inline-block", padding: "14px 28px", borderRadius: 12,
+            background: "transparent", color: "#1E3A78", fontWeight: 600, fontSize: 14,
+            textDecoration: "none", border: "1.5px solid #dce8f5",
+          }}
+        >
+          Créer un compte employeur
+        </a>
+      </div>
+    );
   }
 
   // ── Écran de succès ─────────────────────────────────────────────────────────
@@ -137,16 +282,16 @@ export default function EmployeurWizard() {
         padding: "32px 24px", textAlign: "center", background: "#f0fdf4",
       }}>
         <div style={{ fontSize: 64, marginBottom: 20 }}>✅</div>
-        <h2 style={{ fontSize: 26, fontWeight: 900, color: "#166534", margin: "0 0 12px" }}>Besoin envoyé !</h2>
+        <h2 style={{ fontSize: 26, fontWeight: 900, color: "#166534", margin: "0 0 12px" }}>Offre publiée !</h2>
         <p style={{ fontSize: 16, color: "#3d5470", lineHeight: 1.65, maxWidth: 320, margin: "0 auto 28px" }}>
-          Votre besoin de recrutement a bien été transmis. Nous revenons vers vous rapidement.
+          Votre offre est maintenant en ligne. Nous cherchons des profils correspondants et vous contactons rapidement.
         </p>
-        <a href="/employeurs" style={{
+        <a href="/employeurs/espace" style={{
           display: "inline-block", padding: "14px 28px", borderRadius: 12,
           background: "#1E3A78", color: "#fff", fontWeight: 700, fontSize: 15,
           textDecoration: "none",
         }}>
-          Retour à la page employeurs
+          Voir mon espace employeur →
         </a>
       </div>
     );
@@ -287,6 +432,15 @@ export default function EmployeurWizard() {
                   onChange={e => set("hours", e.target.value)} style={inputSt} inputMode="numeric" />
               </Field>
             </div>
+
+            <Field label="Urgence du recrutement" optional>
+              <select value={values.urgency} onChange={e => set("urgency", e.target.value)} style={inputSt}>
+                <option value="">—</option>
+                {URGENCY_OPTIONS.map(u => (
+                  <option key={u} value={u}>{u}</option>
+                ))}
+              </select>
+            </Field>
           </div>
         )}
 
@@ -333,10 +487,10 @@ export default function EmployeurWizard() {
           }}
         >
           {status === "submitting"
-            ? "Envoi en cours…"
+            ? "Publication en cours…"
             : step < STEPS.length - 1
               ? "Continuer →"
-              : "Trouver un travailleur ✓"}
+              : "Publier mon offre ✓"}
         </button>
       </div>
     </div>
