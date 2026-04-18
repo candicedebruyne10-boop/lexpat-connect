@@ -1228,135 +1228,31 @@ export default function AdminDashboard({ initialData }) {
 
             {/* ════ SECTION TRAFIC ════ */}
             <div style={{ marginTop: 40 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>📊 Coach IA — Optimisation trafic</h3>
-                  <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Analyse page par page des 7 derniers jours via Vercel Analytics.</p>
-                </div>
-                <button style={{ ...btn.base, ...btn.ghost, fontSize: 12 }} onClick={fetchTraffic} disabled={trafficLoading}>
-                  {trafficLoading ? "⏳" : "🔄"} Actualiser
-                </button>
+              <div style={{ marginBottom: 16 }}>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>📊 Trafic — Vercel Analytics</h3>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Consultez vos données de trafic directement sur Vercel.</p>
               </div>
-
-              {trafficLoading ? (
-                <div style={{ color: "#8a9db8", fontSize: 14 }}>Récupération des données trafic…</div>
-
-              ) : !trafficData ? (
-                <div style={{ color: "#8a9db8", fontSize: 14 }}>Cliquez sur Actualiser pour charger l'analyse trafic.</div>
-
-              ) : !trafficData.configured ? (
-                /* ── Non configuré ── */
-                <div style={{ ...card, background: "#fffbeb", border: "1.5px solid #fcd34d", borderRadius: 16 }}>
-                  <div style={{ fontWeight: 800, fontSize: 15, color: "#92400e", marginBottom: 8 }}>⚙️ Configuration requise</div>
-                  <p style={{ margin: "0 0 12px", fontSize: 13, color: "#3d5470", lineHeight: 1.7 }}>
-                    Pour activer l'analyse trafic, ajoutez ces variables dans votre fichier <code style={{ background: "#fef3c7", borderRadius: 4, padding: "1px 6px" }}>.env.local</code> :
-                  </p>
-                  <div style={{ background: "#1E3A78", borderRadius: 10, padding: "14px 18px", fontFamily: "monospace", fontSize: 12, color: "#93c5fd", lineHeight: 2 }}>
-                    {(trafficData.missing || ["VERCEL_API_TOKEN", "VERCEL_PROJECT_ID"]).map(k => (
-                      <div key={k}>{k}=<span style={{ color: "#fbbf24" }}>votre_valeur</span></div>
-                    ))}
-                    <div style={{ color: "#6b7280", marginTop: 4 }}># VERCEL_TEAM_ID=xxx  ← optionnel (compte équipe)</div>
-                  </div>
-                  <div style={{ marginTop: 12, fontSize: 12, color: "#8a9db8", lineHeight: 1.7 }}>
-                    Trouvez votre <strong>VERCEL_API_TOKEN</strong> dans <em>vercel.com → Account → Tokens</em>.<br />
-                    Trouvez votre <strong>VERCEL_PROJECT_ID</strong> dans <em>vercel.com → Projet → Settings → General</em>.
+              <div style={{ ...card, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, padding: "20px 24px" }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: "#1E3A78", marginBottom: 6 }}>Pages clés à surveiller</div>
+                  <div style={{ fontSize: 13, color: "#5d6e83", lineHeight: 1.8 }}>
+                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/</span>
+                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/travailleurs</span>
+                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/employeurs</span>
+                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/simulateur-eligibilite</span>
+                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/metiers-en-penurie</span>
+                    <span style={{ display: "inline-block", background: "#e6faf7", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12, color: "#0d7c6e" }}>/employeurs/liege-metiers-en-penurie ⭐</span>
                   </div>
                 </div>
-
-              ) : trafficData.error && !trafficData.pages?.length ? (
-                /* ── Erreur API ── */
-                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 18px", fontSize: 13, color: "#b91c1c" }}>
-                  ❌ Erreur Vercel API : {trafficData.error}
-                </div>
-
-              ) : (() => {
-                const pages          = trafficData.pages || [];
-                const trafficInsights = deriveTrafficInsights(pages);
-                const totalVisitors   = trafficData.totalVisitors ?? pages.reduce((s, p) => s + p.visitors, 0);
-                const siteUrl         = process.env.NEXT_PUBLIC_SITE_URL || "";
-
-                return (
-                  <>
-                    {/* Mini stats bar */}
-                    <div style={{ display: "flex", gap: 12, marginBottom: 22, flexWrap: "wrap" }}>
-                      <div style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ fontSize: 20 }}>👁️</span>
-                        <div>
-                          <div style={{ fontSize: 22, fontWeight: 900, color: "#1E3A78", lineHeight: 1 }}>{totalVisitors.toLocaleString("fr-BE")}</div>
-                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>visiteurs totaux (7j)</div>
-                        </div>
-                      </div>
-                      <div style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ fontSize: 20 }}>📄</span>
-                        <div>
-                          <div style={{ fontSize: 22, fontWeight: 900, color: "#1E3A78", lineHeight: 1 }}>{pages.length}</div>
-                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>pages surveillées</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Mini tableau des pages */}
-                    <div style={{ ...card, padding: 0, overflow: "hidden", marginBottom: 24 }}>
-                      <div style={{ padding: "12px 18px", background: "#f8faff", borderBottom: "1px solid #e8eef8", fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>
-                        Pages surveillées
-                      </div>
-                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                        <thead>
-                          <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
-                            {["Page", "Visiteurs (7j)", "Niveau"].map(h => (
-                              <th key={h} style={{ padding: "8px 16px", textAlign: "left", fontWeight: 700, color: "#6b7280", fontSize: 12 }}>{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[...pages].sort((a, b) => b.visitors - a.visitors).map((p, i) => {
-                            const lvl = classifyTraffic(p.visitors);
-                            const lvlStyle = {
-                              high:   { color: "#0d7c6e", bg: "#e6faf7" },
-                              medium: { color: "#92400e", bg: "#fef3c7" },
-                              low:    { color: "#6b7280", bg: "#f5f5f5" },
-                            }[lvl];
-                            return (
-                              <tr key={p.path} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb" }}>
-                                <td style={{ padding: "8px 16px" }}>
-                                  <div style={{ fontWeight: 600, color: "#1E3A78" }}>{p.label}</div>
-                                  <div style={{ fontSize: 11, color: "#8a9db8", fontFamily: "monospace" }}>{p.path}</div>
-                                </td>
-                                <td style={{ padding: "8px 16px", fontWeight: 900, fontSize: 16, color: "#1E3A78" }}>
-                                  {p.visitors.toLocaleString("fr-BE")}
-                                </td>
-                                <td style={{ padding: "8px 16px" }}>
-                                  <span style={{ display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700, background: lvlStyle.bg, color: lvlStyle.color }}>
-                                    {lvl === "high" ? "Élevé" : lvl === "medium" ? "Moyen" : "Faible"}
-                                  </span>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Insights trafic */}
-                    {trafficInsights.length === 0 ? (
-                      <div style={{ ...card, textAlign: "center", padding: 36, color: "#8a9db8", fontSize: 13 }}>
-                        Pas assez de données trafic pour générer des recommandations. Revenez dans quelques jours.
-                      </div>
-                    ) : (
-                      <>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78", marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.8 }}>
-                          Recommandations ({trafficInsights.length})
-                        </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
-                          {trafficInsights.map(ins => (
-                            <TrafficCard key={ins.id} insight={ins} siteUrl={siteUrl} />
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </>
-                );
-              })()}
+                <a
+                  href="https://vercel.com/candicedebruyne10-3544s-projects/lexpat-connect/analytics"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#1E3A78", color: "#fff", borderRadius: 10, padding: "10px 20px", fontWeight: 700, fontSize: 14, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
+                >
+                  Voir le trafic →
+                </a>
+              </div>
             </div>
           </div>
         )}
