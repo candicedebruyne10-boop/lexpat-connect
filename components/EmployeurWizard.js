@@ -3,7 +3,7 @@
 import { useState } from "react";
 import RegionSelector from "./RegionSelector";
 import {
-  getSectorOptions,
+  sectorOptions,
   getProfessionGroupsForRegions,
   stringifyRegionSelection,
 } from "../lib/professions";
@@ -153,7 +153,6 @@ export default function EmployeurWizard() {
   }
 
   // ── Options dynamiques ──────────────────────────────────────────────────────
-  const sectorOptions     = getSectorOptions("fr");
   const professionGroups  = values.region?.length
     ? getProfessionGroupsForRegions(values.region, "fr")
     : [];
@@ -249,13 +248,9 @@ export default function EmployeurWizard() {
             <Field label="Secteur d'activité" error={errors.sector}>
               <select value={values.sector} onChange={e => set("sector", e.target.value)} style={inputSt}>
                 <option value="">Sélectionnez un secteur</option>
-                {sectorOptions.map(o =>
-                  typeof o === "string"
-                    ? <option key={o} value={o}>{o}</option>
-                    : <optgroup key={o.label} label={o.label}>
-                        {(o.options || []).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                      </optgroup>
-                )}
+                {sectorOptions.map(o => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
               </select>
             </Field>
 
@@ -263,13 +258,13 @@ export default function EmployeurWizard() {
               {professionGroups.length > 0 ? (
                 <select value={values.profession} onChange={e => set("profession", e.target.value)} style={inputSt}>
                   <option value="">Sélectionnez un métier</option>
-                  {professionGroups.map(g =>
-                    typeof g === "string"
-                      ? <option key={g} value={g}>{g}</option>
-                      : <optgroup key={g.label} label={g.label}>
-                          {(g.options || []).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                        </optgroup>
-                  )}
+                  {professionGroups.map(g => (
+                    <optgroup key={g.label} label={g.label}>
+                      {(g.options || []).map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
               ) : (
                 <input type="text" placeholder="Choisissez d'abord une région à l'étape précédente"
