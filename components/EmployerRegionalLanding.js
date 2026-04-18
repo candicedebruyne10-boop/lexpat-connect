@@ -267,6 +267,112 @@ export default function EmployerRegionalLanding({ page }) {
           />
         </div>
       </Section>
+
+      <RegionalPagesNav currentFormType={page.form.formType} locale={page.hero.primaryHref.startsWith("/en/") ? "en" : "fr"} />
     </>
+  );
+}
+
+// ─── Navigation vers les autres pages régionales ─────────────────────────────
+
+const REGIONAL_PAGES_FR = [
+  {
+    label: "Liège",
+    description: "Métiers en pénurie à Liège",
+    href: "/employeurs/liege-metiers-en-penurie",
+    formType: "employeur-liege-penurie",
+  },
+  {
+    label: "Anvers",
+    description: "Métiers en pénurie à Anvers",
+    href: "/employeurs/anvers-metiers-en-penurie",
+    formType: "employeur-anvers-penurie",
+  },
+  {
+    label: "Gand",
+    description: "Métiers en pénurie à Gand",
+    href: "/employeurs/gand-metiers-en-penurie",
+    formType: "employeur-gand-penurie",
+  },
+  {
+    label: "Bruges",
+    description: "Métiers en pénurie à Bruges",
+    href: "/employeurs/bruges-metiers-en-penurie",
+    formType: "employeur-bruges-penurie",
+  },
+  {
+    label: "Recrutement international",
+    description: "6 entreprises sur 10 recrutent déjà des profils internationaux",
+    href: "/recrutement-international",
+    formType: "employeur-recrutement-international",
+  },
+];
+
+const REGIONAL_PAGES_EN = [
+  {
+    label: "Liège",
+    description: "Shortage occupations in Liège",
+    href: "/en/employeurs/liege-metiers-en-penurie",
+    formType: "employeur-liege-penurie",
+  },
+  {
+    label: "Antwerp",
+    description: "Shortage occupations in Antwerp",
+    href: "/en/employeurs/anvers-metiers-en-penurie",
+    formType: "employeur-anvers-penurie-en",
+  },
+  {
+    label: "Ghent",
+    description: "Shortage occupations in Ghent",
+    href: "/en/employeurs/gand-metiers-en-penurie",
+    formType: "employeur-gand-penurie-en",
+  },
+  {
+    label: "Bruges",
+    description: "Shortage occupations in Bruges",
+    href: "/en/employeurs/bruges-metiers-en-penurie",
+    formType: "employeur-bruges-penurie-en",
+  },
+  {
+    label: "International recruitment",
+    description: "6 in 10 companies already recruit internationally",
+    href: "/en/recrutement-international",
+    formType: "employeur-recrutement-international-en",
+  },
+];
+
+function RegionalPagesNav({ currentFormType, locale }) {
+  const pages = locale === "en" ? REGIONAL_PAGES_EN : REGIONAL_PAGES_FR;
+  const others = pages.filter((p) => p.formType !== currentFormType);
+  if (others.length === 0) return null;
+  const title = locale === "en" ? "Other employer resources" : "Autres ressources pour les employeurs";
+  const intro = locale === "en"
+    ? "Each page is tailored to the specific context of a city or topic — shortage occupations, legal framework and available profiles."
+    : "Chaque page est adaptée au contexte spécifique d'une ville ou d'un sujet — métiers en pénurie, cadre juridique et profils disponibles.";
+  const kicker = locale === "en" ? "Related pages" : "Pages associées";
+  return (
+    <section className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-t border-[#dce8f5]">
+      <div className="mx-auto max-w-5xl px-6 py-14">
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+          {kicker}
+        </p>
+        <h2 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">{title}</h2>
+        <p className="mt-2 text-sm text-[#607086]">{intro}</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {others.map((p) => (
+            <a
+              key={p.href}
+              href={p.href}
+              className="group flex flex-col gap-2 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-5 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+            >
+              <span className="text-sm font-bold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">
+                {p.label} →
+              </span>
+              <span className="text-xs leading-relaxed text-[#6b85a0]">{p.description}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

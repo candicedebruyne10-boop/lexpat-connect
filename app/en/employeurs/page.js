@@ -263,6 +263,41 @@ export default function EmployeursPageEn() {
         secondaryLabel="Ask a question"
       />
 
+      {/* ── Regional & thematic pages ── */}
+      <section className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-14">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+            Resources by city and topic
+          </p>
+          <h2 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+            Recruit in your region
+          </h2>
+          <p className="mt-2 text-sm text-[#607086]">
+            Each page is tailored to the specific context of a city or topic — shortage occupations, legal framework and available profiles.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { label: "Liège", description: "Shortage occupations in Liège", href: "/en/employeurs/liege-metiers-en-penurie" },
+              { label: "Antwerp", description: "Shortage occupations in Antwerp", href: "/en/employeurs/anvers-metiers-en-penurie" },
+              { label: "Ghent", description: "Shortage occupations in Ghent", href: "/en/employeurs/gand-metiers-en-penurie" },
+              { label: "Bruges", description: "Shortage occupations in Bruges", href: "/en/employeurs/bruges-metiers-en-penurie" },
+              { label: "International recruitment", description: "6 in 10 companies already recruit internationally", href: "/en/recrutement-international" },
+            ].map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                className="group flex flex-col gap-2 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-5 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="text-sm font-bold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">
+                  {p.label} →
+                </span>
+                <span className="text-xs leading-relaxed text-[#6b85a0]">{p.description}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <div id="faq">
       <Section title="Employers’ frequently asked questions" kicker="FAQ">
         <Faq items={employerFaq} />

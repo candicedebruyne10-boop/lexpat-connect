@@ -114,7 +114,7 @@ export default function TravailleursPage() {
             {[
               { n: "01", href: "#pourquoi",          title: "Pourquoi créer votre profil",             desc: "Ce que la plateforme vous apporte concrètement." },
               { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
-              { n: "03", href: "#espace-travailleur", title: "L'espace travailleur en préparation",     desc: "Aperçu de l'interface dédiée aux candidats." },
+              { n: "03", href: "#espace-travailleur", title: "L'espace travailleur",     desc: "L'interface dédiée aux candidats." },
               { n: "04", href: "/travailleurs/rejoindre", title: "Créer mon profil",                       desc: "Formulaire guidé en 4 étapes pour présenter votre parcours." },
               { n: "05", href: "#faq",                title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
             ].map(({ n, href, title, desc }) => (
@@ -160,9 +160,9 @@ export default function TravailleursPage() {
 
       <div id="espace-travailleur">
       <Section
-        title="Un espace travailleur en préparation"
-        intro="Nous préparons une interface dédiée pour gérer votre profil, votre CV et votre visibilité de façon plus professionnelle."
-        kicker="Aperçu"
+        title="L'espace travailleur"
+        intro="Une interface dédiée pour gérer votre profil, votre CV et votre visibilité de façon professionnelle."
+        kicker="Espace candidat"
       >
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">

@@ -20,8 +20,18 @@ const publicRoutes = [
   { path: "/en/employeurs",                         priority: 0.9,  changeFrequency: "weekly"  },
 
   // Pages régionales employeurs
-  { path: "/employeurs/liege-metiers-en-penurie",      priority: 0.85, changeFrequency: "monthly" },
-  { path: "/en/employeurs/liege-metiers-en-penurie",   priority: 0.85, changeFrequency: "monthly" },
+  { path: "/employeurs/liege-metiers-en-penurie",          priority: 0.85, changeFrequency: "monthly" },
+  { path: "/en/employeurs/liege-metiers-en-penurie",        priority: 0.85, changeFrequency: "monthly" },
+  { path: "/employeurs/anvers-metiers-en-penurie",          priority: 0.85, changeFrequency: "monthly" },
+  { path: "/en/employeurs/anvers-metiers-en-penurie",       priority: 0.85, changeFrequency: "monthly" },
+  { path: "/employeurs/gand-metiers-en-penurie",            priority: 0.85, changeFrequency: "monthly" },
+  { path: "/en/employeurs/gand-metiers-en-penurie",         priority: 0.85, changeFrequency: "monthly" },
+  { path: "/employeurs/bruges-metiers-en-penurie",          priority: 0.85, changeFrequency: "monthly" },
+  { path: "/en/employeurs/bruges-metiers-en-penurie",       priority: 0.85, changeFrequency: "monthly" },
+
+  // Recrutement international
+  { path: "/recrutement-international",               priority: 0.85, changeFrequency: "monthly" },
+  { path: "/en/recrutement-international",            priority: 0.85, changeFrequency: "monthly" },
 
   // Métiers en pénurie
   { path: "/metiers-en-penurie",                    priority: 0.85, changeFrequency: "monthly" },

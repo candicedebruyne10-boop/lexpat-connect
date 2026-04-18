@@ -120,7 +120,7 @@ export default function EmployeursPage() {
             {[
               { n: "01", href: "#pourquoi",          title: "Pourquoi chercher ici",                desc: "Ce que la plateforme vous apporte concrètement." },
               { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                    desc: "Le parcours en 3 étapes, sans jargon." },
-              { n: "03", href: "#espace-employeur",   title: "L'espace employeur en préparation",    desc: "Aperçu de l'interface dédiée aux recruteurs." },
+              { n: "03", href: "#espace-employeur",   title: "L'espace employeur",    desc: "L'interface dédiée aux recruteurs." },
               { n: "04", href: "/employeurs/rejoindre", title: "Trouver un travailleur",              desc: "Formulaire guidé en 4 étapes pour décrire le profil recherché." },
               { n: "05", href: "#faq",                title: "Questions fréquentes",                 desc: "Les réponses aux doutes les plus courants." },
             ].map(({ n, href, title, desc }) => (
@@ -178,9 +178,9 @@ export default function EmployeursPage() {
 
       <div id="espace-employeur">
       <Section
-        title="Un espace employeur en préparation"
-        intro="Nous préparons une interface dédiée pour structurer vos offres, votre fiche entreprise et le suivi des profils."
-        kicker="Aperçu"
+        title="L'espace employeur"
+        intro="Une interface dédiée pour structurer vos offres, votre fiche entreprise et le suivi des profils."
+        kicker="Espace recruteur"
       >
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
@@ -255,6 +255,41 @@ export default function EmployeursPage() {
         secondaryHref="/contact"
         secondaryLabel="Poser une question"
       />
+
+      {/* ── Pages régionales & thématiques ── */}
+      <section className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-14">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+            Ressources par ville et par sujet
+          </p>
+          <h2 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+            Recrutez dans votre région
+          </h2>
+          <p className="mt-2 text-sm text-[#607086]">
+            Chaque page est adaptée au contexte d&apos;une ville ou d&apos;un sujet spécifique — métiers en pénurie, cadre juridique et profils disponibles.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { label: "Liège", description: "Métiers en pénurie à Liège", href: "/employeurs/liege-metiers-en-penurie" },
+              { label: "Anvers", description: "Métiers en pénurie à Anvers", href: "/employeurs/anvers-metiers-en-penurie" },
+              { label: "Gand", description: "Métiers en pénurie à Gand", href: "/employeurs/gand-metiers-en-penurie" },
+              { label: "Bruges", description: "Métiers en pénurie à Bruges", href: "/employeurs/bruges-metiers-en-penurie" },
+              { label: "Recrutement international", description: "6 entreprises sur 10 recrutent déjà des profils étrangers", href: "/recrutement-international" },
+            ].map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                className="group flex flex-col gap-2 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-5 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="text-sm font-bold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">
+                  {p.label} →
+                </span>
+                <span className="text-xs leading-relaxed text-[#6b85a0]">{p.description}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div id="faq">
       <Section title="Questions fréquentes des employeurs" kicker="FAQ">
