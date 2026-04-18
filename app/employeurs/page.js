@@ -226,6 +226,16 @@ stats={[
         kicker="Formulaire"
         muted
       >
+        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-[#dce8f5] bg-white px-5 py-4 sm:hidden">
+          <span className="text-2xl">📱</span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#1E3A78]">Sur mobile ?</p>
+            <p className="text-xs text-[#8a9db8]">Version simplifiée en 4 étapes, pensée pour le téléphone.</p>
+          </div>
+          <Link href="/employeurs/rejoindre" className="flex-shrink-0 rounded-xl bg-[#1E3A78] px-4 py-2 text-sm font-bold text-white">
+            Utiliser →
+          </Link>
+        </div>
         <div>
           <FormCard
             title="Formulaire employeur"
