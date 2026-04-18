@@ -8,6 +8,7 @@ import { getSupabaseBrowserClient } from "../lib/supabase/client";
 const TABS = [
   { id: "overview",    label: "Vue d'ensemble",  icon: "📊" },
   { id: "coach",       label: "Coach IA",         icon: "🤖" },
+  { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
   { id: "contacts",   label: "Contacts",         icon: "👥" },
   { id: "emailing",   label: "Emailing",         icon: "✉️" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
@@ -176,6 +177,124 @@ function classifyTraffic(visitors) {
   if (visitors >= TRAFFIC_THRESHOLDS.high)   return "high";
   if (visitors >= TRAFFIC_THRESHOLDS.medium)  return "medium";
   return "low";
+}
+
+// ─── Analyse trafic manuelle ──────────────────────────────────────────────────
+
+const ANALYTICS_PAGES = [
+  { path: "/travailleurs/espace", label: "Espace travailleur" },
+  { path: "/",                    label: "Accueil FR" },
+  { path: "/travailleurs",        label: "Travailleurs" },
+  { path: "/metiers-en-penurie",  label: "Métiers en pénurie" },
+  { path: "/connexion",           label: "Connexion" },
+  { path: "/inscription",         label: "Inscription" },
+  { path: "/base-de-profils",     label: "Base de profils" },
+  { path: "/employeurs",          label: "Employeurs" },
+  { path: "/simulateur-eligibilite", label: "Simulateur" },
+  { path: "/employeurs/liege-metiers-en-penurie", label: "Liège — Employeurs ⭐" },
+];
+
+function analyzeWeeklyTraffic(inputs) {
+  const insights = [];
+  const get = (path) => inputs.pages.find(p => p.path === path)?.visitors || 0;
+
+  const home        = get("/");
+  const travailleurs = get("/travailleurs");
+  const employeurs  = get("/employeurs");
+  const simulateur  = get("/simulateur-eligibilite");
+  const connexion   = get("/connexion");
+  const inscription = get("/inscription");
+  const metiers     = get("/metiers-en-penurie");
+  const liege       = get("/employeurs/liege-metiers-en-penurie");
+  const espace      = get("/travailleurs/espace");
+  const total       = inputs.totalVisitors || inputs.pages.reduce((s, p) => s + p.visitors, 0);
+  const mobile      = inputs.mobilePercent;
+  const belgium     = inputs.belgiumPercent;
+
+  // 1. Déséquilibre employeurs
+  if (travailleurs > 10 && employeurs === 0) {
+    insights.push({ type: "alerte", icon: "⚖️",
+      title: "Aucun employeur sur le site cette semaine",
+      text: `La page /employeurs n'a reçu aucune visite alors que /travailleurs en a eu ${travailleurs}. La plateforme est déséquilibrée : trop de candidats, pas assez de recruteurs.`,
+      action: "Envoyer l'email Coach IA 'Employeur sans offre' + publier un post LinkedIn ciblé RH belge" });
+  } else if (travailleurs > 0 && employeurs > 0 && travailleurs / employeurs > 4) {
+    const ratio = Math.round(travailleurs / employeurs);
+    insights.push({ type: "alerte", icon: "⚖️",
+      title: `Déséquilibre ${ratio}× : travailleurs vs employeurs`,
+      text: `${travailleurs} visites travailleurs pour ${employeurs} visites employeurs. Pour que la plateforme fonctionne, les deux côtés doivent progresser ensemble.`,
+      action: "Activer une campagne email + LinkedIn ciblée recruteurs belges" });
+  }
+
+  // 2. Intent d'inscription fort
+  if (connexion + inscription >= 20) {
+    insights.push({ type: "opportunite", icon: "🔑",
+      title: "Fort intent d'inscription",
+      text: `${connexion + inscription} visites combinées sur /connexion et /inscription — les gens veulent utiliser la plateforme. Un bug ou une friction mobile peut les faire partir.`,
+      action: "Tester le parcours inscription complet sur iPhone cette semaine" });
+  }
+
+  // 3. Espace travailleur > page travailleurs
+  if (espace > 0 && espace >= travailleurs) {
+    insights.push({ type: "info", icon: "🔄",
+      title: "Les membres reviennent plus que les nouveaux n'arrivent",
+      text: `${espace} visites sur l'espace vs ${travailleurs} sur la page d'acquisition. La rétention est bonne mais l'acquisition ralentit.`,
+      action: "Publier du contenu pour attirer de nouveaux travailleurs (post, article, SEO)" });
+  }
+
+  // 4. Simulateur
+  if (simulateur >= 20) {
+    insights.push({ type: "opportunite", icon: "🧮",
+      title: "Le simulateur génère du trafic qualifié",
+      text: `${simulateur} visites — ces visiteurs ont une intention claire. Assurez-vous que le CTA après les résultats pousse vers le formulaire employeur ou travailleur.`,
+      action: "Vérifier et renforcer le CTA post-simulateur" });
+  } else if (simulateur > 0 && simulateur < 10) {
+    insights.push({ type: "alerte", icon: "🧮",
+      title: "Simulateur sous-utilisé",
+      text: `Seulement ${simulateur} visites sur votre outil différenciateur. Mettez-le plus en avant sur la homepage et dans le menu.`,
+      action: "Ajouter le simulateur dans la navigation principale" });
+  }
+
+  // 5. Mobile
+  if (mobile >= 50) {
+    insights.push({ type: "info", icon: "📱",
+      title: `${mobile}% des visiteurs sont sur mobile`,
+      text: "La majorité navigue sur téléphone. Un formulaire mal adapté ou un bouton trop petit peut bloquer des inscriptions.",
+      action: "Faire un test complet mobile (formulaires, navigation, CTA) cette semaine" });
+  }
+
+  // 6. Trafic international
+  if (belgium > 0 && belgium < 40) {
+    insights.push({ type: "info", icon: "🌍",
+      title: `${100 - belgium}% de trafic hors Belgique`,
+      text: "Votre audience est majoritairement internationale — probablement des travailleurs cherchant des opportunités. La page EN /en/travailleurs est cruciale.",
+      action: "Optimiser /en/travailleurs et vérifier que le formulaire EN fonctionne" });
+  }
+
+  // 7. Liège
+  if (liege >= 8) {
+    insights.push({ type: "opportunite", icon: "📍",
+      title: "La page Liège fonctionne — dupliquez le modèle",
+      text: `${liege} visites sur la page Liège. L'approche géolocalisée attire des employeurs locaux qualifiés.`,
+      action: "Créer /employeurs/bruxelles-metiers-en-penurie et /employeurs/gand-metiers-en-penurie" });
+  }
+
+  // 8. Métiers en pénurie SEO
+  if (metiers >= 30) {
+    insights.push({ type: "opportunite", icon: "🔍",
+      title: "La page métiers en pénurie performe",
+      text: `${metiers} visites — c'est votre meilleur aimant SEO. Les visiteurs cherchent activement cette information.`,
+      action: "Enrichir le contenu avec des données régionales plus détaillées pour progresser en SEO" });
+  }
+
+  // 9. Trafic global faible
+  if (total > 0 && total < 100) {
+    insights.push({ type: "info", icon: "📈",
+      title: "Phase de lancement — trafic en construction",
+      text: `${total} visiteurs cette semaine. C'est normal pour un MVP actif. 1 action de distribution ciblée par semaine suffit pour progresser régulièrement.`,
+      action: "Choisir 1 action cette semaine : post LinkedIn, email, ou article de blog" });
+  }
+
+  return insights;
 }
 
 function deriveTrafficInsights(pages) {
@@ -800,6 +919,38 @@ export default function AdminDashboard({ initialData }) {
   const [previewHtml, setPreviewHtml]     = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
+  // ── Analytics tab state ─────────────────────────────────────────────────────
+  const [analyticsInputs, setAnalyticsInputs] = useState({
+    totalVisitors: "",
+    mobilePercent: "",
+    belgiumPercent: "",
+    topReferrer: "",
+    pages: ANALYTICS_PAGES.map(p => ({ ...p, visitors: "" })),
+  });
+  const [analyticsReport, setAnalyticsReport] = useState(null);
+
+  function updateAnalyticsPage(path, value) {
+    setAnalyticsInputs(prev => ({
+      ...prev,
+      pages: prev.pages.map(p => p.path === path ? { ...p, visitors: value } : p),
+    }));
+  }
+
+  function runAnalysis() {
+    const parsed = {
+      totalVisitors: parseInt(analyticsInputs.totalVisitors) || 0,
+      mobilePercent: parseInt(analyticsInputs.mobilePercent) || 0,
+      belgiumPercent: parseInt(analyticsInputs.belgiumPercent) || 0,
+      topReferrer: analyticsInputs.topReferrer,
+      pages: analyticsInputs.pages.map(p => ({ ...p, visitors: parseInt(p.visitors) || 0 })),
+    };
+    // Auto-compute total if not provided
+    if (!parsed.totalVisitors) {
+      parsed.totalVisitors = parsed.pages.reduce((s, p) => s + p.visitors, 0);
+    }
+    setAnalyticsReport({ inputs: parsed, insights: analyzeWeeklyTraffic(parsed), generatedAt: new Date() });
+  }
+
   // ── Traffic state ───────────────────────────────────────────────────────────
   const [trafficData, setTrafficData]           = useState(null);   // null | { configured, pages, error }
   const [trafficLoading, setTrafficLoading]     = useState(false);
@@ -1254,6 +1405,177 @@ export default function AdminDashboard({ initialData }) {
                 </a>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET ANALYSE TRAFIC
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "analytics" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>📈 Analyse trafic hebdomadaire</h2>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Entrez les chiffres de votre dashboard Vercel Analytics et obtenez les recommandations de la semaine.</p>
+              </div>
+              <a href="https://vercel.com/candicedebruyne10-3544s-projects/lexpat-connect/analytics" target="_blank" rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#1E3A78", color: "#fff", borderRadius: 10, padding: "8px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>
+                Ouvrir Vercel Analytics →
+              </a>
+            </div>
+
+            {/* ── Formulaire de saisie ── */}
+            <div style={{ ...card, marginBottom: 24 }}>
+              <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78", marginBottom: 16 }}>Visiteurs par page (7 derniers jours)</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10, marginBottom: 20 }}>
+                {analyticsInputs.pages.map(p => (
+                  <div key={p.path} style={{ display: "flex", alignItems: "center", gap: 10, background: "#f8faff", borderRadius: 10, padding: "8px 12px", border: "1px solid #e8eef8" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 1 }}>{p.label}</div>
+                      <div style={{ fontSize: 10, color: "#8a9db8", fontFamily: "monospace" }}>{p.path}</div>
+                    </div>
+                    <input
+                      type="number" min="0" placeholder="0"
+                      value={p.visitors}
+                      onChange={e => updateAnalyticsPage(p.path, e.target.value)}
+                      style={{ width: 64, padding: "5px 8px", borderRadius: 8, border: "1.5px solid #dce8f5", fontSize: 14, fontWeight: 900, color: "#1E3A78", textAlign: "center", background: "#fff" }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ borderTop: "1px solid #e8eef8", paddingTop: 16, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 20 }}>
+                {[
+                  { key: "totalVisitors", label: "Total visiteurs (optionnel)", placeholder: "ex: 285" },
+                  { key: "mobilePercent", label: "% mobile", placeholder: "ex: 51" },
+                  { key: "belgiumPercent", label: "% Belgique", placeholder: "ex: 43" },
+                  { key: "topReferrer",   label: "1er référent (optionnel)", placeholder: "ex: Gmail Android", isText: true },
+                ].map(({ key, label, placeholder, isText }) => (
+                  <div key={key}>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 5 }}>{label}</label>
+                    <input
+                      type={isText ? "text" : "number"} min="0" max={isText ? undefined : "100"} placeholder={placeholder}
+                      value={analyticsInputs[key]}
+                      onChange={e => setAnalyticsInputs(prev => ({ ...prev, [key]: e.target.value }))}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1.5px solid #dce8f5", fontSize: 13, color: "#1E3A78", background: "#fff", boxSizing: "border-box" }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={runAnalysis}
+                style={{ background: "#1E3A78", color: "#fff", border: "none", borderRadius: 10, padding: "12px 28px", fontWeight: 800, fontSize: 15, cursor: "pointer" }}
+              >
+                🔍 Générer l'analyse
+              </button>
+            </div>
+
+            {/* ── Rapport généré ── */}
+            {analyticsReport && (() => {
+              const { inputs, insights, generatedAt } = analyticsReport;
+              const sortedPages = [...inputs.pages].sort((a, b) => b.visitors - a.visitors);
+              const typeTheme = {
+                alerte:      { bg: "#fff1f2", border: "#fca5a5", badge: "#fee2e2", badgeText: "#b91c1c", label: "⚠️ Alerte" },
+                opportunite: { bg: "#f0fdf4", border: "#86efac", badge: "#dcfce7", badgeText: "#166534", label: "🚀 Opportunité" },
+                info:        { bg: "#f0f6ff", border: "#93c5fd", badge: "#dbeafe", badgeText: "#1d4ed8", label: "ℹ️ Info" },
+              };
+
+              return (
+                <>
+                  {/* Mini stats */}
+                  <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+                    {[
+                      { icon: "👁️", value: inputs.totalVisitors || inputs.pages.reduce((s,p)=>s+p.visitors,0), label: "visiteurs totaux" },
+                      { icon: "📱", value: inputs.mobilePercent ? `${inputs.mobilePercent}%` : "—", label: "mobile" },
+                      { icon: "🇧🇪", value: inputs.belgiumPercent ? `${inputs.belgiumPercent}%` : "—", label: "Belgique" },
+                      { icon: "📣", value: inputs.topReferrer || "—", label: "1er référent", small: true },
+                    ].map(({ icon, value, label, small }) => (
+                      <div key={label} style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10, minWidth: 120 }}>
+                        <span style={{ fontSize: 20 }}>{icon}</span>
+                        <div>
+                          <div style={{ fontSize: small ? 14 : 22, fontWeight: 900, color: "#1E3A78", lineHeight: 1 }}>{value}</div>
+                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 2 }}>{label}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tableau pages */}
+                  <div style={{ ...card, padding: 0, overflow: "hidden", marginBottom: 24 }}>
+                    <div style={{ padding: "12px 18px", background: "#f8faff", borderBottom: "1px solid #e8eef8", fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>
+                      Pages — classement de la semaine
+                    </div>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ background: "#f8faff", borderBottom: "1px solid #e8eef8" }}>
+                          {["#", "Page", "Visiteurs", "Performance"].map(h => (
+                            <th key={h} style={{ padding: "8px 16px", textAlign: "left", fontWeight: 700, color: "#6b7280", fontSize: 12 }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedPages.filter(p => p.visitors > 0).map((p, i) => {
+                          const lvl = classifyTraffic(p.visitors);
+                          const c = { high: { color: "#0d7c6e", bg: "#e6faf7", label: "Élevé" }, medium: { color: "#92400e", bg: "#fef3c7", label: "Moyen" }, low: { color: "#6b7280", bg: "#f5f5f5", label: "Faible" } }[lvl];
+                          return (
+                            <tr key={p.path} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff", borderBottom: "1px solid #f0f4fb" }}>
+                              <td style={{ padding: "8px 16px", color: "#8a9db8", fontWeight: 700 }}>{i + 1}</td>
+                              <td style={{ padding: "8px 16px" }}>
+                                <div style={{ fontWeight: 600, color: "#1E3A78" }}>{p.label}</div>
+                                <div style={{ fontSize: 11, color: "#8a9db8", fontFamily: "monospace" }}>{p.path}</div>
+                              </td>
+                              <td style={{ padding: "8px 16px", fontWeight: 900, fontSize: 16, color: "#1E3A78" }}>{p.visitors}</td>
+                              <td style={{ padding: "8px 16px" }}>
+                                <span style={{ display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700, background: c.bg, color: c.color }}>{c.label}</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        {sortedPages.filter(p => p.visitors > 0).length === 0 && (
+                          <tr><td colSpan={4} style={{ padding: "24px 16px", color: "#8a9db8", textAlign: "center" }}>Aucune donnée saisie</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Insights */}
+                  {insights.length === 0 ? (
+                    <div style={{ ...card, textAlign: "center", padding: 36, color: "#8a9db8", fontSize: 13 }}>
+                      ✅ Pas de point d'attention particulier cette semaine. Continuez sur votre lancée.
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78", marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.8 }}>
+                        Recommandations ({insights.length})
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16, marginBottom: 24 }}>
+                        {insights.map((ins, i) => {
+                          const th = typeTheme[ins.type] || typeTheme.info;
+                          return (
+                            <div key={i} style={{ background: th.bg, border: `1.5px solid ${th.border}`, borderRadius: 16, padding: "18px 20px" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                                <span style={{ fontSize: 18 }}>{ins.icon}</span>
+                                <span style={{ display: "inline-block", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 800, background: th.badge, color: th.badgeText }}>{th.label}</span>
+                              </div>
+                              <div style={{ fontWeight: 800, fontSize: 14, color: "#1E3A78", marginBottom: 6 }}>{ins.title}</div>
+                              <p style={{ margin: "0 0 12px", fontSize: 13, color: "#3d5470", lineHeight: 1.65 }}>{ins.text}</p>
+                              <div style={{ background: "rgba(255,255,255,0.7)", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78", fontWeight: 700 }}>
+                                → {ins.action}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+
+                  <div style={{ fontSize: 11, color: "#b0bec5", textAlign: "right" }}>
+                    Analyse générée le {generatedAt.toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
 
