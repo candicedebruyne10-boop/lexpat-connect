@@ -1,27 +1,22 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../../lib/supabase/server";
 
-// ─── Config ───────────────────────────────────────────────────────────────────
-
-const VERCEL_API  = "https://vercel.com/api";
-const TOKEN       = process.env.VERCEL_API_TOKEN;
-const PROJECT_ID  = process.env.VERCEL_PROJECT_ID;
-const TEAM_ID     = process.env.VERCEL_TEAM_ID; // optionnel (compte team)
+export const dynamic = "force-dynamic"; // désactive le cache Next.js
 
 // Pages prioritaires à surveiller
 const TRACKED_PAGES = [
-  { path: "/",                                    label: "Accueil FR",          priority: "high" },
-  { path: "/en",                                  label: "Accueil EN",          priority: "high" },
-  { path: "/employeurs",                          label: "Employeurs",          priority: "high" },
-  { path: "/travailleurs",                        label: "Travailleurs",        priority: "high" },
-  { path: "/simulateur-eligibilite",              label: "Simulateur",          priority: "critical" },
-  { path: "/metiers-en-penurie",                  label: "Métiers en pénurie",  priority: "high" },
-  { path: "/employeurs/liege-metiers-en-penurie", label: "Liège — Employeurs",  priority: "critical" },
-  { path: "/en/employeurs",                       label: "Employers (EN)",      priority: "medium" },
-  { path: "/en/travailleurs",                     label: "Workers (EN)",        priority: "medium" },
+  { path: "/",                                    label: "Accueil FR",         priority: "high"     },
+  { path: "/en",                                  label: "Accueil EN",         priority: "high"     },
+  { path: "/employeurs",                          label: "Employeurs",         priority: "high"     },
+  { path: "/travailleurs",                        label: "Travailleurs",       priority: "high"     },
+  { path: "/simulateur-eligibilite",              label: "Simulateur",         priority: "critical" },
+  { path: "/metiers-en-penurie",                  label: "Métiers en pénurie", priority: "high"     },
+  { path: "/employeurs/liege-metiers-en-penurie", label: "Liège — Employeurs", priority: "critical" },
+  { path: "/en/employeurs",                       label: "Employers (EN)",     priority: "medium"   },
+  { path: "/en/travailleurs",                     label: "Workers (EN)",       priority: "medium"   },
 ];
 
-// ─── Auth helper (réutilise le pattern des autres routes admin) ───────────────
+// ─── Auth admin ───────────────────────────────────────────────────────────────
 
 async function assertAdmin(request) {
   try {
@@ -40,98 +35,101 @@ async function assertAdmin(request) {
 
 // ─── Vercel Analytics fetcher ─────────────────────────────────────────────────
 
-async function fetchVercelPageViews(from, to) {
-  const teamParam = TEAM_ID ? `&teamId=${TEAM_ID}` : "";
+async function fetchVercelPageViews(token, projectId, teamId, from, to) {
+  const teamParam = teamId ? `&teamId=${teamId}` : "";
 
-  // Vercel Analytics REST API — page visits breakdown
-  const url = `${VERCEL_API}/v1/web/analytics/page-visits`
-    + `?projectId=${PROJECT_ID}`
-    + `&from=${from}`
-    + `&to=${to}`
-    + `&environment=production`
-    + `&limit=100`
-    + teamParam;
+  // Essai 1 : endpoint v1 Web Analytics
+  const endpoints = [
+    `https://vercel.com/api/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}&environment=production&limit=100${teamParam}`,
+    `https://api.vercel.com/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}&environment=production&limit=100${teamParam}`,
+    `https://vercel.com/api/web/analytics/stats?projectId=${projectId}&from=${from}&to=${to}${teamParam}`,
+  ];
 
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${TOKEN}`, Accept: "application/json" },
-    next: { revalidate: 1800 }, // cache 30 min
-  });
+  let lastError = null;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        cache: "no-store",
+      });
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`Vercel API ${res.status}: ${body.slice(0, 200)}`);
+      if (res.status === 404 || res.status === 405) continue; // mauvais endpoint, essaie le suivant
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        lastError = `HTTP ${res.status}: ${body.slice(0, 200)}`;
+        continue;
+      }
+
+      const json = await res.json();
+      const rows = json.data ?? json.pageVisits ?? json.rows ?? json.results ?? json.pages ?? [];
+
+      return { ok: true, rows, endpoint: url };
+    } catch (e) {
+      lastError = e.message;
+    }
   }
 
-  const json = await res.json();
-
-  // L'API peut retourner différentes structures selon la version
-  const rows = json.data ?? json.pageVisits ?? json.rows ?? json.results ?? [];
-
-  return rows.map(r => ({
-    path:     r.path     ?? r.page  ?? r.url  ?? "",
-    visitors: r.total    ?? r.visitors ?? r.pageviews ?? r.count ?? r.value ?? 0,
-    sessions: r.sessions ?? r.unique ?? null,
-  }));
+  return { ok: false, error: lastError || "Tous les endpoints ont échoué" };
 }
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function GET(request) {
-  // Vérification accès admin
+  // Auth
   const isAdmin = await assertAdmin(request);
   if (!isAdmin) {
     return NextResponse.json({ error: "Accès administrateur requis." }, { status: 403 });
   }
 
-  // Credentials manquants → état "non configuré" (pas une erreur)
-  if (!TOKEN || !PROJECT_ID) {
+  // Lire les env vars DANS la fonction (pas au niveau module) pour éviter le cache
+  const token     = process.env.LEXPAT_ANALYTICS_TOKEN;
+  const projectId = process.env.LEXPAT_PROJECT_ID;
+  const teamId    = process.env.LEXPAT_TEAM_ID;
+
+  if (!token || !projectId) {
     return NextResponse.json({
       configured: false,
       missing: [
-        !TOKEN       ? "VERCEL_API_TOKEN"  : null,
-        !PROJECT_ID  ? "VERCEL_PROJECT_ID" : null,
+        !token     ? "LEXPAT_ANALYTICS_TOKEN"  : null,
+        !projectId ? "LEXPAT_PROJECT_ID"        : null,
       ].filter(Boolean),
       pages: [],
     });
   }
 
-  // Plage : 7 derniers jours
   const to   = Date.now();
   const from = to - 7 * 24 * 60 * 60 * 1000;
 
-  try {
-    const raw = await fetchVercelPageViews(from, to);
+  const result = await fetchVercelPageViews(token, projectId, teamId, from, to);
 
-    // Associer les données brutes aux pages trackées
-    const pages = TRACKED_PAGES.map(({ path, label, priority }) => {
-      const match = raw.find(r => r.path === path || r.path === `${path}/`);
-      return {
-        path,
-        label,
-        priority,
-        visitors: match?.visitors ?? 0,
-        sessions: match?.sessions ?? null,
-      };
-    });
-
-    // Stats globales (toutes pages)
-    const totalVisitors = raw.reduce((s, r) => s + r.visitors, 0);
-
+  if (!result.ok) {
+    console.error("[admin/traffic]", result.error);
     return NextResponse.json({
       configured: true,
-      pages,
-      totalVisitors,
-      from,
-      to,
-      rawCount: raw.length,
+      error: result.error,
+      pages: TRACKED_PAGES.map(p => ({ ...p, visitors: 0 })),
     });
-
-  } catch (e) {
-    console.error("[admin/traffic] Vercel API error:", e.message);
-    return NextResponse.json({
-      configured: true,
-      error: e.message,
-      pages: TRACKED_PAGES.map(p => ({ ...p, visitors: 0, sessions: null })),
-    }, { status: 200 }); // 200 pour que le frontend gère l'erreur gracieusement
   }
+
+  const pages = TRACKED_PAGES.map(({ path, label, priority }) => {
+    const match = result.rows.find(r =>
+      r.path === path || r.path === `${path}/` || r.page === path || r.url === path
+    );
+    return {
+      path, label, priority,
+      visitors: match ? (match.total ?? match.visitors ?? match.pageviews ?? match.count ?? match.value ?? 0) : 0,
+    };
+  });
+
+  const totalVisitors = result.rows.reduce((s, r) =>
+    s + (r.total ?? r.visitors ?? r.pageviews ?? r.count ?? r.value ?? 0), 0
+  );
+
+  return NextResponse.json({
+    configured: true,
+    pages,
+    totalVisitors,
+    from, to,
+    _endpoint: result.endpoint, // pour debug
+  });
 }
