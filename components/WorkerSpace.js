@@ -402,12 +402,12 @@ function DashboardView({ token, onNavigate, locale }) {
                   : "Aucune offre matchée pour l'instant. Vous serez notifié dès qu'une offre correspond.")}
             </p>
             {!profile && (
-              <button
-                onClick={() => onNavigate("profile")}
+              <a
+                href={isEn ? "/en/travailleurs/rejoindre" : "/travailleurs/rejoindre"}
                 className="mt-5 inline-flex items-center rounded-2xl bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5"
               >
                 {isEn ? "Create my profile" : "Créer mon profil"}
-              </button>
+              </a>
             )}
           </div>
         )}
