@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "../../../../lib/supabase/server";
 
-export const dynamic = "force-dynamic"; // désactive le cache Next.js
+export const dynamic = "force-dynamic";
 
-// Pages prioritaires à surveiller
 const TRACKED_PAGES = [
   { path: "/",                                    label: "Accueil FR",         priority: "high"     },
   { path: "/en",                                  label: "Accueil EN",         priority: "high"     },
@@ -15,8 +14,6 @@ const TRACKED_PAGES = [
   { path: "/en/employeurs",                       label: "Employers (EN)",     priority: "medium"   },
   { path: "/en/travailleurs",                     label: "Workers (EN)",       priority: "medium"   },
 ];
-
-// ─── Auth admin ───────────────────────────────────────────────────────────────
 
 async function assertAdmin(request) {
   try {
@@ -33,55 +30,12 @@ async function assertAdmin(request) {
   }
 }
 
-// ─── Vercel Analytics fetcher ─────────────────────────────────────────────────
-
-async function fetchVercelPageViews(token, projectId, teamId, from, to) {
-  const teamParam = teamId ? `&teamId=${teamId}` : "";
-
-  // Essai 1 : endpoint v1 Web Analytics
-  const endpoints = [
-    `https://vercel.com/api/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}&environment=production&limit=100${teamParam}`,
-    `https://api.vercel.com/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}&environment=production&limit=100${teamParam}`,
-    `https://vercel.com/api/web/analytics/stats?projectId=${projectId}&from=${from}&to=${to}${teamParam}`,
-  ];
-
-  let lastError = null;
-  for (const url of endpoints) {
-    try {
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-        cache: "no-store",
-      });
-
-      if (res.status === 404 || res.status === 405) continue; // mauvais endpoint, essaie le suivant
-      if (!res.ok) {
-        const body = await res.text().catch(() => "");
-        lastError = `HTTP ${res.status}: ${body.slice(0, 200)}`;
-        continue;
-      }
-
-      const json = await res.json();
-      const rows = json.data ?? json.pageVisits ?? json.rows ?? json.results ?? json.pages ?? [];
-
-      return { ok: true, rows, endpoint: url };
-    } catch (e) {
-      lastError = e.message;
-    }
-  }
-
-  return { ok: false, error: lastError || "Tous les endpoints ont échoué" };
-}
-
-// ─── Handler ──────────────────────────────────────────────────────────────────
-
 export async function GET(request) {
-  // Auth
   const isAdmin = await assertAdmin(request);
   if (!isAdmin) {
     return NextResponse.json({ error: "Accès administrateur requis." }, { status: 403 });
   }
 
-  // Lire les env vars DANS la fonction (pas au niveau module) pour éviter le cache
   const token     = process.env.LEXPAT_ANALYTICS_TOKEN;
   const projectId = process.env.LEXPAT_PROJECT_ID;
   const teamId    = process.env.LEXPAT_TEAM_ID;
@@ -89,31 +43,65 @@ export async function GET(request) {
   if (!token || !projectId) {
     return NextResponse.json({
       configured: false,
-      missing: [
-        !token     ? "LEXPAT_ANALYTICS_TOKEN"  : null,
-        !projectId ? "LEXPAT_PROJECT_ID"        : null,
-      ].filter(Boolean),
+      missing: [!token ? "LEXPAT_ANALYTICS_TOKEN" : null, !projectId ? "LEXPAT_PROJECT_ID" : null].filter(Boolean),
       pages: [],
     });
   }
 
   const to   = Date.now();
   const from = to - 7 * 24 * 60 * 60 * 1000;
+  const teamParam = teamId ? `&teamId=${teamId}` : "";
 
-  const result = await fetchVercelPageViews(token, projectId, teamId, from, to);
+  // Toutes les variantes d'endpoints connues pour Vercel Analytics
+  const endpoints = [
+    { label: "v1 page-visits (vercel.com)",  url: `https://vercel.com/api/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}&environment=production${teamParam}` },
+    { label: "v1 page-visits (api.vercel)", url: `https://api.vercel.com/v1/web/analytics/page-visits?projectId=${projectId}&from=${from}&to=${to}${teamParam}` },
+    { label: "web analytics stats",          url: `https://vercel.com/api/web/analytics/stats?projectId=${projectId}&from=${from}&to=${to}${teamParam}` },
+    { label: "web insights stats",           url: `https://vercel.com/api/web/insights/stats?projectId=${projectId}&from=${from}&to=${to}${teamParam}` },
+    { label: "v2 analytics",                 url: `https://api.vercel.com/v2/web/analytics?projectId=${projectId}&from=${from}&to=${to}${teamParam}` },
+  ];
 
-  if (!result.ok) {
-    console.error("[admin/traffic]", result.error);
+  const debug = [];
+  let successData = null;
+
+  for (const ep of endpoints) {
+    try {
+      const res = await fetch(ep.url, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        cache: "no-store",
+      });
+
+      const body = await res.text();
+      debug.push({ endpoint: ep.label, status: res.status, preview: body.slice(0, 150) });
+
+      if (res.ok) {
+        let json;
+        try { json = JSON.parse(body); } catch { continue; }
+        const rows = json.data ?? json.pageVisits ?? json.rows ?? json.results ?? json.pages ?? [];
+        if (Array.isArray(rows) && rows.length > 0) {
+          successData = { rows, endpoint: ep.label };
+          break;
+        }
+      }
+    } catch (e) {
+      debug.push({ endpoint: ep.label, status: "network_error", preview: e.message });
+    }
+  }
+
+  // Si aucun endpoint n'a fonctionné, retourne le debug pour diagnostiquer
+  if (!successData) {
     return NextResponse.json({
       configured: true,
-      error: result.error,
+      error: "Aucun endpoint Vercel Analytics n'a retourné de données.",
+      debug, // ← visible dans la console du navigateur (F12 → Network → /api/admin/traffic)
       pages: TRACKED_PAGES.map(p => ({ ...p, visitors: 0 })),
+      totalVisitors: 0,
     });
   }
 
   const pages = TRACKED_PAGES.map(({ path, label, priority }) => {
-    const match = result.rows.find(r =>
-      r.path === path || r.path === `${path}/` || r.page === path || r.url === path
+    const match = successData.rows.find(r =>
+      r.path === path || r.path === `${path}/` || r.page === path
     );
     return {
       path, label, priority,
@@ -121,15 +109,11 @@ export async function GET(request) {
     };
   });
 
-  const totalVisitors = result.rows.reduce((s, r) =>
-    s + (r.total ?? r.visitors ?? r.pageviews ?? r.count ?? r.value ?? 0), 0
-  );
-
   return NextResponse.json({
     configured: true,
     pages,
-    totalVisitors,
+    totalVisitors: successData.rows.reduce((s, r) => s + (r.total ?? r.visitors ?? r.pageviews ?? r.count ?? 0), 0),
     from, to,
-    _endpoint: result.endpoint, // pour debug
+    _endpoint: successData.endpoint,
   });
 }

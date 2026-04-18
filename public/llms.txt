@@ -1,0 +1,75 @@
+# LEXPAT Connect
+
+> Plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie. Recrutement sécurisé, accompagnement juridique si nécessaire via le cabinet LEXPAT.
+
+LEXPAT Connect est une marketplace B2B belge qui connecte :
+- Les **employeurs belges** cherchant à recruter dans les métiers en pénurie (construction, santé, hôtellerie-restauration, IT, transport, industrie, agriculture)
+- Les **travailleurs internationaux qualifiés** souhaitant travailler légalement en Belgique
+
+La plateforme propose un simulateur d'éligibilité au permis unique, une base de profils visibles, et un relais juridique avec le cabinet d'avocats LEXPAT (droit de l'immigration économique belge).
+
+## Pages principales (FR)
+
+- [Accueil](https://lexpat-connect.vercel.app/): Présentation de la plateforme de mise en relation employeurs / travailleurs internationaux
+- [Employeurs](https://lexpat-connect.vercel.app/employeurs): Soumettre un besoin de recrutement et accéder aux profils qualifiés
+- [Travailleurs](https://lexpat-connect.vercel.app/travailleurs): Créer un profil visible pour les employeurs belges
+- [Métiers en pénurie](https://lexpat-connect.vercel.app/metiers-en-penurie): Listes régionales des métiers en pénurie en Belgique (Bruxelles, Wallonie, Flandre)
+- [Simulateur d'éligibilité](https://lexpat-connect.vercel.app/simulateur-eligibilite): Tester la faisabilité d'un recrutement international via le permis unique 2026
+- [Permis unique](https://lexpat-connect.vercel.app/permis-unique): Guide complet sur le permis unique belge pour travailleurs hors UE
+- [Employeurs Liège](https://lexpat-connect.vercel.app/employeurs/liege-metiers-en-penurie): Recrutement international ciblé pour les employeurs liégeois
+- [Accompagnement juridique](https://lexpat-connect.vercel.app/accompagnement-juridique): Relais juridique du cabinet LEXPAT pour les dossiers complexes
+- [Retour en Belgique](https://lexpat-connect.vercel.app/revenir-en-belgique-apres-un-retour): Guide pour les travailleurs souhaitant régulariser leur situation via un permis de travail
+- [Travailleurs hautement qualifiés](https://lexpat-connect.vercel.app/travailleurs-hautement-qualifies): Carte bleue européenne et statut THQ en Belgique
+
+## Pages principales (EN)
+
+- [Home](https://lexpat-connect.vercel.app/en): Targeted matching platform for Belgian employers and international workers
+- [Employers](https://lexpat-connect.vercel.app/en/employeurs): Submit a hiring need and access qualified international profiles
+- [Workers](https://lexpat-connect.vercel.app/en/travailleurs): Create a visible profile for Belgian employers
+- [Shortage occupations](https://lexpat-connect.vercel.app/en/metiers-en-penurie): Regional lists of shortage occupations in Belgium
+- [Single permit](https://lexpat-connect.vercel.app/en/permis-unique): Complete guide to the Belgian single permit for non-EU workers
+- [Returning to Belgium](https://lexpat-connect.vercel.app/en/returning-to-belgium-after-leaving): Guide for undocumented workers seeking to regularise via a work permit
+
+## Questions fréquentes — Employeurs
+
+**À qui s'adresse la plateforme ?**
+Aux employeurs belges qui souhaitent recruter des travailleurs internationaux, en particulier dans les métiers en pénurie (construction, santé, hôtellerie, IT, transport, industrie, agriculture).
+
+**Qu'est-ce qu'un métier en pénurie en Belgique ?**
+Un métier en pénurie est un métier pour lequel les employeurs belges ne trouvent pas suffisamment de candidats sur le marché local. Ces listes sont définies par région (Bruxelles, Wallonie, Flandre) et mises à jour régulièrement. Exercer un métier en pénurie facilite l'obtention du permis unique pour un travailleur hors UE.
+
+**Le travailleur international doit-il déjà avoir un permis de travail pour s'inscrire ?**
+Non. L'inscription sur la plateforme et le droit au travail sont deux sujets distincts. La plateforme permet d'établir un premier contact entre employeur et travailleur. Le permis unique est traité ensuite si nécessaire.
+
+**Le cabinet juridique LEXPAT intervient-il automatiquement ?**
+Non. Le cabinet LEXPAT n'intervient que si une opportunité soulève une question de séjour, de permis unique ou de droit au travail. La mise en relation est la priorité.
+
+**Puis-je utiliser la plateforme si je n'ai jamais recruté à l'international ?**
+Oui. La plateforme est conçue pour structurer un premier besoin de recrutement international de manière claire.
+
+## Questions fréquentes — Travailleurs
+
+**Puis-je créer un profil si je ne suis pas encore en Belgique ?**
+Oui. La plateforme permet déjà de rendre votre profil visible et de présenter votre projet professionnel à des employeurs belges.
+
+**Qu'est-ce que le permis unique en Belgique ?**
+Le permis unique est un titre combiné autorisation de travail + autorisation de séjour, délivré aux ressortissants hors UE souhaitant travailler en Belgique. La procédure est initiée depuis le pays d'origine ou de résidence légale. Elle dure en moyenne 3 à 4 mois.
+
+**Dois-je retourner dans mon pays pour obtenir un permis de travail belge ?**
+Dans la grande majorité des cas, oui. La procédure de permis unique est initiée depuis le pays d'origine. Si vous êtes en séjour irrégulier en Belgique, il est généralement nécessaire de rentrer pour déposer la demande.
+
+**Quelles sont mes chances d'obtenir le permis unique ?**
+Quand le dossier est complet et que toutes les conditions sont remplies (employeur engagé, secteur éligible, documents en ordre), le permis unique peut être accordé de façon quasi automatique.
+
+## Contexte — Marché du travail belge
+
+La Belgique fait face à des pénuries structurelles de main-d'œuvre dans plusieurs secteurs clés. Les trois régions (Bruxelles-Capitale, Wallonie, Flandre) publient chacune leurs propres listes de métiers en pénurie, qui conditionnent en partie la délivrance du permis unique.
+
+Secteurs principalement concernés : construction et bâtiment, soins de santé et aide à la personne, hôtellerie-restauration, technologies de l'information, transport et logistique, industrie manufacturière, agriculture et horticulture.
+
+## À propos
+
+LEXPAT Connect est développé en lien avec le cabinet d'avocats LEXPAT, spécialisé en droit de l'immigration économique belge. La plateforme est basée en Belgique et opère en français et en anglais.
+
+Site web : https://lexpat-connect.vercel.app
+Contact : contact@lexpat-connect.be

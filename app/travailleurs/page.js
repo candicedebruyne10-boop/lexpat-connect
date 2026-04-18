@@ -1,3 +1,4 @@
+import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
@@ -67,9 +68,24 @@ const candidateFaq = [
   }
 ];
 
+const candidateFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: candidateFaq.map(item => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer }
+  }))
+};
+
 export default function TravailleursPage() {
   return (
     <>
+      <Script
+        id="faq-travailleurs-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(candidateFaqJsonLd) }}
+      />
       <Hero
         title={
           <>

@@ -1,3 +1,4 @@
+import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
@@ -67,9 +68,24 @@ const employerFaq = [
   }
 ];
 
+const employerFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: employerFaq.map(item => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer }
+  }))
+};
+
 export default function EmployeursPage() {
   return (
     <>
+      <Script
+        id="faq-employeurs-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(employerFaqJsonLd) }}
+      />
       <Hero
         title={
           <>
