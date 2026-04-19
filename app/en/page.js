@@ -48,7 +48,7 @@ export default function HomePageEn() {
               { n: "04", href: "#mise-en-relation", title: "The matching platform", desc: "How employers and workers get in touch." },
               { n: "05", href: "#secteurs", title: "Sectors covered", desc: "The fields of activity present on LEXPAT Connect." },
               { n: "06", href: "#lexpat", title: "The LEXPAT law firm", desc: "Legal relay available if the case requires it." },
-              { n: "07", href: "#permis-unique", title: "The single permit", desc: "Rights and obligations of employers and foreign workers in Belgium." },
+              { n: "07", href: "#permis-unique", title: "Rights and obligations of employers and workers", desc: "What the single permit concretely implies for each party." },
               { n: "08", href: "#equivalence-diplome", title: "Diploma recognition", desc: "When is it required and how to apply for equivalence in Belgium?" },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">

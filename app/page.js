@@ -47,7 +47,7 @@ export default function HomePage() {
               { n: "04", href: "#mise-en-relation", title: "La mise en relation", desc: "Comment employeurs et travailleurs entrent en contact." },
               { n: "05", href: "#secteurs", title: "Les secteurs couverts", desc: "Les domaines d'activité présents sur LEXPAT Connect." },
               { n: "06", href: "#lexpat", title: "Le cabinet LEXPAT", desc: "Le relais juridique disponible si le dossier le nécessite." },
-              { n: "07", href: "#permis-unique", title: "Le permis unique", desc: "Droits et obligations des employeurs et des travailleurs étrangers en Belgique." },
+              { n: "07", href: "#permis-unique", title: "Droits et obligations des employeurs et travailleurs", desc: "Ce que le permis unique implique concrètement pour chaque partie." },
               { n: "08", href: "#equivalence-diplome", title: "Équivalence de diplôme", desc: "Quand est-elle obligatoire et comment en faire la demande ?" },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
