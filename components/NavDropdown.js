@@ -140,7 +140,7 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
 
       {/* Panneau dropdown */}
       {open && (
-        <div className="absolute left-1/2 top-full z-50 mt-3 w-72 -translate-x-1/2 overflow-hidden rounded-[20px] border border-[#e3eaf1] bg-white shadow-[0_20px_48px_rgba(15,23,42,0.12)]">
+        <div className="absolute left-1/2 top-full z-50 mt-3 w-72 -translate-x-1/2 overflow-hidden rounded-[20px] border border-[#e3eaf1] bg-white shadow-[0_20px_48px_rgba(15,23,42,0.12)] max-h-[80vh] overflow-y-auto">
           {/* Bande couleur en haut */}
           <div className={`h-1 w-full ${p.stripe}`} />
 
