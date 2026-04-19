@@ -4,61 +4,80 @@ import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../componen
 
 const employerBenefits = [
   {
-    title: "Des profils qualifiés disponibles dès maintenant",
-    text: "Accédez directement à une base de travailleurs internationaux qualifiés dans les métiers en pénurie — sans attendre."
+    title: "Accédez à des profils qualifiés dès aujourd'hui",
+    text: "Des travailleurs internationaux qualifiés dans les métiers en pénurie sont disponibles maintenant — sans délai d'attente."
   },
   {
-    title: "Recrutement rapide et sécurisé",
-    text: "De la recherche de profil à l'embauche, chaque étape est balisée pour aller vite et en toute sécurité légale."
+    title: "Recrutez plus rapidement, en toute sécurité",
+    text: "De l'accès au profil à l'embauche, chaque étape est balisée pour aller vite et en toute conformité légale."
   },
   {
-    title: "Un relais juridique si nécessaire",
-    text: "Permis unique, autorisation de travail, conformité salariale : le cabinet LEXPAT intervient si votre dossier le nécessite."
+    title: "Le juridique intervient si vous en avez besoin",
+    text: "Permis unique, autorisation de travail, conformité salariale : le cabinet LEXPAT prend le relais si votre dossier le nécessite."
   }
 ];
 
 const employerSteps = [
   {
-    title: "Déposez votre besoin",
-    text: "Vous indiquez le métier recherché, la région, le contrat et les compétences attendues."
+    title: "Accédez aux profils",
+    text: "Consultez directement les profils disponibles dans votre métier, votre région et votre secteur — dès maintenant."
   },
   {
-    title: "La mise en relation devient plus simple",
-    text: "Votre recherche gagne en lisibilité et peut être rapprochée de travailleurs internationaux pertinents."
+    title: "Contactez directement les candidats",
+    text: "Identifiez les profils qui correspondent et entrez en contact sans intermédiaire inutile."
   },
   {
-    title: "Vous entrez en contact",
-    text: "La mise en relation se fait plus vite dans un cadre plus clair et plus professionnel."
+    title: "LEXPAT sécurise le cadre juridique si nécessaire",
+    text: "Permis unique, droit au travail, immigration économique : le cabinet intervient uniquement si votre recrutement le requiert."
+  }
+];
+
+const employerWhyValues = [
+  {
+    title: "Accès immédiat à des profils qualifiés",
+    text: "Développeurs, techniciens, soins, construction — des profils disponibles dès aujourd'hui dans les métiers en pénurie."
+  },
+  {
+    title: "Gain de temps réel",
+    text: "Pas de CVthèque à trier. Des profils ciblés, disponibles, prêts à être contactés immédiatement."
+  },
+  {
+    title: "Recrutement international simplifié",
+    text: "Un parcours guidé qui structure votre besoin et le met en face des bons profils, sans complexité administrative."
+  },
+  {
+    title: "Cadre juridique sécurisé",
+    text: "Le cabinet LEXPAT intervient si nécessaire pour le permis unique et la conformité — vous recrutez en toute sérénité."
   }
 ];
 
 const employerPreview = [
   {
     title: "Tableau de bord entreprise",
-    text: "Une vue dédiée pour suivre l'activité, les besoins déposés et les prochaines actions."
+    text: "Suivez vos besoins actifs, les profils consultés et les prochaines actions à entreprendre."
   },
   {
     title: "Fiche entreprise",
-    text: "Un espace plus propre pour présenter votre structure, vos critères et votre contexte de recrutement."
+    text: "Présentez votre structure, vos critères de recrutement et votre contexte aux candidats."
   },
   {
     title: "Suivi des offres",
-    text: "Une base pour centraliser vos recrutements en cours et les profils en cours d'analyse."
+    text: "Centralisez vos recrutements en cours et les profils en cours d'analyse, en un seul endroit."
   }
 ];
 
 const employerFaq = [
   {
-    question: "À qui s'adresse la plateforme ?",
-    answer: "Aux employeurs belges qui souhaitent recruter des travailleurs internationaux, en particulier dans les métiers en pénurie."
+    question: "À qui s'adresse LEXPAT Connect ?",
+    answer: "Aux employeurs belges qui veulent recruter rapidement des travailleurs internationaux qualifiés, en particulier dans les métiers en pénurie."
   },
   {
-    question: "Puis-je l'utiliser si je n'ai jamais recruté à l'international ?",
-    answer: "Oui. La plateforme est justement pensée pour structurer un premier besoin de manière claire et exploitable."
+    question: "Puis-je recruter si je n'ai jamais embauché à l'international ?",
+    answer: "Oui. Le parcours est justement conçu pour ça : vous décrivez votre besoin en 4 étapes, et vous accédez aux profils disponibles sans connaissances juridiques préalables."
   },
   {
     question: "Le juridique intervient-il tout de suite ?",
-    answer: "Non. La priorité reste la mise en relation. Le cabinet LEXPAT intervient ensuite seulement si une question de permis unique ou de droit au travail apparaît."
+    answer: "Non. Vous accédez d'abord aux profils et vous contactez les candidats. Le cabinet LEXPAT intervient ensuite seulement si une question de permis unique ou de droit au travail se pose."
   }
 ];
 
@@ -81,18 +100,54 @@ export default function EmployeursPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(employerFaqJsonLd) }}
       />
       <Hero
+        badge="Employeurs belges · Métiers en pénurie · Profils disponibles maintenant"
         title={
           <>
-            Accédez directement à des profils qualifiés
-            <span className="block text-[#57b7af]">dans les métiers en pénurie en Belgique</span>
+            Accédez immédiatement à des profils internationaux qualifiés
+            <span className="block text-[#57b7af]">dans les métiers en pénurie.</span>
           </>
         }
-        description="Des talents internationaux sont disponibles sur la plateforme dès maintenant. Consultez les profils ou déposez votre besoin — rapidement et en toute sécurité légale."
+        description="19 profils disponibles aujourd'hui. Certains sont disponibles immédiatement."
+        note="Développeurs · Techniciens · Soins · Construction — consultez les profils et recrutez dès aujourd'hui."
         primaryHref="/base-de-profils"
         primaryLabel="Voir les profils disponibles"
         secondaryHref="/simulateur-eligibilite"
         secondaryLabel="Tester la faisabilité"
       />
+
+      {/* ── Bloc profils disponibles ── */}
+      <div className="border-y border-[#e0edf5] bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-[#f0f7ff] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#1d3b8b]">
+                <span className="h-2 w-2 rounded-full bg-[#57b7af] animate-pulse" />
+                Des profils sont déjà disponibles
+              </p>
+              <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-[#1d3b8b]">
+                Recrutez dès aujourd'hui — sans attendre
+              </h2>
+              <p className="mt-2 text-sm text-[#607086]">
+                Certains profils sont disponibles immédiatement dans ces secteurs :
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {["Développeurs", "Techniciens", "Soins", "Construction"].map(cat => (
+                  <span key={cat} className="rounded-full border border-[#d4e6f7] bg-[#f8fbff] px-4 py-1.5 text-sm font-semibold text-[#1d3b8b]">
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <Link
+              href="/base-de-profils"
+              className="flex-shrink-0 inline-flex h-13 items-center gap-2 rounded-2xl px-8 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
+              style={{ background: "#57b7af", boxShadow: "0 8px 24px rgba(87,183,175,0.30)" }}
+            >
+              Voir les profils disponibles →
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* ── Sommaire ── */}
       <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
@@ -101,8 +156,8 @@ export default function EmployeursPage() {
             <div>
               <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">≡ Sur cette page — navigation</p>
               <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
-                Les sujets traités<br className="hidden sm:block" />
-                <span className="text-[#57b7af]"> pour les employeurs</span>
+                Comment recruter rapidement<br className="hidden sm:block" />
+                <span className="text-[#57b7af]"> via LEXPAT Connect</span>
               </h2>
               <p className="mt-2 text-xs text-[#8a9db8]">Cliquez sur une section ci-dessous pour y accéder directement ↓</p>
             </div>
@@ -112,11 +167,11 @@ export default function EmployeursPage() {
           </div>
           <nav className="grid gap-3 sm:grid-cols-2">
             {[
-              { n: "01", href: "#pourquoi",          title: "Pourquoi chercher ici",                desc: "Ce que la plateforme vous apporte concrètement." },
-              { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                    desc: "Le parcours en 3 étapes, sans jargon." },
-              { n: "03", href: "#espace-employeur",   title: "L'espace employeur",    desc: "L'interface dédiée aux recruteurs." },
-              { n: "04", href: "/employeurs/rejoindre", title: "Trouver un travailleur",              desc: "Formulaire guidé en 4 étapes pour décrire le profil recherché." },
-              { n: "05", href: "#faq",                title: "Questions fréquentes",                 desc: "Les réponses aux doutes les plus courants." },
+              { n: "01", href: "#pourquoi",          title: "Pourquoi recruter ici",                 desc: "Des profils disponibles maintenant dans les métiers en pénurie." },
+              { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                     desc: "3 étapes pour accéder aux profils et recruter rapidement." },
+              { n: "03", href: "#espace-employeur",   title: "L'espace employeur",                    desc: "Votre interface dédiée pour gérer vos recrutements." },
+              { n: "04", href: "/employeurs/rejoindre", title: "Accéder aux profils maintenant",       desc: "Décrivez votre besoin en 4 étapes et contactez les candidats." },
+              { n: "05", href: "#faq",                title: "Questions fréquentes",                  desc: "Les réponses aux questions des employeurs." },
             ].map(({ n, href, title, desc }) => (
               <a
                 key={href}
@@ -139,21 +194,21 @@ export default function EmployeursPage() {
 
       <div id="pourquoi">
       <Section
-        title="Pourquoi chercher un travailleur ici"
-        intro="La plateforme est conçue pour vous aider à passer plus vite d'un besoin de recrutement à une mise en relation utile."
+        title="Pourquoi recruter via LEXPAT Connect ?"
+        intro="Des profils qualifiés disponibles maintenant, un parcours rapide, un cadre juridique sécurisé."
         kicker="Employeurs"
       >
         <BulletList items={employerBenefits} />
         <div className="mt-8 rounded-[28px] border border-[#dce7ef] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#57b7af]">Avant de recruter hors UE</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#1E3A78]">
-            Vérifiez d’abord si votre fonction figure parmi les métiers en pénurie
+            Vérifiez si votre métier figure parmi les fonctions en pénurie
           </h3>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5d6e83]">
-            Notre guide vous aide à comprendre la logique régionale, l’impact potentiel sur le permis unique et les secteurs les plus porteurs.
+            Notre guide vous aide à comprendre la logique régionale, l'impact sur le permis unique et les secteurs où recruter rapidement à l'international.
           </p>
           <Link href="/metiers-en-penurie" className="mt-5 inline-flex text-sm font-semibold text-[#1E3A78] transition hover:text-[#57b7af]">
-            Lire le guide métiers en pénurie
+            Consulter le guide métiers en pénurie →
           </Link>
         </div>
       </Section>
@@ -162,7 +217,7 @@ export default function EmployeursPage() {
       <div id="comment-ca-marche">
       <Section
         title="Comment ça marche"
-        intro="Un parcours direct, sans jargon, centré sur le recrutement."
+        intro="3 étapes simples pour accéder aux profils, contacter les candidats et recruter rapidement."
         kicker="3 étapes"
         muted
       >
@@ -170,25 +225,48 @@ export default function EmployeursPage() {
       </Section>
       </div>
 
+      {/* ── Bloc valeur : Pourquoi les employeurs utilisent LEXPAT Connect ── */}
+      <Section
+        title="Pourquoi les employeurs utilisent LEXPAT Connect ?"
+        intro="Des raisons concrètes de recruter ici plutôt qu'ailleurs."
+        kicker="Valeur ajoutée"
+      >
+        <BulletList items={employerWhyValues} />
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-[28px] border border-[#dce7ef] bg-[linear-gradient(180deg,#f0f7ff_0%,#eaf7f5_100%)] px-8 py-8 text-center sm:flex-row sm:justify-between sm:text-left">
+          <div>
+            <p className="text-lg font-bold text-[#1E3A78]">Des profils disponibles dès aujourd'hui.</p>
+            <p className="mt-1 text-sm text-[#6b85a0]">Accédez aux profils maintenant et recrutez immédiatement.</p>
+          </div>
+          <Link
+            href="/base-de-profils"
+            className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
+            style={{ background: "#57b7af", boxShadow: "0 8px 24px rgba(87,183,175,0.28)" }}
+          >
+            Accéder aux profils maintenant →
+          </Link>
+        </div>
+      </Section>
+
       <div id="espace-employeur">
       <Section
         title="L'espace employeur"
-        intro="Une interface dédiée pour structurer vos offres, votre fiche entreprise et le suivi des profils."
+        intro="Votre interface dédiée pour gérer vos recrutements, suivre vos offres et contacter les profils."
         kicker="Espace recruteur"
+        muted
       >
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[30px] border border-[#e5edf4] bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] sm:p-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">Espace entreprise</p>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1E3A78]">Un espace plus proche d'une vraie plateforme de recrutement</h3>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[#1E3A78]">Gérez vos recrutements en un seul endroit</h3>
             <p className="mt-4 text-sm leading-7 text-[#5d6e83]">
-              Tableau de bord, informations entreprise, offres en cours et suivi des opportunités : la logique est déjà posée.
+              Tableau de bord, fiche entreprise, offres en cours et suivi des profils : tout est centralisé pour recruter plus vite.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/employeurs/espace" className="primary-button">
                 Voir l'espace employeur
               </Link>
               <Link href="/employeurs/rejoindre" className="secondary-button">
-                Commencer maintenant
+                Accéder aux profils maintenant
               </Link>
             </div>
           </div>
@@ -199,9 +277,9 @@ export default function EmployeursPage() {
 
       <div id="formulaire">
       <Section
-        title="Trouver un travailleur"
-        intro="Le wizard vous guide en 4 étapes pour décrire votre besoin de manière claire et exploitable."
-        kicker="Formulaire"
+        title="Accédez aux profils — en 4 étapes"
+        intro="Décrivez votre besoin en quelques minutes et contactez directement les candidats disponibles."
+        kicker="Recrutez maintenant"
         muted
       >
         <div className="rounded-[30px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.05)] overflow-hidden">
@@ -225,7 +303,7 @@ export default function EmployeursPage() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-4 px-8 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
-              <p className="text-base font-semibold text-[#1E3A78]">Prêt à déposer votre besoin ?</p>
+              <p className="text-base font-semibold text-[#1E3A78]">Des profils disponibles dès aujourd'hui.</p>
               <p className="mt-1 text-sm text-[#6b85a0]">Environ 3 minutes — guidé étape par étape, sur tous supports.</p>
             </div>
             <Link
@@ -233,7 +311,7 @@ export default function EmployeursPage() {
               className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
               style={{ background: "#1E3A78", boxShadow: "0 8px 24px rgba(23,58,138,0.25)" }}
             >
-              Déposer mon besoin →
+              Accéder aux profils maintenant →
             </Link>
           </div>
         </div>
@@ -241,12 +319,12 @@ export default function EmployeursPage() {
       </div>
 
       <CtaBanner
-        title="Une fois la mise en relation engagée, le juridique peut prendre le relais"
-        text="Permis unique, droit au travail, immigration économique : le cabinet LEXPAT intervient ensuite seulement si le recrutement le nécessite."
-        primaryHref="/accompagnement-juridique"
-        primaryLabel="Voir le relais juridique"
-        secondaryHref="/contact"
-        secondaryLabel="Poser une question"
+        title="Recrutez maintenant — le juridique suit si nécessaire"
+        text="Permis unique, droit au travail, immigration économique : le cabinet LEXPAT intervient uniquement si votre recrutement le nécessite. Commencez par accéder aux profils."
+        primaryHref="/base-de-profils"
+        primaryLabel="Voir les profils disponibles"
+        secondaryHref="/accompagnement-juridique"
+        secondaryLabel="Voir le relais juridique"
       />
 
       {/* ── Pages régionales & thématiques ── */}
@@ -256,17 +334,17 @@ export default function EmployeursPage() {
             Ressources par ville et par sujet
           </p>
           <h2 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
-            Recrutez dans votre région
+            Recrutez dans votre région — dès aujourd'hui
           </h2>
           <p className="mt-2 text-sm text-[#607086]">
-            Chaque page est adaptée au contexte d&apos;une ville ou d&apos;un sujet spécifique — métiers en pénurie, cadre juridique et profils disponibles.
+            Profils disponibles, métiers en pénurie et cadre juridique — adaptés à votre ville.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { label: "Liège", description: "Métiers en pénurie à Liège", href: "/employeurs/liege-metiers-en-penurie" },
-              { label: "Anvers", description: "Métiers en pénurie à Anvers", href: "/employeurs/anvers-metiers-en-penurie" },
-              { label: "Gand", description: "Métiers en pénurie à Gand", href: "/employeurs/gand-metiers-en-penurie" },
-              { label: "Bruges", description: "Métiers en pénurie à Bruges", href: "/employeurs/bruges-metiers-en-penurie" },
+              { label: "Liège", description: "Profils disponibles — métiers en pénurie à Liège", href: "/employeurs/liege-metiers-en-penurie" },
+              { label: "Anvers", description: "Profils disponibles — métiers en pénurie à Anvers", href: "/employeurs/anvers-metiers-en-penurie" },
+              { label: "Gand", description: "Profils disponibles — métiers en pénurie à Gand", href: "/employeurs/gand-metiers-en-penurie" },
+              { label: "Bruges", description: "Profils disponibles — métiers en pénurie à Bruges", href: "/employeurs/bruges-metiers-en-penurie" },
               { label: "Recrutement international", description: "6 entreprises sur 10 recrutent déjà des profils étrangers", href: "/recrutement-international" },
             ].map((p) => (
               <Link
