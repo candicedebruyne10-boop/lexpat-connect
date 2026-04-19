@@ -128,7 +128,7 @@ function FinalCallToAction({ title, text, primaryHref, primaryLabel, badgeLabel 
         <div className="overflow-hidden rounded-[36px] border border-[#dce8ee] bg-[linear-gradient(180deg,#ffffff_0%,#f7fbfb_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] sm:p-8 lg:p-10">
           <div className="mx-auto max-w-4xl text-center">
             <p className="inline-flex rounded-full bg-[#f2fbfa] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#57b7af]">
-              {badgeLabel || "Recrutement à Liège"}
+              {badgeLabel || "Recrutement international"}
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1d3b8b] sm:text-4xl">{title}</h2>
             <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#607086]">{text}</p>
@@ -172,7 +172,7 @@ export default function EmployerRegionalLanding({ page }) {
       />
 
       <Section
-        title={ui.challengeTitle || "Le vrai problème pour beaucoup d’employeurs liégeois"}
+        title={ui.challengeTitle || "Le vrai problème pour beaucoup d’employeurs"}
         intro={ui.challengeIntro || "Quand certains postes restent vacants trop longtemps, les effets se ressentent vite sur la production, l’organisation et la croissance."}
         kicker={ui.challengeKicker || "Constat terrain"}
       >
@@ -180,7 +180,7 @@ export default function EmployerRegionalLanding({ page }) {
       </Section>
 
       <Section
-        title={ui.searchedTitle || "Profils aujourd’hui difficiles à recruter à Liège"}
+        title={ui.searchedTitle || "Profils aujourd’hui difficiles à recruter localement"}
         intro={ui.searchedIntro || "Voici quelques fonctions pour lesquelles de nombreux employeurs peinent à trouver des candidats disponibles localement."}
         kicker={ui.searchedKicker || "Profils recherchés"}
         muted
@@ -226,7 +226,7 @@ export default function EmployerRegionalLanding({ page }) {
       </Section>
 
       <Section
-        title={ui.sectorsTitle || "Secteurs liégeois particulièrement concernés"}
+        title={ui.sectorsTitle || "Secteurs particulièrement concernés"}
         intro={ui.sectorsIntro || "Cette logique peut s’appliquer à plusieurs secteurs où la tension de recrutement ralentit directement l’activité."}
         kicker={ui.sectorsKicker || "Secteurs couverts"}
         muted
