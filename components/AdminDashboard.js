@@ -871,14 +871,22 @@ export default function AdminDashboard({ initialData }) {
   // undefined = vérification en cours | null = non connecté | string = token actif
   const [token, setToken] = useState(undefined);
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setToken(session?.access_token ?? null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setToken(session?.access_token ?? null);
-    });
-    return () => subscription.unsubscribe();
+    let subscription;
+    try {
+      const supabase = getSupabaseBrowserClient();
+      supabase.auth.getSession()
+        .then(({ data }) => {
+          setToken(data?.session?.access_token ?? null);
+        })
+        .catch(() => setToken(null));
+      const { data } = supabase.auth.onAuthStateChange((_e, session) => {
+        setToken(session?.access_token ?? null);
+      });
+      subscription = data?.subscription;
+    } catch {
+      setToken(null);
+    }
+    return () => { try { subscription?.unsubscribe(); } catch {} };
   }, []);
 
   // undefined = vérification en cours | null = non connecté/inconnu | string = email chargé
