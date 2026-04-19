@@ -1006,6 +1006,7 @@ export default function AdminDashboard({ initialData }) {
   // ── Fetch KPIs ──────────────────────────────────────────────────────────────
 
   const fetchKpis = useCallback(async () => {
+    if (!token) return;   // attendre que l'auth soit résolue avant tout appel API
     setKpisLoading(true);
     try {
       const [wRes, eRes, ovRes, ewRes] = await Promise.all([
@@ -1047,6 +1048,7 @@ export default function AdminDashboard({ initialData }) {
   // ── Fetch contacts ──────────────────────────────────────────────────────────
 
   const fetchContacts = useCallback(async (seg) => {
+    if (!token) return;
     setContactsLoading(true);
     setSelectedIds(new Set());
     try {
