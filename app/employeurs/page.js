@@ -1,6 +1,20 @@
 import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
+import { getServiceClient } from "../../lib/supabase/server";
+
+async function getLiveProfileCount() {
+  try {
+    const supabase = getServiceClient();
+    const { count } = await supabase
+      .from("worker_profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("profile_visibility", "visible");
+    return count ?? 0;
+  } catch {
+    return null; // silent fallback — static text used
+  }
+}
 
 const employerBenefits = [
   {
@@ -91,7 +105,12 @@ const employerFaqJsonLd = {
   }))
 };
 
-export default function EmployeursPage() {
+export default async function EmployeursPage() {
+  const profileCount = await getLiveProfileCount();
+  const countLabel = profileCount !== null
+    ? `${profileCount} profil${profileCount > 1 ? "s" : ""} disponible${profileCount > 1 ? "s" : ""} aujourd'hui.`
+    : "Des profils disponibles aujourd'hui.";
+
   return (
     <>
       <Script
@@ -107,7 +126,7 @@ export default function EmployeursPage() {
             <span className="block text-[#57b7af]">dans les métiers en pénurie.</span>
           </>
         }
-        description="19 profils disponibles aujourd'hui. Certains sont disponibles immédiatement."
+        description={`${countLabel} Certains sont disponibles immédiatement.`}
         note="Développeurs · Techniciens · Soins · Construction — consultez les profils et recrutez dès aujourd'hui."
         primaryHref="/base-de-profils"
         primaryLabel="Voir les profils disponibles"
