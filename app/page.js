@@ -23,32 +23,8 @@ export default function HomePage() {
       <HeroPremium
         primaryHref="/base-de-profils"
         secondaryHref="/simulateur-eligibilite"
+        showProofCard={true}
       />
-
-      {/* ── Bandeau profils disponibles ────────────────────────────── */}
-      <div className="bg-white border-b border-[#e2ecf8]">
-        <div className="mx-auto max-w-4xl px-6 py-10 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:gap-8 sm:text-left">
-          {/* Stat */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-baseline gap-2 justify-center sm:justify-start">
-              <span className="text-6xl font-black text-[#1d3b8b] leading-none tracking-tight">19</span>
-              <span className="text-lg font-semibold text-[#1d3b8b]/80">profils disponibles</span>
-            </div>
-            <p className="text-[13px] text-[#8a9bb0] font-medium tracking-wide">
-              Développeurs · Techniciens · Soins · Construction
-            </p>
-          </div>
-          {/* Séparateur vertical — desktop seulement */}
-          <div className="hidden sm:block h-14 w-px bg-[#dce8f5] flex-shrink-0" />
-          {/* CTA */}
-          <a
-            href="/base-de-profils"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#57b7af] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#3fa099] hover:shadow-[0_6px_20px_rgba(87,183,175,0.4)] flex-shrink-0"
-          >
-            Voir les profils disponibles →
-          </a>
-        </div>
-      </div>
 
       <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
         <div className="mx-auto max-w-5xl px-6 py-12">
