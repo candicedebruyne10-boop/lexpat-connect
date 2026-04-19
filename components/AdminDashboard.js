@@ -1202,6 +1202,15 @@ export default function AdminDashboard({ initialData }) {
   // RENDER
   // ────────────────────────────────────────────────────────────────────────────
 
+  // Legacy fallback — operations tab previously used server-side `initialData`.
+  // Data is now fetched client-side; use contacts list for workers, empty arrays
+  // for jobOffers and matchings until dedicated API routes are wired up.
+  const data = {
+    jobOffers: [],
+    workers:   contacts,
+    matchings: [],
+  };
+
   // Vérification en cours
   if (token === undefined) {
     return (
