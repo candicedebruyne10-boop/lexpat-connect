@@ -146,6 +146,7 @@ function FinalCallToAction({ title, text, primaryHref, primaryLabel, badgeLabel 
 
 export default function EmployerRegionalLanding({ page }) {
   const ui = page.ui || {};
+  const isEn = page.hero.primaryHref.startsWith("/en/");
   const searchedProfiles = page.searchedProfiles.map((profile) =>
     typeof profile === "string" ? { label: profile } : profile
   );
@@ -156,6 +157,25 @@ export default function EmployerRegionalLanding({ page }) {
   const checklist = [...page.legalDifferentiation.checklist];
   checklist.sectionLabel = ui.legalDifferentiationLabel;
   checklist.listLabel = ui.checklistLabel;
+
+  const tocItems = isEn ? [
+    { n: "01", href: "#challenges",    title: "Recruitment challenges",          desc: "The concrete hiring difficulties in your sector." },
+    { n: "02", href: "#profiles",      title: "Profiles in demand",              desc: "Roles that are hard to fill locally." },
+    { n: "03", href: "#solution",      title: "The LEXPAT solution",             desc: "What the platform offers you concretely." },
+    { n: "04", href: "#international", title: "Why recruit internationally",     desc: "The concrete case for broadening your talent pool." },
+    { n: "05", href: "#legal",         title: "Legal framework",                 desc: "Single permit, competent region, salary compliance." },
+    { n: "06", href: "#sectors",       title: "Covered sectors",                 desc: "The sectors under the most recruitment pressure." },
+    { n: "07", href: "#contact",       title: "Contact us",                      desc: "Form to be contacted directly." },
+  ] : [
+    { n: "01", href: "#challenges",    title: "Les défis de recrutement",        desc: "Les difficultés concrètes dans votre secteur." },
+    { n: "02", href: "#profiles",      title: "Profils recherchés",              desc: "Les métiers difficiles à pourvoir localement." },
+    { n: "03", href: "#solution",      title: "La solution LEXPAT",              desc: "Ce que la plateforme vous apporte concrètement." },
+    { n: "04", href: "#international", title: "Recruter à l’international",      desc: "Les arguments concrets pour élargir le vivier." },
+    { n: "05", href: "#legal",         title: "Cadre juridique",                 desc: "Permis unique, région compétente, conformité salariale." },
+    { n: "06", href: "#sectors",       title: "Secteurs couverts",               desc: "Les filières où la tension de recrutement est la plus forte." },
+    { n: "07", href: "#contact",       title: "Nous contacter",                  desc: "Formulaire pour être recontacté directement." },
+  ];
+
   return (
     <>
       <Hero
@@ -171,6 +191,47 @@ export default function EmployerRegionalLanding({ page }) {
         panels={page.hero.panels}
       />
 
+      {/* ── Table des matières ── */}
+      <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+                {isEn ? "≡ On this page — navigation" : "≡ Sur cette page — navigation"}
+              </p>
+              <h2 className="mt-3 text-2xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+                {isEn ? "Topics covered on this page" : "Les sujets traités sur cette page"}
+              </h2>
+              <p className="mt-1 text-xs text-[#8a9db8]">
+                {isEn ? "Click a section below to jump directly to it ↓" : "Cliquez sur une section ci-dessous pour y accéder directement ↓"}
+              </p>
+            </div>
+            <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
+              {isEn ? "⏱ Reading: ~4 min" : "⏱ Lecture : ~4 min"}
+            </span>
+          </div>
+          <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {tocItems.map(({ n, href, title, desc }) => (
+              <a
+                key={href}
+                href={href}
+                className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">
+                  {n}
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-[#1d3b8b] transition group-hover:text-[#2f9f97]">{title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-[#6b85a0]">{desc}</div>
+                </div>
+                <span className="ml-auto mt-1 flex-shrink-0 text-[#c5d8ec] transition group-hover:translate-x-1 group-hover:text-[#57b7af]">→</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div id="challenges">
       <Section
         title={ui.challengeTitle || "Le vrai problème pour beaucoup d’employeurs"}
         intro={ui.challengeIntro || "Quand certains postes restent vacants trop longtemps, les effets se ressentent vite sur la production, l’organisation et la croissance."}
@@ -178,7 +239,9 @@ export default function EmployerRegionalLanding({ page }) {
       >
         <BulletList items={page.employerChallenges} />
       </Section>
+      </div>
 
+      <div id="profiles">
       <Section
         title={ui.searchedTitle || "Profils aujourd’hui difficiles à recruter localement"}
         intro={ui.searchedIntro || "Voici quelques fonctions pour lesquelles de nombreux employeurs peinent à trouver des candidats disponibles localement."}
@@ -191,7 +254,9 @@ export default function EmployerRegionalLanding({ page }) {
           ))}
         </ul>
       </Section>
+      </div>
 
+      <div id="solution">
       <Section
         title={ui.solutionTitle || "LEXPAT Connect : une solution pensée pour les employeurs"}
         intro={ui.solutionIntro || "L’objectif n’est pas seulement de rendre des profils visibles, mais de structurer un recrutement international crédible, plus lisible et juridiquement mieux encadré."}
@@ -199,7 +264,9 @@ export default function EmployerRegionalLanding({ page }) {
       >
         <SolutionGrid items={solutions} />
       </Section>
+      </div>
 
+      <div id="international">
       <Section
         title={page.internationalRecruiting.title}
         intro={ui.internationalIntro || "Une ouverture à l’international n’est pertinente que si elle répond à un besoin concret. Lorsqu’elle est bien cadrée, elle peut devenir un vrai levier employeur."}
@@ -212,7 +279,9 @@ export default function EmployerRegionalLanding({ page }) {
           points={points}
         />
       </Section>
+      </div>
 
+      <div id="legal">
       <Section
         title={ui.legalTitle || "Ce qui fait la différence entre une mise en relation et un recrutement sécurisé"}
         intro={ui.legalIntro || "Sur les métiers en pénurie, la dimension juridique devient vite décisive dès qu’un recrutement international hors UE entre en jeu."}
@@ -224,7 +293,9 @@ export default function EmployerRegionalLanding({ page }) {
           checklist={checklist}
         />
       </Section>
+      </div>
 
+      <div id="sectors">
       <Section
         title={ui.sectorsTitle || "Secteurs particulièrement concernés"}
         intro={ui.sectorsIntro || "Cette logique peut s’appliquer à plusieurs secteurs où la tension de recrutement ralentit directement l’activité."}
@@ -233,6 +304,7 @@ export default function EmployerRegionalLanding({ page }) {
       >
         <SectorGrid items={sectors} />
       </Section>
+      </div>
 
       <Section
         title={ui.reassuranceTitle || "Pour les employeurs qui veulent recruter vite, sans improviser"}
@@ -250,6 +322,7 @@ export default function EmployerRegionalLanding({ page }) {
         badgeLabel={ui.finalCtaBadge}
       />
 
+      <div id="contact">
       <Section
         title={ui.contactTitle || "Besoin d’un échange direct avant d’avancer ?"}
         intro={ui.contactIntro || "La plateforme reste le parcours principal. Ce formulaire est proposé comme solution secondaire pour les employeurs qui préfèrent être recontactés."}
@@ -267,6 +340,7 @@ export default function EmployerRegionalLanding({ page }) {
           />
         </div>
       </Section>
+      </div>
 
       <RegionalPagesNav currentFormType={page.form.formType} locale={page.hero.primaryHref.startsWith("/en/") ? "en" : "fr"} />
     </>
