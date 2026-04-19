@@ -4,22 +4,31 @@ import { getServiceClient } from "../../../../lib/supabase/server";
 /**
  * GET /api/public/profiles-count
  * Public — no auth required.
- * Returns the current count of visible worker profiles.
+ * Returns the count of profiles that are actually shown on /base-de-profils:
+ *   - profile_visibility = 'visible'
+ *   - target_job non null/empty  (getEffectiveWorkerProfileVisibility requirement)
+ *   - target_sector non null/empty  (same)
  * Cache: 60 s on CDN so the homepage stays fast.
  */
 export async function GET() {
   try {
     const supabase = getServiceClient();
 
-    const { count, error } = await supabase
+    const { data, error } = await supabase
       .from("worker_profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("profile_visibility", "visible");
+      .select("target_job, target_sector")
+      .eq("profile_visibility", "visible")
+      .not("target_job", "is", null)
+      .neq("target_job", "")
+      .not("target_sector", "is", null)
+      .neq("target_sector", "");
 
     if (error) throw error;
 
+    const count = (data || []).length;
+
     return NextResponse.json(
-      { count: count ?? 0 },
+      { count },
       {
         status: 200,
         headers: {
