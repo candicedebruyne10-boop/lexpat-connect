@@ -315,7 +315,8 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
           <Link
             href={secondaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-            className="inline-flex h-14 items-center justify-center rounded-2xl border border-white/20 px-6 text-base font-semibold text-white/90 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-white/40"
+            className="inline-flex h-14 items-center justify-center rounded-2xl px-6 text-base font-semibold text-white transition hover:-translate-y-0.5"
+            style={{ background: "#57B7AF", boxShadow: "0 12px 32px rgba(87,183,175,0.38)" }}
           >
             {copy.secondary}
           </Link>
@@ -361,7 +362,8 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
         <Link
           href={secondaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-          className="inline-flex h-14 w-full items-center justify-center rounded-2xl border border-white/20 text-base font-semibold text-white/90 transition hover:border-white/40 sm:w-auto sm:px-7"
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-semibold text-white transition hover:-translate-y-0.5 sm:w-auto sm:px-7"
+          style={{ background: "#57B7AF", boxShadow: "0 12px 32px rgba(87,183,175,0.38)" }}
         >
           {copy.secondary}
         </Link>
