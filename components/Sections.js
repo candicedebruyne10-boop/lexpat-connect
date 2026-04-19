@@ -99,22 +99,28 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr" }) {
   const copy = locale === "en"
     ? {
         badge: "Belgium · shortage occupations · international recruitment",
-        title1: "Belgian employers.",
-        title2: "International workers.",
-        title3: "Targeted recruitment.",
-        desc: "The platform for targeted matching between Belgian employers and qualified international workers in shortage occupations.",
-        primary: "I am hiring",
-        secondary: "I am applying",
+        title1: "Hire the qualified",
+        title2: "international talent",
+        title3: "you need.",
+        desc: "Profiles available now for your shortage occupations in Belgium — quickly and with full legal security.",
+        subline: "Qualified profiles are already available on the platform.",
+        primary: "See available profiles",
+        secondary: "Test feasibility",
+        workerHref: "/en/travailleurs",
+        workerLink: "You are a worker? Apply here →",
         hub: "Belgium · International hub"
       }
     : {
         badge: "Belgique · Métiers en pénurie · Recrutement international",
-        title1: "Employeurs belges.",
-        title2: "Travailleurs internationaux.",
-        title3: "Recrutement ciblé.",
-        desc: "La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie.",
-        primary: "Je recrute",
-        secondary: "Je postule",
+        title1: "Recrutez les talents",
+        title2: "internationaux qualifiés",
+        title3: "dont vous avez besoin.",
+        desc: "Des profils disponibles dès maintenant pour vos métiers en pénurie en Belgique — rapidement et en toute sécurité légale.",
+        subline: "Des profils qualifiés sont déjà disponibles sur la plateforme.",
+        primary: "Voir les profils disponibles",
+        secondary: "Tester la faisabilité",
+        workerHref: "/travailleurs",
+        workerLink: "Vous êtes travailleur ? Postulez ici →",
         hub: "Belgique · Hub international"
       };
   return (
@@ -215,12 +221,15 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
         <p className="mt-5 text-[1rem] leading-relaxed text-white/[0.62]">
           {copy.desc}
         </p>
+        {copy.subline && (
+          <p className="mt-2 text-sm font-semibold text-[#57B7AF]">{copy.subline}</p>
+        )}
 
         <div className="mt-7 flex gap-4">
           <Link
             href={primaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
-            className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
+            className="inline-flex h-14 items-center justify-center rounded-2xl px-6 text-base font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
           >
             {copy.primary}
@@ -228,12 +237,16 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
           <Link
             href={secondaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-            className="inline-flex h-14 w-[168px] items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5"
-            style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
+            className="inline-flex h-14 items-center justify-center rounded-2xl border border-white/20 px-6 text-base font-semibold text-white/90 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-white/40"
           >
             {copy.secondary}
           </Link>
         </div>
+        {copy.workerLink && (
+          <p className="mt-4">
+            <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
+          </p>
+        )}
       </div>
     </>
   );
@@ -257,12 +270,15 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
       <p className="mt-5 text-base leading-relaxed text-white/[0.62]">
         {copy.desc}
       </p>
+      {copy.subline && (
+        <p className="mt-2 text-sm font-semibold text-[#57B7AF]">{copy.subline}</p>
+      )}
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
         <Link
           href={primaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
-          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-auto sm:px-7"
           style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
         >
           {copy.primary}
@@ -270,12 +286,16 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
         <Link
           href={secondaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-[168px]"
-          style={{ background: TALENT.primary, boxShadow: "0 16px 48px rgba(89,185,177,0.28)" }}
+          className="inline-flex h-14 w-full items-center justify-center rounded-2xl border border-white/20 text-base font-semibold text-white/90 transition hover:border-white/40 sm:w-auto sm:px-7"
         >
           {copy.secondary}
         </Link>
       </div>
+      {copy.workerLink && (
+        <p className="mt-4">
+          <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
+        </p>
+      )}
     </div>
   );
 }
@@ -283,9 +303,9 @@ const ENTRY_CARDS = [
   {
     icon: BriefcaseIcon,
     title: "J'ai un poste à pourvoir",
-    text: "Vous cherchez un profil qualifié dans un métier en pénurie ? Déposez votre besoin et accédez à des candidats internationaux prêts à s'installer en Belgique.",
-    href: "/employeurs",
-    cta: "Voir l'espace employeur",
+    text: "Accédez directement à des profils qualifiés disponibles dans les métiers en pénurie en Belgique. Des talents internationaux sont visibles dès maintenant.",
+    href: "/base-de-profils",
+    cta: "Voir les profils disponibles",
     colors: EMPLOYER
   },
   {
@@ -293,7 +313,7 @@ const ENTRY_CARDS = [
     title: "Je cherche un emploi en Belgique",
     text: "Vous avez une expérience dans un métier en pénurie et souhaitez travailler en Belgique ? Créez votre profil et faites-vous repérer par les employeurs belges.",
     href: "/travailleurs",
-    cta: "Voir l'espace travailleur",
+    cta: "Créer mon profil",
     colors: TALENT
   }
 ];
@@ -304,9 +324,9 @@ export function DualEntry({ locale = "fr" }) {
         {
           icon: BriefcaseIcon,
           title: "I have a position to fill",
-          text: "Are you looking for a qualified profile in a shortage occupation? Submit your hiring need and access international candidates ready to move to Belgium.",
-          href: "/employeurs",
-          cta: "View employer space",
+          text: "Access qualified profiles available right now for shortage occupations in Belgium. International talent is visible on the platform today.",
+          href: "/base-de-profils",
+          cta: "See available profiles",
           colors: EMPLOYER
         },
         {
@@ -314,7 +334,7 @@ export function DualEntry({ locale = "fr" }) {
           title: "I am looking for a job in Belgium",
           text: "Do you have experience in a shortage occupation and want to work in Belgium? Create your profile and get noticed by Belgian employers.",
           href: "/travailleurs",
-          cta: "View worker space",
+          cta: "Create my profile",
           colors: TALENT
         }
       ]

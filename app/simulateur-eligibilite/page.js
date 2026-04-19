@@ -40,6 +40,29 @@ export default function SimulateurPage() {
       {/* Wizard */}
       <SimulateurEligibilite locale="fr" />
 
+      {/* ── Bloc conversion post-simulateur ── */}
+      <div className="bg-[linear-gradient(135deg,#eef1fb_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-3xl px-6 py-14 text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+            Résultats concrets
+          </p>
+          <h2 className="mt-4 text-2xl font-bold text-[#1d3b8b]">Des profils correspondent déjà à votre besoin</h2>
+          <p className="mt-3 text-[15px] leading-7 text-[#607086]">
+            Des travailleurs internationaux qualifiés sont disponibles sur la plateforme — dans les secteurs en pénurie en Belgique. Accédez-y directement ou créez un compte pour être mis en relation.
+          </p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <a href="/base-de-profils" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1d3b8b] px-7 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#16307a]">
+              Voir les profils compatibles →
+            </a>
+            <a href="/inscription" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5d4f3] bg-white px-7 py-3.5 text-sm font-bold text-[#1d3b8b] transition hover:border-[#1d3b8b] hover:shadow-sm">
+              Créer un compte pour accéder aux talents
+            </a>
+          </div>
+          <p className="mt-5 text-xs text-[#8a9bb0]">Accès gratuit · Aucun engagement · Résultats immédiats</p>
+        </div>
+      </div>
+
       {/* Bloc SEO */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <h2 className="text-2xl font-bold text-[#1E3A78]">

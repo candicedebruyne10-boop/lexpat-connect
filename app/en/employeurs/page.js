@@ -15,16 +15,16 @@ export const metadata = {
 
 const employerBenefits = [
   {
-    title: "Describe the position clearly",
-    text: "Occupation, region, contract and expected skills: your hiring need becomes readable from the start."
+    title: "Qualified profiles available right now",
+    text: "Access a pool of international workers available in shortage occupations — without waiting."
   },
   {
-    title: "Reach targeted international workers",
-    text: "The platform highlights qualified international profiles available in shortage occupations in Belgium."
+    title: "Fast and legally secure recruitment",
+    text: "From finding a profile to making the hire, every step is structured for speed and full legal security."
   },
   {
-    title: "Accelerate first contact",
-    text: "You move faster from a vague need to a useful conversation with relevant profiles."
+    title: "Legal relay when needed",
+    text: "Single permit, work authorisation, salary compliance: the LEXPAT law firm steps in if your case requires it."
   }
 ];
 
@@ -94,15 +94,15 @@ export default function EmployeursPageEn() {
       <Hero
         title={
           <>
-            Find international workers
+            Access qualified profiles directly
             <span className="block text-[#57b7af]">for shortage occupations in Belgium</span>
           </>
         }
-        description="Submit your hiring need, gain visibility and accelerate the first connection with qualified international profiles."
-        primaryHref="/en/employeurs/rejoindre"
-        primaryLabel="Submit a hiring need"
-        secondaryHref="/en/travailleurs"
-        secondaryLabel="See the worker journey"
+        description="International talent is available on the platform right now. Browse profiles or submit your hiring need — quickly and with full legal security."
+        primaryHref="/en/base-de-profils"
+        primaryLabel="See available profiles"
+        secondaryHref="/en/simulateur-eligibilite"
+        secondaryLabel="Test feasibility"
       />
 
       {/* ── Table of contents ── */}

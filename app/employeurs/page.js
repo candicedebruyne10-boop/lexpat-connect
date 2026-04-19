@@ -10,16 +10,16 @@ import {
 
 const employerBenefits = [
   {
-    title: "Décrivez clairement le poste",
-    text: "Métier, région, contrat, compétences attendues : votre besoin devient plus lisible dès le départ."
+    title: "Des profils qualifiés disponibles dès maintenant",
+    text: "Accédez directement à une base de travailleurs internationaux qualifiés dans les métiers en pénurie — sans attendre."
   },
   {
-    title: "Touchez des travailleurs internationaux ciblés",
-    text: "La plateforme met en relation des profils qualifiés disponibles dans les métiers en pénurie en Belgique."
+    title: "Recrutement rapide et sécurisé",
+    text: "De la recherche de profil à l'embauche, chaque étape est balisée pour aller vite et en toute sécurité légale."
   },
   {
-    title: "Accélérez la mise en relation",
-    text: "Vous passez plus vite d'un besoin flou à une prise de contact utile avec des profils adaptés."
+    title: "Un relais juridique si nécessaire",
+    text: "Permis unique, autorisation de travail, conformité salariale : le cabinet LEXPAT intervient si votre dossier le nécessite."
   }
 ];
 
@@ -89,15 +89,15 @@ export default function EmployeursPage() {
       <Hero
         title={
           <>
-            Trouvez des travailleurs internationaux
-            <span className="block text-[#57b7af]">pour les métiers en pénurie en Belgique</span>
+            Accédez directement à des profils qualifiés
+            <span className="block text-[#57b7af]">dans les métiers en pénurie en Belgique</span>
           </>
         }
-        description="Déposez votre besoin, gagnez en visibilité et accélérez la mise en relation avec des profils internationaux qualifiés."
-        primaryHref="/employeurs/rejoindre"
-        primaryLabel="Trouver un travailleur"
-        secondaryHref="/travailleurs"
-        secondaryLabel="Voir le parcours travailleurs"
+        description="Des talents internationaux sont disponibles sur la plateforme dès maintenant. Consultez les profils ou déposez votre besoin — rapidement et en toute sécurité légale."
+        primaryHref="/base-de-profils"
+        primaryLabel="Voir les profils disponibles"
+        secondaryHref="/simulateur-eligibilite"
+        secondaryLabel="Tester la faisabilité"
       />
 
       {/* ── Sommaire ── */}

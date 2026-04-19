@@ -22,9 +22,26 @@ export default function HomePageEn() {
     <>
       <HeroPremium
         locale="en"
-        primaryHref="/en/employeurs"
-        secondaryHref="/en/travailleurs"
+        primaryHref="/en/base-de-profils"
+        secondaryHref="/en/simulateur-eligibilite"
       />
+
+      {/* ── Available profiles banner ───────────────────────────────── */}
+      <div className="bg-[#1d3b8b]">
+        <div className="mx-auto max-w-5xl px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <span className="flex items-center gap-2 text-sm font-bold text-white">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#57b7af]" />
+              120+ profiles available
+            </span>
+            <span className="text-sm text-white/70">Developers · Technicians · Healthcare · Construction</span>
+            <span className="text-sm text-white/70">Available for Belgium</span>
+          </div>
+          <a href="/en/base-de-profils" className="rounded-xl bg-[#57b7af] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#3fa099] whitespace-nowrap">
+            See profiles →
+          </a>
+        </div>
+      </div>
 
       <div className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
         <div className="mx-auto max-w-5xl px-6 py-12">

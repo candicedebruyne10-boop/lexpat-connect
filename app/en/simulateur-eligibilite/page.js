@@ -38,6 +38,29 @@ export default function SimulateurPageEn() {
 
       <SimulateurEligibilite locale="en" />
 
+      {/* ── Conversion block post-simulator ── */}
+      <div className="bg-[linear-gradient(135deg,#eef1fb_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
+        <div className="mx-auto max-w-3xl px-6 py-14 text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+            Concrete results
+          </p>
+          <h2 className="mt-4 text-2xl font-bold text-[#1d3b8b]">Profiles already match your need</h2>
+          <p className="mt-3 text-[15px] leading-7 text-[#607086]">
+            Qualified international workers are available on the platform — in shortage sectors across Belgium. Access them directly or create an account to get matched.
+          </p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <a href="/en/base-de-profils" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1d3b8b] px-7 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#16307a]">
+              See compatible profiles →
+            </a>
+            <a href="/en/inscription" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5d4f3] bg-white px-7 py-3.5 text-sm font-bold text-[#1d3b8b] transition hover:border-[#1d3b8b] hover:shadow-sm">
+              Create an account to access talent
+            </a>
+          </div>
+          <p className="mt-5 text-xs text-[#8a9bb0]">Free access · No commitment · Instant results</p>
+        </div>
+      </div>
+
       <section className="mx-auto max-w-3xl px-4 py-16">
         <h2 className="text-2xl font-bold text-[#1E3A78]">
           Roles still eligible for a Belgian single permit in 2026
