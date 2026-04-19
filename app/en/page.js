@@ -49,6 +49,7 @@ export default function HomePageEn() {
               { n: "05", href: "#secteurs", title: "Sectors covered", desc: "The fields of activity present on LEXPAT Connect." },
               { n: "06", href: "#lexpat", title: "The LEXPAT law firm", desc: "Legal relay available if the case requires it." },
               { n: "07", href: "#permis-unique", title: "The single permit", desc: "Rights and obligations of employers and foreign workers in Belgium." },
+              { n: "08", href: "#equivalence-diplome", title: "Diploma recognition", desc: "When is it required and how to apply for equivalence in Belgium?" },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
                 <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
@@ -87,6 +88,66 @@ export default function HomePageEn() {
 
       <div id="lexpat">
         <LexpatStrip locale="en" />
+      </div>
+
+      {/* ── Diploma equivalence section ─────────────────────────────── */}
+      <div id="equivalence-diplome" className="bg-[#f7f9fb] border-t border-[#e3edf8]">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-[#eaf7f5] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#2f9f97]">🎓 Diplomas & recognition</p>
+          <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+            Diploma equivalence:<br className="hidden sm:block" />
+            <span className="text-[#57b7af]"> what you need to know before applying</span>
+          </h2>
+          <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#4a6b99]">
+            Whether diploma equivalence is required depends on the role you are applying for and your country of origin. If you studied abroad, you must in principle request equivalence. The procedure is easier when the diploma was obtained in a country of the European Economic Area.
+          </p>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {/* Public sector / regulated professions */}
+            <div className="rounded-2xl border border-[#c5d4f3] bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d3b8b] text-white text-base">🏛</span>
+                <h3 className="text-[15px] font-bold text-[#1d3b8b]">Public sector & regulated professions</h3>
+              </div>
+              <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
+                Diploma equivalence is <strong className="text-[#1d3b8b]">mandatory</strong> if you wish to work in the public sector or practise a regulated profession.
+              </p>
+              <div className="rounded-xl bg-[#f0f4fd] p-3 mb-3">
+                <p className="text-[12px] font-semibold text-[#1d3b8b] mb-1">Professions concerned (examples)</p>
+                <p className="text-[12px] leading-5 text-[#4a6b99]">Nurse, pharmacist, architect, teacher, mechanic…</p>
+              </div>
+              <p className="text-[12px] leading-5 text-[#607086]">
+                Equivalence also ensures you are paid according to the <strong>legal pay scales</strong> applicable to your level of education.
+              </p>
+            </div>
+
+            {/* Private sector */}
+            <div className="rounded-2xl border border-[#cde2df] bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#57b7af] text-white text-base">🏢</span>
+                <h3 className="text-[15px] font-bold text-[#2f9f97]">Private sector</h3>
+              </div>
+              <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
+                Equivalence is <strong className="text-[#2f9f97]">not required</strong>. Your employer can hire you on the basis of your foreign diploma, without an equivalence certificate.
+              </p>
+              <div className="rounded-xl border border-[#cde2df] bg-[#f0faf9] p-3">
+                <p className="text-[12px] font-semibold text-[#2f9f97] mb-1">Non-EU worker & single permit</p>
+                <p className="text-[12px] leading-5 text-[#4a6b99]">
+                  A non-EU worker without legal residence in Belgium must obtain a single permit. For this application, it is <strong>not necessary</strong> to provide a diploma equivalence certificate.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="/en/accompagnement-juridique" className="inline-flex items-center gap-2 rounded-full bg-[#57b7af] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3fa099]">
+              Get support →
+            </a>
+            <a href="/en/permis-unique" className="inline-flex items-center gap-2 rounded-full border border-[#c5d4f3] bg-white px-5 py-2.5 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#1d3b8b]">
+              Learn more about the single permit
+            </a>
+          </div>
+        </div>
       </div>
 
       <TestimonialsStrip locale="en" />

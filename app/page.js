@@ -48,6 +48,7 @@ export default function HomePage() {
               { n: "05", href: "#secteurs", title: "Les secteurs couverts", desc: "Les domaines d'activité présents sur LEXPAT Connect." },
               { n: "06", href: "#lexpat", title: "Le cabinet LEXPAT", desc: "Le relais juridique disponible si le dossier le nécessite." },
               { n: "07", href: "#permis-unique", title: "Le permis unique", desc: "Droits et obligations des employeurs et des travailleurs étrangers en Belgique." },
+              { n: "08", href: "#equivalence-diplome", title: "Équivalence de diplôme", desc: "Quand est-elle obligatoire et comment en faire la demande ?" },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
                 <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
@@ -86,6 +87,66 @@ export default function HomePage() {
 
       <div id="lexpat">
         <LexpatStrip />
+      </div>
+
+      {/* ── Section équivalence de diplôme ──────────────────────────── */}
+      <div id="equivalence-diplome" className="bg-[#f7f9fb] border-t border-[#e3edf8]">
+        <div className="mx-auto max-w-5xl px-6 py-16">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-[#eaf7f5] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#2f9f97]">🎓 Diplômes & reconnaissances</p>
+          <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
+            Équivalence de diplôme :<br className="hidden sm:block" />
+            <span className="text-[#57b7af]"> ce que vous devez savoir avant de postuler</span>
+          </h2>
+          <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#4a6b99]">
+            La nécessité d'une équivalence de diplôme dépend de l'emploi visé et de votre pays d'origine. Si vous avez étudié à l'étranger, vous devez en principe en faire la demande. La procédure est facilitée lorsque le diplôme a été obtenu dans un pays de l'Espace économique européen.
+          </p>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {/* Secteur public / professions réglementées */}
+            <div className="rounded-2xl border border-[#c5d4f3] bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d3b8b] text-white text-base">🏛</span>
+                <h3 className="text-[15px] font-bold text-[#1d3b8b]">Secteur public & professions réglementées</h3>
+              </div>
+              <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
+                L'équivalence de diplôme est <strong className="text-[#1d3b8b]">obligatoire</strong> si vous souhaitez travailler dans la fonction publique ou exercer une profession réglementée.
+              </p>
+              <div className="rounded-xl bg-[#f0f4fd] p-3 mb-3">
+                <p className="text-[12px] font-semibold text-[#1d3b8b] mb-1">Professions concernées (exemples)</p>
+                <p className="text-[12px] leading-5 text-[#4a6b99]">Infirmier·ère, pharmacien·ne, architecte, enseignant·e, mécanicien·ne…</p>
+              </div>
+              <p className="text-[12px] leading-5 text-[#607086]">
+                L'équivalence vous permet également d'être rémunéré selon les <strong>barèmes légaux</strong> applicables à votre niveau d'études.
+              </p>
+            </div>
+
+            {/* Secteur privé */}
+            <div className="rounded-2xl border border-[#cde2df] bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#57b7af] text-white text-base">🏢</span>
+                <h3 className="text-[15px] font-bold text-[#2f9f97]">Secteur privé</h3>
+              </div>
+              <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
+                L'équivalence n'est <strong className="text-[#2f9f97]">pas obligatoire</strong>. Votre employeur peut vous engager sur la base de votre diplôme étranger, sans certificat d'équivalence.
+              </p>
+              <div className="rounded-xl border border-[#cde2df] bg-[#f0faf9] p-3">
+                <p className="text-[12px] font-semibold text-[#2f9f97] mb-1">Travailleur non-européen & permis unique</p>
+                <p className="text-[12px] leading-5 text-[#4a6b99]">
+                  Un travailleur hors UE sans séjour légal en Belgique doit obtenir un permis unique. Pour cette demande, il n'est <strong>pas nécessaire</strong> de présenter un certificat d'équivalence de diplôme.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="/accompagnement-juridique" className="inline-flex items-center gap-2 rounded-full bg-[#57b7af] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3fa099]">
+              Obtenir un accompagnement →
+            </a>
+            <a href="/permis-unique" className="inline-flex items-center gap-2 rounded-full border border-[#c5d4f3] bg-white px-5 py-2.5 text-sm font-semibold text-[#1d3b8b] transition hover:border-[#1d3b8b]">
+              En savoir plus sur le permis unique
+            </a>
+          </div>
+        </div>
       </div>
 
       <TestimonialsStrip />
