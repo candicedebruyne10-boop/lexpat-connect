@@ -27,25 +27,27 @@ export default function HomePageEn() {
       />
 
       {/* ── Available profiles banner ───────────────────────────────── */}
-      <div className="bg-[#1a3268]">
-        <div className="mx-auto max-w-2xl px-6 py-10 flex flex-col items-center gap-4 text-center">
-          <div className="flex items-baseline gap-3">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#57b7af] animate-pulse self-center shrink-0" />
-            <span className="text-5xl font-black text-white tracking-tight">19</span>
-            <span className="text-xl font-semibold text-white/90">profiles available today</span>
+      <div className="bg-white border-b border-[#e2ecf8]">
+        <div className="mx-auto max-w-4xl px-6 py-10 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:gap-8 sm:text-left">
+          {/* Stat */}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2 justify-center sm:justify-start">
+              <span className="text-6xl font-black text-[#1d3b8b] leading-none tracking-tight">19</span>
+              <span className="text-lg font-semibold text-[#1d3b8b]/80">profiles available</span>
+            </div>
+            <p className="text-[13px] text-[#8a9bb0] font-medium tracking-wide">
+              Developers · Technicians · Healthcare · Construction
+            </p>
           </div>
-          <p className="text-[#9dd4d0] text-sm font-medium tracking-wide">
-            Developers · Technicians · Healthcare · Construction
-          </p>
+          {/* Vertical divider — desktop only */}
+          <div className="hidden sm:block h-14 w-px bg-[#dce8f5] flex-shrink-0" />
+          {/* CTA */}
           <a
             href="/en/base-de-profils"
-            className="mt-1 inline-flex items-center gap-2 rounded-xl bg-[#57b7af] px-8 py-3.5 text-sm font-bold text-white transition hover:bg-[#3fa099] hover:shadow-[0_6px_20px_rgba(87,183,175,0.45)] w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#57b7af] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#3fa099] hover:shadow-[0_6px_20px_rgba(87,183,175,0.4)] flex-shrink-0"
           >
             See available profiles →
           </a>
-          <p className="text-white/35 text-[11px] font-semibold uppercase tracking-[0.18em]">
-            Available for <span className="text-[#57b7af]/70">Belgium</span>
-          </p>
         </div>
       </div>
 
