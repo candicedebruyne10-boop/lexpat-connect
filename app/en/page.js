@@ -33,7 +33,7 @@ export default function HomePageEn() {
               <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">≡ On this page — navigation</p>
               <h2 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[#1d3b8b]">
                 Topics covered<br className="hidden sm:block" />
-                <span className="text-[#57b7af]"> on the platform</span>
+                <span className="text-[#57b7af]"> on this page</span>
               </h2>
             </div>
             <span className="rounded-full border border-[#d4e6f7] bg-white px-4 py-1.5 text-xs font-semibold text-[#4a6b99]">
