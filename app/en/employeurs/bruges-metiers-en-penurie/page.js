@@ -13,7 +13,7 @@ const page = {
       "Construction, healthcare, special techniques: in Bruges and across West Flanders, some profiles are simply no longer available locally. LEXPAT Connect helps you recruit internationally within a clear, legally secured framework.",
     primaryHref: "/en/base-de-profils",
     primaryLabel: "View candidate profiles",
-    secondaryHref: "/en/inscription",
+    secondaryHref: "/en/employeurs/rejoindre",
     secondaryLabel: "Share my hiring need",
     note: "Based in Belgium • Structured international recruitment • Legal relay when needed",
     stats: [

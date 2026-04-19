@@ -13,7 +13,7 @@ const page = {
       "In Europe's largest port, certain technical and industrial roles remain vacant for far too long. LEXPAT Connect helps you access qualified international profiles and secure the process when a single permit may be required.",
     primaryHref: "/en/base-de-profils",
     primaryLabel: "View candidate profiles",
-    secondaryHref: "/en/inscription",
+    secondaryHref: "/en/employeurs/rejoindre",
     secondaryLabel: "Share my hiring need",
     note: "Based in Belgium • Structured international recruitment • Legal relay when needed",
     stats: [

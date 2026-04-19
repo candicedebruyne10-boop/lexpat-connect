@@ -13,7 +13,7 @@ const page = {
       "Acerta Consult's 2025 figures are clear: international recruitment is no longer reserved for large groups. More than 60% of Belgian companies already turn to foreign workers to fill their vacancies. LEXPAT Connect helps you take the step with method and legal security.",
     primaryHref: "/en/base-de-profils",
     primaryLabel: "View available profiles",
-    secondaryHref: "/en/inscription",
+    secondaryHref: "/en/employeurs/rejoindre",
     secondaryLabel: "Share my hiring need",
     note: "Source: Acerta Consult, June 2025 — analysis covering ~29,000 Belgian employers",
     stats: [

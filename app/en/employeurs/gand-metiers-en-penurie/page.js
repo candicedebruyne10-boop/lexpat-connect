@@ -13,7 +13,7 @@ const page = {
       "Steel, automotive, chemicals, biotech: Ghent's industry is continuously recruiting technical profiles that are hard to find locally. LEXPAT Connect helps you access an international talent pool and secure the single permit process.",
     primaryHref: "/en/base-de-profils",
     primaryLabel: "View candidate profiles",
-    secondaryHref: "/en/inscription",
+    secondaryHref: "/en/employeurs/rejoindre",
     secondaryLabel: "Share my hiring need",
     note: "Based in Belgium • Structured international recruitment • Legal relay when needed",
     stats: [

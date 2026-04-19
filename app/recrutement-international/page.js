@@ -13,7 +13,7 @@ const page = {
       "Les chiffres Acerta Consult 2025 sont sans appel : le recrutement international n'est plus réservé aux grands groupes. Plus de 60 % des entreprises belges font déjà appel à des travailleurs étrangers pour combler leurs postes vacants. LEXPAT Connect vous aide à franchir le pas avec méthode et sécurité juridique.",
     primaryHref: "/base-de-profils",
     primaryLabel: "Découvrir les profils disponibles",
-    secondaryHref: "/inscription",
+    secondaryHref: "/employeurs/rejoindre",
     secondaryLabel: "Déposer mon besoin",
     note: "Source : Acerta Consult, juin 2025 — analyse portant sur ~29 000 employeurs belges",
     stats: [
