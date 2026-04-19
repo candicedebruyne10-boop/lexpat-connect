@@ -295,15 +295,15 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
 
       {/* Titre + description + CTAs ancrés en bas */}
       <div>
-        <h1 className="font-heading text-[clamp(2.4rem,3.8vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
+        <h1 className="font-heading text-[clamp(2.1rem,3.2vw,3.8rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
           {copy.title1}<br />
           <span className="text-[#57B7AF]">{copy.title2}</span><br />
           {copy.title3}
         </h1>
-        <p className="mt-5 text-[1rem] leading-relaxed text-white/[0.62]">
+        <p className="mt-4 text-[1rem] leading-relaxed text-white/[0.62]">
           {copy.desc}
         </p>
-        <div className="mt-7 flex gap-4">
+        <div className="mt-6 flex gap-4">
           <Link
             href={primaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
