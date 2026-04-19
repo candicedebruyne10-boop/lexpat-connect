@@ -124,7 +124,7 @@ export default function HomePage() {
             <div className="rounded-2xl border border-[#cde2df] bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#57b7af] text-white text-base">🏢</span>
-                <h3 className="text-[15px] font-bold text-[#2f9f97]">Secteur privé</h3>
+                <h3 className="text-[15px] font-bold text-[#2f9f97]">Secteur privé et professions non réglementées</h3>
               </div>
               <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
                 L'équivalence n'est <strong className="text-[#2f9f97]">pas obligatoire</strong>. Votre employeur peut vous engager sur la base de votre diplôme étranger, sans certificat d'équivalence.

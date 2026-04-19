@@ -125,7 +125,7 @@ export default function HomePageEn() {
             <div className="rounded-2xl border border-[#cde2df] bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#57b7af] text-white text-base">🏢</span>
-                <h3 className="text-[15px] font-bold text-[#2f9f97]">Private sector</h3>
+                <h3 className="text-[15px] font-bold text-[#2f9f97]">Private sector and non-regulated professions</h3>
               </div>
               <p className="text-[13.5px] leading-6 text-[#4a6b99] mb-3">
                 Equivalence is <strong className="text-[#2f9f97]">not required</strong>. Your employer can hire you on the basis of your foreign diploma, without an equivalence certificate.
