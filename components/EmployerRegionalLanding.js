@@ -161,7 +161,7 @@ export default function EmployerRegionalLanding({ page }) {
   const tocItems = isEn ? [
     { n: "01", href: "#challenges",    title: "Recruitment challenges",          desc: "The concrete hiring difficulties in your sector." },
     { n: "02", href: "#profiles",      title: "Profiles in demand",              desc: "Roles that are hard to fill locally." },
-    { n: "03", href: "#solution",      title: "The LEXPAT solution",             desc: "What the platform offers you concretely." },
+    { n: "03", href: "#solution",      title: "The LEXPAT Connect solution",     desc: "What the platform offers you concretely." },
     { n: "04", href: "#international", title: "Why recruit internationally",     desc: "The concrete case for broadening your talent pool." },
     { n: "05", href: "#legal",         title: "Legal framework",                 desc: "Single permit, competent region, salary compliance." },
     { n: "06", href: "#sectors",       title: "Covered sectors",                 desc: "The sectors under the most recruitment pressure." },
@@ -169,7 +169,7 @@ export default function EmployerRegionalLanding({ page }) {
   ] : [
     { n: "01", href: "#challenges",    title: "Les défis de recrutement",        desc: "Les difficultés concrètes dans votre secteur." },
     { n: "02", href: "#profiles",      title: "Profils recherchés",              desc: "Les métiers difficiles à pourvoir localement." },
-    { n: "03", href: "#solution",      title: "La solution LEXPAT",              desc: "Ce que la plateforme vous apporte concrètement." },
+    { n: "03", href: "#solution",      title: "La solution LEXPAT Connect",      desc: "Ce que la plateforme vous apporte concrètement." },
     { n: "04", href: "#international", title: "Recruter à l’international",      desc: "Les arguments concrets pour élargir le vivier." },
     { n: "05", href: "#legal",         title: "Cadre juridique",                 desc: "Permis unique, région compétente, conformité salariale." },
     { n: "06", href: "#sectors",       title: "Secteurs couverts",               desc: "Les filières où la tension de recrutement est la plus forte." },
