@@ -1,11 +1,8 @@
-import dynamic from "next/dynamic";
-
-// AdminDashboard uses Supabase browser client (localStorage, cookies, browser APIs).
-// Rendering it on the server causes a crash — ssr: false ensures it only runs in the browser.
-const AdminDashboard = dynamic(
-  () => import("../../components/AdminDashboard"),
-  { ssr: false }
-);
+// Server Component — can export metadata.
+// AdminDashboard is browser-only (Supabase auth, localStorage).
+// We load it via AdminLoader (a Client Component that uses dynamic + ssr:false),
+// which is the correct App Router pattern for excluding a component from SSR.
+import AdminLoader from "../../components/AdminLoader";
 
 export const metadata = {
   title: "Admin | LEXPAT Connect",
@@ -14,5 +11,5 @@ export const metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminDashboard />;
+  return <AdminLoader />;
 }
