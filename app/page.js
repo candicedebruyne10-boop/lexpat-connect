@@ -26,18 +26,34 @@ export default function HomePage() {
       />
 
       {/* ── Bannière profils disponibles ───────────────────────────── */}
-      <div className="bg-[#1d3b8b]">
-        <div className="mx-auto max-w-5xl px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <span className="flex items-center gap-2 text-sm font-bold text-white">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[#57b7af]" />
-              120+ profils disponibles
-            </span>
-            <span className="text-sm text-white/70">Développeurs · Techniciens · Soins · Construction</span>
-            <span className="text-sm text-white/70">Disponibles pour la Belgique</span>
+      <div className="bg-[#1a3268] border-b border-white/10">
+        <div className="mx-auto max-w-5xl px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Texte — hiérarchie 3 niveaux */}
+          <div className="flex flex-col gap-1 text-center sm:text-left">
+            {/* Niveau 1 — chiffre + libellé principal */}
+            <div className="flex items-center justify-center gap-3 sm:justify-start">
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[#57b7af] shrink-0" />
+              <p className="text-white font-extrabold tracking-tight leading-none">
+                <span className="text-[2rem] sm:text-[2.2rem]">19</span>
+                <span className="ml-2 text-lg sm:text-xl">profils disponibles aujourd'hui</span>
+              </p>
+            </div>
+            {/* Niveau 2 — métiers */}
+            <p className="text-[#9dd4d0] text-sm font-medium pl-0 sm:pl-[1.875rem]">
+              Développeurs · Techniciens · Soins · Construction
+            </p>
+            {/* Niveau 3 — ancrage géographique */}
+            <p className="text-white/50 text-xs font-semibold uppercase tracking-widest pl-0 sm:pl-[1.875rem]">
+              Disponibles pour la <span className="text-[#57b7af]">Belgique</span>
+            </p>
           </div>
-          <a href="/base-de-profils" className="rounded-xl bg-[#57b7af] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#3fa099] whitespace-nowrap">
-            Voir les profils →
+
+          {/* CTA */}
+          <a
+            href="/base-de-profils"
+            className="w-full rounded-xl bg-[#57b7af] px-6 py-3 text-sm font-bold text-white text-center transition hover:bg-[#3fa099] hover:shadow-[0_4px_16px_rgba(87,183,175,0.4)] sm:w-auto whitespace-nowrap"
+          >
+            Voir les profils disponibles →
           </a>
         </div>
       </div>

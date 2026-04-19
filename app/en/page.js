@@ -27,18 +27,28 @@ export default function HomePageEn() {
       />
 
       {/* ── Available profiles banner ───────────────────────────────── */}
-      <div className="bg-[#1d3b8b]">
-        <div className="mx-auto max-w-5xl px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <span className="flex items-center gap-2 text-sm font-bold text-white">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[#57b7af]" />
-              120+ profiles available
-            </span>
-            <span className="text-sm text-white/70">Developers · Technicians · Healthcare · Construction</span>
-            <span className="text-sm text-white/70">Available for Belgium</span>
+      <div className="bg-[#1a3268] border-b border-white/10">
+        <div className="mx-auto max-w-5xl px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1 text-center sm:text-left">
+            <div className="flex items-center justify-center gap-3 sm:justify-start">
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[#57b7af] shrink-0" />
+              <p className="text-white font-extrabold tracking-tight leading-none">
+                <span className="text-[2rem] sm:text-[2.2rem]">19</span>
+                <span className="ml-2 text-lg sm:text-xl">profiles available today</span>
+              </p>
+            </div>
+            <p className="text-[#9dd4d0] text-sm font-medium pl-0 sm:pl-[1.875rem]">
+              Developers · Technicians · Healthcare · Construction
+            </p>
+            <p className="text-white/50 text-xs font-semibold uppercase tracking-widest pl-0 sm:pl-[1.875rem]">
+              Available for <span className="text-[#57b7af]">Belgium</span>
+            </p>
           </div>
-          <a href="/en/base-de-profils" className="rounded-xl bg-[#57b7af] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#3fa099] whitespace-nowrap">
-            See profiles →
+          <a
+            href="/en/base-de-profils"
+            className="w-full rounded-xl bg-[#57b7af] px-6 py-3 text-sm font-bold text-white text-center transition hover:bg-[#3fa099] hover:shadow-[0_4px_16px_rgba(87,183,175,0.4)] sm:w-auto whitespace-nowrap"
+          >
+            See available profiles →
           </a>
         </div>
       </div>
