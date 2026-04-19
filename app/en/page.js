@@ -48,6 +48,7 @@ export default function HomePageEn() {
               { n: "04", href: "#mise-en-relation", title: "The matching platform", desc: "How employers and workers get in touch." },
               { n: "05", href: "#secteurs", title: "Sectors covered", desc: "The fields of activity present on LEXPAT Connect." },
               { n: "06", href: "#lexpat", title: "The LEXPAT law firm", desc: "Legal relay available if the case requires it." },
+              { n: "07", href: "/en/permis-unique", title: "The single permit", desc: "Rights and obligations of employers and foreign workers in Belgium." },
             ].map(({ n, href, title, desc }) => (
               <a key={href} href={href} className="group flex items-start gap-4 rounded-2xl border border-[#d8e9f7] bg-white px-5 py-4 shadow-sm transition hover:border-[#57b7af] hover:shadow-md">
                 <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-xs font-bold text-[#1d3b8b] transition group-hover:bg-[#57b7af] group-hover:text-white">{n}</span>
