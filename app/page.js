@@ -25,36 +25,30 @@ export default function HomePage() {
         secondaryHref="/simulateur-eligibilite"
       />
 
-      {/* ── Bannière profils disponibles ───────────────────────────── */}
-      <div className="bg-[#1a3268] border-b border-white/10">
-        <div className="mx-auto max-w-5xl px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {/* Texte — hiérarchie 3 niveaux */}
-          <div className="flex flex-col gap-1 text-center sm:text-left">
-            {/* Niveau 1 — chiffre + libellé principal */}
-            <div className="flex items-center justify-center gap-3 sm:justify-start">
-              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[#57b7af] shrink-0" />
-              <p className="text-white font-extrabold tracking-tight leading-none">
-                <span className="text-[2rem] sm:text-[2.2rem]">19</span>
-                <span className="ml-2 text-lg sm:text-xl">profils disponibles aujourd'hui</span>
-              </p>
-            </div>
-            {/* Niveau 2 — métiers */}
-            <p className="text-[#9dd4d0] text-sm font-medium pl-0 sm:pl-[1.875rem]">
-              Développeurs · Techniciens · Soins · Construction
-            </p>
-            {/* Niveau 3 — ancrage géographique */}
-            <p className="text-white/50 text-xs font-semibold uppercase tracking-widest pl-0 sm:pl-[1.875rem]">
-              Disponibles pour la <span className="text-[#57b7af]">Belgique</span>
-            </p>
+      {/* ── Bandeau profils disponibles ────────────────────────────── */}
+      <div className="bg-[#1a3268]">
+        <div className="mx-auto max-w-2xl px-6 py-10 flex flex-col items-center gap-4 text-center">
+          {/* Stat principale */}
+          <div className="flex items-baseline gap-3">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#57b7af] animate-pulse self-center shrink-0" />
+            <span className="text-5xl font-black text-white tracking-tight">19</span>
+            <span className="text-xl font-semibold text-white/90">profils disponibles aujourd'hui</span>
           </div>
-
+          {/* Métiers */}
+          <p className="text-[#9dd4d0] text-sm font-medium tracking-wide">
+            Développeurs · Techniciens · Soins · Construction
+          </p>
           {/* CTA */}
           <a
             href="/base-de-profils"
-            className="w-full rounded-xl bg-[#57b7af] px-6 py-3 text-sm font-bold text-white text-center transition hover:bg-[#3fa099] hover:shadow-[0_4px_16px_rgba(87,183,175,0.4)] sm:w-auto whitespace-nowrap"
+            className="mt-1 inline-flex items-center gap-2 rounded-xl bg-[#57b7af] px-8 py-3.5 text-sm font-bold text-white transition hover:bg-[#3fa099] hover:shadow-[0_6px_20px_rgba(87,183,175,0.45)] w-full sm:w-auto justify-center"
           >
             Voir les profils disponibles →
           </a>
+          {/* Ancrage */}
+          <p className="text-white/35 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            Disponibles pour la <span className="text-[#57b7af]/70">Belgique</span>
+          </p>
         </div>
       </div>
 
