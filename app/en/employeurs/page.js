@@ -1,11 +1,6 @@
 import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
-import FormCard from "../../../components/FormCard";
-import {
-  getSectorOptions,
-  professionSectorByRegion,
-} from "../../../lib/professions";
 
 export const metadata = {
   title: "Employers | LEXPAT Connect",
@@ -198,7 +193,7 @@ export default function EmployeursPageEn() {
               <Link href="/en/employeurs/espace" className="primary-button">
                 View employer space
               </Link>
-              <Link href="#formulaire" className="secondary-button">
+              <Link href="/en/employeurs/rejoindre" className="secondary-button">
                 Start now
               </Link>
             </div>
@@ -211,45 +206,42 @@ export default function EmployeursPageEn() {
       <div id="formulaire">
       <Section
         title="Submit a hiring need"
-        intro="The more precise your request, the more useful the connection will be."
+        intro="The wizard guides you through 4 steps to describe your need clearly and effectively."
         kicker="Form"
         muted
       >
-        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-[#dce8f5] bg-white px-5 py-4 sm:hidden">
-          <span className="text-2xl">📱</span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-[#1E3A78]">On mobile?</p>
-            <p className="text-xs text-[#8a9db8]">Step-by-step version, designed for your phone.</p>
+        <div className="rounded-[30px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.05)] overflow-hidden">
+          {/* Steps preview */}
+          <div className="grid gap-0 sm:grid-cols-4 border-b border-[#e5edf4]">
+            {[
+              { n: "01", label: "Your company", desc: "Name, contact, region" },
+              { n: "02", label: "The position", desc: "Occupation, sector, contract" },
+              { n: "03", label: "Expectations", desc: "Tasks & skills required" },
+              { n: "04", label: "Submit", desc: "Review & send" },
+            ].map(({ n, label, desc }, i) => (
+              <div key={n} className={`flex items-start gap-3 px-6 py-5 ${i < 3 ? "border-b sm:border-b-0 sm:border-r" : ""} border-[#e5edf4]`}>
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-[11px] font-bold text-[#1d3b8b]">{n}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#1E3A78]">{label}</p>
+                  <p className="mt-0.5 text-xs text-[#8a9db8]">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <Link href="/en/employeurs/rejoindre" className="flex-shrink-0 rounded-xl bg-[#1E3A78] px-4 py-2 text-sm font-bold text-white">
-            Use →
-          </Link>
-        </div>
-        <div>
-          <FormCard
-            title="Employer form"
-            intro="Describe your need so it can be understood and used clearly from the start."
-            buttonLabel="Send hiring need"
-            formType="employeur"
-            locale="en"
-            successMessage="Your request has been sent successfully."
-            fields={[
-              { label: "Contact name", placeholder: "First name Last name" },
-              { label: "Company", placeholder: "Company name" },
-              { label: "Work email", placeholder: "contact@company.be", type: "email" },
-              { label: "Phone", placeholder: "+32 ..." },
-              { name: "region", label: "Relevant region", type: "region-multi", helperText: "Select one, two or three regions depending on your hiring perimeter." },
-              { name: "secteur", label: "Sector", type: "select", placeholder: "Select a sector", options: getSectorOptions("en") },
-              { name: "autreSecteur", label: "Other sector / detail", placeholder: "Add another sector if needed", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Target occupation", type: "select", placeholder: "Choose a region first", optionsByField: "region", locale: "en", deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
-              { name: "autreProfession", label: "Other occupation / detail", placeholder: "Add another occupation if needed", showWhen: { field: "profession", value: "Autre profession" } },
-              { label: "Contract type", placeholder: "Permanent, fixed-term, temporary..." },
-              { label: "Weekly hours", placeholder: "38h" },
-              { label: "Work location", placeholder: "Brussels, Liège, Ghent..." },
-              { label: "Main responsibilities", type: "textarea", placeholder: "Main tasks and responsibilities...", wide: true },
-              { label: "Expected skills", type: "textarea", placeholder: "Skills, languages, experience, conditions...", wide: true }
-            ]}
-          />
+          {/* CTA */}
+          <div className="flex flex-col items-center gap-4 px-8 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <p className="text-base font-semibold text-[#1E3A78]">Ready to submit your hiring need?</p>
+              <p className="mt-1 text-sm text-[#6b85a0]">About 3 minutes — guided step by step, on any device.</p>
+            </div>
+            <Link
+              href="/en/employeurs/rejoindre"
+              className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
+              style={{ background: "#1E3A78", boxShadow: "0 8px 24px rgba(23,58,138,0.25)" }}
+            >
+              Submit my need →
+            </Link>
+          </div>
         </div>
       </Section>
       </div>

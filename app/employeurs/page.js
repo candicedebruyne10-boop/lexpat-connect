@@ -1,12 +1,6 @@
 import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
-import FormCard from "../../components/FormCard";
-import {
-  groupedProfessionOptionsByRegion,
-  professionSectorByRegion,
-  sectorOptions
-} from "../../lib/professions";
 
 const employerBenefits = [
   {
@@ -193,7 +187,7 @@ export default function EmployeursPage() {
               <Link href="/employeurs/espace" className="primary-button">
                 Voir l'espace employeur
               </Link>
-              <Link href="#formulaire" className="secondary-button">
+              <Link href="/employeurs/rejoindre" className="secondary-button">
                 Commencer maintenant
               </Link>
             </div>
@@ -206,43 +200,42 @@ export default function EmployeursPage() {
       <div id="formulaire">
       <Section
         title="Trouver un travailleur"
-        intro="Plus votre demande est précise, plus la mise en relation sera efficace."
+        intro="Le wizard vous guide en 4 étapes pour décrire votre besoin de manière claire et exploitable."
         kicker="Formulaire"
         muted
       >
-        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-[#dce8f5] bg-white px-5 py-4 sm:hidden">
-          <span className="text-2xl">📱</span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-[#1E3A78]">Sur mobile ?</p>
-            <p className="text-xs text-[#8a9db8]">Version simplifiée en 4 étapes, pensée pour le téléphone.</p>
+        <div className="rounded-[30px] border border-[#e5edf4] bg-white shadow-[0_16px_40px_rgba(15,23,42,0.05)] overflow-hidden">
+          {/* Steps preview */}
+          <div className="grid gap-0 sm:grid-cols-4 border-b border-[#e5edf4]">
+            {[
+              { n: "01", label: "Votre entreprise", desc: "Nom, contact, région" },
+              { n: "02", label: "Le poste", desc: "Métier, secteur, contrat" },
+              { n: "03", label: "Les attentes", desc: "Missions & compétences" },
+              { n: "04", label: "Envoi", desc: "Vérification & soumission" },
+            ].map(({ n, label, desc }, i) => (
+              <div key={n} className={`flex items-start gap-3 px-6 py-5 ${i < 3 ? "border-b sm:border-b-0 sm:border-r" : ""} border-[#e5edf4]`}>
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-[11px] font-bold text-[#1d3b8b]">{n}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#1E3A78]">{label}</p>
+                  <p className="mt-0.5 text-xs text-[#8a9db8]">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <Link href="/employeurs/rejoindre" className="flex-shrink-0 rounded-xl bg-[#1E3A78] px-4 py-2 text-sm font-bold text-white">
-            Utiliser →
-          </Link>
-        </div>
-        <div>
-          <FormCard
-            title="Formulaire employeur"
-            intro="Décrivez votre besoin pour permettre une première lecture claire et exploitable."
-            buttonLabel="Trouver un travailleur"
-            formType="employeur"
-            fields={[
-              { label: "Nom du contact", placeholder: "Prénom Nom" },
-              { label: "Entreprise", placeholder: "Nom de l'entreprise" },
-              { label: "Email professionnel", placeholder: "contact@entreprise.be", type: "email" },
-              { label: "Téléphone", placeholder: "+32 ..." },
-              { name: "region", label: "Région concernée", type: "region-multi", helperText: "Sélectionnez une, deux ou trois régions selon votre périmètre de recrutement." },
-              { name: "secteur", label: "Secteur", type: "select", placeholder: "Sélectionnez un secteur", options: sectorOptions },
-              { name: "autreSecteur", label: "Autre secteur / précision", placeholder: "Indiquez ici un autre secteur si nécessaire", showWhen: { field: "secteur", value: "Autre secteur" } },
-              { name: "profession", label: "Métier recherché", type: "select", placeholder: "Choisissez d'abord une région", optionsByField: "region", optionsMap: groupedProfessionOptionsByRegion, deriveField: "secteur", deriveByField: "region", deriveMap: professionSectorByRegion },
-              { name: "autreProfession", label: "Autre profession / précision", placeholder: "Indiquez ici une autre profession si nécessaire", showWhen: { field: "profession", value: "Autre profession" } },
-              { label: "Type de contrat", placeholder: "CDI, CDD, intérim..." },
-              { label: "Nombre d'heures hebdomadaires", placeholder: "38h" },
-              { label: "Lieu de travail", placeholder: "Bruxelles, Liège, Gand..." },
-              { label: "Missions principales", type: "textarea", placeholder: "Résumé des missions et responsabilités...", wide: true },
-              { label: "Compétences recherchées", type: "textarea", placeholder: "Compétences, langues, expérience, conditions...", wide: true }
-            ]}
-          />
+          {/* CTA */}
+          <div className="flex flex-col items-center gap-4 px-8 py-10 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <p className="text-base font-semibold text-[#1E3A78]">Prêt à déposer votre besoin ?</p>
+              <p className="mt-1 text-sm text-[#6b85a0]">Environ 3 minutes — guidé étape par étape, sur tous supports.</p>
+            </div>
+            <Link
+              href="/employeurs/rejoindre"
+              className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
+              style={{ background: "#1E3A78", boxShadow: "0 8px 24px rgba(23,58,138,0.25)" }}
+            >
+              Déposer mon besoin →
+            </Link>
+          </div>
         </div>
       </Section>
       </div>
