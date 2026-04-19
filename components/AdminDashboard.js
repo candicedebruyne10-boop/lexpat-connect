@@ -907,6 +907,9 @@ export default function AdminDashboard({ initialData }) {
   const [kpis, setKpis]               = useState(null);
   const [kpisLoading, setKpisLoading] = useState(true);
 
+  // ── Operations state (full lists from /api/admin/overview) ─────────────────
+  const [opData, setOpData] = useState({ jobOffers: [], workers: [], matchings: [] });
+
   // ── Contacts state ──────────────────────────────────────────────────────────
   const [segment, setSegment]             = useState("workers_all");
   const [contacts, setContacts]           = useState([]);
@@ -1043,6 +1046,13 @@ export default function AdminDashboard({ initialData }) {
         matches_total:           ovData.summary?.matches || 0,
         matches_new:             ovData.summary?.newMatches || 0,
         offers_published:        ovData.summary?.publishedOffers || 0,
+      });
+
+      // Store full lists for the Operations tab
+      setOpData({
+        jobOffers: ovData.offers    || [],
+        workers:   ovData.workers   || [],
+        matchings: ovData.matches   || [],
       });
     } catch (e) {
       console.error("KPI fetch failed", e);
@@ -1202,14 +1212,8 @@ export default function AdminDashboard({ initialData }) {
   // RENDER
   // ────────────────────────────────────────────────────────────────────────────
 
-  // Legacy fallback — operations tab previously used server-side `initialData`.
-  // Data is now fetched client-side; use contacts list for workers, empty arrays
-  // for jobOffers and matchings until dedicated API routes are wired up.
-  const data = {
-    jobOffers: [],
-    workers:   contacts,
-    matchings: [],
-  };
+  // Operations tab data — populated by fetchKpis from /api/admin/overview
+  const data = opData;
 
   // Vérification en cours
   if (token === undefined) {
@@ -2007,13 +2011,14 @@ export default function AdminDashboard({ initialData }) {
             <SectionCard title="Offres d'emploi" count={data.jobOffers?.length}>
               {data.jobOffers?.length ? (
                 <SimpleTable
-                  cols={["Poste", "Employeur", "Région", "Statut", "Date"]}
+                  cols={["Poste", "Employeur", "Secteur", "Région", "Statut", "Date"]}
                   rows={(data.jobOffers || []).map(o => [
-                    o.title || "—",
-                    o.employer_profiles?.company_name || "—",
-                    o.region || "—",
-                    o.status || "—",
-                    formatDate(o.created_at),
+                    o.title       || "—",
+                    o.companyName || "—",
+                    o.sector      || "—",
+                    o.region      || "—",
+                    o.status      || "—",
+                    formatDate(o.createdAt),
                   ])}
                 />
               ) : <EmptyState text="Aucune offre." />}
@@ -2022,15 +2027,14 @@ export default function AdminDashboard({ initialData }) {
             <SectionCard title="Travailleurs" count={data.workers?.length}>
               {data.workers?.length ? (
                 <SimpleTable
-                  cols={["Nom", "Métier", "Secteur", "Région", "Visibilité", "Complétion", "Inscrit"]}
+                  cols={["Nom", "Métier", "Secteur", "Région", "Visibilité", "Inscrit"]}
                   rows={(data.workers || []).map(w => [
-                    w.full_name || "—",
-                    w.target_job || "—",
-                    w.target_sector || "—",
-                    w.preferred_region || "—",
-                    w.profile_visibility || "—",
-                    `${w.profile_completion || 0}%`,
-                    formatDate(w.created_at),
+                    w.fullName        || "—",
+                    w.targetJob       || "—",
+                    w.targetSector    || "—",
+                    w.preferredRegion || "—",
+                    w.profileVisibility || "—",
+                    formatDate(w.createdAt),
                   ])}
                 />
               ) : <EmptyState text="Aucun travailleur." />}
@@ -2039,12 +2043,14 @@ export default function AdminDashboard({ initialData }) {
             <SectionCard title="Matchings récents" count={data.matchings?.length}>
               {data.matchings?.length ? (
                 <SimpleTable
-                  cols={["Score", "Offre", "Travailleur", "Date"]}
+                  cols={["Score", "Offre", "Entreprise", "Travailleur", "Statut", "Date"]}
                   rows={(data.matchings || []).map(m => [
                     `${m.score || 0}/100`,
-                    m.job_offers?.title || "—",
-                    m.worker_profiles?.full_name || "—",
-                    formatDate(m.created_at),
+                    m.offerTitle   || "—",
+                    m.companyName  || "—",
+                    m.candidateName || "—",
+                    m.status       || "—",
+                    formatDate(m.createdAt),
                   ])}
                 />
               ) : <EmptyState text="Aucun matching." />}
