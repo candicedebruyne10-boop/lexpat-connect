@@ -238,7 +238,7 @@ export default function BaseDeProfilsPage() {
             <p className="mt-1 text-sm leading-6 text-[#607086]">{t.bannerMemberDesc}</p>
           </div>
           <Link
-            href={locale === "en" ? "/en/employeurs" : "/employeurs"}
+            href={locale === "en" ? "/en/employeurs/rejoindre" : "/employeurs/rejoindre"}
             onClick={() => track("Employer CTA Clicked", { cta: "post-job", location: "base-de-profils-banner" })}
             className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#1d3b8b] px-6 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.22)] transition hover:bg-[#163175] hover:-translate-y-0.5"
           >
