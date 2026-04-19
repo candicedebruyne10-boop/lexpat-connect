@@ -205,7 +205,15 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          {/* Spécificité wallonne */}
+          <div className="mt-6 rounded-2xl border border-[#f0c97a] bg-[#fffbf0] p-5">
+            <p className="mb-1 text-[12px] font-bold uppercase tracking-[0.12em] text-[#b07d1a]">⚠ Spécificité — Région wallonne</p>
+            <p className="text-[13.5px] leading-6 text-[#5a4a1a]">
+              En Wallonie, certaines demandes de permis unique nécessitent d'adapter le contrat de travail avec des <strong>clauses obligatoires spécifiques</strong>. Celles-ci peuvent inclure la prise en charge d'une assurance santé et, dans certains cas, de frais de retour du travailleur. Ces exigences varient selon le profil et le type d'autorisation, et ne concernent pas toutes les catégories. Une vérification préalable permet d'éviter les refus ou retards de traitement.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
             <a href="/permis-unique" className="inline-flex items-center gap-2 rounded-full bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16307a]">
               En savoir plus sur le permis unique →
             </a>

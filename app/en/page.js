@@ -206,7 +206,15 @@ export default function HomePageEn() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          {/* Walloon region specificity */}
+          <div className="mt-6 rounded-2xl border border-[#f0c97a] bg-[#fffbf0] p-5">
+            <p className="mb-1 text-[12px] font-bold uppercase tracking-[0.12em] text-[#b07d1a]">⚠ Specificity — Walloon Region</p>
+            <p className="text-[13.5px] leading-6 text-[#5a4a1a]">
+              In Wallonia, certain single permit applications require the employment contract to be adapted with <strong>specific mandatory clauses</strong>. These may include health insurance coverage and, in some cases, the worker's return costs. These requirements vary depending on the profile and type of authorisation, and do not apply to all categories. A prior review helps avoid refusals or processing delays.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
             <a href="/en/permis-unique" className="inline-flex items-center gap-2 rounded-full bg-[#1d3b8b] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16307a]">
               Learn more about the single permit →
             </a>
