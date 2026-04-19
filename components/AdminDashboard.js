@@ -2027,13 +2027,16 @@ export default function AdminDashboard({ initialData }) {
             <SectionCard title="Travailleurs" count={data.workers?.length}>
               {data.workers?.length ? (
                 <SimpleTable
-                  cols={["Nom", "Métier", "Secteur", "Région", "Visibilité", "Inscrit"]}
+                  cols={["Nom", "Métier", "Secteur", "Région", "Visibilité", "Liens affiliation", "Inscrit"]}
                   rows={(data.workers || []).map(w => [
                     w.fullName        || "—",
                     w.targetJob       || "—",
                     w.targetSector    || "—",
                     w.preferredRegion || "—",
                     w.profileVisibility || "—",
+                    w.activeReferralLinks > 0
+                      ? <span style={{ fontWeight: 700, color: "#0d7c6e" }}>✓ {w.activeReferralLinks} lien{w.activeReferralLinks > 1 ? "s" : ""}</span>
+                      : <span style={{ color: "#aab4c0" }}>—</span>,
                     formatDate(w.createdAt),
                   ])}
                 />
