@@ -180,24 +180,79 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
 
           {/* Texte — badge en haut, titre+CTAs en bas */}
           <div className="relative z-10 flex h-full">
-            <div className="flex h-full w-full max-w-[520px] flex-col justify-between px-10 py-10 xl:px-14 xl:py-12">
-              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} liveCount={liveCount} />
+            <div className="flex h-full w-full max-w-[520px] flex-col justify-between px-10 pb-24 pt-10 xl:px-14 xl:pt-12">
+              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} />
             </div>
           </div>
 
-          {/* Badge en bas à droite — remonté pour être visible dès le chargement */}
-          <div className="absolute bottom-[14%] right-8 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+          {/* Hub badge — remonté pour ne pas chevaucher la proof bar */}
+          <div className="absolute bottom-20 right-8 z-10 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
             {copy.hub}
           </div>
+
+          {/* ── Proof bar — absolute bottom, full width, toujours visible ── */}
+          {showProofCard && copy.proof && (
+            <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-white/[0.09] bg-[rgba(6,12,38,0.62)] backdrop-blur-md">
+              <div className="flex items-center gap-4 px-10 py-3.5 xl:px-14">
+                {/* Stat */}
+                <div className="flex items-baseline gap-2 shrink-0">
+                  <span className="text-2xl font-black text-white tabular-nums leading-none">
+                    {liveCount !== null ? liveCount : copy.proof.count}
+                  </span>
+                  <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
+                </div>
+                {/* Séparateur */}
+                <div className="h-4 w-px shrink-0 bg-white/[0.15]" />
+                {/* Catégories */}
+                <p className="flex-1 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70 hidden sm:block">
+                  {copy.proof.categories}
+                </p>
+                {/* Localisation */}
+                <p className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25 hidden xl:block">
+                  {copy.proof.location}
+                </p>
+                {/* CTA */}
+                <Link
+                  href={primaryHref}
+                  onClick={() => track("Proof Bar CTA Clicked", { destination: primaryHref })}
+                  className="ml-auto shrink-0 rounded-xl bg-[#57b7af] px-5 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(87,183,175,0.30)] transition hover:bg-[#3fa099] hover:shadow-[0_6px_18px_rgba(87,183,175,0.42)] hover:-translate-y-px"
+                >
+                  {copy.proof.cta}
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* ══ MOBILE : texte puis carte en bas ══ */}
       <div className="lg:hidden">
-        <div className="relative px-6 pb-8 pt-12">
+        <div className="relative px-6 pb-6 pt-12">
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
-          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} liveCount={liveCount} />
+          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} />
         </div>
+
+        {/* Proof card mobile — entre texte et carte carte */}
+        {showProofCard && copy.proof && (
+          <div className="mx-6 mb-5 flex items-center gap-4 rounded-2xl border border-white/[0.10] bg-white/[0.07] px-5 py-3.5 backdrop-blur-sm">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-white tabular-nums leading-none">
+                  {liveCount !== null ? liveCount : copy.proof.count}
+                </span>
+                <span className="text-xs font-semibold text-white/80">{copy.proof.label}</span>
+              </div>
+              <p className="mt-1 text-[10px] text-[#9dd4d0]/65">{copy.proof.categories}</p>
+            </div>
+            <Link
+              href={primaryHref}
+              onClick={() => track("Proof Bar CTA Clicked", { destination: primaryHref })}
+              className="shrink-0 rounded-xl bg-[#57b7af] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#3fa099]"
+            >
+              {copy.proof.cta}
+            </Link>
+          </div>
+        )}
 
         {/* Carte mobile */}
         <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18)]">
@@ -229,7 +284,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
 }
 
 /* Contenu desktop — badge en haut, titre majestueux + CTAs en bas */
-function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard, liveCount }) {
+function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
   return (
     <>
       {/* Badge ancré en haut */}
@@ -245,11 +300,9 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard, l
           <span className="text-[#57B7AF]">{copy.title2}</span><br />
           {copy.title3}
         </h1>
-
         <p className="mt-5 text-[1rem] leading-relaxed text-white/[0.62]">
           {copy.desc}
         </p>
-
         <div className="mt-7 flex gap-4">
           <Link
             href={primaryHref}
@@ -267,36 +320,10 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard, l
             {copy.secondary}
           </Link>
         </div>
-
         {copy.workerLink && (
           <p className="mt-4">
             <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
           </p>
-        )}
-
-        {/* ── Proof card — glass overlay intégré dans le hero ── */}
-        {showProofCard && copy.proof && (
-          <div className="mt-8 flex items-center gap-5 rounded-2xl border border-white/[0.11] bg-white/[0.07] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
-            {/* Stat */}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-baseline gap-2.5">
-                <span className="text-[2.6rem] font-black leading-none tracking-tight text-white tabular-nums">
-                  {liveCount !== null ? liveCount : copy.proof.count}
-                </span>
-                <span className="text-sm font-semibold leading-snug text-white/80">{copy.proof.label}</span>
-              </div>
-              <p className="mt-1.5 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70">{copy.proof.categories}</p>
-              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/25">{copy.proof.location}</p>
-            </div>
-            {/* CTA inline */}
-            <Link
-              href={primaryHref}
-              onClick={() => track("Proof Card CTA Clicked", { destination: primaryHref })}
-              className="shrink-0 rounded-xl bg-[#57b7af] px-4 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(87,183,175,0.35)] transition hover:bg-[#3fa099] hover:shadow-[0_6px_18px_rgba(87,183,175,0.45)] hover:-translate-y-px"
-            >
-              {copy.proof.cta}
-            </Link>
-          </div>
         )}
       </div>
     </>
@@ -304,7 +331,7 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard, l
 }
 
 /* Contenu mobile */
-function HeroContent({ primaryHref, secondaryHref, copy, showProofCard, liveCount }) {
+function HeroContent({ primaryHref, secondaryHref, copy }) {
   return (
     <div className="max-w-2xl">
       <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
@@ -344,20 +371,6 @@ function HeroContent({ primaryHref, secondaryHref, copy, showProofCard, liveCoun
         <p className="mt-4">
           <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
         </p>
-      )}
-
-      {/* ── Proof card mobile — pleine largeur sous les CTAs ── */}
-      {showProofCard && copy.proof && (
-        <div className="mt-7 rounded-2xl border border-white/[0.11] bg-white/[0.07] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
-          <div className="flex items-baseline gap-2.5">
-            <span className="text-[2.4rem] font-black leading-none tracking-tight text-white tabular-nums">
-              {liveCount !== null ? liveCount : copy.proof.count}
-            </span>
-            <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
-          </div>
-          <p className="mt-1.5 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70">{copy.proof.categories}</p>
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/25">{copy.proof.location}</p>
-        </div>
       )}
     </div>
   );
