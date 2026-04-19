@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { localizeHref } from "../lib/i18n";
 
 /* ── Palette officielle LEXPAT Connect ── */
@@ -96,6 +96,20 @@ function CityDot({ left, top, delay = "0s" }) {
 }
 
 export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showProofCard = false }) {
+  // Live profile count — fetched from public API, refreshed every 5 minutes
+  const [liveCount, setLiveCount] = useState(null);
+  useEffect(() => {
+    if (!showProofCard) return;
+    const fetchCount = () => {
+      fetch("/api/public/profiles-count")
+        .then(r => r.json())
+        .then(d => { if (d.count > 0) setLiveCount(d.count); })
+        .catch(() => {}); // silent fallback — static copy.proof.count stays visible
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 5 * 60 * 1000); // refresh every 5 min
+    return () => clearInterval(interval);
+  }, [showProofCard]);
   const copy = locale === "en"
     ? {
         badge: "Belgium · shortage occupations · international recruitment",
@@ -167,7 +181,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
           {/* Texte — badge en haut, titre+CTAs en bas */}
           <div className="relative z-10 flex h-full">
             <div className="flex h-full w-full max-w-[520px] flex-col justify-between px-10 py-10 xl:px-14 xl:py-12">
-              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} />
+              <HeroContentDesktop primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} liveCount={liveCount} />
             </div>
           </div>
 
@@ -182,7 +196,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
       <div className="lg:hidden">
         <div className="relative px-6 pb-8 pt-12">
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
-          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} />
+          <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} showProofCard={showProofCard} liveCount={liveCount} />
         </div>
 
         {/* Carte mobile */}
@@ -215,7 +229,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
 }
 
 /* Contenu desktop — badge en haut, titre majestueux + CTAs en bas */
-function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard }) {
+function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard, liveCount }) {
   return (
     <>
       {/* Badge ancré en haut */}
@@ -266,7 +280,9 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard })
             {/* Stat */}
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-2.5">
-                <span className="text-[2.6rem] font-black leading-none tracking-tight text-white">{copy.proof.count}</span>
+                <span className="text-[2.6rem] font-black leading-none tracking-tight text-white tabular-nums">
+                  {liveCount !== null ? liveCount : copy.proof.count}
+                </span>
                 <span className="text-sm font-semibold leading-snug text-white/80">{copy.proof.label}</span>
               </div>
               <p className="mt-1.5 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70">{copy.proof.categories}</p>
@@ -288,7 +304,7 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy, showProofCard })
 }
 
 /* Contenu mobile */
-function HeroContent({ primaryHref, secondaryHref, copy, showProofCard }) {
+function HeroContent({ primaryHref, secondaryHref, copy, showProofCard, liveCount }) {
   return (
     <div className="max-w-2xl">
       <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
@@ -334,7 +350,9 @@ function HeroContent({ primaryHref, secondaryHref, copy, showProofCard }) {
       {showProofCard && copy.proof && (
         <div className="mt-7 rounded-2xl border border-white/[0.11] bg-white/[0.07] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-md">
           <div className="flex items-baseline gap-2.5">
-            <span className="text-[2.4rem] font-black leading-none tracking-tight text-white">{copy.proof.count}</span>
+            <span className="text-[2.4rem] font-black leading-none tracking-tight text-white tabular-nums">
+              {liveCount !== null ? liveCount : copy.proof.count}
+            </span>
             <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
           </div>
           <p className="mt-1.5 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70">{copy.proof.categories}</p>
