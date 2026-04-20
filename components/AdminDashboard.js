@@ -1755,7 +1755,7 @@ export default function AdminDashboard({ initialData }) {
                   )}
 
                   <div style={{ fontSize: 11, color: "#b0bec5", textAlign: "right" }}>
-                    Analyse générée le {generatedAt.toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    Analyse générée le {new Date(generatedAt).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </>
               );
