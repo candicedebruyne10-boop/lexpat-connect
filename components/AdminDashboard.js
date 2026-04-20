@@ -961,12 +961,57 @@ export default function AdminDashboard({ initialData }) {
     pages: ANALYTICS_PAGES.map(p => ({ ...p, visitors: "" })),
   });
   const [analyticsReport, setAnalyticsReport] = useState(null);
+  const [analyticsHistory, setAnalyticsHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lexpat_analytics_history") || "[]"); }
+    catch { return []; }
+  });
+  const [showHistory, setShowHistory] = useState(false);
+  const [csvError, setCsvError] = useState(null);
 
   function updateAnalyticsPage(path, value) {
     setAnalyticsInputs(prev => ({
       ...prev,
       pages: prev.pages.map(p => p.path === path ? { ...p, visitors: value } : p),
     }));
+  }
+
+  // Parse a Vercel Analytics CSV export and fill the form
+  function handleCsvImport(e) {
+    setCsvError(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const text = ev.target.result;
+        const lines = text.trim().split(/\r?\n/);
+        if (lines.length < 2) throw new Error("Fichier vide ou invalide.");
+
+        // Detect header columns (case-insensitive)
+        const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/^"|"$/g, ""));
+        const pathCol  = headers.findIndex(h => ["pathname","path","page","url"].includes(h));
+        const visCol   = headers.findIndex(h => ["visitors","unique visitors","unique_visitors","users","sessions"].includes(h));
+        if (pathCol === -1 || visCol === -1) throw new Error(`Colonnes non reconnues. En-têtes trouvés : ${headers.join(", ")}`);
+
+        const newPages = [...analyticsInputs.pages];
+        let matched = 0;
+        for (let i = 1; i < lines.length; i++) {
+          // Handle quoted CSV fields
+          const cols = lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g) || lines[i].split(",");
+          const path = (cols[pathCol] || "").trim().replace(/^"|"$/g, "");
+          const vis  = parseInt((cols[visCol] || "").trim().replace(/^"|"$/g, "")) || 0;
+          const idx  = newPages.findIndex(p => p.path === path || p.path === "/" + path.replace(/^\//, ""));
+          if (idx !== -1) { newPages[idx] = { ...newPages[idx], visitors: String(vis) }; matched++; }
+        }
+        if (matched === 0) throw new Error("Aucune page reconnue dans le fichier. Vérifiez que le CSV contient bien les URLs de votre site.");
+        setAnalyticsInputs(prev => ({ ...prev, pages: newPages }));
+        setCsvError(`✅ ${matched} page${matched > 1 ? "s" : ""} importée${matched > 1 ? "s" : ""} depuis le CSV.`);
+      } catch (err) {
+        setCsvError("❌ " + err.message);
+      }
+      e.target.value = ""; // reset input
+    };
+    reader.readAsText(file);
   }
 
   function runAnalysis() {
@@ -977,11 +1022,40 @@ export default function AdminDashboard({ initialData }) {
       topReferrer: analyticsInputs.topReferrer,
       pages: analyticsInputs.pages.map(p => ({ ...p, visitors: parseInt(p.visitors) || 0 })),
     };
-    // Auto-compute total if not provided
     if (!parsed.totalVisitors) {
       parsed.totalVisitors = parsed.pages.reduce((s, p) => s + p.visitors, 0);
     }
-    setAnalyticsReport({ inputs: parsed, insights: analyzeWeeklyTraffic(parsed), generatedAt: new Date() });
+    const report = { inputs: parsed, insights: analyzeWeeklyTraffic(parsed), generatedAt: new Date().toISOString() };
+    setAnalyticsReport(report);
+    // Save to history (max 20 entries)
+    setAnalyticsHistory(prev => {
+      const updated = [report, ...prev].slice(0, 20);
+      try { localStorage.setItem("lexpat_analytics_history", JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }
+
+  function loadFromHistory(entry) {
+    setAnalyticsInputs({
+      totalVisitors: String(entry.inputs.totalVisitors || ""),
+      mobilePercent: String(entry.inputs.mobilePercent || ""),
+      belgiumPercent: String(entry.inputs.belgiumPercent || ""),
+      topReferrer: entry.inputs.topReferrer || "",
+      pages: ANALYTICS_PAGES.map(p => {
+        const found = entry.inputs.pages.find(ep => ep.path === p.path);
+        return { ...p, visitors: found ? String(found.visitors) : "" };
+      }),
+    });
+    setAnalyticsReport(entry);
+    setShowHistory(false);
+  }
+
+  function deleteHistoryEntry(idx) {
+    setAnalyticsHistory(prev => {
+      const updated = prev.filter((_, i) => i !== idx);
+      try { localStorage.setItem("lexpat_analytics_history", JSON.stringify(updated)); } catch {}
+      return updated;
+    });
   }
 
   // ── Traffic state ───────────────────────────────────────────────────────────
@@ -1473,13 +1547,56 @@ export default function AdminDashboard({ initialData }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
               <div>
                 <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>📈 Analyse trafic hebdomadaire</h2>
-                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Entrez les chiffres de votre dashboard Vercel Analytics et obtenez les recommandations de la semaine.</p>
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Importez le CSV Vercel ou saisissez les chiffres manuellement pour obtenir les recommandations.</p>
               </div>
-              <a href="https://vercel.com/candicedebruyne10-3544s-projects/lexpat-connect/analytics" target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#1E3A78", color: "#fff", borderRadius: 10, padding: "8px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>
-                Ouvrir Vercel Analytics →
-              </a>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button onClick={() => setShowHistory(h => !h)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showHistory ? "#1E3A78" : "#fff", color: showHistory ? "#fff" : "#1E3A78", border: "1.5px solid #1E3A78", borderRadius: 10, padding: "8px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                  📋 Historique {analyticsHistory.length > 0 && `(${analyticsHistory.length})`}
+                </button>
+                <a href="https://vercel.com/candicedebruyne10-3544s-projects/lexpat-connect/analytics" target="_blank" rel="noopener noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#1E3A78", color: "#fff", borderRadius: 10, padding: "8px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>
+                  Ouvrir Vercel Analytics →
+                </a>
+              </div>
             </div>
+
+            {/* ── Historique des analyses ── */}
+            {showHistory && (
+              <div style={{ ...card, marginBottom: 24 }}>
+                <div style={{ fontWeight: 800, fontSize: 15, color: "#1E3A78", marginBottom: 14 }}>📋 Historique des analyses</div>
+                {analyticsHistory.length === 0 ? (
+                  <p style={{ color: "#8a9db8", fontSize: 13 }}>Aucune analyse sauvegardée pour le moment.</p>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {analyticsHistory.map((entry, idx) => {
+                      const d = new Date(entry.generatedAt);
+                      const total = entry.inputs.totalVisitors || entry.inputs.pages?.reduce((s, p) => s + p.visitors, 0) || 0;
+                      return (
+                        <div key={idx} style={{ display: "flex", alignItems: "center", gap: 12, background: "#f8faff", borderRadius: 10, padding: "10px 14px", border: "1px solid #e8eef8" }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 700, fontSize: 13, color: "#1E3A78" }}>
+                              {d.toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })} — {d.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                            </div>
+                            <div style={{ fontSize: 12, color: "#6b85a0", marginTop: 2 }}>
+                              {total} visiteurs · {entry.insights?.length || 0} recommandation{entry.insights?.length !== 1 ? "s" : ""}
+                            </div>
+                          </div>
+                          <button onClick={() => loadFromHistory(entry)}
+                            style={{ background: "#1E3A78", color: "#fff", border: "none", borderRadius: 8, padding: "5px 12px", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+                            Charger
+                          </button>
+                          <button onClick={() => deleteHistoryEntry(idx)}
+                            style={{ background: "#fff1f2", color: "#b91c1c", border: "1px solid #fca5a5", borderRadius: 8, padding: "5px 10px", fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+                            ✕
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* ── Formulaire de saisie ── */}
             <div style={{ ...card, marginBottom: 24 }}>
@@ -1520,12 +1637,22 @@ export default function AdminDashboard({ initialData }) {
                 ))}
               </div>
 
-              <button
-                onClick={runAnalysis}
-                style={{ background: "#1E3A78", color: "#fff", border: "none", borderRadius: 10, padding: "12px 28px", fontWeight: 800, fontSize: 15, cursor: "pointer" }}
-              >
-                🔍 Générer l'analyse
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                {/* CSV import */}
+                <label style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#f0f7ff", color: "#1E3A78", border: "1.5px solid #c5d4f3", borderRadius: 10, padding: "10px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+                  📂 Importer CSV Vercel
+                  <input type="file" accept=".csv,text/csv" onChange={handleCsvImport} style={{ display: "none" }} />
+                </label>
+                <button
+                  onClick={runAnalysis}
+                  style={{ background: "#1E3A78", color: "#fff", border: "none", borderRadius: 10, padding: "12px 28px", fontWeight: 800, fontSize: 15, cursor: "pointer" }}
+                >
+                  🔍 Générer l'analyse
+                </button>
+              </div>
+              {csvError && (
+                <p style={{ marginTop: 10, fontSize: 13, color: csvError.startsWith("✅") ? "#0d7c6e" : "#b91c1c", fontWeight: 600 }}>{csvError}</p>
+              )}
             </div>
 
             {/* ── Rapport généré ── */}
