@@ -3,7 +3,8 @@ import { Section } from '../../../components/Sections';
 
 export const metadata = {
   title: 'Create an account | LEXPAT Connect',
-  description: 'Create a worker or employer account on LEXPAT Connect.'
+  description: 'Create a worker or employer account on LEXPAT Connect.',
+  robots: { index: false, follow: false },
 };
 
 export default function InscriptionPageEn() {

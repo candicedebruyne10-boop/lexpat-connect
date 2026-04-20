@@ -3,7 +3,8 @@ import { Section } from '../../../components/Sections';
 
 export const metadata = {
   title: 'Sign in | LEXPAT Connect',
-  description: 'Sign in to your worker or employer space on LEXPAT Connect.'
+  description: 'Sign in to your worker or employer space on LEXPAT Connect.',
+  robots: { index: false, follow: false },
 };
 
 export default function ConnexionPageEn() {

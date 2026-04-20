@@ -3,7 +3,8 @@ import { getPublicApplicationsData } from "../../lib/public-marketplace";
 
 export const metadata = {
   title: "Candidatures | LEXPAT Connect",
-  description: "Aperçu public des candidatures anonymisées disponibles sur LEXPAT Connect."
+  description: "Aperçu public des candidatures anonymisées disponibles sur LEXPAT Connect.",
+  robots: { index: false, follow: false },
 };
 
 export default async function CandidaturesPage() {

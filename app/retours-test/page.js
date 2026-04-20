@@ -11,7 +11,8 @@ const useCases = [
 export const metadata = {
   title: "Retours testeurs | LEXPAT Connect",
   description:
-    "Page dédiée pour centraliser les retours utilisateurs de test sur LEXPAT Connect."
+    "Page dédiée pour centraliser les retours utilisateurs de test sur LEXPAT Connect.",
+  robots: { index: false, follow: false },
 };
 
 export default function RetoursTestPage() {
