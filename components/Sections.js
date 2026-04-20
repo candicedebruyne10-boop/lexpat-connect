@@ -5,6 +5,7 @@ import Image from "next/image";
 import { track } from "@vercel/analytics";
 import { useMemo, useState, useEffect } from "react";
 import { localizeHref } from "../lib/i18n";
+import HeroVideo from "./HeroVideo";
 
 /* ── Palette officielle LEXPAT Connect ── */
 const EMPLOYER = {
@@ -663,18 +664,12 @@ export function PresentationVideoSection({ locale = "fr" }) {
           </div>
 
           <div className="overflow-hidden rounded-[24px] border border-[#dfe9f2] bg-white p-2 shadow-[0_14px_34px_rgba(15,23,42,0.06)] sm:p-2.5">
-            <div className="overflow-hidden rounded-[18px] bg-[#07112f]">
-              <video
-                className="mx-auto block h-auto w-full max-w-[320px] sm:max-w-[360px] lg:max-w-[400px]"
-                controls
-                preload="metadata"
-                playsInline
-                poster="/presentation-lexpat-connect-poster.png"
-              >
-                <source src={locale === "en" ? "/presentation-lexpat-connect-en.mp4" : "/presentation-lexpat-connect.mp4"} type="video/mp4" />
-                {locale === "en" ? "Your browser does not support video playback." : "Votre navigateur ne prend pas en charge la lecture vidéo."}
-              </video>
-            </div>
+            {/* HeroVideo : la vidéo ne charge QUE si l'utilisateur clique → LCP non bloqué */}
+            <HeroVideo
+              src={locale === "en" ? "/presentation-lexpat-connect-en.mp4" : "/presentation-lexpat-connect.mp4"}
+              poster="/presentation-lexpat-connect-poster.webp"
+              locale={locale}
+            />
           </div>
         </div>
       </div>
