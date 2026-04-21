@@ -1889,9 +1889,6 @@ export default function AdminDashboard({ initialData }) {
                                     : <span style={{ ...badgeStyle.base, ...badgeStyle.hidden }}>Masqué</span>
                                   : <span style={{ ...badgeStyle.base, ...badgeStyle.employer }}>Employeur</span>
                               }
-                              {c.completion != null && c.type === "worker" && (
-                                <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>{c.completion}% complet</div>
-                              )}
                             </td>
                             <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{c.region || "—"}</td>
                             <td style={{ padding: "10px 14px", fontSize: 12, color: "#6b7280" }}>{formatDate(c.created_at)}</td>
