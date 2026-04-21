@@ -749,6 +749,128 @@ export function JobSectors({ locale = "fr" } = {}) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   FEATURED PROFILES — Profils affiliés + complets mis en avant sur la homepage
+   Reçoit `profiles` (tableau anonymisé) depuis un Server Component.
+   ───────────────────────────────────────────────────────────────────────────── */
+export function FeaturedProfiles({ profiles = [], locale = "fr" }) {
+  if (!profiles.length) return null;
+  const isEn = locale === "en";
+
+  const copy = {
+    live:    isEn ? "Updated in real time"           : "Mis à jour en temps réel",
+    title:   isEn ? "Candidates available now"       : "Des candidats disponibles maintenant",
+    sub:     isEn ? "Active profiles for Belgium — with information on the work permit required." : "Profils actifs pour la Belgique — avec information sur le permis de travail requis.",
+    seeAll:  isEn ? "See all profiles →"             : "Voir tous les profils →",
+    permit:  isEn ? "Single permit required"          : "Permis unique requis",
+    avail:   isEn ? "Available now"                  : "Disponible",
+    cta:     isEn ? "View"                           : "Voir",
+    footer:  (n) => isEn ? `${n} active profiles · New candidates every week` : `${n} profils actifs · Nouvelles candidatures chaque semaine`,
+    viewAll: isEn ? "See all available profiles"     : "Voir tous les profils disponibles",
+  };
+
+  // Couleurs d'avatars cycliques
+  const avatarColors = [
+    "linear-gradient(135deg,#1E3A78,#204E97)",
+    "linear-gradient(135deg,#57B7AF,#3fa099)",
+    "linear-gradient(135deg,#204E97,#57B7AF)",
+  ];
+
+  return (
+    <section className="py-4 sm:py-6 lg:py-8">
+      <div className="container-shell">
+        <div className="overflow-hidden rounded-[40px] border border-[#e2ecf4] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-10 lg:p-14">
+
+          {/* Header */}
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-[#eaf4f3] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+                {copy.live}
+              </p>
+              <h2 className="mt-3 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
+                {copy.title}
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-[#607086]">{copy.sub}</p>
+            </div>
+            <Link
+              href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
+              className="shrink-0 text-sm font-bold text-[#1E3A78] transition hover:text-[#57b7af]"
+            >
+              {copy.seeAll}
+            </Link>
+          </div>
+
+          {/* Profile cards */}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {profiles.map((p, i) => {
+              const initials = (p.jobTitle || "").slice(0, 2).toUpperCase() || "??";
+              return (
+                <article
+                  key={i}
+                  className="rounded-[28px] border border-[#e3eaf1] bg-white p-6 shadow-[0_8px_28px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#cde2df] hover:shadow-[0_16px_48px_rgba(15,23,42,0.08)]"
+                >
+                  {/* Top */}
+                  <div className="mb-4 flex items-center gap-3">
+                    <div
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] text-[13px] font-extrabold text-white"
+                      style={{ background: avatarColors[i % avatarColors.length] }}
+                    >
+                      {initials}
+                    </div>
+                    <div>
+                      <p className="text-[14px] font-bold leading-snug text-[#1E3A78]">{p.jobTitle}</p>
+                      <p className="mt-0.5 text-[12px] text-[#8a9bb0]">{p.sector} · {p.region}</p>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {p.experience && (
+                      <span className="inline-flex rounded-full border border-[rgba(30,58,120,0.16)] bg-[#eef1fb] px-2.5 py-1 text-[11px] font-semibold text-[#1E3A78]">
+                        {p.experience}
+                      </span>
+                    )}
+                    <span className="inline-flex rounded-full border border-[rgba(87,183,175,0.22)] bg-[#eaf4f3] px-2.5 py-1 text-[11px] font-semibold text-[#57b7af]">
+                      {copy.permit}
+                    </span>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#16a34a]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#16a34a]" />
+                      {copy.avail}
+                    </span>
+                    <Link
+                      href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
+                      className="text-[12px] font-bold text-[#57b7af] transition hover:text-[#3fa099]"
+                    >
+                      {copy.cta} →
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* CTA bas */}
+          <div className="mt-8 text-center">
+            <Link
+              href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
+              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#1E3A78] px-9 py-4 text-base font-bold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374] hover:-translate-y-0.5"
+            >
+              {copy.viewAll} →
+            </Link>
+            <p className="mt-3 text-xs text-[#8a9bb0]">{copy.footer(profiles.length)}</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    LEXPAT RELAY — Section 5
    Discreet, premium, strategic — appears AFTER the match
    ───────────────────────────────────────────────────────────────────────────── */
