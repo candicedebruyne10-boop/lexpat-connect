@@ -749,6 +749,54 @@ export function JobSectors({ locale = "fr" } = {}) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   CONVERSION BAR — Barre de stats sous le hero
+   ───────────────────────────────────────────────────────────────────────────── */
+export function ConversionBar({ locale = "fr" }) {
+  const isEn = locale === "en";
+  const stats = [
+    {
+      num: "+30 ans",
+      label: isEn ? "of expertise in economic immigration" : "d'expertise en immigration économique",
+    },
+    {
+      num: "+10 000",
+      label: isEn ? "cases successfully handled" : "dossiers traités avec succès",
+    },
+    {
+      num: "+1 500",
+      label: isEn ? "directly actionable profiles" : "profils directement actionnables",
+    },
+  ];
+
+  return (
+    <div className="border-y border-[#dce8f5] bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)]">
+      <div className="mx-auto max-w-[1200px] px-[clamp(16px,4vw,56px)] py-10">
+        <p className="mb-6 text-center text-[13px] font-semibold text-[#607086]">
+          {isEn
+            ? "The international recruitment platform with integrated legal expertise"
+            : "La plateforme de recrutement international avec expertise juridique intégrée"}
+        </p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {stats.map((s, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 rounded-[20px] border border-[#d8e9f7] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]"
+            >
+              <div>
+                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78]">
+                  {s.num}
+                </div>
+                <div className="mt-1 text-[13px] leading-snug text-[#607086]">{s.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    FEATURED PROFILES — Profils affiliés + complets mis en avant sur la homepage
    Reçoit `profiles` (tableau anonymisé) depuis un Server Component.
    ───────────────────────────────────────────────────────────────────────────── */
