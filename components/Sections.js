@@ -780,13 +780,13 @@ export function ConversionBar({ locale = "fr" }) {
           {stats.map((s, i) => (
             <div
               key={i}
-              className="flex items-center gap-4 rounded-[20px] border border-[#d8e9f7] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]"
+              className="group flex items-center gap-4 rounded-[20px] border border-[#d8e9f7] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#b0cff5] hover:shadow-[0_16px_40px_rgba(30,58,120,0.10)]"
             >
               <div>
-                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78]">
+                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78] transition-all duration-300 group-hover:scale-110 group-hover:text-[#57B7AF] origin-left inline-block">
                   {s.num}
                 </div>
-                <div className="mt-1 text-[13px] leading-snug text-[#607086]">{s.label}</div>
+                <div className="mt-1 text-[13px] leading-snug text-[#607086] transition-colors duration-300 group-hover:text-[#1E3A78]">{s.label}</div>
               </div>
             </div>
           ))}
