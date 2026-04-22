@@ -220,7 +220,7 @@ export default function BaseDeProfilsPage() {
           {[
             { value: summary.total,   label: t.statTotal,   color: "bg-[#eef1fb] text-[#1d3b8b] border-[#c5d4f3]" },
             { value: summary.sectors, label: t.statSectors, color: "bg-[#eaf4f3] text-[#2b8f88] border-[#cde2df]" },
-            { value: summary.regions, label: t.statRegions, color: "bg-[#fff7e8] text-[#c48014] border-[#f7e2b8]" },
+            { value: summary.regions, label: t.statRegions, color: "bg-[#fdf2f8] text-[#db2777] border-[#f9a8d4]" },
           ].map(({ value, label, color }) => (
             <div key={label} className={`flex items-center gap-3 rounded-2xl border px-5 py-3 ${color}`}>
               <span className="text-2xl font-extrabold">{value ?? "—"}</span>
