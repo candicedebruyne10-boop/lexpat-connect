@@ -127,6 +127,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         proof: {
           count: "21",
           label: "profiles available today",
+          pool: "+1,500 reachable via partners",
           categories: "Developers · Technicians · Healthcare · Construction",
           location: "Available for Belgium",
           cta: "See profiles →",
@@ -147,6 +148,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         proof: {
           count: "21",
           label: "profils disponibles aujourd'hui",
+          pool: "+1 500 accessibles via partenaires",
           categories: "Développeurs · Techniciens · Soins · Construction",
           location: "Disponibles pour la Belgique",
           cta: "Voir les profils →",
@@ -195,13 +197,19 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
           {showProofCard && copy.proof && (
             <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-white/[0.09] bg-[rgba(6,12,38,0.62)] backdrop-blur-md">
               <div className="flex items-center gap-4 px-10 py-3.5 xl:px-14">
-                {/* Stat */}
+                {/* Stat principale */}
                 <div className="flex items-baseline gap-2 shrink-0">
                   <span className="text-2xl font-black text-white tabular-nums leading-none">
                     {liveCount !== null ? liveCount : copy.proof.count}
                   </span>
                   <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
                 </div>
+                {/* Pool partenaires — en rose */}
+                {copy.proof.pool && (
+                  <span className="hidden shrink-0 rounded-full border border-[#f9a8d4]/40 bg-[#e91e8c]/15 px-3 py-1 text-[11px] font-bold text-[#f9a8d4] sm:inline-flex">
+                    {copy.proof.pool}
+                  </span>
+                )}
                 {/* Séparateur */}
                 <div className="h-4 w-px shrink-0 bg-white/[0.15]" />
                 {/* Catégories */}
@@ -243,7 +251,9 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
                 </span>
                 <span className="text-xs font-semibold text-white/80">{copy.proof.label}</span>
               </div>
-              <p className="mt-1 text-[10px] text-[#9dd4d0]/65">{copy.proof.categories}</p>
+              {copy.proof.pool && (
+                <p className="mt-1 text-[10px] font-semibold text-[#f9a8d4]">{copy.proof.pool}</p>
+              )}
             </div>
             <Link
               href={primaryHref}
@@ -785,26 +795,41 @@ export function ConversionBar({ locale = "fr" }) {
             : "La plateforme de recrutement international avec expertise juridique intégrée"}
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
-          {stats.map((s, i) => (
-            <div
-              key={i}
-              className="group flex items-center gap-4 rounded-[20px] border border-[#d8e9f7] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#b0cff5] hover:shadow-[0_16px_40px_rgba(30,58,120,0.10)]"
-            >
-              <div>
-                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78] transition-all duration-300 group-hover:text-[#57B7AF] origin-left">
-                  <AnimatedStat
-                    target={s.target}
-                    prefix={s.prefix}
-                    suffix={s.suffix}
-                    locale={locale}
-                  />
-                </div>
-                <div className="mt-1 text-[13px] leading-snug text-[#607086] transition-colors duration-300 group-hover:text-[#1E3A78]">
-                  {s.label}
+          {stats.map((s, i) => {
+            const isFuchsia = i === 2;
+            return (
+              <div
+                key={i}
+                className={`group flex items-center gap-4 rounded-[20px] border p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 ${
+                  isFuchsia
+                    ? "border-[#f9a8d4] bg-[#fdf2f8] hover:border-[#f472b6] hover:shadow-[0_16px_40px_rgba(233,30,140,0.12)]"
+                    : "border-[#d8e9f7] bg-white hover:border-[#b0cff5] hover:shadow-[0_16px_40px_rgba(30,58,120,0.10)]"
+                }`}
+              >
+                <div>
+                  <div className={`font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none transition-all duration-300 origin-left ${
+                    isFuchsia
+                      ? "text-[#e91e8c] group-hover:text-[#be185d]"
+                      : "text-[#1E3A78] group-hover:text-[#57B7AF]"
+                  }`}>
+                    <AnimatedStat
+                      target={s.target}
+                      prefix={s.prefix}
+                      suffix={s.suffix}
+                      locale={locale}
+                    />
+                  </div>
+                  <div className={`mt-1 text-[13px] leading-snug transition-colors duration-300 ${
+                    isFuchsia
+                      ? "text-[#db2777] group-hover:text-[#be185d]"
+                      : "text-[#607086] group-hover:text-[#1E3A78]"
+                  }`}>
+                    {s.label}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
