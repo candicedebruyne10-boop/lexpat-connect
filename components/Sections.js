@@ -819,19 +819,31 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
   if (!profiles.length) return null;
   const isEn = locale === "en";
 
+  // Live count — fetched client-side so it's always fresh and never blank.
+  // Uses totalOnline (server prop) as immediate initial value, then confirms via API.
+  const [liveCount, setLiveCount] = useState(totalOnline);
+  useEffect(() => {
+    fetch("/api/public/profiles-count")
+      .then((r) => r.json())
+      .then((d) => { if (d.count > 0) setLiveCount(d.count); })
+      .catch(() => {});
+  }, []);
+
+  const n = liveCount > 0 ? liveCount : totalOnline > 0 ? totalOnline : 21;
+
   const copy = {
     live:    isEn ? "Featured profiles"              : "Profils mis en avant",
     title:   isEn ? "Candidates available now"       : "Des candidats disponibles maintenant",
     sub:     isEn
-      ? `A selection from the ${totalOnline > 0 ? totalOnline : "active"} profiles online — and a pool of 1,500+ reachable quickly via our partners.`
-      : `Une sélection parmi les ${totalOnline > 0 ? totalOnline : ""} profils en ligne — et un vivier de +1 500 accessibles rapidement via nos partenaires.`,
-    seeAll:  isEn ? `See all ${totalOnline > 0 ? totalOnline : ""} profiles →` : `Voir les ${totalOnline > 0 ? totalOnline : ""} profils →`,
+      ? `A selection from the ${n} profiles online — and a pool of 1,500+ reachable quickly via our partners.`
+      : `Une sélection parmi les ${n} profils en ligne — et un vivier de +1 500 accessibles rapidement via nos partenaires.`,
+    seeAll:  isEn ? `See all ${n} profiles →` : `Voir les ${n} profils →`,
     permit:  isEn ? "Single permit required"         : "Permis unique requis",
     avail:   isEn ? "Available now"                  : "Disponible",
     cta:     isEn ? "View"                           : "Voir",
     footer:  isEn
-      ? `${totalOnline > 0 ? totalOnline : ""} profiles online · 1,500+ reachable via partners`
-      : `${totalOnline > 0 ? totalOnline : ""} profils en ligne · +1 500 accessibles via partenaires`,
+      ? `${n} profiles online · 1,500+ reachable via partners`
+      : `${n} profils en ligne · +1 500 accessibles via partenaires`,
     viewAll: isEn ? "See all available profiles"     : "Voir tous les profils disponibles",
   };
 
@@ -924,7 +936,7 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
           <div className="mt-8 text-center">
             <Link
               href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
-              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#e91e8c] px-9 py-4 text-base font-bold text-white shadow-[0_16px_36px_rgba(233,30,140,0.30)] transition hover:bg-[#c2185b] hover:-translate-y-0.5"
+              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl border border-[#f9a8d4] bg-[#fdf2f8] px-9 py-4 text-base font-bold text-[#db2777] shadow-[0_4px_16px_rgba(233,30,140,0.08)] transition hover:bg-[#fce7f3] hover:border-[#f472b6] hover:text-[#be185d] hover:-translate-y-0.5"
             >
               {copy.viewAll} →
             </Link>
