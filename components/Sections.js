@@ -749,21 +749,29 @@ export function JobSectors({ locale = "fr" } = {}) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CONVERSION BAR — Barre de stats sous le hero
+   CONVERSION BAR — Barre de stats animées sous le hero
    ───────────────────────────────────────────────────────────────────────────── */
+import AnimatedStat from "./AnimatedStat";
+
 export function ConversionBar({ locale = "fr" }) {
   const isEn = locale === "en";
   const stats = [
     {
-      num: "+30 ans",
+      target: 30,
+      prefix: "+",
+      suffix: isEn ? " yrs" : " ans",
       label: isEn ? "of expertise in economic immigration" : "d'expertise en immigration économique",
     },
     {
-      num: "+10 000",
+      target: 10000,
+      prefix: "+",
+      suffix: "",
       label: isEn ? "cases successfully handled" : "dossiers traités avec succès",
     },
     {
-      num: "+1 500",
+      target: 1500,
+      prefix: "+",
+      suffix: "",
       label: isEn ? "directly actionable profiles" : "profils directement actionnables",
     },
   ];
@@ -783,10 +791,17 @@ export function ConversionBar({ locale = "fr" }) {
               className="group flex items-center gap-4 rounded-[20px] border border-[#d8e9f7] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#b0cff5] hover:shadow-[0_16px_40px_rgba(30,58,120,0.10)]"
             >
               <div>
-                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78] transition-all duration-300 group-hover:scale-110 group-hover:text-[#57B7AF] origin-left inline-block">
-                  {s.num}
+                <div className="font-[Montserrat,sans-serif] text-[clamp(24px,3vw,32px)] font-extrabold leading-none text-[#1E3A78] transition-all duration-300 group-hover:text-[#57B7AF] origin-left">
+                  <AnimatedStat
+                    target={s.target}
+                    prefix={s.prefix}
+                    suffix={s.suffix}
+                    locale={locale}
+                  />
                 </div>
-                <div className="mt-1 text-[13px] leading-snug text-[#607086] transition-colors duration-300 group-hover:text-[#1E3A78]">{s.label}</div>
+                <div className="mt-1 text-[13px] leading-snug text-[#607086] transition-colors duration-300 group-hover:text-[#1E3A78]">
+                  {s.label}
+                </div>
               </div>
             </div>
           ))}
