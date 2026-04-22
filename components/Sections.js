@@ -845,13 +845,13 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
   return (
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="container-shell">
-        <div className="overflow-hidden rounded-[40px] border border-[#e2ecf4] bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-10 lg:p-14">
+        <div className="overflow-hidden rounded-[40px] border border-[#fce7f3] bg-white p-8 shadow-[0_20px_60px_rgba(233,30,140,0.06)] sm:p-10 lg:p-14">
 
           {/* Header */}
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-[#cde2df] bg-[#eaf4f3] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#57b7af]">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#f9a8d4] bg-[#fdf2f8] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#db2777]">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e91e8c]" />
                 {copy.live}
               </p>
               <h2 className="mt-3 text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-[#1E3A78] sm:text-4xl">
@@ -861,7 +861,7 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
             </div>
             <Link
               href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
-              className="shrink-0 text-sm font-bold text-[#1E3A78] transition hover:text-[#57b7af]"
+              className="shrink-0 text-sm font-bold text-[#e91e8c] transition hover:text-[#c2185b]"
             >
               {copy.seeAll}
             </Link>
@@ -874,7 +874,7 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
               return (
                 <article
                   key={i}
-                  className="rounded-[28px] border border-[#e3eaf1] bg-white p-6 shadow-[0_8px_28px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#cde2df] hover:shadow-[0_16px_48px_rgba(15,23,42,0.08)]"
+                  className="rounded-[28px] border border-[#e3eaf1] bg-white p-6 shadow-[0_8px_28px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#f9a8d4] hover:shadow-[0_16px_48px_rgba(233,30,140,0.10)]"
                 >
                   {/* Top */}
                   <div className="mb-4 flex items-center gap-3">
@@ -897,20 +897,20 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
                         {p.experience}
                       </span>
                     )}
-                    <span className="inline-flex rounded-full border border-[rgba(87,183,175,0.22)] bg-[#eaf4f3] px-2.5 py-1 text-[11px] font-semibold text-[#57b7af]">
+                    <span className="inline-flex rounded-full border border-[#f9a8d4] bg-[#fdf2f8] px-2.5 py-1 text-[11px] font-semibold text-[#db2777]">
                       {copy.permit}
                     </span>
                   </div>
 
                   {/* Footer */}
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#16a34a]">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#16a34a]" />
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#e91e8c]">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e91e8c]" />
                       {copy.avail}
                     </span>
                     <Link
                       href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
-                      className="text-[12px] font-bold text-[#57b7af] transition hover:text-[#3fa099]"
+                      className="text-[12px] font-bold text-[#e91e8c] transition hover:text-[#c2185b]"
                     >
                       {copy.cta} →
                     </Link>
@@ -924,7 +924,7 @@ export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr"
           <div className="mt-8 text-center">
             <Link
               href={isEn ? "/en/base-de-profils" : "/base-de-profils"}
-              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#1E3A78] px-9 py-4 text-base font-bold text-white shadow-[0_16px_36px_rgba(23,58,138,0.28)] transition hover:bg-[#153374] hover:-translate-y-0.5"
+              className="inline-flex min-h-[3.5rem] items-center justify-center rounded-2xl bg-[#e91e8c] px-9 py-4 text-base font-bold text-white shadow-[0_16px_36px_rgba(233,30,140,0.30)] transition hover:bg-[#c2185b] hover:-translate-y-0.5"
             >
               {copy.viewAll} →
             </Link>
