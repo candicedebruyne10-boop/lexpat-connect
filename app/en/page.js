@@ -76,8 +76,11 @@ async function getTotalOnlineProfiles() {
     const { count } = await supabase
       .from("worker_profiles")
       .select("id", { count: "exact", head: true })
+      .eq("profile_visibility", "visible")
       .not("target_job", "is", null)
-      .neq("target_job", "");
+      .neq("target_job", "")
+      .not("target_sector", "is", null)
+      .neq("target_sector", "");
     return count || 0;
   } catch {
     return 0;

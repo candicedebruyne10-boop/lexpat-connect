@@ -125,7 +125,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         workerLink: "You are a worker? Apply here →",
         hub: "Belgium · International hub",
         proof: {
-          count: "19",
+          count: "21",
           label: "profiles available today",
           categories: "Developers · Technicians · Healthcare · Construction",
           location: "Available for Belgium",
@@ -145,7 +145,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         workerLink: "Vous êtes travailleur ? Postulez ici →",
         hub: "Belgique · Hub international",
         proof: {
-          count: "19",
+          count: "21",
           label: "profils disponibles aujourd'hui",
           categories: "Développeurs · Techniciens · Soins · Construction",
           location: "Disponibles pour la Belgique",
