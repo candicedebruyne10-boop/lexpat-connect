@@ -82,8 +82,25 @@ async function getFeaturedProfiles() {
   }
 }
 
+async function getTotalOnlineProfiles() {
+  try {
+    const supabase = getServiceClient();
+    const { count } = await supabase
+      .from("worker_profiles")
+      .select("id", { count: "exact", head: true })
+      .not("target_job", "is", null)
+      .neq("target_job", "");
+    return count || 0;
+  } catch {
+    return 0;
+  }
+}
+
 export default async function HomePage() {
-  const featuredProfiles = await getFeaturedProfiles();
+  const [featuredProfiles, totalOnline] = await Promise.all([
+    getFeaturedProfiles(),
+    getTotalOnlineProfiles(),
+  ]);
   return (
     <>
       <HeroPremium
@@ -98,9 +115,8 @@ export default async function HomePage() {
         <DualEntry />
       </div>
 
-      {/* Profils affiliés + complets — uniquement si des profils existent */}
       {featuredProfiles.length > 0 && (
-        <FeaturedProfiles profiles={featuredProfiles} />
+        <FeaturedProfiles profiles={featuredProfiles} totalOnline={totalOnline} />
       )}
 
       <div id="metiers-en-penurie">

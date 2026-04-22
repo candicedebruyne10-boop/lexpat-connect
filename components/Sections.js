@@ -815,19 +815,23 @@ export function ConversionBar({ locale = "fr" }) {
    FEATURED PROFILES — Profils affiliés + complets mis en avant sur la homepage
    Reçoit `profiles` (tableau anonymisé) depuis un Server Component.
    ───────────────────────────────────────────────────────────────────────────── */
-export function FeaturedProfiles({ profiles = [], locale = "fr" }) {
+export function FeaturedProfiles({ profiles = [], totalOnline = 0, locale = "fr" }) {
   if (!profiles.length) return null;
   const isEn = locale === "en";
 
   const copy = {
-    live:    isEn ? "Updated in real time"           : "Mis à jour en temps réel",
+    live:    isEn ? "Featured profiles"              : "Profils mis en avant",
     title:   isEn ? "Candidates available now"       : "Des candidats disponibles maintenant",
-    sub:     isEn ? "Active profiles for Belgium — with information on the work permit required." : "Profils actifs pour la Belgique — avec information sur le permis de travail requis.",
-    seeAll:  isEn ? "See all profiles →"             : "Voir tous les profils →",
-    permit:  isEn ? "Single permit required"          : "Permis unique requis",
+    sub:     isEn
+      ? `A selection from the ${totalOnline > 0 ? totalOnline : "active"} profiles online — and a pool of 1,500+ reachable quickly via our partners.`
+      : `Une sélection parmi les ${totalOnline > 0 ? totalOnline : ""} profils en ligne — et un vivier de +1 500 accessibles rapidement via nos partenaires.`,
+    seeAll:  isEn ? `See all ${totalOnline > 0 ? totalOnline : ""} profiles →` : `Voir les ${totalOnline > 0 ? totalOnline : ""} profils →`,
+    permit:  isEn ? "Single permit required"         : "Permis unique requis",
     avail:   isEn ? "Available now"                  : "Disponible",
     cta:     isEn ? "View"                           : "Voir",
-    footer:  (n) => isEn ? `${n} active profiles · New candidates every week` : `${n} profils actifs · Nouvelles candidatures chaque semaine`,
+    footer:  isEn
+      ? `${totalOnline > 0 ? totalOnline : ""} profiles online · 1,500+ reachable via partners`
+      : `${totalOnline > 0 ? totalOnline : ""} profils en ligne · +1 500 accessibles via partenaires`,
     viewAll: isEn ? "See all available profiles"     : "Voir tous les profils disponibles",
   };
 
@@ -924,7 +928,7 @@ export function FeaturedProfiles({ profiles = [], locale = "fr" }) {
             >
               {copy.viewAll} →
             </Link>
-            <p className="mt-3 text-xs text-[#8a9bb0]">{copy.footer(profiles.length)}</p>
+            <p className="mt-3 text-xs text-[#8a9bb0]">{copy.footer}</p>
           </div>
 
         </div>
