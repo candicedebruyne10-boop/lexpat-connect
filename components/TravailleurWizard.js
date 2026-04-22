@@ -10,6 +10,7 @@ import {
   getProfessionGroupsForRegions,
   stringifyRegionSelection,
 } from "../lib/professions";
+import { COUNTRIES } from "../lib/countries";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 
@@ -489,11 +490,18 @@ export default function TravailleurWizard() {
               />
             </Field>
             <Field label={t.country} optional optionalLabel={t.optional}>
-              <input
-                type="text" placeholder={t.countryPh} value={values.country}
+              <select
+                value={values.country}
                 onChange={e => set("country", e.target.value)}
-                style={inputSt} autoComplete="country-name"
-              />
+                style={inputSt}
+              >
+                <option value="">{t.countryPh}</option>
+                {COUNTRIES.map((c) => (
+                  <option key={c.fr} value={c.fr}>
+                    {locale === "en" ? c.en : c.fr}
+                  </option>
+                ))}
+              </select>
             </Field>
           </div>
         )}

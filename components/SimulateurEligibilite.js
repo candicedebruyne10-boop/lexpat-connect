@@ -2,27 +2,18 @@
 
 import { useState } from "react";
 import RegionSelector from "./RegionSelector";
+import { COUNTRIES, EU_NATIONALITIES_FR } from "../lib/countries";
 import {
   getProfessionGroupsForRegions,
   parseRegionSelection,
   sectorOptions,
 } from "../lib/professions";
 
-/* ── Nationalités UE / EEE / Suisse (noms FR — valeurs canoniques) ──────── */
-const EU_NATIONALITIES = new Set([
-  "Allemagne","Autriche","Belgique","Bulgarie","Chypre","Croatie","Danemark",
-  "Espagne","Estonie","Finlande","France","Grèce","Hongrie","Irlande","Italie",
-  "Lettonie","Lituanie","Luxembourg","Malte","Pays-Bas","Pologne","Portugal",
-  "République tchèque","Roumanie","Slovaquie","Slovénie","Suède",
-  "Islande","Liechtenstein","Norvège","Suisse",
-  // Royaume-Uni : post-Brexit, les ressortissants britanniques ont besoin d'un permis
-  // en Belgique. Laissé hors de l'exemption UE/EEE.
-]);
+// EU_NATIONALITIES et COUNTRIES importés depuis lib/countries.js
+const EU_NATIONALITIES = EU_NATIONALITIES_FR; // alias local
 
-/* ── Liste complète des pays (valeur = nom FR, affichage bilingue) ────────── */
-// value stockée = toujours le nom FR (pour compatibilité EU_NATIONALITIES check)
-// affichage = nom FR ou EN selon locale
-const COUNTRIES = [
+// Supprimé — liste déplacée dans lib/countries.js
+const _COUNTRIES_REMOVED = [
   { fr: "Afghanistan",              en: "Afghanistan" },
   { fr: "Afrique du Sud",           en: "South Africa" },
   { fr: "Albanie",                  en: "Albania" },
@@ -220,7 +211,7 @@ const COUNTRIES = [
   { fr: "Yémen",                    en: "Yemen" },
   { fr: "Zambie",                   en: "Zambia" },
   { fr: "Zimbabwe",                 en: "Zimbabwe" },
-];
+]; // _COUNTRIES_REMOVED — ne pas utiliser, utiliser COUNTRIES importé
 
 /* ── Seuils salariaux 2026 ───────────────────────────────────────────────── */
 /** RMMMG au 1er avril 2026 (temps plein, 18 ans et +) */
