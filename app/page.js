@@ -23,48 +23,62 @@ export const metadata = {
 
 /**
  * Retourne les profils mis en avant sur la homepage :
- * - inscrits via un lien d'affiliation (attribution_source = 'link')
- * - profil complet (profile_completion >= 60)
- * - profil visible
+ * - workers qui ont partagé leur lien d'affiliation (referrer_user_id dans referrals)
+ * - classés par nombre de liens partagés (les plus actifs en premier)
+ * - profil complet (profile_completion >= 60) + visible
  * Données anonymisées — aucun identifiant personnel.
  */
 async function getFeaturedProfiles() {
   try {
     const supabase = getServiceClient();
 
-    // 1. User IDs ayant saisi un code d'affiliation
+    // 1. Compter les liens partagés par referrer_user_id
     const { data: referrals } = await supabase
       .from("referrals")
-      .select("referee_user_id")
-      .eq("attribution_source", "manual_code")
-      .not("referee_user_id", "is", null);
+      .select("referrer_user_id")
+      .not("referrer_user_id", "is", null);
 
     if (!referrals?.length) return [];
 
-    const userIds = [...new Set(referrals.map((r) => r.referee_user_id))];
+    // Agréger : { user_id → nb de liens partagés }
+    const countMap = referrals.reduce((map, r) => {
+      map.set(r.referrer_user_id, (map.get(r.referrer_user_id) || 0) + 1);
+      return map;
+    }, new Map());
+
+    // Trier par nombre décroissant, garder les top user IDs
+    const topUserIds = [...countMap.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([id]) => id);
+
+    if (!topUserIds.length) return [];
 
     // 2. Leurs profils visibles et complets
     const { data, error } = await supabase
       .from("worker_profiles")
-      .select("target_job, target_sector, preferred_region, experience_level")
+      .select("user_id, target_job, target_sector, preferred_region, experience_level")
       .eq("profile_visibility", "visible")
       .gte("profile_completion", 60)
-      .in("user_id", userIds)
+      .in("user_id", topUserIds)
       .not("target_job", "is", null)
       .neq("target_job", "")
       .not("target_sector", "is", null)
       .neq("target_sector", "")
-      .order("updated_at", { ascending: false })
-      .limit(3);
+      .limit(10);
 
     if (error) throw error;
+    if (!data?.length) return [];
 
-    return (data || []).map((p) => ({
-      jobTitle:   p.target_job,
-      sector:     p.target_sector,
-      region:     normalizeRegion(p.preferred_region),
-      experience: p.experience_level || null,
-    }));
+    // 3. Réordonner par nombre de liens partagés décroissant, garder 3
+    return data
+      .sort((a, b) => (countMap.get(b.user_id) || 0) - (countMap.get(a.user_id) || 0))
+      .slice(0, 3)
+      .map((p) => ({
+        jobTitle:   p.target_job,
+        sector:     p.target_sector,
+        region:     normalizeRegion(p.preferred_region),
+        experience: p.experience_level || null,
+      }));
   } catch {
     return [];
   }
