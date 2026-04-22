@@ -53,12 +53,10 @@ async function getFeaturedProfiles() {
 
     if (!topUserIds.length) return [];
 
-    // 2. Leurs profils visibles et complets
+    // 2. Leurs profils avec job + secteur renseignés (= effectivement visibles)
     const { data, error } = await supabase
       .from("worker_profiles")
       .select("user_id, target_job, target_sector, preferred_region, experience_level")
-      .eq("profile_visibility", "visible")
-      .gte("profile_completion", 60)
       .in("user_id", topUserIds)
       .not("target_job", "is", null)
       .neq("target_job", "")
