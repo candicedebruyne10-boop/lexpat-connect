@@ -204,9 +204,9 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
                   </span>
                   <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
                 </div>
-                {/* Pool partenaires — en rose */}
+                {/* Pool partenaires — en rose, même taille que le label principal */}
                 {copy.proof.pool && (
-                  <span className="hidden shrink-0 rounded-full border border-[#f9a8d4]/40 bg-[#e91e8c]/15 px-3 py-1 text-[11px] font-bold text-[#f9a8d4] sm:inline-flex">
+                  <span className="hidden shrink-0 rounded-full border border-[#f9a8d4]/40 bg-[#e91e8c]/15 px-3.5 py-1.5 text-sm font-semibold text-[#f9a8d4] sm:inline-flex">
                     {copy.proof.pool}
                   </span>
                 )}
