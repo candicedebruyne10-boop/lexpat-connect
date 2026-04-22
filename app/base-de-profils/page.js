@@ -32,7 +32,21 @@ function ProfileCard({ profile, t, isMember, locale }) {
   const employerHref = locale === "en" ? "/en/employeurs"  : "/employeurs";
 
   return (
-    <div className="group flex flex-col gap-4 rounded-[24px] border border-[#e3eaf1] bg-white p-6 shadow-[0_4px_16px_rgba(15,23,42,0.05)] transition hover:border-[#c5d4f3] hover:shadow-[0_8px_28px_rgba(29,59,139,0.09)]">
+    <div className={`group flex flex-col gap-4 rounded-[24px] border bg-white p-6 shadow-[0_4px_16px_rgba(15,23,42,0.05)] transition ${
+      profile.featured
+        ? "border-[#f9a8d4] hover:border-[#f472b6] hover:shadow-[0_8px_28px_rgba(233,30,140,0.10)]"
+        : "border-[#e3eaf1] hover:border-[#c5d4f3] hover:shadow-[0_8px_28px_rgba(29,59,139,0.09)]"
+    }`}>
+
+      {/* Badge "mis en avant" — visible uniquement si featured */}
+      {profile.featured && (
+        <div className="flex items-center gap-1.5 rounded-full border border-[#f9a8d4] bg-[#fdf2f8] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#db2777] w-fit">
+          <svg viewBox="0 0 12 12" fill="currentColor" className="h-2.5 w-2.5 shrink-0">
+            <path d="M6 1l1.2 3.3H11L8.1 6.5l1.1 3.3L6 8.1l-3.2 1.7 1.1-3.3L1 4.3h3.8L6 1z"/>
+          </svg>
+          {locale === "en" ? "Featured profile" : "Profil mis en avant"}
+        </div>
+      )}
 
       {/* En-tête */}
       <div className="flex items-center gap-4">
