@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RegionSelector from "./RegionSelector";
 import { COUNTRIES, EU_NATIONALITIES_FR } from "../lib/countries";
+import { FLANDRE_MB_21, FLANDRE_VDAB_227_SET } from "../lib/flandreKnelpuntberoepen";
 import {
   getProfessionGroupsForRegions,
   parseRegionSelection,
@@ -333,10 +334,36 @@ function isTHQQualified(data) {
   return data.isHQ && hasGoodDiploma && sal >= getTHQThreshold(data.region, youngWorker);
 }
 
+/**
+ * Vérifie si le métier figure sur la liste VDAB 227 pour la région Flandre,
+ * ou sur la liste de pénurie générale pour Bruxelles/Wallonie.
+ */
 function isShortageJob(data) {
+  const regions = parseRegionSelection(data.region);
+  const flandre = regions.some((r) => r.toLowerCase().includes("flandre"));
+
+  if (flandre) {
+    // Pour Flandre : on vérifie la liste VDAB 227 + la liste MB 21 (qui inclut Diamantbewerker)
+    return (
+      data.profession &&
+      data.profession !== "Autre profession" &&
+      (FLANDRE_VDAB_227_SET.has(data.profession) || FLANDRE_MB_21.has(data.profession))
+    );
+  }
+
+  // Bruxelles / Wallonie : vérification via les groupes de professions régionaux
   const groups = getProfessionGroupsForRegions(data.region);
-  const allJobs = groups.flatMap((g) => g.options);
+  const allJobs = groups.flatMap((g) => g.options.map((o) => o.value ?? o));
   return data.profession && data.profession !== "Autre profession" && allJobs.includes(data.profession);
+}
+
+/**
+ * Vérifie si le métier est sur la liste MB (21 professions, AM 1 décembre 2025).
+ * Ces professions bénéficient d'une DISPENSE TOTALE du test marché en Flandre.
+ */
+function isMBShortageJob(data) {
+  if (!isFlandre(data.region)) return false;
+  return data.profession && FLANDRE_MB_21.has(data.profession);
 }
 
 function isFlandre(region) {
@@ -378,6 +405,24 @@ function computeEligibility(data, locale = "fr") {
     };
 
     switch (frResult.verdict) {
+      case "FLANDRE_NO_ACCESS":
+        return {
+          ...base,
+          label: "Flanders single permit not accessible for this role",
+          procedure: "Single permit — not eligible",
+          positives: [],
+          warnings: [
+            `The role "${data.profession || "selected"}" does not appear on any official Flemish shortage occupation list — neither the MB list (21 occupations, Ministerial Decree of 1 December 2025) nor the VDAB 2026 knelpuntberoepen list (227 occupations).`,
+            "Since 1 January 2026, access to the single economic work permit in Flanders requires the occupation to appear on one of these two official lists, regardless of how long the job vacancy has been advertised.",
+            "A recruitment outside these lists is not eligible for this type of permit in Flanders.",
+          ],
+          nextSteps: [
+            "Check whether the exact job title could match an occupation on the VDAB 2026 knelpuntberoepen list (227 occupations).",
+            "Explore whether another permit category may apply (posted worker, artist, sportsperson, specific exemption).",
+            "Consider the free movement route if the candidate holds EU/EEA/Swiss nationality.",
+            "Contact the LEXPAT team for a full legal assessment before taking any further steps.",
+          ],
+        };
       case "EU_EXEMPT":
         return {
           ...base,
@@ -423,26 +468,60 @@ function computeEligibility(data, locale = "fr") {
             "Validate the file with counsel before introduction.",
           ],
         };
-      case "SHORTAGE_FAVORABLE":
+      case "SHORTAGE_FAVORABLE": {
+        const isMB = frResult.procedure.includes("AM 1 déc") || frResult.procedure.includes("dispense totale");
+        const isVDAB = frResult.procedure.includes("VDAB 2026") || frResult.procedure.includes("knelpuntberoep");
         return {
           ...base,
-          label: "Favourable situation for further legal review",
-          procedure: frResult.procedure.includes("Flandre")
-            ? "Single permit — shortage occupation / Flemish exemption"
-            : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
-          positives: [
-            "The role appears on an official shortage occupation list or benefits from a favourable regional route.",
-            frResult.procedure.includes("Flandre")
-              ? "In Flanders, shortage occupations may benefit from a full labour market test exemption."
-              : `In ${regionName}, the file benefits from a lighter labour market test framework.`,
-          ],
-          warnings: frResult.warnings.length ? ["A final legal validation remains advisable before filing."] : [],
-          nextSteps: [
-            "Check the exact job title against the applicable regional list.",
-            "Prepare the file and supporting documents.",
-            "Validate the strategy with counsel before filing.",
-          ],
+          label: isMB
+            ? "Favourable profile — full labour market test exemption (MB list)"
+            : isVDAB
+              ? "Favourable situation — labour market test completed (VDAB 2026 list)"
+              : "Favourable situation for further legal review",
+          procedure: isMB
+            ? "Single permit — shortage occupation / full exemption (Ministerial Decree 1 Dec. 2025)"
+            : isVDAB
+              ? "Single permit — VDAB 2026 knelpuntberoep (VDAB + EURES labour market test)"
+              : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
+          positives: isMB
+            ? [
+                "The role appears on the MB list of 21 shortage occupations (Ministerial Decree of 1 December 2025, in force since 1 January 2026).",
+                "This category benefits from a FULL exemption from the labour market test — no job posting or refusal justification is required.",
+                "Maximum legal processing time: 4 months.",
+              ]
+            : isVDAB
+              ? [
+                  "The role appears on the VDAB 2026 knelpuntberoepen list (227 occupations, published 1 February 2026).",
+                  "The required labour market test steps appear to have been engaged (VDAB + EURES publication, documented refusals).",
+                ]
+              : [
+                  "The role appears on an official shortage occupation list and benefits from a lighter labour market test framework.",
+                ],
+          warnings: frResult.warnings.length ? [
+            isMB
+              ? "A final legal check remains advisable before filing."
+              : "Ensure all cumulative conditions are fully documented before filing.",
+          ] : [],
+          nextSteps: isMB
+            ? [
+                "Verify that the exact job title matches the official MB list designation.",
+                "Prepare the single permit application file with all required documents.",
+                "Validate the file with counsel before submitting to the competent Flemish authority.",
+              ]
+            : isVDAB
+              ? [
+                  "Ensure the total publication period is at least 9 weeks and falls within the 4 months preceding the application.",
+                  "Formally document all reasoned refusals of local and European candidates.",
+                  "Retain proof of active mediation by VDAB throughout the publication period.",
+                  "Have the complete file reviewed by counsel before filing.",
+                ]
+              : [
+                  "Check the exact job title against the applicable regional list.",
+                  "Prepare the file and supporting documents.",
+                  "Validate the strategy with counsel before filing.",
+                ],
         };
+      }
       case "CLASSIC_FAVORABLE":
         return {
           ...base,
@@ -459,22 +538,41 @@ function computeEligibility(data, locale = "fr") {
             "Have the full file reviewed by counsel before filing.",
           ],
         };
-      case "PENDING_STEPS":
+      case "PENDING_STEPS": {
+        const isVDABPending = frResult.procedure.includes("VDAB 2026") || frResult.procedure.includes("knelpuntberoep");
         return {
           ...base,
-          label: "File to secure before filing",
-          procedure: frResult.procedure.includes("classique") ? "Standard single permit" : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
-          positives: frResult.positives.length ? ["Some useful preparatory steps have already been completed."] : [],
-          warnings: [
-            marketTest ? `A publication period of at least ${marketTest.label} on ${marketTest.platform} is still required or must be completed.` : "Further labour market test steps are still required.",
-            "The file should be strengthened before any introduction.",
-          ],
-          nextSteps: [
-            "Complete the labour market test and supporting evidence.",
-            "Document refusals and publication history carefully.",
-            "Review the file with counsel before going further.",
-          ],
+          label: isVDABPending ? "File to secure — 9-week VDAB + EURES labour market test required" : "File to secure before filing",
+          procedure: isVDABPending
+            ? "Single permit — VDAB 2026 knelpuntberoep (VDAB + EURES labour market test)"
+            : frResult.procedure.includes("classique")
+              ? "Standard single permit"
+              : `Single permit — shortage occupation${marketTest ? ` (${marketTest.platform})` : ""}`,
+          positives: frResult.positives.length ? ["The role appears on an official shortage occupation list."] : [],
+          warnings: isVDABPending
+            ? [
+                "Publication for at least 9 weeks on both VDAB and EURES is mandatory and must fall within the 4 months preceding the application date.",
+                "All conditions are cumulative: VDAB publication + EURES + active VDAB mediation + documented refusals. Missing any one element is grounds for refusal.",
+              ]
+            : [
+                marketTest ? `A publication period of at least ${marketTest.label} on ${marketTest.platform} is still required or must be completed.` : "Further labour market test steps are still required.",
+                "The file should be strengthened before any introduction.",
+              ],
+          nextSteps: isVDABPending
+            ? [
+                "Publish the vacancy simultaneously on VDAB and EURES for a minimum of 9 weeks.",
+                "Ensure the publication period falls within the 4 months preceding the intended filing date.",
+                "Request and document active mediation by VDAB throughout the publication period.",
+                "Formally document the reasons for rejecting any local or European candidates.",
+                "Once the labour market test is completed, have the full file reviewed by counsel before filing.",
+              ]
+            : [
+                "Complete the labour market test and supporting evidence.",
+                "Document refusals and publication history carefully.",
+                "Review the file with counsel before going further.",
+              ],
         };
+      }
       default:
         return {
           ...base,
@@ -598,35 +696,123 @@ function computeEligibility(data, locale = "fr") {
   positives.push(`Salaire de ${fmt(sal)} €/mois ≥ RMMMG légal (${fmt(RMMMG)} €). La condition salariale de base est respectée.`);
   if (expYears >= 3) positives.push(`Expérience de ${expYears}+ ans : élément de nature à renforcer la pertinence du recrutement aux yeux de l'autorité d'instruction.`);
 
-  /* ── Branche 3 : Métier en pénurie ───────────────────────────────────── */
-  if (shortage) {
-    positives.push(`"${profession}" figure sur la liste officielle des métiers en pénurie pour ${regionName} (2026) — cela influence favorablement la procédure.`);
+  /* ── Branche 3a : Flandre — pas d'accès si hors des deux listes ────── */
+  if (flandre && !shortage) {
+    return {
+      verdict:       "FLANDRE_NO_ACCESS",
+      label:         "Pas d'accès au permis unique en Flandre pour ce métier",
+      color:         "red",
+      procedure:     "Permis unique non accessible",
+      delay:         "—",
+      permitDuration:"—",
+      complexity:    "Bloquant",
+      positives:  [],
+      warnings: [
+        `"${profession || "Ce métier"}" ne figure sur aucune des listes officielles de métiers en pénurie en Flandre — ni la liste MB (21 métiers, AM 1 décembre 2025), ni les knelpuntberoepen VDAB 2026 (227 métiers).`,
+        "Depuis le 1er janvier 2026, l'accès au permis unique économique en Flandre est conditionné à l'appartenance du métier à l'une de ces deux listes, quelle que soit la durée de publication de l'offre.",
+        "Un recrutement hors liste n'est pas éligible à ce type de permis en Flandre.",
+      ],
+      nextSteps: [
+        "Vérifier si l'intitulé exact du poste peut correspondre à un métier de la liste VDAB 2026 (227 knelpuntberoepen).",
+        "Examiner si une autre catégorie de permis est applicable (détachement, artiste, sportif, permis spécifique).",
+        "Envisager d'autres voies si le candidat est ressortissant UE/EEE/Suisse — la libre circulation reste ouverte.",
+        "Consulter le cabinet LEXPAT pour une analyse juridique complète avant toute démarche.",
+      ],
+    };
+  }
 
-    /* Flandre : dispense totale */
-    if (flandre) {
-      positives.push("En Flandre, les métiers en pénurie (knelpuntberoepen) ouvrent droit à une dispense totale de l'examen du marché de l'emploi.");
+  /* ── Branche 3b : Métier en pénurie ─────────────────────────────────── */
+  if (shortage) {
+    const mb21 = isMBShortageJob(data);
+
+    /* Flandre — Liste MB (21 métiers) : dispense TOTALE du test marché */
+    if (flandre && mb21) {
+      positives.push(`"${profession}" figure sur la liste MB des 21 métiers moyennement qualifiés en pénurie (Arrêté ministériel du 1er décembre 2025, en vigueur depuis le 1er janvier 2026).`);
+      positives.push("Cette catégorie bénéficie d'une DISPENSE TOTALE de l'examen du marché de l'emploi — aucune publication d'offre ni justification de refus de candidats locaux n'est exigée.");
       positives.push("Délai légal de traitement : 4 mois maximum.");
-      if (contractType === "CDI") positives.push("Contrat CDI : élément favorable.");
-      if (contractType === "CDD") warnings.push("CDD : vérifier que la durée est compatible avec la période de séjour demandée.");
+      if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction du dossier.");
+      if (youngWorker) positives.push("Travailleur de moins de 30 ans : aucune incidence sur cette voie (pas de seuil salarial spécifique pour la dispense MB).");
+      if (contractType === "CDD") warnings.push("CDD : vérifier que la durée du contrat est compatible avec la durée de séjour demandée dans le dossier.");
+      if (data.fullTime === "partial") warnings.push("Temps partiel : en Flandre, le contrat doit représenter au minimum 80 % d'un temps plein. Vérifier cette condition avant introduction.");
       return {
         verdict:       "SHORTAGE_FAVORABLE",
-        label:         "Situation favorable à une analyse approfondie",
+        label:         "Profil favorable — dispense totale du test marché (liste MB)",
         color:         "green",
-        procedure:     "Permis unique — métier en pénurie / dispense Flandre",
+        procedure:     "Permis unique — métier en pénurie / dispense totale (AM 1 déc. 2025)",
         delay:         "4 mois max",
         permitDuration:"1 an max (renouvelable)",
         complexity:    "Modérée",
         positives,
         warnings,
         nextSteps:  [
-          "Vérifier que l'intitulé exact du poste correspond bien à la liste VDAB des knelpuntberoepen.",
-          "Préparer le dossier de demande de permis unique avec les documents requis.",
-          "Consulter un juriste pour valider les conditions spécifiques du dossier avant introduction.",
+          "Vérifier que l'intitulé exact du poste correspond à la désignation officielle de la liste MB.",
+          "Préparer le dossier de demande de permis unique avec l'ensemble des documents requis.",
+          "Consulter un juriste pour valider les conditions spécifiques du dossier avant introduction auprès de l'autorité compétente flamande.",
         ],
       };
     }
 
-    /* Bruxelles / Wallonie : test marché allégé */
+    /* Flandre — Liste VDAB 227 (hors MB) : test marché 9 semaines OBLIGATOIRE */
+    if (flandre && !mb21) {
+      positives.push(`"${profession}" figure sur la liste VDAB des 227 knelpuntberoepen 2026 (publication 1er février 2026).`);
+      positives.push(
+        "Ce métier ouvre droit au permis unique en Flandre, sous réserve de la réalisation d'un test marché complet : " +
+        "publication pendant 9 semaines sur VDAB ET EURES dans les 4 mois précédant la demande, avec médiation active du VDAB et preuve d'absence de candidat local/européen approprié."
+      );
+      warnings.push("Les conditions sont CUMULATIVES : VDAB + EURES + médiation active + justification motivée des refus. L'absence de l'une de ces preuves constitue un motif de refus.");
+      if (data.fullTime === "partial") warnings.push("En Flandre, le contrat doit représenter au minimum 80 % d'un temps plein pour l'obtention d'un permis unique. Un temps partiel inférieur est un motif de refus.");
+
+      const marketDone = offerPublished && euresPublished && Number(candidatesRefused) >= 1;
+      if (marketDone) {
+        positives.push("Les démarches de test marché ont été engagées : publication sur VDAB et EURES effectuée, candidats locaux documentés.");
+        if (contractType === "CDI") positives.push("Contrat CDI : élément favorable à l'instruction.");
+        return {
+          verdict:       "SHORTAGE_FAVORABLE",
+          label:         "Situation favorable — test marché engagé (liste VDAB 2026)",
+          color:         "green",
+          procedure:     "Permis unique — knelpuntberoep VDAB 2026 (test marché VDAB + EURES)",
+          delay:         "4 mois max (après test marché)",
+          permitDuration:"1 an max (renouvelable)",
+          complexity:    "Modérée",
+          positives,
+          warnings,
+          nextSteps:  [
+            "S'assurer que la durée totale de publication atteint bien 9 semaines et s'inscrit dans les 4 mois précédant la demande.",
+            "Documenter formellement les refus motivés de candidats locaux et européens (justification écrite obligatoire).",
+            "Conserver la preuve de la médiation active par le VDAB sur toute la période.",
+            "Faire analyser le dossier complet par un juriste avant introduction.",
+          ],
+        };
+      }
+
+      if (!offerPublished) {
+        warnings.push("La publication de l'offre sur VDAB pendant 9 semaines minimum (dans les 4 mois précédant la demande) n'a pas encore été engagée — c'est un préalable obligatoire.");
+      }
+      if (!euresPublished) {
+        warnings.push("La publication sur EURES est OBLIGATOIRE pour ce type de dossier en Flandre (condition cumulative). Elle doit être effectuée en parallèle de la publication VDAB.");
+      }
+      return {
+        verdict:       "PENDING_STEPS",
+        label:         "Dossier à sécuriser — test marché VDAB + EURES requis",
+        color:         "orange",
+        procedure:     "Permis unique — knelpuntberoep VDAB 2026 (test marché VDAB + EURES)",
+        delay:         "4 mois max (après test marché de 9 semaines)",
+        permitDuration:"1 an max (renouvelable)",
+        complexity:    "Modérée",
+        positives,
+        warnings,
+        nextSteps:  [
+          "Publier l'offre simultanément sur VDAB et EURES pendant 9 semaines minimum.",
+          "Veiller à ce que la publication intervienne dans les 4 mois précédant la date d'introduction du dossier.",
+          "Solliciter et documenter la médiation active du VDAB tout au long de la période.",
+          "Documenter les candidatures reçues et les motifs écrits de refus de candidats locaux et européens.",
+          "Une fois le test marché complété, constituer et faire valider le dossier par un juriste avant introduction.",
+        ],
+      };
+    }
+
+    /* Bruxelles / Wallonie : test marché allégé ──────────────────────── */
+    positives.push(`"${profession}" figure sur la liste officielle des métiers en pénurie pour ${regionName} (2026) — cela influence favorablement la procédure.`);
     positives.push(
       `À ${regionName}, le métier en pénurie facilite la procédure, mais une publication minimale de ` +
       `${marketTest.label} sur ${marketTest.platform} reste requise avant l'introduction du dossier.`
@@ -675,7 +861,7 @@ function computeEligibility(data, locale = "fr") {
     };
   }
 
-  /* ── Branche 4 : Permis unique classique ────────────────────────────── */
+  /* ── Branche 4 : Permis unique classique (Bruxelles / Wallonie uniquement) ── */
   warnings.push(
     `"${profession || "Ce métier"}" ne figure pas sur la liste des métiers en pénurie pour ${regionName} — ` +
     `l'examen complet du marché de l'emploi est obligatoire avant toute introduction de dossier.`
@@ -685,14 +871,10 @@ function computeEligibility(data, locale = "fr") {
     `avec justification écrite des refus de candidats locaux et européens.`
   );
   if (marketTest.timing) {
-    warnings.push(`Flandre : cette publication doit avoir eu lieu ${marketTest.timing}. ${marketTest.note || ""}`);
+    warnings.push(`Cette publication doit avoir eu lieu ${marketTest.timing}. ${marketTest.note || ""}`);
   }
   if (marketTest.note && !marketTest.timing) {
     warnings.push(marketTest.note);
-  }
-  /* Flandre : exigence 80% FTE pour permis classique */
-  if (flandre && data.fullTime === "partial") {
-    warnings.push("En Flandre, le contrat doit représenter au minimum 80 % d'un temps plein pour l'obtention d'un permis unique classique. Un temps partiel inférieur à ce seuil est un motif de refus.");
   }
 
   const marketTestFull    = offerPublished && euresPublished && Number(candidatesRefused) >= 3;
@@ -865,11 +1047,21 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
       setStep(TOTAL_STEPS + 1);
       return;
     }
-    // Métier en pénurie en Flandre après étape 3 — dispense totale du test marché
-    if (step === 3 && isShortageJob(data) && isFlandre(data.region)) {
-      setResult(computeEligibility(data, locale));
-      setStep(TOTAL_STEPS + 1);
-      return;
+    // Flandre après étape 3 : traitement 3 niveaux
+    if (step === 3 && isFlandre(data.region)) {
+      if (isMBShortageJob(data)) {
+        // Niveau 1 — liste MB 21 : dispense totale, pas de test marché → résultat direct
+        setResult(computeEligibility(data, locale));
+        setStep(TOTAL_STEPS + 1);
+        return;
+      }
+      if (!isShortageJob(data)) {
+        // Hors liste — pas d'accès au permis unique en Flandre → résultat direct (FLANDRE_NO_ACCESS)
+        setResult(computeEligibility(data, locale));
+        setStep(TOTAL_STEPS + 1);
+        return;
+      }
+      // Niveau 2 — liste VDAB 227 (hors MB) : test marché 9 semaines requis → afficher étape 4
     }
     if (step < TOTAL_STEPS) {
       setStep((s) => s + 1);
@@ -1157,9 +1349,12 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
                   <div className="rounded-[12px] border border-[#dce8f5] bg-[#f0f6ff] px-4 py-3 text-xs text-[#1E3A78] space-y-1">
                     <p><strong>{isEn ? `Rule for ${displayedRegionLabels[0] || "this region"}:` : `Règle pour ${regionLabels[0] || "cette région"} :`}</strong> {isEn ? "publication required for at least" : "publication obligatoire pendant"}{" "}
                     <strong>{marketTest.label}</strong> {isEn ? "on" : "sur"} {marketTest.platform}
-                    {!isFlandre(data.region) && (isEn ? " (+ EURES recommended)" : " (+ EURES recommandé)")} {isEn ? "before filing the application." : "avant d'introduire le dossier."}</p>
+                    {isFlandre(data.region)
+                      ? (isEn ? " + EURES (both required — cumulative conditions)" : " + EURES (toutes deux obligatoires — conditions cumulatives)")
+                      : (isEn ? " (+ EURES recommended)" : " (+ EURES recommandé)")
+                    } {isEn ? "before filing the application." : "avant d'introduire le dossier."}</p>
                     {marketTest.timing && (
-                      <p className="text-[#8a9bb0]">{isEn ? "Flanders: this publication must have taken place" : "Flandre : cette publication doit avoir eu lieu"} <strong>{marketTest.timing}</strong>.</p>
+                      <p className="text-[#8a9bb0]">{isEn ? "This publication must have taken place" : "Cette publication doit avoir eu lieu"} <strong>{marketTest.timing}</strong>.</p>
                     )}
                     {marketTest.note && (
                       <p className="text-[#57B7AF] font-medium">{marketTest.note}</p>
