@@ -176,6 +176,11 @@ export async function POST(request) {
     const name     = (formData.get("name")    || "").trim();
     const isDryRun = formData.get("dry_run") === "true";
     const defaultLocale = formData.get("locale") || "fr";
+    const batchSize   = parseInt(formData.get("batch_size")   || "0") || 0;
+    const batchOffset = parseInt(formData.get("batch_offset") || "0") || 0;
+
+    // Identifiant unique de campagne (pour le tracking d'ouverture)
+    const campaignId = crypto.randomUUID();
 
     if (!csvFile || typeof csvFile === "string") {
       return NextResponse.json({ error: "Aucun fichier CSV fourni." }, { status: 400 });
@@ -188,10 +193,18 @@ export async function POST(request) {
     }
 
     const csvText  = await csvFile.text();
-    const contacts = parseCSV(csvText);
+    const allContacts = parseCSV(csvText);
+    if (!allContacts.length) {
+      return NextResponse.json({ error: "Aucun contact valide trouvé dans le CSV (colonne E-mail 1 obligatoire)." }, { status: 400 });
+    }
+
+    // Découpe en lot si batch_size est précisé
+    const contacts = batchSize > 0
+      ? allContacts.slice(batchOffset, batchOffset + batchSize)
+      : allContacts;
 
     if (!contacts.length) {
-      return NextResponse.json({ error: "Aucun contact valide trouvé dans le CSV (colonne E-mail 1 obligatoire)." }, { status: 400 });
+      return NextResponse.json({ error: "Lot vide — tous les contacts de ce fichier ont déjà été envoyés." }, { status: 400 });
     }
 
     // Vérifier les désinscriptions
@@ -219,6 +232,7 @@ export async function POST(request) {
         locale,
         bodyText,
         recipientEmail: contact.email,
+        campaignId,
       });
 
       if (isDryRun) {
@@ -283,8 +297,13 @@ export async function POST(request) {
     return NextResponse.json({
       ok: true,
       dry_run: isDryRun,
+      campaign_id: campaignId,
       campaign_name: campaignName,
-      total_parsed: contacts.length,
+      total_in_file: allContacts.length,
+      total_in_batch: contacts.length,
+      batch_offset: batchOffset,
+      batch_size: batchSize,
+      remaining: Math.max(0, allContacts.length - batchOffset - contacts.length),
       sent: sent.length,
       skipped: skipped.length,
       failed: failed.length,

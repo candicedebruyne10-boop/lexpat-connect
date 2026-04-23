@@ -1097,6 +1097,11 @@ export default function AdminDashboard({ initialData }) {
   const [csvCampaignName, setCsvCampaignName] = useState("");
   const [csvSending, setCsvSending]         = useState(false);
   const [csvResult, setCsvResult]           = useState(null);
+  const [csvBatchSize, setCsvBatchSize]     = useState(30);
+  const [csvBatchOffset, setCsvBatchOffset] = useState(0);
+  const [csvCampaignId, setCsvCampaignId]   = useState(null);
+  const [csvOpens, setCsvOpens]             = useState(null);
+  const [csvOpensLoading, setCsvOpensLoading] = useState(false);
   const csvBodyRef                          = useRef(null);
 
   // Parse CSV client-side for preview
@@ -1104,7 +1109,8 @@ export default function AdminDashboard({ initialData }) {
     setCsvFile(file);
     setCsvResult(null);
     setCsvParseError(null);
-    if (!file) { setCsvContacts([]); return; }
+    if (!file) { setCsvContacts([]); setCsvBatchOffset(0); return; }
+    setCsvBatchOffset(0);
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -1158,9 +1164,10 @@ export default function AdminDashboard({ initialData }) {
     reader.readAsText(file, "utf-8");
   };
 
-  const sendCsvCampaign = async (isDryRun) => {
+  const sendCsvCampaign = async (isDryRun, offsetOverride) => {
     if (!csvFile || !csvSubject || !csvBody) return;
-    setCsvSending(true); setCsvResult(null);
+    const offset = offsetOverride !== undefined ? offsetOverride : csvBatchOffset;
+    setCsvSending(true); setCsvResult(null); setCsvOpens(null);
     try {
       const fd = new FormData();
       fd.append("csv", csvFile);
@@ -1169,6 +1176,8 @@ export default function AdminDashboard({ initialData }) {
       fd.append("name", csvCampaignName);
       fd.append("dry_run", isDryRun ? "true" : "false");
       fd.append("locale", "fr");
+      fd.append("batch_size",   String(csvBatchSize));
+      fd.append("batch_offset", String(offset));
       const res = await fetch("/api/admin/campaigns/csv", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -1176,11 +1185,37 @@ export default function AdminDashboard({ initialData }) {
       });
       const json = await res.json();
       setCsvResult(json);
-      if (!isDryRun) fetchCampaigns(1);
+      if (!isDryRun && json.ok) {
+        setCsvCampaignId(json.campaign_id || null);
+        // Avancer l'offset pour le prochain lot
+        const nextOffset = offset + csvBatchSize;
+        if (nextOffset < csvContacts.length) {
+          setCsvBatchOffset(nextOffset);
+        } else {
+          setCsvBatchOffset(0); // tout envoyé — reset
+        }
+        fetchCampaigns(1);
+      }
     } catch (err) {
       setCsvResult({ error: err.message });
     } finally {
       setCsvSending(false);
+    }
+  };
+
+  const fetchCsvOpens = async (campaignId) => {
+    if (!campaignId || !token) return;
+    setCsvOpensLoading(true);
+    try {
+      const res = await fetch(`/api/admin/campaigns/opens?campaign_id=${campaignId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      setCsvOpens(json.opens || []);
+    } catch {
+      setCsvOpens([]);
+    } finally {
+      setCsvOpensLoading(false);
     }
   };
 
@@ -2321,6 +2356,34 @@ export default function AdminDashboard({ initialData }) {
                     </div>
                   </div>
 
+                  {/* Taille du lot */}
+                  <div>
+                    <label style={labelStyle}>Taille du lot</label>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {[10, 20, 30, 50, 100, 9999].map(n => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => { setCsvBatchSize(n); setCsvBatchOffset(0); }}
+                          style={{
+                            padding: "5px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer",
+                            border: `1.5px solid ${csvBatchSize === n ? "#1E3A78" : "#d0dcf0"}`,
+                            background: csvBatchSize === n ? "#1E3A78" : "#f8fbff",
+                            color: csvBatchSize === n ? "#fff" : "#3d5470",
+                          }}
+                        >
+                          {n === 9999 ? "Tous" : n}
+                        </button>
+                      ))}
+                    </div>
+                    {csvContacts.length > 0 && csvBatchSize < 9999 && (
+                      <div style={{ marginTop: 8, fontSize: 12, color: "#607086", background: "#eef4ff", borderRadius: 8, padding: "6px 12px" }}>
+                        Lot <strong>{Math.floor(csvBatchOffset / csvBatchSize) + 1}</strong> / <strong>{Math.ceil(csvContacts.length / csvBatchSize)}</strong>
+                        {" — "}contacts <strong>{csvBatchOffset + 1}</strong> à <strong>{Math.min(csvBatchOffset + csvBatchSize, csvContacts.length)}</strong> sur <strong>{csvContacts.length}</strong>
+                      </div>
+                    )}
+                  </div>
+
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap", paddingTop: 4 }}>
                     <button
                       onClick={() => sendCsvCampaign(true)}
@@ -2334,7 +2397,12 @@ export default function AdminDashboard({ initialData }) {
                       disabled={csvSending || !csvFile || !csvSubject || !csvBody || csvContacts.length === 0}
                       style={{ ...btn.base, ...btn.primary, opacity: (!csvFile || !csvSubject || !csvBody || csvContacts.length === 0) ? 0.5 : 1 }}
                     >
-                      {csvSending ? "Envoi en cours…" : `🚀 Envoyer à ${csvContacts.length} contact${csvContacts.length !== 1 ? "s" : ""}`}
+                      {csvSending
+                        ? "Envoi en cours…"
+                        : csvBatchSize < 9999
+                          ? `🚀 Envoyer lot ${Math.floor(csvBatchOffset / csvBatchSize) + 1} (${Math.min(csvBatchSize, csvContacts.length - csvBatchOffset)} contacts)`
+                          : `🚀 Envoyer à ${csvContacts.length} contact${csvContacts.length !== 1 ? "s" : ""}`
+                      }
                     </button>
                   </div>
                 </div>
@@ -2386,13 +2454,70 @@ export default function AdminDashboard({ initialData }) {
                       ) : (
                         <>
                           <div style={{ fontWeight: 800, fontSize: 14, color: "#16a34a", marginBottom: 8 }}>
-                            {csvResult.dry_run ? "🔍 Simulation terminée" : "✅ Envoi terminé"}
+                            {csvResult.dry_run ? "🔍 Simulation terminée" : "✅ Lot envoyé"}
                           </div>
                           <div style={{ fontSize: 13, color: "#3d5470", lineHeight: 2 }}>
                             <strong>{csvResult.sent}</strong> envoyé{csvResult.sent !== 1 ? "s" : ""} ·{" "}
                             <strong>{csvResult.skipped}</strong> ignoré{csvResult.skipped !== 1 ? "s" : ""} ·{" "}
                             <strong style={{ color: csvResult.failed > 0 ? "#b91c1c" : "inherit" }}>{csvResult.failed}</strong> erreur{csvResult.failed !== 1 ? "s" : ""}
                           </div>
+
+                          {/* Lot suivant */}
+                          {!csvResult.dry_run && csvResult.remaining > 0 && (
+                            <div style={{ marginTop: 12, padding: "10px 14px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8 }}>
+                              <div style={{ fontSize: 12, color: "#9a3412", fontWeight: 700, marginBottom: 8 }}>
+                                📋 {csvResult.remaining} contact{csvResult.remaining > 1 ? "s" : ""} restant{csvResult.remaining > 1 ? "s" : ""} dans ce fichier
+                              </div>
+                              <button
+                                onClick={() => sendCsvCampaign(false, csvBatchOffset)}
+                                disabled={csvSending}
+                                style={{ ...btn.base, background: "#ea580c", color: "#fff", fontSize: 12, padding: "6px 14px" }}
+                              >
+                                {csvSending ? "Envoi…" : `🚀 Envoyer le lot suivant (${Math.min(csvBatchSize, csvResult.remaining)} contacts)`}
+                              </button>
+                            </div>
+                          )}
+
+                          {!csvResult.dry_run && csvResult.remaining === 0 && csvResult.total_in_file > csvResult.total_in_batch && (
+                            <div style={{ marginTop: 8, fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
+                              🎉 Tous les contacts du fichier ont été traités.
+                            </div>
+                          )}
+
+                          {/* Ouvertures */}
+                          {!csvResult.dry_run && csvCampaignId && (
+                            <div style={{ marginTop: 12, borderTop: "1px solid #bbf7d0", paddingTop: 12 }}>
+                              <button
+                                onClick={() => fetchCsvOpens(csvCampaignId)}
+                                disabled={csvOpensLoading}
+                                style={{ ...btn.base, ...btn.ghost, fontSize: 12, padding: "5px 12px" }}
+                              >
+                                {csvOpensLoading ? "Chargement…" : "👁 Voir qui a ouvert"}
+                              </button>
+                              {csvOpens !== null && (
+                                <div style={{ marginTop: 10 }}>
+                                  {csvOpens.length === 0 ? (
+                                    <div style={{ fontSize: 12, color: "#607086" }}>Aucune ouverture enregistrée pour l'instant (les clients de messagerie bloquent parfois les pixels).</div>
+                                  ) : (
+                                    <>
+                                      <div style={{ fontSize: 12, fontWeight: 700, color: "#16a34a", marginBottom: 6 }}>
+                                        {csvOpens.length} ouverture{csvOpens.length > 1 ? "s" : ""} confirmée{csvOpens.length > 1 ? "s" : ""}
+                                      </div>
+                                      <div style={{ maxHeight: 140, overflowY: "auto" }}>
+                                        {csvOpens.map((o, i) => (
+                                          <div key={i} style={{ fontSize: 11, padding: "3px 0", borderBottom: "1px solid #d1fae5", display: "flex", justifyContent: "space-between" }}>
+                                            <span style={{ color: "#1E3A78", fontWeight: 600 }}>{o.email}</span>
+                                            <span style={{ color: "#607086" }}>{new Date(o.opened_at).toLocaleString("fr-BE")}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {(csvResult.failures || []).length > 0 && (
                             <details style={{ marginTop: 8 }}>
                               <summary style={{ cursor: "pointer", fontSize: 12, fontWeight: 700, color: "#b91c1c" }}>
