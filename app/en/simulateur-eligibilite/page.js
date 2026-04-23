@@ -39,8 +39,7 @@ export default function SimulateurPageEn() {
 
         {/* H1 with "possible?" in pink */}
         <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Can I recruit internationally<br />
-          for this <span style={{ color: "#e91e8c" }}>role?</span>
+          Is my international recruitment <span style={{ color: "#e91e8c" }}>possible?</span>
         </h1>
 
         {/* Description with key concepts in teal */}

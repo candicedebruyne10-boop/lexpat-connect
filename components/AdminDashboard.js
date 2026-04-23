@@ -981,6 +981,18 @@ export default function AdminDashboard({ initialData }) {
   });
   const [linkedinCampaignLoading, setLinkedinCampaignLoading] = useState(false);
   const [linkedinCampaignResult, setLinkedinCampaignResult] = useState(null);
+  const [linkedinPostForm, setLinkedinPostForm] = useState({
+    topic: "",
+    audience: "",
+    offer: "",
+    tone: "expert",
+    keywords: "",
+    cta: "",
+    author: "",
+    commentary: "",
+  });
+  const [linkedinPostLoading, setLinkedinPostLoading] = useState(false);
+  const [linkedinPostResult, setLinkedinPostResult] = useState(null);
 
   // ── Analytics tab state ─────────────────────────────────────────────────────
   const [analyticsInputs, setAnalyticsInputs] = useState({
@@ -1474,6 +1486,21 @@ export default function AdminDashboard({ initialData }) {
     });
   }, [linkedinStatus]);
 
+  useEffect(() => {
+    const connection = linkedinStatus?.connection;
+    if (!connection) return;
+    setLinkedinPostForm((prev) => {
+      if (prev.author) return prev;
+      return {
+        ...prev,
+        author:
+          connection.organization_snapshot?.[0]?.urn ||
+          connection.member_urn ||
+          "",
+      };
+    });
+  }, [linkedinStatus]);
+
   const createLinkedinDraftCampaign = async () => {
     setLinkedinCampaignLoading(true);
     setLinkedinCampaignResult(null);
@@ -1495,6 +1522,54 @@ export default function AdminDashboard({ initialData }) {
       setLinkedinCampaignResult({ error: e.message });
     } finally {
       setLinkedinCampaignLoading(false);
+    }
+  };
+
+  const generateLinkedinPost = async () => {
+    setLinkedinPostLoading(true);
+    setLinkedinPostResult(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/posts/generate", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(linkedinPostForm),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinPostForm((prev) => ({ ...prev, commentary: json.text || "" }));
+      setLinkedinPostResult({ mode: json.mode, generated: true });
+    } catch (e) {
+      setLinkedinPostResult({ error: e.message });
+    } finally {
+      setLinkedinPostLoading(false);
+    }
+  };
+
+  const publishLinkedinPost = async () => {
+    setLinkedinPostLoading(true);
+    setLinkedinPostResult(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/posts", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          author: linkedinPostForm.author,
+          commentary: linkedinPostForm.commentary,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinPostResult({ ok: true, postId: json.postId });
+    } catch (e) {
+      setLinkedinPostResult({ error: e.message });
+    } finally {
+      setLinkedinPostLoading(false);
     }
   };
 
@@ -2636,7 +2711,7 @@ export default function AdminDashboard({ initialData }) {
                         <button
                           key={n}
                           type="button"
-                          onClick={() => { setCsvBatchSize(n); setCsvBatchOffset(0); }}
+                          onClick={() => setCsvBatchSize(n)}
                           style={{
                             padding: "5px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer",
                             border: `1.5px solid ${csvBatchSize === n ? "#1E3A78" : "#d0dcf0"}`,
@@ -2649,9 +2724,35 @@ export default function AdminDashboard({ initialData }) {
                       ))}
                     </div>
                     {csvContacts.length > 0 && csvBatchSize < 9999 && (
-                      <div style={{ marginTop: 8, fontSize: 12, color: "#607086", background: "#eef4ff", borderRadius: 8, padding: "6px 12px" }}>
-                        Lot <strong>{Math.floor(csvBatchOffset / csvBatchSize) + 1}</strong> / <strong>{Math.ceil(csvContacts.length / csvBatchSize)}</strong>
-                        {" — "}contacts <strong>{csvBatchOffset + 1}</strong> à <strong>{Math.min(csvBatchOffset + csvBatchSize, csvContacts.length)}</strong> sur <strong>{csvContacts.length}</strong>
+                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <div style={{ fontSize: 12, color: "#607086", background: "#eef4ff", borderRadius: 8, padding: "6px 12px" }}>
+                          Lot <strong>{Math.floor(csvBatchOffset / csvBatchSize) + 1}</strong> / <strong>{Math.ceil(csvContacts.length / csvBatchSize)}</strong>
+                          {" — "}contacts <strong>{csvBatchOffset + 1}</strong> à <strong>{Math.min(csvBatchOffset + csvBatchSize, csvContacts.length)}</strong> sur <strong>{csvContacts.length}</strong>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={csvBatchOffset === 0}
+                          onClick={() => setCsvBatchOffset(Math.max(0, csvBatchOffset - csvBatchSize))}
+                          style={{ padding: "4px 12px", borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1.5px solid #d0dcf0", background: "#f8fbff", color: "#3d5470", opacity: csvBatchOffset === 0 ? 0.4 : 1 }}
+                        >← Lot préc.</button>
+                        <button
+                          type="button"
+                          disabled={csvBatchOffset + csvBatchSize >= csvContacts.length}
+                          onClick={() => setCsvBatchOffset(Math.min(csvContacts.length - 1, csvBatchOffset + csvBatchSize))}
+                          style={{ padding: "4px 12px", borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1.5px solid #d0dcf0", background: "#f8fbff", color: "#3d5470", opacity: csvBatchOffset + csvBatchSize >= csvContacts.length ? 0.4 : 1 }}
+                        >Lot suiv. →</button>
+                        <span style={{ fontSize: 11, color: "#8a9db8" }}>ou reprendre au contact&nbsp;#</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={csvContacts.length}
+                          value={csvBatchOffset + 1}
+                          onChange={e => {
+                            const v = Math.max(1, Math.min(csvContacts.length, parseInt(e.target.value) || 1));
+                            setCsvBatchOffset(v - 1);
+                          }}
+                          style={{ width: 64, padding: "3px 8px", borderRadius: 6, border: "1.5px solid #d0dcf0", fontSize: 12, color: "#1E3A78", fontWeight: 700 }}
+                        />
                       </div>
                     )}
                   </div>
@@ -3235,6 +3336,106 @@ export default function AdminDashboard({ initialData }) {
                       Brouillon cree. Groupe LinkedIn : <strong>{linkedinCampaignResult.campaignGroupId}</strong> · Campagne : <strong>{linkedinCampaignResult.campaignId || "ID non retourne"}</strong>
                     </Alert>
                   )}
+                </div>
+              )}
+            </div>
+
+            <div style={{ ...card, marginTop: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 18, color: "#1E3A78" }}>Posts LinkedIn organiques</div>
+                  <div style={{ fontSize: 13, color: "#6b85a0", marginTop: 4 }}>
+                    Generez un post depuis l'admin puis publiez-le sur votre profil ou votre page, sans lancer de campagne payante.
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    style={{ ...btn.base, ...btn.ghost }}
+                    onClick={generateLinkedinPost}
+                    disabled={!linkedinStatus?.connected || linkedinPostLoading}
+                  >
+                    {linkedinPostLoading ? "Generation..." : "Generer avec IA"}
+                  </button>
+                  <button
+                    style={{ ...btn.base, ...btn.primary }}
+                    onClick={publishLinkedinPost}
+                    disabled={!linkedinStatus?.connected || linkedinPostLoading}
+                  >
+                    {linkedinPostLoading ? "Publication..." : "Publier sur LinkedIn"}
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>Sujet</label>
+                  <input value={linkedinPostForm.topic} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, topic: e.target.value }))} style={inputStyle} placeholder="Ex: Recruter a l'international en Belgique" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Audience</label>
+                  <input value={linkedinPostForm.audience} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, audience: e.target.value }))} style={inputStyle} placeholder="DRH, PME belges, responsables RH" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Offre / message</label>
+                  <input value={linkedinPostForm.offer} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, offer: e.target.value }))} style={inputStyle} placeholder="Ce que LEXPAT Connect apporte" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Ton</label>
+                  <select value={linkedinPostForm.tone} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, tone: e.target.value }))} style={inputStyle}>
+                    <option value="expert">Expert</option>
+                    <option value="warm">Chaleureux</option>
+                    <option value="direct">Direct</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Mots-cles / hashtags</label>
+                  <input value={linkedinPostForm.keywords} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, keywords: e.target.value }))} style={inputStyle} placeholder="Belgique, recrutement, immigration" />
+                </div>
+                <div>
+                  <label style={labelStyle}>CTA</label>
+                  <input value={linkedinPostForm.cta} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, cta: e.target.value }))} style={inputStyle} placeholder="Ecrivez-moi pour en parler" />
+                </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={labelStyle}>Publier en tant que</label>
+                  <select value={linkedinPostForm.author} onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, author: e.target.value }))} style={inputStyle}>
+                    <option value="">Selectionnez un auteur</option>
+                    {linkedinStatus?.connection?.member_urn ? (
+                      <option value={linkedinStatus.connection.member_urn}>
+                        {linkedinStatus.connection.member_name || "Mon profil LinkedIn"}
+                      </option>
+                    ) : null}
+                    {(linkedinStatus?.connection?.organization_snapshot || []).map((org) => (
+                      <option key={org.urn} value={org.urn}>
+                        {org.name} ({(org.roles || []).join(", ") || "Page"})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={labelStyle}>Texte du post</label>
+                  <textarea
+                    value={linkedinPostForm.commentary}
+                    onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, commentary: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: 180, resize: "vertical" }}
+                    placeholder="Le texte genere apparaitra ici. Vous pouvez le modifier avant publication."
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 14, background: "#f8faff", border: "1px solid #e8eef8", borderRadius: 12, padding: "12px 14px", fontSize: 12, color: "#5d6e83", lineHeight: 1.8 }}>
+                Si `OPENAI_API_KEY` est configure, le bouton "Generer avec IA" utilisera OpenAI. Sinon, l'admin utilise un generateur assiste local pour produire un premier brouillon editable.
+              </div>
+
+              {linkedinPostResult && (
+                <div style={{ marginTop: 16 }}>
+                  {linkedinPostResult.error ? (
+                    <Alert type="error">Publication LinkedIn impossible : {linkedinPostResult.error}</Alert>
+                  ) : linkedinPostResult.ok ? (
+                    <Alert type="success">Post publie sur LinkedIn. Identifiant retourne : <strong>{linkedinPostResult.postId || "non fourni"}</strong></Alert>
+                  ) : linkedinPostResult.generated ? (
+                    <Alert type="success">Brouillon genere ({linkedinPostResult.mode === "openai" ? "OpenAI" : "mode assiste local"}). Vous pouvez maintenant l'editer puis le publier.</Alert>
+                  ) : null}
                 </div>
               )}
             </div>

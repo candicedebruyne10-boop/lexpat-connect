@@ -25,7 +25,7 @@ export default function SiteChrome({ children }) {
     { href: "/travailleurs",  label: isEn ? "Workers"     : "Travailleurs",  color: "teal" },
     { href: "/permis-unique", label: isEn ? "Immigration" : "Immigration" },
     { href: "/recrutement-international", label: isEn ? "Cities & sectors" : "Villes & secteurs", color: "slate" },
-    { href: "/simulateur-eligibilite", label: isEn ? "Is my role eligible?" : "Mon poste est-il éligible ?", highlight: true },
+    { href: "/simulateur-eligibilite", label: isEn ? "Is my recruitment possible?" : "Mon recrutement est-il possible ?", highlight: true },
   ];
 
   const navDropdowns = {

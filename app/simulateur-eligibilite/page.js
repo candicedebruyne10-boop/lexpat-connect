@@ -39,8 +39,7 @@ export default function SimulateurPage() {
 
         {/* H1 avec "possible ?" en rose */}
         <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Mon recrutement international<br />
-          est-il <span style={{ color: "#e91e8c" }}>possible&nbsp;?</span>
+          Mon recrutement est-il <span style={{ color: "#e91e8c" }}>possible&nbsp;?</span>
         </h1>
 
         {/* Description avec concepts-clés en turquoise */}
