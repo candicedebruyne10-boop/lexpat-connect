@@ -1088,6 +1088,35 @@ export default function AdminDashboard({ initialData }) {
   const [campaignsError, setCampaignsError]   = useState(null);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
 
+  // ── Email individuel state ───────────────────────────────────────────────────
+  const [soloEmail,     setSoloEmail]     = useState("");
+  const [soloPrenom,    setSoloPrenom]    = useState("");
+  const [soloSociete,   setSoloSociete]   = useState("");
+  const [soloSubject,   setSoloSubject]   = useState("");
+  const [soloBody,      setSoloBody]      = useState("");
+  const [soloSending,   setSoloSending]   = useState(false);
+  const [soloResult,    setSoloResult]    = useState(null);
+  const soloBodyRef                       = useRef(null);
+
+  const sendSoloEmail = async () => {
+    if (!soloEmail || !soloSubject || !soloBody) return;
+    setSoloSending(true); setSoloResult(null);
+    try {
+      const res = await fetch("/api/admin/campaigns/solo", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: soloEmail, prenom: soloPrenom, societe: soloSociete, subject: soloSubject, body: soloBody }),
+      });
+      const json = await res.json();
+      setSoloResult(json);
+      if (json.ok) { setSoloEmail(""); setSoloPrenom(""); setSoloSociete(""); setSoloSubject(""); setSoloBody(""); }
+    } catch (err) {
+      setSoloResult({ error: err.message });
+    } finally {
+      setSoloSending(false);
+    }
+  };
+
   // ── CSV Campaign state ───────────────────────────────────────────────────────
   const [csvFile, setCsvFile]               = useState(null);
   const [csvContacts, setCsvContacts]       = useState([]);
@@ -2251,6 +2280,95 @@ export default function AdminDashboard({ initialData }) {
                     )}
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* ── Section : Email individuel ──────────────────────────────── */}
+            <div style={{ marginTop: 32, ...card }}>
+              <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>
+                ✉️ Email individuel
+              </h3>
+              <p style={{ margin: "0 0 20px", fontSize: 13, color: "#607086" }}>
+                Envoyez un email personnalisé à n'importe quelle adresse, sans passer par un fichier CSV.
+              </p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+
+                {/* Colonne gauche */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Prénom</label>
+                      <input type="text" placeholder="Thomas" value={soloPrenom} onChange={e => setSoloPrenom(e.target.value)} style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Société</label>
+                      <input type="text" placeholder="Acme SA" value={soloSociete} onChange={e => setSoloSociete(e.target.value)} style={inputStyle} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Email destinataire <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <input type="email" placeholder="contact@entreprise.be" value={soloEmail} onChange={e => setSoloEmail(e.target.value)} style={inputStyle} />
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Sujet <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <input type="text" placeholder="Un message de LEXPAT Connect" value={soloSubject} onChange={e => setSoloSubject(e.target.value)} style={inputStyle} />
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Corps du message <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <textarea
+                      ref={soloBodyRef}
+                      rows={7}
+                      placeholder={"Bonjour {{prenom}},\n\n..."}
+                      value={soloBody}
+                      onChange={e => setSoloBody(e.target.value)}
+                      style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit" }}
+                    />
+                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 6 }}>
+                      {["{{prenom}}", "{{societe}}"].map(tag => (
+                        <button key={tag} type="button"
+                          onClick={() => {
+                            const el = soloBodyRef.current;
+                            if (el) {
+                              const s = el.selectionStart, e2 = el.selectionEnd;
+                              const v = soloBody.slice(0, s) + tag + soloBody.slice(e2);
+                              setSoloBody(v);
+                              requestAnimationFrame(() => { el.focus(); el.setSelectionRange(s + tag.length, s + tag.length); });
+                            } else setSoloBody(b => b + tag);
+                          }}
+                          style={{ background: "#f0f4fb", border: "1px solid #d0dcf0", borderRadius: 6, padding: "3px 9px", fontSize: 11, color: "#1E3A78", fontFamily: "monospace", cursor: "pointer" }}
+                        >{tag}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={sendSoloEmail}
+                    disabled={soloSending || !soloEmail || !soloSubject || !soloBody}
+                    style={{ ...btn.base, ...btn.primary, opacity: (!soloEmail || !soloSubject || !soloBody) ? 0.5 : 1, alignSelf: "flex-start" }}
+                  >
+                    {soloSending ? "Envoi en cours…" : "📨 Envoyer"}
+                  </button>
+                </div>
+
+                {/* Colonne droite — résultat */}
+                <div style={{ display: "flex", alignItems: "flex-start" }}>
+                  {!soloResult ? (
+                    <div style={{ fontSize: 13, color: "#8a9db8", padding: "24px 0", textAlign: "center", border: "2px dashed #e2eaf8", borderRadius: 10, width: "100%" }}>
+                      Le résultat de l'envoi apparaîtra ici
+                    </div>
+                  ) : (
+                    <div style={{ width: "100%", background: soloResult.error ? "#fef2f2" : "#f0fdf4", border: `1px solid ${soloResult.error ? "#fecaca" : "#bbf7d0"}`, borderRadius: 10, padding: 16 }}>
+                      {soloResult.error
+                        ? <div style={{ color: "#b91c1c", fontWeight: 700 }}>❌ {soloResult.error}</div>
+                        : <div style={{ color: "#16a34a", fontWeight: 700 }}>✅ Email envoyé à <strong>{soloResult.to}</strong></div>
+                      }
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
