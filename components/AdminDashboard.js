@@ -2759,6 +2759,33 @@ export default function AdminDashboard({ initialData }) {
 
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap", paddingTop: 4 }}>
                     <button
+                      disabled={!csvBody || previewLoading}
+                      onClick={async () => {
+                        setPreviewLoading(true);
+                        // Remplacer les variables CSV avec des données fictives
+                        const demoBody = (csvBody || "")
+                          .replace(/\{\{prenom\}\}/gi,     "Marie")
+                          .replace(/\{\{nom\}\}/gi,        "Dupont")
+                          .replace(/\{\{name\}\}/gi,       "Marie Dupont")
+                          .replace(/\{\{societe\}\}/gi,    "Acme SA")
+                          .replace(/\{\{email\}\}/gi,      "marie.dupont@example.com")
+                          .replace(/\{\{ville\}\}/gi,      "Bruxelles")
+                          .replace(/\{\{pays\}\}/gi,       "Belgique")
+                          .replace(/\{\{occupation\}\}/gi, "Responsable RH")
+                          .replace(/\{\{telephone\}\}/gi,  "+32 2 123 45 67")
+                          .replace(/\{\{region\}\}/gi,     "Bruxelles-Capitale")
+                          .replace(/\{\{precision\}\}/gi,  "");
+                        const params = new URLSearchParams({ template: "custom", locale: "fr", custom_html: demoBody });
+                        const res = await fetch(`/api/admin/campaigns/preview?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+                        const html = await res.text();
+                        setPreviewHtml(html);
+                        setPreviewLoading(false);
+                      }}
+                      style={{ ...btn.base, ...btn.ghost, opacity: !csvBody ? 0.5 : 1 }}
+                    >
+                      {previewLoading ? "⏳" : "👁️ Aperçu email"}
+                    </button>
+                    <button
                       onClick={() => sendCsvCampaign(true)}
                       disabled={csvSending || !csvFile || !csvSubject || !csvBody}
                       style={{ ...btn.base, ...btn.ghost, opacity: (!csvFile || !csvSubject || !csvBody) ? 0.5 : 1 }}
