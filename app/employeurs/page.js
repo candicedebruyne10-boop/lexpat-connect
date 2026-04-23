@@ -1,6 +1,6 @@
 import Script from "next/script";
 import Link from "next/link";
-import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
+import { BulletList, CtaBanner, Faq, Hero, Section, Steps, TestimonialsStrip } from "../../components/Sections";
 import { getServiceClient } from "../../lib/supabase/server";
 
 async function getLiveProfileCount() {
@@ -12,9 +12,25 @@ async function getLiveProfileCount() {
       .eq("profile_visibility", "visible");
     return count ?? 0;
   } catch {
-    return null; // silent fallback — static text used
+    return null;
   }
 }
+
+// ── Point 8 : étape 2 reformulée — matching ciblé, pas "sans intermédiaire inutile"
+const employerSteps = [
+  {
+    title: "Accédez aux profils",
+    text: "Consultez directement les profils disponibles dans votre métier, votre région et votre secteur — dès maintenant."
+  },
+  {
+    title: "Identifiez le bon profil et entrez en contact",
+    text: "Filtrez les candidats par secteur, région et niveau d'expérience. Contactez directement ceux qui correspondent à votre besoin."
+  },
+  {
+    title: "LEXPAT sécurise le cadre juridique si nécessaire",
+    text: "Permis unique, droit au travail, immigration économique : le cabinet intervient uniquement si votre recrutement le requiert."
+  }
+];
 
 const employerBenefits = [
   {
@@ -28,21 +44,6 @@ const employerBenefits = [
   {
     title: "Le juridique intervient si vous en avez besoin",
     text: "Permis unique, autorisation de travail, conformité salariale : le cabinet LEXPAT prend le relais si votre dossier le nécessite."
-  }
-];
-
-const employerSteps = [
-  {
-    title: "Accédez aux profils",
-    text: "Consultez directement les profils disponibles dans votre métier, votre région et votre secteur — dès maintenant."
-  },
-  {
-    title: "Contactez directement les candidats",
-    text: "Identifiez les profils qui correspondent et entrez en contact sans intermédiaire inutile."
-  },
-  {
-    title: "LEXPAT sécurise le cadre juridique si nécessaire",
-    text: "Permis unique, droit au travail, immigration économique : le cabinet intervient uniquement si votre recrutement le requiert."
   }
 ];
 
@@ -80,6 +81,7 @@ const employerPreview = [
   }
 ];
 
+// ── Point 6 : FAQ élargie de 3 à 6 questions
 const employerFaq = [
   {
     question: "À qui s'adresse LEXPAT Connect ?",
@@ -92,6 +94,18 @@ const employerFaq = [
   {
     question: "Le juridique intervient-il tout de suite ?",
     answer: "Non. Vous accédez d'abord aux profils et vous contactez les candidats. Le cabinet LEXPAT intervient ensuite seulement si une question de permis unique ou de droit au travail se pose."
+  },
+  {
+    question: "Quel est le délai pour pourvoir un poste via LEXPAT Connect ?",
+    answer: "L'accès aux profils est immédiat. Le délai réel dépend du poste, du profil choisi et — si un permis unique est nécessaire — du traitement administratif qui suit. Le cabinet LEXPAT vous donne une estimation réaliste dès la première consultation."
+  },
+  {
+    question: "Mon métier est-il éligible au recrutement international ?",
+    answer: "Cela dépend de la région et du type de poste. En Flandre notamment, seuls les métiers figurant sur les listes officielles (VDAB 2026) ouvrent droit au permis unique économique. Notre simulateur d'éligibilité vous donne une réponse en moins de 3 minutes."
+  },
+  {
+    question: "Que se passe-t-il si le candidat sélectionné ne convient finalement pas ?",
+    answer: "Vous n'êtes jamais engagé par le fait de consulter ou de contacter un profil. Si un recrutement ne se concrétise pas, vous pouvez relancer une recherche. Le cabinet n'intervient que si une démarche juridique a effectivement débuté."
   }
 ];
 
@@ -118,20 +132,24 @@ export default async function EmployeursPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(employerFaqJsonLd) }}
       />
+
+      {/* ── Point 1 : titre recentré sur le bénéfice employeur
+          ── Point 2 : CTA principal harmonisé → "Voir les profils disponibles"
+          ── Point 3 : badge avec signaux de crédibilité */}
       <Hero
-        badge="Employeurs belges · Métiers en pénurie · Profils disponibles maintenant"
+        badge="+10 000 dossiers traités · 30 ans d'expertise · Profils disponibles maintenant"
         title={
           <>
-            Accédez immédiatement à des profils internationaux qualifiés
-            <span className="block text-[#57b7af]">dans les métiers en pénurie.</span>
+            Trouvez enfin les profils qualifiés
+            <span className="block text-[#57b7af]">dont votre équipe a besoin.</span>
           </>
         }
-        description={`${countLabel} Certains sont disponibles immédiatement.`}
+        description={`${countLabel} Des travailleurs internationaux qualifiés dans les métiers en pénurie — recrutez rapidement et en toute sécurité légale.`}
         note="Développeurs · Techniciens · Soins · Construction — consultez les profils et recrutez dès aujourd'hui."
         primaryHref="/base-de-profils"
         primaryLabel="Voir les profils disponibles"
         secondaryHref="/simulateur-eligibilite"
-        secondaryLabel="Tester la faisabilité"
+        secondaryLabel="Vérifier l'éligibilité"
       />
 
       {/* ── Bloc profils disponibles ── */}
@@ -157,6 +175,7 @@ export default async function EmployeursPage() {
                 ))}
               </div>
             </div>
+            {/* ── Point 2 : CTA harmonisé */}
             <Link
               href="/base-de-profils"
               className="flex-shrink-0 inline-flex h-13 items-center gap-2 rounded-2xl px-8 py-4 text-base font-bold text-white transition hover:-translate-y-0.5"
@@ -189,7 +208,7 @@ export default async function EmployeursPage() {
               { n: "01", href: "#pourquoi",          title: "Pourquoi recruter ici",                 desc: "Des profils disponibles maintenant dans les métiers en pénurie." },
               { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                     desc: "3 étapes pour accéder aux profils et recruter rapidement." },
               { n: "03", href: "#espace-employeur",   title: "L'espace employeur",                    desc: "Votre interface dédiée pour gérer vos recrutements." },
-              { n: "04", href: "/employeurs/rejoindre", title: "Accéder aux profils maintenant",       desc: "Décrivez votre besoin en 4 étapes et contactez les candidats." },
+              { n: "04", href: "/employeurs/rejoindre", title: "Accéder aux profils maintenant",      desc: "Décrivez votre besoin en 4 étapes et contactez les candidats." },
               { n: "05", href: "#faq",                title: "Questions fréquentes",                  desc: "Les réponses aux questions des employeurs." },
             ].map(({ n, href, title, desc }) => (
               <a
@@ -234,6 +253,7 @@ export default async function EmployeursPage() {
       </div>
 
       <div id="comment-ca-marche">
+      {/* ── Point 8 : step 2 reformulé */}
       <Section
         title="Comment ça marche"
         intro="3 étapes simples pour accéder aux profils, contacter les candidats et recruter rapidement."
@@ -244,13 +264,13 @@ export default async function EmployeursPage() {
       </Section>
       </div>
 
-      {/* ── Bloc valeur : Pourquoi les employeurs utilisent LEXPAT Connect ── */}
       <Section
         title="Pourquoi les employeurs utilisent LEXPAT Connect ?"
         intro="Des raisons concrètes de recruter ici plutôt qu'ailleurs."
         kicker="Valeur ajoutée"
       >
         <BulletList items={employerWhyValues} />
+        {/* ── Point 2 : CTA harmonisé */}
         <div className="mt-8 flex flex-col items-center gap-4 rounded-[28px] border border-[#dce7ef] bg-[linear-gradient(180deg,#f0f7ff_0%,#eaf7f5_100%)] px-8 py-8 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
             <p className="text-lg font-bold text-[#1E3A78]">Des profils disponibles dès aujourd'hui.</p>
@@ -261,10 +281,35 @@ export default async function EmployeursPage() {
             className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
             style={{ background: "#57b7af", boxShadow: "0 8px 24px rgba(87,183,175,0.28)" }}
           >
-            Accéder aux profils maintenant →
+            Voir les profils disponibles →
           </Link>
         </div>
       </Section>
+
+      {/* ── Point 10 : simulateur intégré comme étape de pré-qualification ── */}
+      <div className="border-y border-[#e5edf5] bg-[linear-gradient(180deg,#f8fbff_0%,#f0f7ff_100%)]">
+        <div className="mx-auto max-w-5xl px-6 py-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#1d3b8b]">
+                Pas encore sûr de votre éligibilité ?
+              </p>
+              <h2 className="mt-3 text-xl font-extrabold tracking-tight text-[#1d3b8b]">
+                Vérifiez en 3 minutes si votre recrutement est possible
+              </h2>
+              <p className="mt-2 text-sm text-[#607086]">
+                Notre simulateur analyse la région, le métier et la nationalité du candidat — et vous indique si un permis unique est accessible, et sous quelles conditions.
+              </p>
+            </div>
+            <Link
+              href="/simulateur-eligibilite"
+              className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl border border-[#c8d9f0] bg-white px-7 text-sm font-bold text-[#1d3b8b] transition hover:border-[#57b7af] hover:text-[#57b7af] hover:-translate-y-0.5"
+            >
+              Tester la faisabilité →
+            </Link>
+          </div>
+        </div>
+      </div>
 
       <div id="espace-employeur">
       <Section
@@ -284,8 +329,9 @@ export default async function EmployeursPage() {
               <Link href="/employeurs/espace" className="primary-button">
                 Voir l'espace employeur
               </Link>
+              {/* ── Point 2 : CTA harmonisé */}
               <Link href="/employeurs/rejoindre" className="secondary-button">
-                Accéder aux profils maintenant
+                Voir les profils disponibles
               </Link>
             </div>
           </div>
@@ -325,12 +371,13 @@ export default async function EmployeursPage() {
               <p className="text-base font-semibold text-[#1E3A78]">Des profils disponibles dès aujourd'hui.</p>
               <p className="mt-1 text-sm text-[#6b85a0]">Environ 3 minutes — guidé étape par étape, sur tous supports.</p>
             </div>
+            {/* ── Point 2 : CTA harmonisé */}
             <Link
-              href="/employeurs/rejoindre"
+              href="/base-de-profils"
               className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-sm font-bold text-white transition hover:-translate-y-0.5"
               style={{ background: "#1E3A78", boxShadow: "0 8px 24px rgba(23,58,138,0.25)" }}
             >
-              Accéder aux profils maintenant →
+              Voir les profils disponibles →
             </Link>
           </div>
         </div>
@@ -345,6 +392,16 @@ export default async function EmployeursPage() {
         secondaryHref="/accompagnement-juridique"
         secondaryLabel="Voir le relais juridique"
       />
+
+      {/* ── Point 4 : preuve sociale — testimonials du cabinet ── */}
+      <div className="border-t border-[#e5edf5]">
+        <div className="mx-auto max-w-5xl px-6 pt-4 pb-0">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[#607086]">
+            Ce que nos clients disent du cabinet LEXPAT
+          </p>
+        </div>
+        <TestimonialsStrip />
+      </div>
 
       {/* ── Pages régionales & thématiques ── */}
       <section className="bg-[linear-gradient(180deg,#f0f6ff_0%,#eaf7f5_100%)] border-y border-[#dce8f5]">
@@ -382,6 +439,7 @@ export default async function EmployeursPage() {
       </section>
 
       <div id="faq">
+      {/* ── Point 6 : FAQ élargie */}
       <Section title="Questions fréquentes des employeurs" kicker="FAQ">
         <Faq items={employerFaq} />
       </Section>

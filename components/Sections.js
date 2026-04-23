@@ -797,9 +797,13 @@ export function ConversionBar({ locale = "fr" }) {
         <div className="grid gap-4 sm:grid-cols-3">
           {stats.map((s, i) => {
             const isFuchsia = i === 2;
+            // ── Point 7 : stat "+1 500 profils" linked to profiles page
+            const profilesHref = isFuchsia ? (isEn ? "/en/base-de-profils" : "/base-de-profils") : null;
+            const CardEl = profilesHref ? Link : "div";
             return (
-              <div
+              <CardEl
                 key={i}
+                {...(profilesHref ? { href: profilesHref } : {})}
                 className={`group flex items-center gap-4 rounded-[20px] border p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 ${
                   isFuchsia
                     ? "border-[#f9a8d4] bg-[#fdf2f8] hover:border-[#f472b6] hover:shadow-[0_16px_40px_rgba(233,30,140,0.12)]"
@@ -826,8 +830,13 @@ export function ConversionBar({ locale = "fr" }) {
                   }`}>
                     {s.label}
                   </div>
+                  {isFuchsia && (
+                    <p className="mt-2 text-[11px] font-semibold text-[#e91e8c]/70 group-hover:text-[#be185d]">
+                      {isEn ? "View profiles →" : "Voir les profils →"}
+                    </p>
+                  )}
                 </div>
-              </div>
+              </CardEl>
             );
           })}
         </div>
