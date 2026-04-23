@@ -313,8 +313,8 @@ export default async function EmployeursPageEn() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/en/simulateur-eligibilite"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(87,183,175,0.25)] transition hover:-translate-y-0.5"
-                  style={{ background: "linear-gradient(135deg, #57b7af, #3d9e96)" }}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(233,30,140,0.28)] transition hover:-translate-y-0.5"
+                  style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)" }}
                 >
                   Test feasibility now →
                 </Link>

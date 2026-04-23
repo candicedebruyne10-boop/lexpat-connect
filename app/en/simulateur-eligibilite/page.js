@@ -24,43 +24,74 @@ export default function SimulateurPageEn() {
   return (
     <>
       {/* ── Hero ── */}
-      <div className="bg-[#1E3A78] px-4 pb-10 pt-14 text-center text-white">
-        <p className="inline-flex items-center gap-2 rounded-full border border-[#3a5899]/60 bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
-          Free tool · Instant result · Based on official 2026 lists
-        </p>
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Can I recruit internationally for this role?
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#c5d4f3]">
-          This simulator checks in 3 minutes whether your role appears on Belgium's official shortage occupation lists — and tells you which permit procedure applies, the expected timeline and the conditions to meet.
+      <div className="bg-[#1E3A78] px-4 pb-12 pt-14 text-center text-white">
+
+        {/* Badge double-dot : pink + teal */}
+        <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e91e8c]" />
+          Free tool
+          <span className="text-white/25">·</span>
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" style={{ animationDelay: "0.6s" }} />
+          Instant result
+          <span className="text-white/25">·</span>
+          Official 2026 lists
         </p>
 
-        {/* What you get */}
+        {/* H1 with "possible?" in pink */}
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Can I recruit internationally<br />
+          for this <span style={{ color: "#e91e8c" }}>role?</span>
+        </h1>
+
+        {/* Description with key concepts in teal */}
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#b8cef0]">
+          This simulator checks in{" "}
+          <strong className="font-bold text-[#57b7af]">3 minutes</strong>{" "}
+          whether your role appears on{" "}
+          <strong className="font-bold text-[#57b7af]">Belgium's official shortage occupation lists</strong>{" "}
+          — and tells you which{" "}
+          <strong className="font-bold text-white/90">permit procedure</strong> applies, the expected{" "}
+          <strong className="font-bold text-white/90">timeline</strong> and the conditions to meet a{" "}
+          <strong className="font-bold text-[#57b7af]">single permit</strong>.
+        </p>
+
+        {/* 3 cards — teal / pink / teal */}
         <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 text-left sm:grid-cols-3">
           {[
             {
+              accent: "#57b7af",
               icon: "✓",
               title: "Eligibility confirmed",
               text: "Your role is cross-referenced against the Actiris, Forem and VDAB 2026 lists — with the candidate's qualification level.",
             },
             {
+              accent: "#e91e8c",
               icon: "⏱",
               title: "Procedure & timeline",
               text: "Reduced market test, full exemption or blocked: you know exactly what to expect before you start.",
             },
             {
+              accent: "#57b7af",
               icon: "→",
               title: "Next steps",
               text: "Based on your result, you go directly to available profiles or to the appropriate legal guidance.",
             },
-          ].map(({ icon, title, text }) => (
+          ].map(({ accent, icon, title, text }) => (
             <div
               key={title}
-              className="rounded-2xl border border-white/10 bg-white/8 p-5"
-              style={{ background: "rgba(255,255,255,0.07)" }}
+              className="rounded-2xl p-5"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderTop: `3px solid ${accent}`,
+                borderLeft: "0.5px solid rgba(255,255,255,0.10)",
+                borderRight: "0.5px solid rgba(255,255,255,0.10)",
+                borderBottom: "0.5px solid rgba(255,255,255,0.10)",
+              }}
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#57b7af]/20 text-sm font-bold text-[#57b7af]">
+              <span
+                className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
+                style={{ background: `${accent}22`, color: accent }}
+              >
                 {icon}
               </span>
               <p className="mt-3 text-sm font-bold text-white">{title}</p>
@@ -69,9 +100,13 @@ export default function SimulateurPageEn() {
           ))}
         </div>
 
-        {/* For whom? */}
+        {/* For whom? — teal + pink */}
         <p className="mt-8 text-[13px] text-[#8aa8d8]">
-          For <strong className="text-white">Belgian employers</strong> looking to recruit outside the EU · and <strong className="text-white">international workers</strong> who want to know their chances
+          For{" "}
+          <strong style={{ color: "#57b7af" }}>Belgian employers</strong>{" "}
+          looking to recruit outside the EU · and{" "}
+          <strong style={{ color: "#f48fb1" }}>international workers</strong>{" "}
+          who want to know their chances
         </p>
       </div>
 

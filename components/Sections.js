@@ -121,6 +121,12 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         subline: "Qualified profiles are already available on the platform.",
         primary: "See available profiles",
         secondary: "Test feasibility",
+        primaryLabel: "Available profiles",
+        primarySub: "Direct access to the database",
+        secondaryLabel: "Is my role eligible?",
+        secondarySub: "Instant result · No sign-up",
+        secondaryBadges: ["Eligibility", "Procedure", "Timeline"],
+        freePill: "Free",
         workerHref: "/en/travailleurs",
         workerLink: "You are a worker? Apply here →",
         hub: "Belgium · International hub",
@@ -142,6 +148,12 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         subline: "Des profils qualifiés sont déjà disponibles sur la plateforme.",
         primary: "Voir les profils disponibles",
         secondary: "Tester la faisabilité",
+        primaryLabel: "Profils disponibles",
+        primarySub: "Accès immédiat à la base",
+        secondaryLabel: "Mon poste est-il éligible ?",
+        secondarySub: "Résultat immédiat · Sans inscription",
+        secondaryBadges: ["Éligibilité", "Procédure", "Délais"],
+        freePill: "Gratuit",
         workerHref: "/travailleurs",
         workerLink: "Vous êtes travailleur ? Postulez ici →",
         hub: "Belgique · Hub international",
@@ -314,22 +326,45 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
         <p className="mt-4 text-[1rem] leading-relaxed text-white/[0.62]">
           {copy.desc}
         </p>
-        <div className="mt-6 flex gap-4">
+        {/* ── 2 chemins d'accès ── */}
+        <div className="mt-6 grid grid-cols-2 gap-3" style={{ maxWidth: 430 }}>
+          {/* Voie A — Profils */}
           <Link
             href={primaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
-            className="inline-flex h-14 items-center justify-center rounded-2xl px-6 text-base font-bold text-white transition hover:-translate-y-0.5"
-            style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
+            className="block rounded-[18px] p-4 transition hover:opacity-90 hover:-translate-y-0.5"
+            style={{ background: EMPLOYER.primary, border: "0.5px solid rgba(255,255,255,0.14)" }}
           >
-            {copy.primary}
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#9dd4d0", marginBottom: 6 }}>
+              {copy.primaryLabel}
+            </p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+              {copy.primary} →
+            </p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.42)" }}>{copy.primarySub}</p>
           </Link>
+          {/* Voie B — Simulateur (rose) */}
           <Link
             href={secondaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-            className="inline-flex h-14 items-center justify-center rounded-2xl px-6 text-base font-semibold text-white transition hover:-translate-y-0.5"
-            style={{ background: "#57B7AF", boxShadow: "0 12px 32px rgba(87,183,175,0.38)" }}
+            className="relative block rounded-[18px] p-4 transition hover:opacity-90 hover:-translate-y-0.5"
+            style={{ background: "rgba(233,30,140,0.12)", border: "1.5px solid rgba(233,30,140,0.45)" }}
           >
-            {copy.secondary}
+            <span style={{ position: "absolute", top: -9, right: 14, background: "#e91e8c", color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", padding: "2px 10px", borderRadius: 100 }}>
+              {copy.freePill}
+            </span>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#f48fb1", marginBottom: 6 }}>
+              {copy.secondaryLabel}
+            </p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+              {copy.secondary} →
+            </p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.42)", marginBottom: 8 }}>{copy.secondarySub}</p>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+              {copy.secondaryBadges.map(b => (
+                <span key={b} style={{ fontSize: 10, color: "#f48fb1", background: "rgba(233,30,140,0.12)", border: "0.5px solid rgba(233,30,140,0.30)", borderRadius: 100, padding: "2px 8px" }}>{b}</span>
+              ))}
+            </div>
           </Link>
         </div>
         {copy.workerLink && (
@@ -361,22 +396,45 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
         {copy.desc}
       </p>
 
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+      {/* ── 2 chemins d'accès (mobile) ── */}
+      <div className="mt-8 grid grid-cols-2 gap-3">
+        {/* Voie A — Profils */}
         <Link
           href={primaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
-          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold text-white transition hover:-translate-y-0.5 sm:w-auto sm:px-7"
-          style={{ background: EMPLOYER.primary, boxShadow: "0 16px 48px rgba(23,58,138,0.32)" }}
+          className="block rounded-[18px] p-4 transition hover:opacity-90"
+          style={{ background: EMPLOYER.primary, border: "0.5px solid rgba(255,255,255,0.14)" }}
         >
-          {copy.primary}
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#9dd4d0", marginBottom: 5 }}>
+            {copy.primaryLabel}
+          </p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
+            {copy.primary} →
+          </p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.40)" }}>{copy.primarySub}</p>
         </Link>
+        {/* Voie B — Simulateur (rose) */}
         <Link
           href={secondaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
-          className="inline-flex h-14 w-full items-center justify-center rounded-2xl text-base font-semibold text-white transition hover:-translate-y-0.5 sm:w-auto sm:px-7"
-          style={{ background: "#57B7AF", boxShadow: "0 12px 32px rgba(87,183,175,0.38)" }}
+          className="relative block rounded-[18px] p-4 transition hover:opacity-90"
+          style={{ background: "rgba(233,30,140,0.12)", border: "1.5px solid rgba(233,30,140,0.45)" }}
         >
-          {copy.secondary}
+          <span style={{ position: "absolute", top: -8, right: 12, background: "#e91e8c", color: "#fff", fontSize: 8, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", padding: "2px 9px", borderRadius: 100 }}>
+            {copy.freePill}
+          </span>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#f48fb1", marginBottom: 5 }}>
+            {copy.secondaryLabel}
+          </p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
+            {copy.secondary} →
+          </p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.40)", marginBottom: 7 }}>{copy.secondarySub}</p>
+          <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+            {copy.secondaryBadges.map(b => (
+              <span key={b} style={{ fontSize: 9, color: "#f48fb1", background: "rgba(233,30,140,0.12)", border: "0.5px solid rgba(233,30,140,0.30)", borderRadius: 100, padding: "2px 7px" }}>{b}</span>
+            ))}
+          </div>
         </Link>
       </div>
 
@@ -2124,7 +2182,7 @@ export function SimulateurTeaser({ locale = "fr" }) {
             <Link
               href={isEn ? "/en/simulateur-eligibilite" : "/simulateur-eligibilite"}
               className="inline-flex shrink-0 items-center gap-2 rounded-2xl px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(29,59,139,0.25)]"
-              style={{ background: "linear-gradient(135deg, #1E3A78, #57b7af)" }}
+              style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)", boxShadow: "0 8px 24px rgba(233,30,140,0.28)" }}
             >
               {isEn ? "Run the simulator →" : "Lancer le simulateur →"}
             </Link>

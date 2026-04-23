@@ -24,43 +24,73 @@ export default function SimulateurPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <div className="bg-[#1E3A78] px-4 pb-10 pt-14 text-center text-white">
-        <p className="inline-flex items-center gap-2 rounded-full border border-[#3a5899]/60 bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
-          Outil gratuit · Résultat immédiat · Basé sur les listes officielles 2026
-        </p>
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Mon recrutement international est-il possible&nbsp;?
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#c5d4f3]">
-          Ce simulateur vérifie en 3 minutes si votre poste figure sur les listes officielles de métiers en pénurie en Belgique — et vous indique la procédure applicable, les délais et les conditions pour obtenir un permis unique.
+      <div className="bg-[#1E3A78] px-4 pb-12 pt-14 text-center text-white">
+
+        {/* Badge double-dot : rose + turquoise */}
+        <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e91e8c]" />
+          Outil gratuit
+          <span className="text-white/25">·</span>
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" style={{ animationDelay: "0.6s" }} />
+          Résultat immédiat
+          <span className="text-white/25">·</span>
+          Listes officielles 2026
         </p>
 
-        {/* Ce que vous obtenez */}
+        {/* H1 avec "possible ?" en rose */}
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Mon recrutement international<br />
+          est-il <span style={{ color: "#e91e8c" }}>possible&nbsp;?</span>
+        </h1>
+
+        {/* Description avec concepts-clés en turquoise */}
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#b8cef0]">
+          Ce simulateur vérifie en{" "}
+          <strong className="font-bold text-[#57b7af]">3 minutes</strong>{" "}
+          si votre poste figure sur les{" "}
+          <strong className="font-bold text-[#57b7af]">listes officielles de pénurie</strong>{" "}
+          en Belgique — et vous indique la procédure applicable, les{" "}
+          <strong className="font-bold text-white/90">délais</strong> et les conditions pour obtenir un{" "}
+          <strong className="font-bold text-[#57b7af]">permis unique</strong>.
+        </p>
+
+        {/* 3 cartes — turquoise / rose / turquoise */}
         <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 text-left sm:grid-cols-3">
           {[
             {
+              accent: "#57b7af",
               icon: "✓",
               title: "Éligibilité vérifiée",
               text: "Votre poste est confronté aux listes Actiris, Forem et VDAB 2026 — avec le niveau de qualification du candidat.",
             },
             {
+              accent: "#e91e8c",
               icon: "⏱",
               title: "Procédure & délais",
               text: "Test du marché allégé, dispense totale ou blocage : vous savez exactement à quoi vous attendre avant de commencer.",
             },
             {
+              accent: "#57b7af",
               icon: "→",
               title: "Prochaines étapes",
               text: "Selon votre résultat, vous accédez directement aux profils disponibles ou à l'accompagnement adapté.",
             },
-          ].map(({ icon, title, text }) => (
+          ].map(({ accent, icon, title, text }) => (
             <div
               key={title}
-              className="rounded-2xl border border-white/10 bg-white/8 p-5"
-              style={{ background: "rgba(255,255,255,0.07)" }}
+              className="rounded-2xl p-5"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                borderTop: `3px solid ${accent}`,
+                borderLeft: "0.5px solid rgba(255,255,255,0.10)",
+                borderRight: "0.5px solid rgba(255,255,255,0.10)",
+                borderBottom: "0.5px solid rgba(255,255,255,0.10)",
+              }}
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#57b7af]/20 text-sm font-bold text-[#57b7af]">
+              <span
+                className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
+                style={{ background: `${accent}22`, color: accent }}
+              >
                 {icon}
               </span>
               <p className="mt-3 text-sm font-bold text-white">{title}</p>
@@ -69,9 +99,13 @@ export default function SimulateurPage() {
           ))}
         </div>
 
-        {/* Pour qui ? */}
+        {/* Pour qui ? — turquoise + rose */}
         <p className="mt-8 text-[13px] text-[#8aa8d8]">
-          Pour les <strong className="text-white">employeurs belges</strong> qui veulent recruter hors UE · et les <strong className="text-white">travailleurs internationaux</strong> qui veulent connaître leurs chances
+          Pour les{" "}
+          <strong style={{ color: "#57b7af" }}>employeurs belges</strong>{" "}
+          qui veulent recruter hors UE · et les{" "}
+          <strong style={{ color: "#f48fb1" }}>travailleurs internationaux</strong>{" "}
+          qui veulent connaître leurs chances
         </p>
       </div>
 
