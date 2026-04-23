@@ -2076,3 +2076,82 @@ export function TestimonialsStrip({ locale = "fr" }) {
     </section>
   );
 }
+
+/**
+ * SimulateurTeaser — section homepage expliquant le simulateur
+ * Utilisée sur la homepage FR et EN entre les sections "métiers en pénurie" et "comment ça marche"
+ */
+export function SimulateurTeaser({ locale = "fr" }) {
+  const isEn = locale === "en";
+
+  const steps = isEn
+    ? [
+        { n: "1", title: "Choose your region", sub: "Brussels, Wallonia or Flanders — each has its own rules and shortage lists." },
+        { n: "2", title: "Enter the occupation", sub: "The simulator checks the official shortage lists and your candidate's qualification level." },
+        { n: "3", title: "Get your result", sub: "Eligible procedure, expected timeline and concrete next steps — in under 3 minutes." },
+      ]
+    : [
+        { n: "1", title: "Choisissez votre région", sub: "Bruxelles, Wallonie ou Flandre — chaque région a ses propres règles et listes de pénurie." },
+        { n: "2", title: "Indiquez le métier", sub: "Le simulateur vérifie les listes officielles et le niveau de qualification du candidat." },
+        { n: "3", title: "Obtenez votre résultat", sub: "Procédure applicable, délai prévu et prochaines étapes concrètes — en moins de 3 minutes." },
+      ];
+
+  return (
+    <section className="bg-[linear-gradient(135deg,#f0f4ff_0%,#e8f5f3_100%)] py-16 sm:py-20">
+      <div className="container-shell">
+        <div className="mx-auto max-w-5xl">
+
+          {/* Header */}
+          <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[#c5d4f3] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#1E3A78]">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+                {isEn ? "Free tool · No registration" : "Outil gratuit · Sans inscription"}
+              </p>
+              <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-[#1E3A78] sm:text-3xl">
+                {isEn
+                  ? <>Is this recruitment legally possible?<br /><span className="text-[#57b7af]">Find out in 3 minutes.</span></>
+                  : <>Ce recrutement est-il légalement possible&nbsp;?<br /><span className="text-[#57b7af]">La réponse en 3 minutes.</span></>
+                }
+              </h2>
+              <p className="mt-3 text-[15px] leading-7 text-[#4a5e76]">
+                {isEn
+                  ? "Enter the region, the job title and the candidate's nationality. The simulator cross-checks Belgium's three official 2026 shortage occupation lists and tells you exactly which procedure applies — and what to expect."
+                  : "Entrez la région, le métier et la nationalité du candidat. Le simulateur croise les trois listes officielles belges 2026 et vous dit exactement quelle procédure s'applique — et ce à quoi vous attendre."
+                }
+              </p>
+            </div>
+            <Link
+              href={isEn ? "/en/simulateur-eligibilite" : "/simulateur-eligibilite"}
+              className="inline-flex shrink-0 items-center gap-2 rounded-2xl px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(29,59,139,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(29,59,139,0.25)]"
+              style={{ background: "linear-gradient(135deg, #1E3A78, #57b7af)" }}
+            >
+              {isEn ? "Run the simulator →" : "Lancer le simulateur →"}
+            </Link>
+          </div>
+
+          {/* Steps */}
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {steps.map(({ n, title, sub }) => (
+              <div key={n} className="relative rounded-[20px] border border-[#dce8f5] bg-white p-6 shadow-[0_6px_20px_rgba(15,23,42,0.05)]">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E3A78] text-sm font-extrabold text-white">
+                  {n}
+                </span>
+                <p className="mt-4 text-[14px] font-bold text-[#1E3A78]">{title}</p>
+                <p className="mt-1.5 text-[13px] leading-6 text-[#607086]">{sub}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Baseline */}
+          <p className="mt-8 text-center text-[13px] text-[#8a9bb0]">
+            {isEn
+              ? "Based on the official Actiris (Brussels), Forem (Wallonia) and VDAB (Flanders) 2026 shortage occupation lists · Updated February 2026"
+              : "Basé sur les listes officielles Actiris (Bruxelles), Forem (Wallonie) et VDAB (Flandre) 2026 · Mis à jour en février 2026"
+            }
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}

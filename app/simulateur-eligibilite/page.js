@@ -23,17 +23,62 @@ export const metadata = {
 export default function SimulateurPage() {
   return (
     <>
-      {/* Hero */}
-      <div className="bg-[#1E3A78] px-4 py-14 text-center text-white">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#a8c4f0]">
-          Outil juridique gratuit · Résultat immédiat
+      {/* ── Hero ── */}
+      <div className="bg-[#1E3A78] px-4 pb-10 pt-14 text-center text-white">
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#3a5899]/60 bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+          Outil gratuit · Résultat immédiat · Basé sur les listes officielles 2026
         </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-          Mon poste est-il encore éligible en 2026&nbsp;?
+        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Mon recrutement international est-il possible&nbsp;?
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base text-[#c5d4f3]">
-          Simulateur d'éligibilité permis unique — basé sur les listes officielles
-          Actiris, Forem et VDAB 2026.
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#c5d4f3]">
+          Ce simulateur vérifie en 3 minutes si votre poste figure sur les listes officielles de métiers en pénurie en Belgique — et vous indique la procédure applicable, les délais et les conditions pour obtenir un permis unique.
+        </p>
+
+        {/* Ce que vous obtenez */}
+        <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 text-left sm:grid-cols-3">
+          {[
+            {
+              icon: "✓",
+              title: "Éligibilité vérifiée",
+              text: "Votre poste est confronté aux listes Actiris, Forem et VDAB 2026 — avec le niveau de qualification du candidat.",
+            },
+            {
+              icon: "⏱",
+              title: "Procédure & délais",
+              text: "Test du marché allégé, dispense totale ou blocage : vous savez exactement à quoi vous attendre avant de commencer.",
+            },
+            {
+              icon: "→",
+              title: "Prochaines étapes",
+              text: "Selon votre résultat, vous accédez directement aux profils disponibles ou à l'accompagnement adapté.",
+            },
+          ].map(({ icon, title, text }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-white/10 bg-white/8 p-5"
+              style={{ background: "rgba(255,255,255,0.07)" }}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#57b7af]/20 text-sm font-bold text-[#57b7af]">
+                {icon}
+              </span>
+              <p className="mt-3 text-sm font-bold text-white">{title}</p>
+              <p className="mt-1 text-[13px] leading-6 text-[#b8cef0]">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Pour qui ? */}
+        <p className="mt-8 text-[13px] text-[#8aa8d8]">
+          Pour les <strong className="text-white">employeurs belges</strong> qui veulent recruter hors UE · et les <strong className="text-white">travailleurs internationaux</strong> qui veulent connaître leurs chances
+        </p>
+      </div>
+
+      {/* ── Séparateur "Commencer" ── */}
+      <div className="border-b border-[#e5edf5] bg-[#f8fbff] px-4 py-4 text-center">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#4a6b99]">
+          Complétez les 4 étapes ci-dessous · Aucune inscription requise
         </p>
       </div>
 

@@ -23,16 +23,62 @@ export const metadata = {
 export default function SimulateurPageEn() {
   return (
     <>
-      <div className="bg-[#1E3A78] px-4 py-14 text-center text-white">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#a8c4f0]">
-          Free legal tool · Instant result
+      {/* ── Hero ── */}
+      <div className="bg-[#1E3A78] px-4 pb-10 pt-14 text-center text-white">
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#3a5899]/60 bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+          Free tool · Instant result · Based on official 2026 lists
         </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-          Is my role still eligible in 2026?
+        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Can I recruit internationally for this role?
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base text-[#c5d4f3]">
-          Single permit eligibility simulator — based on the official Actiris,
-          Forem and VDAB 2026 lists.
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#c5d4f3]">
+          This simulator checks in 3 minutes whether your role appears on Belgium's official shortage occupation lists — and tells you which permit procedure applies, the expected timeline and the conditions to meet.
+        </p>
+
+        {/* What you get */}
+        <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 text-left sm:grid-cols-3">
+          {[
+            {
+              icon: "✓",
+              title: "Eligibility confirmed",
+              text: "Your role is cross-referenced against the Actiris, Forem and VDAB 2026 lists — with the candidate's qualification level.",
+            },
+            {
+              icon: "⏱",
+              title: "Procedure & timeline",
+              text: "Reduced market test, full exemption or blocked: you know exactly what to expect before you start.",
+            },
+            {
+              icon: "→",
+              title: "Next steps",
+              text: "Based on your result, you go directly to available profiles or to the appropriate legal guidance.",
+            },
+          ].map(({ icon, title, text }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-white/10 bg-white/8 p-5"
+              style={{ background: "rgba(255,255,255,0.07)" }}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#57b7af]/20 text-sm font-bold text-[#57b7af]">
+                {icon}
+              </span>
+              <p className="mt-3 text-sm font-bold text-white">{title}</p>
+              <p className="mt-1 text-[13px] leading-6 text-[#b8cef0]">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* For whom? */}
+        <p className="mt-8 text-[13px] text-[#8aa8d8]">
+          For <strong className="text-white">Belgian employers</strong> looking to recruit outside the EU · and <strong className="text-white">international workers</strong> who want to know their chances
+        </p>
+      </div>
+
+      {/* ── Separator ── */}
+      <div className="border-b border-[#e5edf5] bg-[#f8fbff] px-4 py-4 text-center">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#4a6b99]">
+          Complete the 4 steps below · No registration required
         </p>
       </div>
 

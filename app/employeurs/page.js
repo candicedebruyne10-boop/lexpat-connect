@@ -286,27 +286,57 @@ export default async function EmployeursPage() {
         </div>
       </Section>
 
-      {/* ── Point 10 : simulateur intégré comme étape de pré-qualification ── */}
-      <div className="border-y border-[#e5edf5] bg-[linear-gradient(180deg,#f8fbff_0%,#f0f7ff_100%)]">
-        <div className="mx-auto max-w-5xl px-6 py-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-[#b8d8f5] bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#1d3b8b]">
-                Pas encore sûr de votre éligibilité ?
+      {/* ── Point 10 : simulateur — section mise en avant ── */}
+      <div className="bg-[linear-gradient(135deg,#1E3A78_0%,#163269_100%)]">
+        <div className="mx-auto max-w-5xl px-6 py-14">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center">
+
+            {/* Texte gauche */}
+            <div className="flex-1">
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#a8c4f0]">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" />
+                Outil gratuit · 3 minutes · Résultat immédiat
               </p>
-              <h2 className="mt-3 text-xl font-extrabold tracking-tight text-[#1d3b8b]">
-                Vérifiez en 3 minutes si votre recrutement est possible
+              <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Mon recrutement est-il possible ?<br />
+                <span className="text-[#57b7af]">Le simulateur vous répond en 3 minutes.</span>
               </h2>
-              <p className="mt-2 text-sm text-[#607086]">
-                Notre simulateur analyse la région, le métier et la nationalité du candidat — et vous indique si un permis unique est accessible, et sous quelles conditions.
+              <p className="mt-4 text-sm leading-7 text-[#b8cef0]">
+                Entrez la région, le métier et la nationalité du candidat. Le simulateur vérifie les listes officielles 2026 (Actiris, Forem, VDAB) et vous dit : est-ce éligible, quelle procédure s'applique, quel délai prévoir — avant même de commencer les démarches.
               </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/simulateur-eligibilite"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(87,183,175,0.25)] transition hover:-translate-y-0.5"
+                  style={{ background: "linear-gradient(135deg, #57b7af, #3d9e96)" }}
+                >
+                  Tester la faisabilité maintenant →
+                </Link>
+                <Link
+                  href="/metiers-en-penurie"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/15"
+                >
+                  Voir les métiers éligibles
+                </Link>
+              </div>
             </div>
-            <Link
-              href="/simulateur-eligibilite"
-              className="flex-shrink-0 inline-flex h-12 items-center gap-2 rounded-2xl border border-[#c8d9f0] bg-white px-7 text-sm font-bold text-[#1d3b8b] transition hover:border-[#57b7af] hover:text-[#57b7af] hover:-translate-y-0.5"
-            >
-              Tester la faisabilité →
-            </Link>
+
+            {/* Cartes droite */}
+            <div className="flex flex-col gap-3 lg:w-72">
+              {[
+                { icon: "✓", label: "Éligibilité vérifiée", sub: "Confronté aux listes officielles 2026" },
+                { icon: "⏱", label: "Procédure & délais", sub: "Test marché allégé, dispense ou blocage" },
+                { icon: "→", label: "Prochaines étapes", sub: "Profils disponibles ou accompagnement" },
+              ].map(({ icon, label, sub }) => (
+                <div key={label} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/8 px-5 py-4" style={{ background: "rgba(255,255,255,0.07)" }}>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#57b7af]/25 text-sm font-bold text-[#57b7af]">{icon}</span>
+                  <div>
+                    <p className="text-sm font-bold text-white">{label}</p>
+                    <p className="text-[12px] text-[#9ab5d8]">{sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

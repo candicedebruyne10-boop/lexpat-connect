@@ -4,6 +4,7 @@ import {
   DualEntry,
   FeaturedProfiles,
   ShortageJobsQuickLink,
+  SimulateurTeaser,
   HowItWorksPremium,
   PresentationVideoSection,
   JobSectors,
@@ -124,6 +125,10 @@ export default async function HomePage() {
 
       <div id="metiers-en-penurie">
         <ShortageJobsQuickLink />
+      </div>
+
+      <div id="simulateur">
+        <SimulateurTeaser />
       </div>
 
       <div id="comment-ca-marche">
