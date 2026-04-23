@@ -3451,7 +3451,7 @@ export default function AdminDashboard({ initialData }) {
               </div>
 
               <div style={{ marginTop: 14, background: "#f8faff", border: "1px solid #e8eef8", borderRadius: 12, padding: "12px 14px", fontSize: 12, color: "#5d6e83", lineHeight: 1.8 }}>
-                Si `OPENAI_API_KEY` est configure, le bouton "Generer avec IA" utilisera OpenAI. Sinon, l'admin utilise un generateur assiste local pour produire un premier brouillon editable.
+                Si `ANTHROPIC_API_KEY` est configuré, le bouton "Générer avec IA" utilisera Claude (Anthropic). Sinon, fallback sur `OPENAI_API_KEY` si disponible, puis sur un générateur local.
               </div>
 
               {linkedinPostResult && (
