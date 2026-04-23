@@ -4,6 +4,8 @@ import { getServiceClient } from "../../../../../lib/supabase/server";
 import {
   exchangeLinkedInCodeForToken,
   fetchAccessibleAdAccounts,
+  fetchCurrentLinkedInMember,
+  fetchLinkedInOrganizations,
   LINKEDIN_SCOPES,
 } from "../../../../../lib/linkedin-marketing";
 
@@ -43,7 +45,9 @@ export async function GET(request) {
   try {
     const supabase = getServiceClient();
     const token = await exchangeLinkedInCodeForToken(code);
-    const accountSnapshot = await fetchAccessibleAdAccounts(token.access_token);
+    const accountSnapshot = await fetchAccessibleAdAccounts(token.access_token).catch(() => []);
+    const member = await fetchCurrentLinkedInMember(token.access_token).catch(() => null);
+    const organizationSnapshot = await fetchLinkedInOrganizations(token.access_token).catch(() => []);
 
     const expiresAt = token.expires_in
       ? new Date(Date.now() + Number(token.expires_in) * 1000).toISOString()
@@ -51,11 +55,18 @@ export async function GET(request) {
 
     const { error: upsertError } = await supabase.from("linkedin_admin_connections").upsert({
       created_by: payload.userId,
-      linkedin_member_id: null,
+      linkedin_member_id: member?.id || null,
+      member_urn: member?.urn || null,
+      member_name: member?.fullName || null,
       access_token: token.access_token,
       expires_at: expiresAt,
-      scope: Array.isArray(token.scope) ? token.scope : LINKEDIN_SCOPES,
+      scope: Array.isArray(token.scope)
+        ? token.scope
+        : typeof token.scope === "string"
+          ? token.scope.split(" ").filter(Boolean)
+          : LINKEDIN_SCOPES,
       account_snapshot: accountSnapshot,
+      organization_snapshot: organizationSnapshot,
       status: "connected",
       updated_at: new Date().toISOString(),
     }, {

@@ -22,7 +22,7 @@ export async function GET(request) {
 
     const { data, error } = await supabase
       .from("linkedin_admin_connections")
-      .select("id, linkedin_member_id, scope, expires_at, account_snapshot, created_at, updated_at")
+      .select("id, linkedin_member_id, member_urn, member_name, scope, expires_at, account_snapshot, organization_snapshot, created_at, updated_at")
       .eq("created_by", user.id)
       .order("updated_at", { ascending: false })
       .limit(1)
@@ -43,9 +43,12 @@ export async function GET(request) {
       connection: {
         id: data.id,
         linkedin_member_id: data.linkedin_member_id,
+        member_urn: data.member_urn,
+        member_name: data.member_name,
         scope: data.scope || [],
         expires_at: data.expires_at,
         account_snapshot: data.account_snapshot || [],
+        organization_snapshot: data.organization_snapshot || [],
         created_at: data.created_at,
         updated_at: data.updated_at,
       },
