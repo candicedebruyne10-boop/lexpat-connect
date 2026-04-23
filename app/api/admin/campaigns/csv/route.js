@@ -243,11 +243,18 @@ export async function POST(request) {
       // Throttle : 250 ms entre chaque envoi (limite Resend 5/sec)
       await new Promise(r => setTimeout(r, 250));
 
+      const unsubUrl = getUnsubscribeUrl(contact.email);
+      const listUnsubHeaders = unsubUrl ? {
+        "List-Unsubscribe": `<${unsubUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      } : {};
+
       const { error: sendError } = await resend.emails.send({
         from,
         to: contact.email,
         subject: applyVariables(subject, contact),
         html,
+        headers: listUnsubHeaders,
       });
 
       if (sendError) {
@@ -258,6 +265,7 @@ export async function POST(request) {
             to: contact.email,
             subject: applyVariables(subject, contact),
             html,
+            headers: listUnsubHeaders,
           });
           if (retryErr) {
             failed.push({ email: contact.email, name: contact.name, error: retryErr.message });

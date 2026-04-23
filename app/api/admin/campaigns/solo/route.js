@@ -10,6 +10,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getUserFromRequest, getServiceClient } from "../../../../../lib/supabase/server";
 import { customCampaignEmailHtml } from "../../../../../lib/email-templates";
+import { getUnsubscribeUrl } from "../../../../../lib/email-unsubscribe";
 
 const ADMIN_EMAILS = [
   process.env.CONTACT_EMAIL,
@@ -63,11 +64,16 @@ export async function POST(request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const from   = process.env.RESEND_FROM_EMAIL || "contact@lexpat-connect.be";
 
+    const unsubUrl = getUnsubscribeUrl(email);
     const { error } = await resend.emails.send({
       from,
       to: email,
       subject: subjectFinal,
       html,
+      headers: unsubUrl ? {
+        "List-Unsubscribe": `<${unsubUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      } : {},
     });
 
     if (error) {
