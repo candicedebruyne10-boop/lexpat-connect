@@ -210,9 +210,18 @@ const page = {
   }
 };
 
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://lexpat-connect.be";
+
 export const metadata = {
   title: page.seo.title,
-  description: page.seo.description
+  description: page.seo.description,
+  alternates: {
+    canonical: `${BASE}/en/employeurs/bruges-metiers-en-penurie`,
+    languages: {
+      en: `${BASE}/en/employeurs/bruges-metiers-en-penurie`,
+      fr: `${BASE}/employeurs/bruges-metiers-en-penurie`,
+    },
+  },
 };
 
 export default function BrugesShortageJobsPageEn() {
