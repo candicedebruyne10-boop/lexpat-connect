@@ -1108,15 +1108,29 @@ export default function AdminDashboard({ initialData }) {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const text = e.target.result;
-        const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+        // Strip UTF-8 BOM if present (Excel exports)
+        const raw = e.target.result.replace(/^\uFEFF/, "");
+        const lines = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
         if (!lines.length) { setCsvContacts([]); return; }
+
+        // Auto-detect delimiter (comma vs semicolon vs tab) from first line
+        const firstLine = lines[0];
+        const counts = { ",": 0, ";": 0, "\t": 0 };
+        let inQ = false;
+        for (const ch of firstLine) {
+          if (ch === '"') inQ = !inQ;
+          else if (!inQ && counts[ch] !== undefined) counts[ch]++;
+        }
+        const sep = counts[";"] > counts[","] && counts[";"] > counts["\t"] ? ";"
+          : counts["\t"] > counts[","] ? "\t"
+          : ",";
+
         const parseLine = (line) => {
-          const result = []; let cur = ""; let inQ = false;
+          const result = []; let cur = ""; let inQ2 = false;
           for (let i = 0; i < line.length; i++) {
             const ch = line[i];
-            if (ch === '"') { if (inQ && line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ; }
-            else if (ch === "," && !inQ) { result.push(cur.trim()); cur = ""; }
+            if (ch === '"') { if (inQ2 && line[i+1]==='"'){cur+='"';i++;}else inQ2=!inQ2; }
+            else if (ch === sep && !inQ2) { result.push(cur.trim()); cur = ""; }
             else cur += ch;
           }
           result.push(cur.trim()); return result;

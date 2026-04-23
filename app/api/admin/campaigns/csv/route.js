@@ -41,8 +41,22 @@ async function assertAdmin(supabase, user) {
 // ── Parseur CSV minimal (supporte les guillemets) ───────────────────────────
 
 function parseCSV(text) {
-  const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  // Strip UTF-8 BOM if present (Excel on Windows/Mac exports)
+  const cleaned = text.replace(/^\uFEFF/, "");
+  const lines = cleaned.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   if (!lines.length) return [];
+
+  // Auto-detect delimiter from the header row
+  const firstLine = lines[0];
+  const counts = { ",": 0, ";": 0, "\t": 0 };
+  let inQD = false;
+  for (const ch of firstLine) {
+    if (ch === '"') inQD = !inQD;
+    else if (!inQD && counts[ch] !== undefined) counts[ch]++;
+  }
+  const sep = counts[";"] > counts[","] && counts[";"] > counts["\t"] ? ";"
+    : counts["\t"] > counts[","] ? "\t"
+    : ",";
 
   const parseLine = (line) => {
     const result = [];
@@ -53,7 +67,7 @@ function parseCSV(text) {
       if (ch === '"') {
         if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
         else inQuote = !inQuote;
-      } else if (ch === "," && !inQuote) {
+      } else if (ch === sep && !inQuote) {
         result.push(cur.trim());
         cur = "";
       } else {
