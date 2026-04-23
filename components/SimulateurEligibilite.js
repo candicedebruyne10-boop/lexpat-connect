@@ -1217,13 +1217,18 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
 
                 <label>
                   <FieldLabel>{isEn ? "Current country of residence" : "Pays de résidence actuel"}</FieldLabel>
-                  <input
+                  <select
                     className="field-input"
-                    type="text"
-                    placeholder={isEn ? "E.g. Morocco, Senegal, India..." : "Ex. : Maroc, Sénégal, Inde…"}
                     value={data.residence}
                     onChange={(e) => set("residence", e.target.value)}
-                  />
+                  >
+                    <option value="">{isEn ? "Select a country" : "Sélectionnez un pays"}</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c.fr} value={c.fr}>
+                        {isEn ? c.en : c.fr}
+                      </option>
+                    ))}
+                  </select>
                 </label>
 
                 <div className="grid gap-4 sm:grid-cols-2">
