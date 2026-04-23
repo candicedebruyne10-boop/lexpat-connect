@@ -11,6 +11,7 @@ const TABS = [
   { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
   { id: "contacts",   label: "Contacts",         icon: "👥" },
   { id: "emailing",   label: "Emailing",         icon: "✉️" },
+  { id: "linkedin",   label: "LinkedIn Ads",     icon: "in" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
   { id: "history",    label: "Historique",       icon: "📋" },
 ];
@@ -952,6 +953,35 @@ export default function AdminDashboard({ initialData }) {
   const [previewHtml, setPreviewHtml]     = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
+  // ── LinkedIn Ads state ─────────────────────────────────────────────────────
+  const [linkedinStatus, setLinkedinStatus] = useState(null);
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [linkedinError, setLinkedinError] = useState(null);
+  const [linkedinActionLoading, setLinkedinActionLoading] = useState(false);
+  const [linkedinBuilder, setLinkedinBuilder] = useState({
+    accountId: "",
+    accountCurrency: "EUR",
+    campaignGroupName: "",
+    campaignName: "",
+    campaignType: "SPONSORED_UPDATES",
+    objectiveType: "WEBSITE_VISITS",
+    costType: "CPC",
+    dailyBudget: "",
+    totalBudget: "",
+    localeCountry: "BE",
+    localeLanguage: "fr",
+    locationUrns: "",
+    interfaceLocaleUrns: "urn:li:locale:fr_FR",
+    companyUrns: "",
+    associatedEntity: "",
+    startAt: "",
+    endAt: "",
+    status: "DRAFT",
+    campaignGroupStatus: "DRAFT",
+  });
+  const [linkedinCampaignLoading, setLinkedinCampaignLoading] = useState(false);
+  const [linkedinCampaignResult, setLinkedinCampaignResult] = useState(null);
+
   // ── Analytics tab state ─────────────────────────────────────────────────────
   const [analyticsInputs, setAnalyticsInputs] = useState({
     totalVisitors: "",
@@ -1343,6 +1373,130 @@ export default function AdminDashboard({ initialData }) {
   useEffect(() => {
     if (activeTab === "history") fetchCampaigns(1);
   }, [activeTab, fetchCampaigns]);
+
+  // ── LinkedIn status ────────────────────────────────────────────────────────
+
+  const fetchLinkedinStatus = useCallback(async () => {
+    if (!token) return;
+    setLinkedinLoading(true);
+    setLinkedinError(null);
+    try {
+      const res = await fetch("/api/admin/linkedin", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinStatus(json);
+    } catch (e) {
+      setLinkedinError(e.message);
+    } finally {
+      setLinkedinLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (activeTab === "linkedin") fetchLinkedinStatus();
+  }, [activeTab, fetchLinkedinStatus]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const connected = url.searchParams.get("linkedin_connected");
+    const error = url.searchParams.get("linkedin_error");
+    if (!connected && !error) return;
+
+    setActiveTab("linkedin");
+    if (connected) {
+      fetchLinkedinStatus();
+    }
+    if (error) {
+      setLinkedinError(decodeURIComponent(error));
+    }
+
+    url.searchParams.delete("linkedin_connected");
+    url.searchParams.delete("linkedin_accounts");
+    url.searchParams.delete("linkedin_error");
+    window.history.replaceState({}, "", url.toString());
+  }, [fetchLinkedinStatus]);
+
+  const connectLinkedin = async () => {
+    setLinkedinActionLoading(true);
+    setLinkedinError(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/connect", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      window.location.href = json.authUrl;
+    } catch (e) {
+      setLinkedinError(e.message);
+      setLinkedinActionLoading(false);
+    }
+  };
+
+  const disconnectLinkedin = async () => {
+    setLinkedinActionLoading(true);
+    setLinkedinError(null);
+    try {
+      const res = await fetch("/api/admin/linkedin", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinStatus({ connected: false });
+    } catch (e) {
+      setLinkedinError(e.message);
+    } finally {
+      setLinkedinActionLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const accounts = linkedinStatus?.connection?.account_snapshot || [];
+    if (!accounts.length) return;
+
+    setLinkedinBuilder((prev) => {
+      const current = accounts.find((account) => account.accountId === prev.accountId);
+      if (current) {
+        return {
+          ...prev,
+          accountCurrency: current.currency || prev.accountCurrency || "EUR",
+        };
+      }
+
+      return {
+        ...prev,
+        accountId: accounts[0].accountId || "",
+        accountCurrency: accounts[0].currency || prev.accountCurrency || "EUR",
+      };
+    });
+  }, [linkedinStatus]);
+
+  const createLinkedinDraftCampaign = async () => {
+    setLinkedinCampaignLoading(true);
+    setLinkedinCampaignResult(null);
+    setLinkedinError(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/campaigns", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(linkedinBuilder),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinCampaignResult(json);
+      fetchLinkedinStatus();
+    } catch (e) {
+      setLinkedinCampaignResult({ error: e.message });
+    } finally {
+      setLinkedinCampaignLoading(false);
+    }
+  };
 
   // ── Send campaign ───────────────────────────────────────────────────────────
 
@@ -2718,6 +2872,372 @@ export default function AdminDashboard({ initialData }) {
                 />
               ) : <EmptyState text="Aucun matching." />}
             </SectionCard>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET LINKEDIN ADS
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "linkedin" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>LinkedIn Ads</h2>
+                <p style={{ margin: "6px 0 0", fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
+                  Connectez votre compte LinkedIn Marketing pour préparer l'administration des campagnes depuis LEXPAT Connect.
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button
+                  style={{ ...btn.base, ...btn.ghost }}
+                  onClick={fetchLinkedinStatus}
+                  disabled={linkedinLoading || linkedinActionLoading}
+                >
+                  {linkedinLoading ? "Chargement..." : "Rafraichir"}
+                </button>
+                {linkedinStatus?.connected ? (
+                  <button
+                    style={{ ...btn.base, ...btn.danger }}
+                    onClick={disconnectLinkedin}
+                    disabled={linkedinActionLoading}
+                  >
+                    {linkedinActionLoading ? "Deconnexion..." : "Deconnecter LinkedIn"}
+                  </button>
+                ) : (
+                  <button
+                    style={{ ...btn.base, ...btn.primary }}
+                    onClick={connectLinkedin}
+                    disabled={linkedinActionLoading}
+                  >
+                    {linkedinActionLoading ? "Connexion..." : "Connecter LinkedIn"}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <Alert type={linkedinStatus?.connected ? (linkedinStatus?.expired ? "warning" : "success") : "info"}>
+              {linkedinStatus?.connected
+                ? linkedinStatus?.expired
+                  ? "La connexion LinkedIn existe mais le jeton semble expire. Reconnectez le compte avant d'automatiser des campagnes."
+                  : "Le compte LinkedIn Marketing est connecte. Les comptes publicitaires detectes ci-dessous pourront servir de base pour vos futures campagnes."
+                : "Aucune connexion LinkedIn enregistree pour cet admin. La connexion utilise l'OAuth LinkedIn avec les scopes marketing requis pour la gestion publicitaire."}
+            </Alert>
+
+            {linkedinError && (
+              <Alert type="error">
+                Erreur LinkedIn : {linkedinError}
+              </Alert>
+            )}
+
+            <div style={{ display: "grid", gridTemplateColumns: "1.3fr 0.9fr", gap: 18, alignItems: "start" }}>
+              <div style={card}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78" }}>Comptes publicitaires detectes</div>
+                  {linkedinStatus?.connection?.account_snapshot?.length ? (
+                    <span style={{ ...badgeStyle.base, ...badgeStyle.worker }}>
+                      {linkedinStatus.connection.account_snapshot.length} compte(s)
+                    </span>
+                  ) : null}
+                </div>
+
+                {linkedinLoading ? (
+                  <div style={{ color: "#8a9db8", fontSize: 14 }}>Verification de la connexion LinkedIn...</div>
+                ) : !linkedinStatus?.connected ? (
+                  <EmptyState text="Connectez votre compte LinkedIn pour lister les comptes publicitaires accessibles." />
+                ) : (linkedinStatus.connection.account_snapshot || []).length === 0 ? (
+                  <EmptyState text="La connexion est active, mais aucun compte publicitaire accessible n'a ete remonte par LinkedIn pour cet utilisateur." />
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {(linkedinStatus.connection.account_snapshot || []).map((account) => (
+                      <div key={account.accountUrn || account.accountId} style={{ border: "1px solid #e8eef8", borderRadius: 14, padding: "14px 16px", background: "#fbfdff" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 8 }}>
+                          <div style={{ fontWeight: 800, color: "#1E3A78" }}>
+                            {account.accountName || account.accountUrn || "Compte LinkedIn"}
+                          </div>
+                          <span style={{ ...badgeStyle.base, ...badgeStyle.visible }}>
+                            {account.role || "Role inconnu"}
+                          </span>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 8, fontSize: 12, color: "#5d6e83" }}>
+                          <div><strong>ID</strong> : {account.accountId || "—"}</div>
+                          <div><strong>Statut</strong> : {account.accountStatus || "—"}</div>
+                          <div><strong>Type</strong> : {account.accountType || "—"}</div>
+                          <div><strong>Devise</strong> : {account.currency || "—"}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ ...card, display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78", marginBottom: 6 }}>Etat de preparation</div>
+                  <div style={{ fontSize: 13, color: "#5d6e83", lineHeight: 1.7 }}>
+                    Cette etape connecte votre admin a LinkedIn et verifie l'acces Marketing API. La creation pilotee de campagnes dans l'interface pourra venir juste apres.
+                  </div>
+                </div>
+
+                <div style={{ background: "#f8faff", border: "1px solid #e8eef8", borderRadius: 12, padding: "14px 16px" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                    Conditions LinkedIn
+                  </div>
+                  <div style={{ fontSize: 13, color: "#3d5470", lineHeight: 1.8 }}>
+                    <div>Scopes attendus : <strong>{linkedinStatus?.connection?.scope?.join(", ") || "r_ads, rw_ads"}</strong></div>
+                    <div>Compte pub relie a l'application LinkedIn : <strong>obligatoire</strong></div>
+                    <div>Acces Marketing API approuve : <strong>obligatoire</strong></div>
+                    <div>Jeton expire le : <strong>{linkedinStatus?.connection?.expires_at ? formatDateTime(linkedinStatus.connection.expires_at) : "—"}</strong></div>
+                  </div>
+                </div>
+
+                <div style={{ background: "#fff8e6", border: "1px solid #f5d58b", borderRadius: 12, padding: "14px 16px", fontSize: 13, color: "#7a4b00", lineHeight: 1.7 }}>
+                  Prochaine etape recommandee : ajouter un vrai "Campaign Builder" LinkedIn dans cet onglet pour choisir un compte pub, definir objectif, budget, audience et lancer la campagne depuis l'admin.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ ...card, marginTop: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 18, color: "#1E3A78" }}>Campaign Builder</div>
+                  <div style={{ fontSize: 13, color: "#6b85a0", marginTop: 4 }}>
+                    Creation prudente : un groupe LinkedIn + une campagne en brouillon (`DRAFT`) avec votre ciblage minimum.
+                  </div>
+                </div>
+                <button
+                  style={{ ...btn.base, ...btn.primary }}
+                  onClick={createLinkedinDraftCampaign}
+                  disabled={!linkedinStatus?.connected || linkedinCampaignLoading}
+                >
+                  {linkedinCampaignLoading ? "Creation en cours..." : "Creer le brouillon LinkedIn"}
+                </button>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>Compte publicitaire</label>
+                  <select
+                    value={linkedinBuilder.accountId}
+                    onChange={(e) => {
+                      const selected = (linkedinStatus?.connection?.account_snapshot || []).find((account) => account.accountId === e.target.value);
+                      setLinkedinBuilder((prev) => ({
+                        ...prev,
+                        accountId: e.target.value,
+                        accountCurrency: selected?.currency || prev.accountCurrency,
+                      }));
+                    }}
+                    style={inputStyle}
+                  >
+                    <option value="">Selectionnez un compte</option>
+                    {(linkedinStatus?.connection?.account_snapshot || []).map((account) => (
+                      <option key={account.accountId || account.accountUrn} value={account.accountId || ""}>
+                        {account.accountName || account.accountUrn || account.accountId}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Devise</label>
+                  <input
+                    value={linkedinBuilder.accountCurrency}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, accountCurrency: e.target.value.toUpperCase() }))}
+                    style={inputStyle}
+                    placeholder="EUR"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Nom du groupe</label>
+                  <input
+                    value={linkedinBuilder.campaignGroupName}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, campaignGroupName: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="LEXPAT - RH Belgique - Avril"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Nom de campagne</label>
+                  <input
+                    value={linkedinBuilder.campaignName}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, campaignName: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="Traffic vers landing employeurs"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Objectif</label>
+                  <select
+                    value={linkedinBuilder.objectiveType}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, objectiveType: e.target.value }))}
+                    style={inputStyle}
+                  >
+                    {["BRAND_AWARENESS", "ENGAGEMENT", "LEAD_GENERATION", "WEBSITE_CONVERSIONS", "WEBSITE_VISITS", "VIDEO_VIEWS", "JOB_APPLICANTS"].map((value) => (
+                      <option key={value} value={value}>{value}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Type</label>
+                  <select
+                    value={linkedinBuilder.campaignType}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, campaignType: e.target.value }))}
+                    style={inputStyle}
+                  >
+                    {["SPONSORED_UPDATES", "TEXT_AD", "SPONSORED_INMAILS", "DYNAMIC"].map((value) => (
+                      <option key={value} value={value}>{value}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Mode campagne</label>
+                  <select
+                    value={linkedinBuilder.status}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, status: e.target.value }))}
+                    style={inputStyle}
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Mode groupe</label>
+                  <select
+                    value={linkedinBuilder.campaignGroupStatus}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, campaignGroupStatus: e.target.value }))}
+                    style={inputStyle}
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Facturation</label>
+                  <select
+                    value={linkedinBuilder.costType}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, costType: e.target.value }))}
+                    style={inputStyle}
+                  >
+                    {["CPC", "CPM", "CPV"].map((value) => (
+                      <option key={value} value={value}>{value}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Budget quotidien</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={linkedinBuilder.dailyBudget}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, dailyBudget: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="40.00"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Budget total groupe</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={linkedinBuilder.totalBudget}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, totalBudget: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="600.00"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Debut</label>
+                  <input
+                    type="datetime-local"
+                    value={linkedinBuilder.startAt}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, startAt: e.target.value }))}
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Fin</label>
+                  <input
+                    type="datetime-local"
+                    value={linkedinBuilder.endAt}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, endAt: e.target.value }))}
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Pays locale</label>
+                  <input
+                    value={linkedinBuilder.localeCountry}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, localeCountry: e.target.value.toUpperCase() }))}
+                    style={inputStyle}
+                    placeholder="BE"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Langue locale</label>
+                  <input
+                    value={linkedinBuilder.localeLanguage}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, localeLanguage: e.target.value.toLowerCase() }))}
+                    style={inputStyle}
+                    placeholder="fr"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14, marginTop: 16 }}>
+                <div>
+                  <label style={labelStyle}>URNs de localisation</label>
+                  <textarea
+                    value={linkedinBuilder.locationUrns}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, locationUrns: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: 100, resize: "vertical" }}
+                    placeholder={"urn:li:geo:...\nurn:li:geo:..."}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>URNs de langue interface</label>
+                  <textarea
+                    value={linkedinBuilder.interfaceLocaleUrns}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, interfaceLocaleUrns: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: 100, resize: "vertical" }}
+                    placeholder="urn:li:locale:fr_FR"
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>URNs entreprises ciblees</label>
+                  <textarea
+                    value={linkedinBuilder.companyUrns}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, companyUrns: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: 100, resize: "vertical" }}
+                    placeholder={"urn:li:organization:...\nurn:li:organization:..."}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Associated entity</label>
+                  <input
+                    value={linkedinBuilder.associatedEntity}
+                    onChange={(e) => setLinkedinBuilder((prev) => ({ ...prev, associatedEntity: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="urn:li:organization:123456"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 14, background: "#f8faff", border: "1px solid #e8eef8", borderRadius: 12, padding: "12px 14px", fontSize: 12, color: "#5d6e83", lineHeight: 1.8 }}>
+                Le builder cree une campagne LinkedIn avec `targetingCriteria`. Le minimum recommande ici est au moins une localisation LinkedIn (`urn:li:geo:...`). Pour les Sponsored Updates, renseigner aussi `associatedEntity` avec l'URN de votre page entreprise LinkedIn est fortement conseille.
+              </div>
+
+              {linkedinCampaignResult && (
+                <div style={{ marginTop: 16 }}>
+                  {linkedinCampaignResult.error ? (
+                    <Alert type="error">Creation LinkedIn impossible : {linkedinCampaignResult.error}</Alert>
+                  ) : (
+                    <Alert type="success">
+                      Brouillon cree. Groupe LinkedIn : <strong>{linkedinCampaignResult.campaignGroupId}</strong> · Campagne : <strong>{linkedinCampaignResult.campaignId || "ID non retourne"}</strong>
+                    </Alert>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
