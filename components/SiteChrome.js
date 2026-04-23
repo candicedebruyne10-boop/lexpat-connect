@@ -196,8 +196,8 @@ export default function SiteChrome({ children }) {
                   <Link
                     key={item.href}
                     href={localizeHref(item.href, locale)}
-                    className="whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-bold text-white shadow-[0_4px_12px_rgba(29,59,139,0.15)] transition hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(29,59,139,0.22)]"
-                    style={{ background: "linear-gradient(135deg, #1E3A78, #57B7AF)" }}
+                    className="whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-bold text-white shadow-[0_4px_12px_rgba(233,30,140,0.22)] transition hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(233,30,140,0.32)]"
+                    style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)" }}
                   >
                     ✦ {item.label}
                   </Link>
@@ -261,8 +261,8 @@ export default function SiteChrome({ children }) {
             <Link
               key={item.href}
               href={localizeHref(item.href, locale)}
-              className="flex w-full items-center justify-center rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(29,59,139,0.16)]"
-              style={{ background: "linear-gradient(135deg, #1E3A78, #57B7AF)" }}
+              className="flex w-full items-center justify-center rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(233,30,140,0.22)]"
+              style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)" }}
             >
               ✦ {item.label}
             </Link>
