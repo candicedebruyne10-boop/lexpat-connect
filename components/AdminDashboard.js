@@ -1088,6 +1088,88 @@ export default function AdminDashboard({ initialData }) {
   const [campaignsError, setCampaignsError]   = useState(null);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
 
+  // ── CSV Campaign state ───────────────────────────────────────────────────────
+  const [csvFile, setCsvFile]               = useState(null);
+  const [csvContacts, setCsvContacts]       = useState([]);
+  const [csvParseError, setCsvParseError]   = useState(null);
+  const [csvSubject, setCsvSubject]         = useState("");
+  const [csvBody, setCsvBody]               = useState("");
+  const [csvCampaignName, setCsvCampaignName] = useState("");
+  const [csvSending, setCsvSending]         = useState(false);
+  const [csvResult, setCsvResult]           = useState(null);
+  const csvBodyRef                          = useRef(null);
+
+  // Parse CSV client-side for preview
+  const handleCsvFile = (file) => {
+    setCsvFile(file);
+    setCsvResult(null);
+    setCsvParseError(null);
+    if (!file) { setCsvContacts([]); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+        if (!lines.length) { setCsvContacts([]); return; }
+        const parseLine = (line) => {
+          const result = []; let cur = ""; let inQ = false;
+          for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') { if (inQ && line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ; }
+            else if (ch === "," && !inQ) { result.push(cur.trim()); cur = ""; }
+            else cur += ch;
+          }
+          result.push(cur.trim()); return result;
+        };
+        const headers = parseLine(lines[0]).map(h => h.toLowerCase().replace(/\s+/g," ").trim());
+        const colIndex = (...aliases) => { for(let i=0;i<headers.length;i++){if(aliases.some(a=>a.toLowerCase().replace(/\s+/g," ").trim()===headers[i]))return i;} return -1; };
+        const iPrenom  = colIndex("prénom","prenom","first name");
+        const iNom     = colIndex("nom de famille","nom","last name");
+        const iEmail   = colIndex("e-mail 1","email 1","email","e-mail","mail");
+        const iSociete = colIndex("société","societe","company","entreprise");
+        const iVille   = colIndex("adresse 1 - ville","ville","city");
+        const parsed = [];
+        for (let r = 1; r < lines.length; r++) {
+          const line = lines[r].trim(); if (!line) continue;
+          const cols = parseLine(line);
+          const get = (idx) => idx >= 0 ? (cols[idx]||"").trim() : "";
+          const email = get(iEmail);
+          if (!email || !email.includes("@")) continue;
+          parsed.push({ email, prenom: get(iPrenom), nom: get(iNom), societe: get(iSociete), ville: get(iVille) });
+        }
+        if (!parsed.length) setCsvParseError("Aucun email valide trouvé. Vérifiez que la colonne « E-mail 1 » est présente.");
+        else setCsvContacts(parsed);
+      } catch (err) { setCsvParseError("Erreur de lecture du fichier : " + err.message); }
+    };
+    reader.readAsText(file, "utf-8");
+  };
+
+  const sendCsvCampaign = async (isDryRun) => {
+    if (!csvFile || !csvSubject || !csvBody) return;
+    setCsvSending(true); setCsvResult(null);
+    try {
+      const fd = new FormData();
+      fd.append("csv", csvFile);
+      fd.append("subject", csvSubject);
+      fd.append("body", csvBody);
+      fd.append("name", csvCampaignName);
+      fd.append("dry_run", isDryRun ? "true" : "false");
+      fd.append("locale", "fr");
+      const res = await fetch("/api/admin/campaigns/csv", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const json = await res.json();
+      setCsvResult(json);
+      if (!isDryRun) fetchCampaigns(1);
+    } catch (err) {
+      setCsvResult({ error: err.message });
+    } finally {
+      setCsvSending(false);
+    }
+  };
+
   // ── Fetch KPIs ──────────────────────────────────────────────────────────────
 
   const fetchKpis = useCallback(async () => {
@@ -2120,6 +2202,203 @@ export default function AdminDashboard({ initialData }) {
                     )}
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* ── Section : Campagne CSV ───────────────────────────────────── */}
+            <div style={{ marginTop: 32, ...card }}>
+              <h3 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>
+                📤 Campagne depuis un fichier CSV
+              </h3>
+              <p style={{ margin: "0 0 20px", fontSize: 13, color: "#607086" }}>
+                Importez un export de contacts (Google Contacts, CRM…) et envoyez un email personnalisé à chaque destinataire.
+              </p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+
+                {/* Colonne gauche — configuration */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Nom de la campagne (optionnel)</label>
+                    <input
+                      type="text"
+                      placeholder="Ex : Promo simulateur — employeurs belges"
+                      value={csvCampaignName}
+                      onChange={e => setCsvCampaignName(e.target.value)}
+                      style={inputStyle}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Fichier CSV <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <input
+                      type="file"
+                      accept=".csv,text/csv"
+                      onChange={e => handleCsvFile(e.target.files?.[0] || null)}
+                      style={{ ...inputStyle, padding: "8px 12px", cursor: "pointer" }}
+                    />
+                    <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>
+                      Colonnes reconnues : Prénom, Nom de famille, E-mail 1, Société, Adresse 1 - Ville, Adresse 1 - Pays, Occupation, Langue…
+                    </div>
+                    {csvParseError && (
+                      <div style={{ marginTop: 6, fontSize: 12, color: "#b91c1c", fontWeight: 600 }}>{csvParseError}</div>
+                    )}
+                    {csvContacts.length > 0 && !csvParseError && (
+                      <div style={{ marginTop: 6, fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
+                        ✅ {csvContacts.length} contact{csvContacts.length > 1 ? "s" : ""} valide{csvContacts.length > 1 ? "s" : ""} détecté{csvContacts.length > 1 ? "s" : ""}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Sujet de l'email <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <input
+                      type="text"
+                      placeholder="Ex : Simulez votre recrutement international en 2 minutes"
+                      value={csvSubject}
+                      onChange={e => setCsvSubject(e.target.value)}
+                      style={inputStyle}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Corps du message <span style={{ color: "#b91c1c" }}>*</span></label>
+                    <textarea
+                      ref={csvBodyRef}
+                      rows={10}
+                      placeholder={"Bonjour {{prenom}},\n\nEn tant que responsable chez {{societe}},\nvous êtes peut-être confronté(e) à des difficultés de recrutement.\n\nNous avons développé un simulateur gratuit qui vous permet d'évaluer la faisabilité d'un recrutement international en 2 minutes.\n\nAccédez-y ici : https://lexpat-connect.be/simulateur\n\nCordialement,\nL'équipe LEXPAT Connect"}
+                      value={csvBody}
+                      onChange={e => setCsvBody(e.target.value)}
+                      style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit" }}
+                    />
+                    <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 8, lineHeight: 1.8 }}>
+                      Variables disponibles :
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                        {[
+                          { tag: "{{prenom}}",     desc: "Prénom" },
+                          { tag: "{{nom}}",        desc: "Nom de famille" },
+                          { tag: "{{societe}}",    desc: "Société" },
+                          { tag: "{{email}}",      desc: "Email" },
+                          { tag: "{{ville}}",      desc: "Ville" },
+                          { tag: "{{pays}}",       desc: "Pays" },
+                          { tag: "{{occupation}}", desc: "Occupation" },
+                        ].map(v => (
+                          <button
+                            key={v.tag}
+                            type="button"
+                            onClick={() => {
+                              const el = csvBodyRef.current;
+                              if (el) {
+                                const start = el.selectionStart;
+                                const end   = el.selectionEnd;
+                                const newVal = csvBody.slice(0, start) + v.tag + csvBody.slice(end);
+                                setCsvBody(newVal);
+                                requestAnimationFrame(() => { el.focus(); el.setSelectionRange(start + v.tag.length, start + v.tag.length); });
+                              } else {
+                                setCsvBody(b => b + v.tag);
+                              }
+                            }}
+                            style={{ background: "#f0f4fb", border: "1px solid #d0dcf0", borderRadius: 6, padding: "4px 10px", fontSize: 11, color: "#1E3A78", fontFamily: "monospace", cursor: "pointer" }}
+                          >
+                            {v.tag} <span style={{ color: "#8a9db8", fontFamily: "inherit" }}>— {v.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap", paddingTop: 4 }}>
+                    <button
+                      onClick={() => sendCsvCampaign(true)}
+                      disabled={csvSending || !csvFile || !csvSubject || !csvBody}
+                      style={{ ...btn.base, ...btn.ghost, opacity: (!csvFile || !csvSubject || !csvBody) ? 0.5 : 1 }}
+                    >
+                      {csvSending ? "…" : "🔍 Simuler (dry run)"}
+                    </button>
+                    <button
+                      onClick={() => sendCsvCampaign(false)}
+                      disabled={csvSending || !csvFile || !csvSubject || !csvBody || csvContacts.length === 0}
+                      style={{ ...btn.base, ...btn.primary, opacity: (!csvFile || !csvSubject || !csvBody || csvContacts.length === 0) ? 0.5 : 1 }}
+                    >
+                      {csvSending ? "Envoi en cours…" : `🚀 Envoyer à ${csvContacts.length} contact${csvContacts.length !== 1 ? "s" : ""}`}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Colonne droite — aperçu des contacts */}
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78", marginBottom: 10 }}>
+                    Aperçu des contacts
+                  </div>
+                  {csvContacts.length === 0 ? (
+                    <div style={{ fontSize: 13, color: "#8a9db8", padding: "24px 0", textAlign: "center", border: "2px dashed #e2eaf8", borderRadius: 10 }}>
+                      Importez un CSV pour voir la liste ici
+                    </div>
+                  ) : (
+                    <div style={{ maxHeight: 340, overflowY: "auto", border: "1px solid #e5edf5", borderRadius: 10 }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                        <thead>
+                          <tr style={{ background: "#f8fbff" }}>
+                            {["Prénom", "Nom", "Email", "Société", "Ville"].map(h => (
+                              <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontWeight: 700, color: "#3d5470", borderBottom: "1px solid #e5edf5" }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {csvContacts.slice(0, 50).map((c, i) => (
+                            <tr key={i} style={{ borderBottom: "1px solid #f0f4fb" }}>
+                              <td style={{ padding: "6px 10px", color: "#1E3A78" }}>{c.prenom}</td>
+                              <td style={{ padding: "6px 10px", color: "#3d5470" }}>{c.nom}</td>
+                              <td style={{ padding: "6px 10px", color: "#3d5470", fontSize: 11 }}>{c.email}</td>
+                              <td style={{ padding: "6px 10px", color: "#3d5470" }}>{c.societe}</td>
+                              <td style={{ padding: "6px 10px", color: "#3d5470" }}>{c.ville}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {csvContacts.length > 50 && (
+                        <div style={{ padding: "8px 12px", fontSize: 12, color: "#8a9db8", borderTop: "1px solid #e5edf5" }}>
+                          … et {csvContacts.length - 50} autre{csvContacts.length - 50 > 1 ? "s" : ""} contact{csvContacts.length - 50 > 1 ? "s" : ""} (tous seront inclus dans l'envoi)
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Résultats */}
+                  {csvResult && (
+                    <div style={{ marginTop: 16, background: csvResult.error ? "#fef2f2" : "#f0fdf4", border: `1px solid ${csvResult.error ? "#fecaca" : "#bbf7d0"}`, borderRadius: 10, padding: 16 }}>
+                      {csvResult.error ? (
+                        <div style={{ color: "#b91c1c", fontWeight: 700 }}>❌ {csvResult.error}</div>
+                      ) : (
+                        <>
+                          <div style={{ fontWeight: 800, fontSize: 14, color: "#16a34a", marginBottom: 8 }}>
+                            {csvResult.dry_run ? "🔍 Simulation terminée" : "✅ Envoi terminé"}
+                          </div>
+                          <div style={{ fontSize: 13, color: "#3d5470", lineHeight: 2 }}>
+                            <strong>{csvResult.sent}</strong> envoyé{csvResult.sent !== 1 ? "s" : ""} ·{" "}
+                            <strong>{csvResult.skipped}</strong> ignoré{csvResult.skipped !== 1 ? "s" : ""} ·{" "}
+                            <strong style={{ color: csvResult.failed > 0 ? "#b91c1c" : "inherit" }}>{csvResult.failed}</strong> erreur{csvResult.failed !== 1 ? "s" : ""}
+                          </div>
+                          {(csvResult.failures || []).length > 0 && (
+                            <details style={{ marginTop: 8 }}>
+                              <summary style={{ cursor: "pointer", fontSize: 12, fontWeight: 700, color: "#b91c1c" }}>
+                                Voir les erreurs
+                              </summary>
+                              <div style={{ marginTop: 8 }}>
+                                {csvResult.failures.map((f, i) => (
+                                  <div key={i} style={{ fontSize: 11, padding: "3px 0", color: "#b91c1c" }}>
+                                    {f.email} — {f.error}
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
           </div>
