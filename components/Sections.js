@@ -333,15 +333,15 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
             href={primaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
             className="block rounded-[18px] p-4 transition hover:opacity-90 hover:-translate-y-0.5"
-            style={{ background: EMPLOYER.primary, border: "0.5px solid rgba(255,255,255,0.14)" }}
+            style={{ background: "#ffffff", border: "1.5px solid rgba(30,58,120,0.18)" }}
           >
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#9dd4d0", marginBottom: 6 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#57B7AF", marginBottom: 6 }}>
               {copy.primaryLabel}
             </p>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#1E3A78", marginBottom: 3 }}>
               {copy.primary} →
             </p>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.42)" }}>{copy.primarySub}</p>
+            <p style={{ fontSize: 12, color: "#8a9bb0" }}>{copy.primarySub}</p>
           </Link>
           {/* Voie B — Simulateur (rose) */}
           <Link
@@ -403,15 +403,15 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
           href={primaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.primary, destination: primaryHref })}
           className="block rounded-[18px] p-4 transition hover:opacity-90"
-          style={{ background: EMPLOYER.primary, border: "0.5px solid rgba(255,255,255,0.14)" }}
+          style={{ background: "#ffffff", border: "1.5px solid rgba(30,58,120,0.18)" }}
         >
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#9dd4d0", marginBottom: 5 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#57B7AF", marginBottom: 5 }}>
             {copy.primaryLabel}
           </p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#1E3A78", marginBottom: 2 }}>
             {copy.primary} →
           </p>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.40)" }}>{copy.primarySub}</p>
+          <p style={{ fontSize: 11, color: "#8a9bb0" }}>{copy.primarySub}</p>
         </Link>
         {/* Voie B — Simulateur (rose) */}
         <Link
