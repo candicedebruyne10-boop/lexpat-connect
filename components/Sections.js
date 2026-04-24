@@ -167,7 +167,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         },
       };
   return (
-    <section className="relative overflow-hidden bg-white lg:bg-[#060c26]">
+    <section className="relative overflow-hidden bg-white">
 
       {/* ══ DESKTOP : carte pleine fenêtre, texte en haut à gauche ══ */}
       <div className="hidden lg:block">
@@ -178,15 +178,15 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
             fill
             priority
             quality={84}
-            className="object-contain bg-[#060c26]"
+            className="object-contain bg-white"
             style={{ objectPosition: 'right center' }}
             sizes="100vw"
           />
-          {/* Voile sombre à gauche */}
-          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,12,38,0.96)_0%,rgba(6,12,38,0.88)_24%,rgba(6,12,38,0.50)_46%,rgba(6,12,38,0.08)_70%,transparent_100%)]" />
-          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.65),transparent)]" />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.65),transparent)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(89,185,177,0.20),transparent_70%)]" />
+          {/* Voile blanc à gauche — fond clair */}
+          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.92)_28%,rgba(255,255,255,0.60)_48%,rgba(255,255,255,0.10)_68%,transparent_100%)]" />
+          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.70),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(255,255,255,0.70),transparent)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_35%_45%_at_28%_50%,rgba(87,183,175,0.08),transparent_70%)]" />
 
           {/* Points lumineux sur chaque ville */}
           {CITY_DOTS.map((dot) => (
@@ -201,35 +201,35 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
           </div>
 
           {/* Hub badge — remonté pour ne pas chevaucher la proof bar */}
-          <div className="absolute bottom-20 right-8 z-10 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/60 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+          <div className="absolute bottom-20 right-8 z-10 whitespace-nowrap rounded-full border border-[#57B7AF]/40 bg-white/80 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#57B7AF] backdrop-blur-sm">
             {copy.hub}
           </div>
 
           {/* ── Proof bar — absolute bottom, full width, toujours visible ── */}
           {showProofCard && copy.proof && (
-            <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-white/[0.09] bg-[rgba(6,12,38,0.62)] backdrop-blur-md">
+            <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-[#e2eaf3] bg-white/90 backdrop-blur-md">
               <div className="flex items-center gap-4 px-10 py-3.5 xl:px-14">
                 {/* Stat principale */}
                 <div className="flex items-baseline gap-2 shrink-0">
-                  <span className="text-2xl font-black text-white tabular-nums leading-none">
+                  <span className="text-2xl font-black text-[#1E3A78] tabular-nums leading-none">
                     {liveCount !== null ? liveCount : copy.proof.count}
                   </span>
-                  <span className="text-sm font-semibold text-white/80">{copy.proof.label}</span>
+                  <span className="text-sm font-semibold text-[#5d6e83]">{copy.proof.label}</span>
                 </div>
-                {/* Pool partenaires — en rose, même taille que le label principal */}
+                {/* Pool partenaires */}
                 {copy.proof.pool && (
-                  <span className="hidden shrink-0 rounded-full border border-[#f9a8d4]/40 bg-[#e91e8c]/15 px-3.5 py-1.5 text-sm font-semibold text-[#f9a8d4] sm:inline-flex">
+                  <span className="hidden shrink-0 rounded-full border border-[#f9a8d4]/60 bg-[#fce4f0] px-3.5 py-1.5 text-sm font-semibold text-[#c0006a] sm:inline-flex">
                     {copy.proof.pool}
                   </span>
                 )}
                 {/* Séparateur */}
-                <div className="h-4 w-px shrink-0 bg-white/[0.15]" />
+                <div className="h-4 w-px shrink-0 bg-[#e2eaf3]" />
                 {/* Catégories */}
-                <p className="flex-1 text-[11px] font-medium tracking-wide text-[#9dd4d0]/70 hidden sm:block">
+                <p className="flex-1 text-[11px] font-medium tracking-wide text-[#57B7AF] hidden sm:block">
                   {copy.proof.categories}
                 </p>
                 {/* Localisation */}
-                <p className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/25 hidden xl:block">
+                <p className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#8a9bb0] hidden xl:block">
                   {copy.proof.location}
                 </p>
                 {/* CTA */}
@@ -254,16 +254,16 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
 
         {/* Proof card mobile — entre texte et carte carte */}
         {showProofCard && copy.proof && (
-          <div className="mx-6 mb-5 flex items-center gap-4 rounded-2xl border border-white/[0.10] bg-white/[0.07] px-5 py-3.5 backdrop-blur-sm">
+          <div className="mx-6 mb-5 flex items-center gap-4 rounded-2xl border border-[#e2eaf3] bg-white px-5 py-3.5 shadow-sm">
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-white tabular-nums leading-none">
+                <span className="text-2xl font-black text-[#1E3A78] tabular-nums leading-none">
                   {liveCount !== null ? liveCount : copy.proof.count}
                 </span>
-                <span className="text-xs font-semibold text-white/80">{copy.proof.label}</span>
+                <span className="text-xs font-semibold text-[#5d6e83]">{copy.proof.label}</span>
               </div>
               {copy.proof.pool && (
-                <p className="mt-1 text-[10px] font-semibold text-[#f9a8d4]">{copy.proof.pool}</p>
+                <p className="mt-1 text-[10px] font-semibold text-[#c0006a]">{copy.proof.pool}</p>
               )}
             </div>
             <Link
@@ -277,25 +277,24 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         )}
 
         {/* Carte mobile */}
-        <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#59B9B1]/20 shadow-[0_0_48px_rgba(89,185,177,0.18)]">
+        <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#d4e8e6] shadow-[0_4px_24px_rgba(87,183,175,0.12)]">
           <Image
             src="/hero-image.jpg"
             alt="Carte mondiale et Belgique — connexions LEXPAT Connect"
             fill
             priority
             quality={84}
-            className="object-contain object-center bg-[#060c26]"
+            className="object-contain object-center bg-white"
             sizes="100vw"
           />
-          <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,rgba(6,12,38,0.95),transparent)]" />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(to_top,rgba(6,12,38,0.85),transparent)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_28%_50%,rgba(89,185,177,0.28),transparent_70%)]" />
+          <div className="absolute inset-x-0 top-0 h-10 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.70),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-[linear-gradient(to_top,rgba(255,255,255,0.70),transparent)]" />
 
           {CITY_DOTS.map((dot) => (
             <CityDot key={dot.city} {...dot} />
           ))}
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#59B9B1]/30 bg-[#060c26]/70 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9dd4d0] backdrop-blur-sm">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#57B7AF]/40 bg-white/80 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#57B7AF] backdrop-blur-sm">
             {copy.hub}
           </div>
         </div>
@@ -310,19 +309,19 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
   return (
     <>
       {/* Badge ancré en haut */}
-      <div className="inline-flex items-center gap-2 self-start rounded-full border border-white/[0.14] bg-white/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#9dd4d0] backdrop-blur-sm">
+      <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#d4e8e6] bg-[#f0faf9] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.20em] text-[#57B7AF]">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
         {copy.badge}
       </div>
 
       {/* Titre + description + CTAs ancrés en bas */}
       <div>
-        <h1 className="font-heading text-[clamp(2.1rem,3.2vw,3.8rem)] font-bold leading-[1.05] tracking-[-0.04em] text-white">
+        <h1 className="font-heading text-[clamp(2.1rem,3.2vw,3.8rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[#1E3A78]">
           {copy.title1}<br />
           <span className="text-[#57B7AF]">{copy.title2}</span><br />
           {copy.title3}
         </h1>
-        <p className="mt-4 text-[1rem] leading-relaxed text-white/[0.62]">
+        <p className="mt-4 text-[1rem] leading-relaxed text-[#5d6e83]">
           {copy.desc}
         </p>
         {/* ── 2 chemins d'accès ── */}
@@ -347,28 +346,28 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
             href={secondaryHref}
             onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
             className="relative block rounded-[18px] p-4 transition hover:opacity-90 hover:-translate-y-0.5"
-            style={{ background: "rgba(233,30,140,0.12)", border: "1.5px solid rgba(233,30,140,0.45)" }}
+            style={{ background: "#fce4f0", border: "1.5px solid rgba(233,30,140,0.35)" }}
           >
             <span style={{ position: "absolute", top: -9, right: 14, background: "#e91e8c", color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", padding: "2px 10px", borderRadius: 100 }}>
               {copy.freePill}
             </span>
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#f48fb1", marginBottom: 6 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#b5005c", marginBottom: 6 }}>
               {copy.secondaryLabel}
             </p>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 3 }}>
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#8c0045", marginBottom: 3 }}>
               {copy.secondary} →
             </p>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.42)", marginBottom: 8 }}>{copy.secondarySub}</p>
+            <p style={{ fontSize: 12, color: "#b06080", marginBottom: 8 }}>{copy.secondarySub}</p>
             <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
               {copy.secondaryBadges.map(b => (
-                <span key={b} style={{ fontSize: 10, color: "#f48fb1", background: "rgba(233,30,140,0.12)", border: "0.5px solid rgba(233,30,140,0.30)", borderRadius: 100, padding: "2px 8px" }}>{b}</span>
+                <span key={b} style={{ fontSize: 10, color: "#b5005c", background: "rgba(233,30,140,0.10)", border: "0.5px solid rgba(233,30,140,0.35)", borderRadius: 100, padding: "2px 8px" }}>{b}</span>
               ))}
             </div>
           </Link>
         </div>
         {copy.workerLink && (
           <p className="mt-4">
-            <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
+            <Link href={copy.workerHref} className="text-xs text-[#8a9bb0] transition hover:text-[#57B7AF]">{copy.workerLink}</Link>
           </p>
         )}
       </div>
@@ -417,21 +416,21 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
           href={secondaryHref}
           onClick={() => track("Hero CTA Clicked", { cta: copy.secondary, destination: secondaryHref })}
           className="relative block rounded-[18px] p-4 transition hover:opacity-90"
-          style={{ background: "rgba(233,30,140,0.12)", border: "1.5px solid rgba(233,30,140,0.45)" }}
+          style={{ background: "#fce4f0", border: "1.5px solid rgba(233,30,140,0.35)" }}
         >
           <span style={{ position: "absolute", top: -8, right: 12, background: "#e91e8c", color: "#fff", fontSize: 8, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", padding: "2px 9px", borderRadius: 100 }}>
             {copy.freePill}
           </span>
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#f48fb1", marginBottom: 5 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#b5005c", marginBottom: 5 }}>
             {copy.secondaryLabel}
           </p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#8c0045", marginBottom: 2 }}>
             {copy.secondary} →
           </p>
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.40)", marginBottom: 7 }}>{copy.secondarySub}</p>
+          <p style={{ fontSize: 11, color: "#b06080", marginBottom: 7 }}>{copy.secondarySub}</p>
           <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             {copy.secondaryBadges.map(b => (
-              <span key={b} style={{ fontSize: 9, color: "#f48fb1", background: "rgba(233,30,140,0.12)", border: "0.5px solid rgba(233,30,140,0.30)", borderRadius: 100, padding: "2px 7px" }}>{b}</span>
+              <span key={b} style={{ fontSize: 9, color: "#b5005c", background: "rgba(233,30,140,0.10)", border: "0.5px solid rgba(233,30,140,0.35)", borderRadius: 100, padding: "2px 7px" }}>{b}</span>
             ))}
           </div>
         </Link>
