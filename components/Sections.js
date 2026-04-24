@@ -167,7 +167,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         },
       };
   return (
-    <section className="relative overflow-hidden bg-[#060c26]">
+    <section className="relative overflow-hidden bg-white lg:bg-[#060c26]">
 
       {/* ══ DESKTOP : carte pleine fenêtre, texte en haut à gauche ══ */}
       <div className="hidden lg:block">
@@ -248,8 +248,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
 
       {/* ══ MOBILE : texte puis carte en bas ══ */}
       <div className="lg:hidden">
-        <div className="relative px-6 pb-6 pt-12">
-          <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#1d3b8b]/30 blur-3xl" />
+        <div className="relative px-6 pb-6 pt-10">
           <HeroContent primaryHref={primaryHref} secondaryHref={secondaryHref} copy={copy} />
         </div>
 
@@ -381,18 +380,18 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
 function HeroContent({ primaryHref, secondaryHref, copy }) {
   return (
     <div className="max-w-2xl">
-      <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.08] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9dd4d0] backdrop-blur-sm">
+      <div className="inline-flex items-center gap-2.5 rounded-full border border-[#d4e8e6] bg-[#f0faf9] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#57B7AF]">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57B7AF]" />
         {copy.badge}
       </div>
 
-      <h1 className="font-heading mt-8 text-[clamp(2.2rem,7vw,3.4rem)] font-bold leading-[1.04] tracking-[-0.04em] text-white">
+      <h1 className="font-heading mt-8 text-[clamp(2.2rem,7vw,3.4rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#1E3A78]">
         {copy.title1}<br />
         <span className="text-[#57B7AF]">{copy.title2}</span><br />
         {copy.title3}
       </h1>
 
-      <p className="mt-5 text-base leading-relaxed text-white/[0.62]">
+      <p className="mt-5 text-base leading-relaxed text-[#5d6e83]">
         {copy.desc}
       </p>
 
@@ -440,7 +439,7 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
 
       {copy.workerLink && (
         <p className="mt-4">
-          <Link href={copy.workerHref} className="text-xs text-white/40 transition hover:text-white/65">{copy.workerLink}</Link>
+          <Link href={copy.workerHref} className="text-xs text-[#8a9bb0] transition hover:text-[#57B7AF]">{copy.workerLink}</Link>
         </p>
       )}
     </div>
