@@ -80,15 +80,16 @@ export default function SimulateurPage() {
               key={title}
               className="rounded-2xl p-5"
               style={{
-                background: "#fff",
-                border: `1px solid ${accent}33`,
-                borderTop: `3px solid ${accent}`,
-                boxShadow: "0 2px 12px rgba(30,58,120,0.06)",
+                background: "#f9fbfd",
+                border: `1px solid ${accent}22`,
+                borderTop: `2px solid ${accent}55`,
+                cursor: "default",
+                userSelect: "none",
               }}
             >
               <span
                 className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
-                style={{ background: `${accent}18`, color: accent }}
+                style={{ background: `${accent}15`, color: accent }}
               >
                 {icon}
               </span>
