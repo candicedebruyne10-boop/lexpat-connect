@@ -39,6 +39,20 @@ export async function POST(request) {
       throw new Error(insertError.message);
     }
 
+    // Captures d'écran en pièces jointes (base64 → Buffer)
+    const screenshots = Array.isArray(body.screenshots) ? body.screenshots : [];
+    const attachments = screenshots
+      .filter(s => s?.dataUrl?.startsWith("data:image/"))
+      .slice(0, 3)
+      .map((s, i) => {
+        const [meta, b64] = s.dataUrl.split(",");
+        const ext = meta.includes("png") ? "png" : meta.includes("webp") ? "webp" : "jpg";
+        return {
+          filename: s.name || `capture-${i + 1}.${ext}`,
+          content: Buffer.from(b64, "base64"),
+        };
+      });
+
     const resendApiKey = process.env.RESEND_API_KEY;
     const recipient = getNotificationRecipient();
     const from = getSenderAddress();
@@ -51,10 +65,10 @@ export async function POST(request) {
     } else {
       try {
         const resend = new Resend(resendApiKey);
-        const { error: emailError } = await resend.emails.send({
+        const emailPayload = {
           from,
           to: recipient,
-          subject: `[LEXPAT Connect] Retour testeur — ${payload.tester_name} — ${payload.page_label}`,
+          subject: `[LEXPAT Connect] Retour testeur — ${payload.tester_name} — ${payload.page_label}${attachments.length ? ` (${attachments.length} capture${attachments.length > 1 ? "s" : ""})` : ""}`,
           html: testFeedbackEmailHtml({
             testerName: payload.tester_name,
             pageLabel: payload.page_label,
@@ -66,8 +80,10 @@ export async function POST(request) {
             details: payload.details,
             expectedResult: payload.expected_result,
             suggestedFix: payload.suggested_fix
-          })
-        });
+          }),
+          ...(attachments.length > 0 ? { attachments } : {}),
+        };
+        const { error: emailError } = await resend.emails.send(emailPayload);
         if (emailError) {
           emailErrorMessage = emailError.message || "Erreur Resend inconnue";
           console.error("[test-feedback] Erreur Resend :", emailError);

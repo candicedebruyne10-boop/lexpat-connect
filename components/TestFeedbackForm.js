@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const PAGE_OPTIONS = [
   "Accueil",
@@ -55,6 +55,31 @@ export default function TestFeedbackForm({ locale = "fr" }) {
   const [values, setValues] = useState(initialValues);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [screenshots, setScreenshots] = useState([]); // [{ name, dataUrl }]
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const MAX_SCREENSHOTS = 3;
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve({ name: file.name, dataUrl: e.target.result, size: file.size });
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFiles(files) {
+    const images = Array.from(files).filter(f => f.type.startsWith("image/")).slice(0, MAX_SCREENSHOTS - screenshots.length);
+    if (!images.length) return;
+    const loaded = await Promise.all(images.map(readFileAsDataUrl));
+    setScreenshots(prev => [...prev, ...loaded].slice(0, MAX_SCREENSHOTS));
+  }
+
+  function removeScreenshot(index) {
+    setScreenshots(prev => prev.filter((_, i) => i !== index));
+  }
 
   const resolvedPageLabel = useMemo(
     () => (values.page_label === (isEn ? "Other page" : "Autre page") ? values.custom_page : values.page_label),
@@ -85,14 +110,13 @@ export default function TestFeedbackForm({ locale = "fr" }) {
         summary: summarize(values.details),
         details: values.details.trim(),
         expected_result: "",
-        suggested_fix: values.suggested_fix.trim()
+        suggested_fix: values.suggested_fix.trim(),
+        screenshots: screenshots.map(s => ({ name: s.name, dataUrl: s.dataUrl })),
       };
 
       const response = await fetch("/api/test-feedback", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
@@ -103,6 +127,7 @@ export default function TestFeedbackForm({ locale = "fr" }) {
       }
 
       setValues(initialValues());
+      setScreenshots([]);
       setStatus({
         type: result.emailSent === false ? "warning" : "success",
         message:
@@ -227,6 +252,76 @@ export default function TestFeedbackForm({ locale = "fr" }) {
             onChange={(event) => updateValue("suggested_fix", event.target.value)}
           />
         </label>
+
+        {/* Zone captures d'écran */}
+        <div className="md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-[#1f2d3d]">
+            {isEn ? "Screenshots (optional, max 3)" : "Captures d'écran (facultatif, max 3)"}
+          </span>
+          <div
+            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={e => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
+            onClick={() => screenshots.length < MAX_SCREENSHOTS && fileInputRef.current?.click()}
+            style={{
+              border: `2px dashed ${dragOver ? "#57b7af" : "#d0dce8"}`,
+              borderRadius: 16,
+              background: dragOver ? "#f0faf9" : "#fafcff",
+              padding: "20px 16px",
+              textAlign: "center",
+              cursor: screenshots.length < MAX_SCREENSHOTS ? "pointer" : "default",
+              transition: "border-color 0.2s, background 0.2s",
+            }}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              capture={undefined}
+              style={{ display: "none" }}
+              onChange={e => handleFiles(e.target.files)}
+            />
+            {screenshots.length === 0 ? (
+              <div style={{ color: "#6b85a0", fontSize: 13 }}>
+                <div style={{ fontSize: 28, marginBottom: 6 }}>📸</div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                  {isEn ? "Drag & drop or tap to add a screenshot" : "Glissez une image ici ou tapez pour en ajouter une"}
+                </div>
+                <div style={{ fontSize: 12, color: "#9aadbe" }}>
+                  {isEn ? "PNG, JPG or WEBP — from your phone camera or Mac — max 3 images" : "PNG, JPG ou WEBP — depuis votre smartphone ou votre Mac — max 3 images"}
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+                {screenshots.map((s, i) => (
+                  <div key={i} style={{ position: "relative", display: "inline-block" }}>
+                    <img
+                      src={s.dataUrl}
+                      alt={s.name}
+                      style={{ width: 120, height: 80, objectFit: "cover", borderRadius: 10, border: "1px solid #d0dce8", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={e => { e.stopPropagation(); removeScreenshot(i); }}
+                      style={{ position: "absolute", top: -8, right: -8, width: 22, height: 22, borderRadius: "50%", background: "#b91c1c", border: "2px solid white", color: "white", fontSize: 11, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}
+                    >✕</button>
+                    <div style={{ fontSize: 10, color: "#8a9db8", marginTop: 4, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.name}</div>
+                  </div>
+                ))}
+                {screenshots.length < MAX_SCREENSHOTS && (
+                  <div
+                    style={{ width: 120, height: 80, border: "2px dashed #c8d8e8", borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#9aadbe", fontSize: 11 }}
+                    onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                  >
+                    <span style={{ fontSize: 20 }}>+</span>
+                    <span>{isEn ? "Add" : "Ajouter"}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="md:col-span-2 flex flex-col gap-4 pt-2">
           {status.message ? (
