@@ -999,6 +999,11 @@ export default function AdminDashboard({ initialData }) {
   const [linkedinPostLoading, setLinkedinPostLoading] = useState(false);
   const [linkedinPostResult, setLinkedinPostResult] = useState(null);
   const [linkedinImageLoading, setLinkedinImageLoading] = useState(false);
+  const [linkedinPostHistory, setLinkedinPostHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("lexpat_linkedin_posts") || "[]"); }
+    catch { return []; }
+  });
+  const [showLinkedinHistory, setShowLinkedinHistory] = useState(false);
 
   // ── Analytics tab state ─────────────────────────────────────────────────────
   const [analyticsInputs, setAnalyticsInputs] = useState({
@@ -1578,6 +1583,21 @@ export default function AdminDashboard({ initialData }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
       setLinkedinPostResult({ ok: true, postId: json.postId });
+      // Save to local history
+      const entry = {
+        id: json.postId || `local-${Date.now()}`,
+        publishedAt: new Date().toISOString(),
+        commentary: linkedinPostForm.commentary,
+        author: linkedinPostForm.author,
+        hasImage: !!linkedinPostForm.imageDataUrl,
+        articleUrl: linkedinPostForm.articleUrl || null,
+        imageDataUrl: linkedinPostForm.imageDataUrl || null,
+      };
+      setLinkedinPostHistory(prev => {
+        const updated = [entry, ...prev].slice(0, 50);
+        try { localStorage.setItem("lexpat_linkedin_posts", JSON.stringify(updated)); } catch {}
+        return updated;
+      });
     } catch (e) {
       setLinkedinPostResult({ error: e.message });
     } finally {
@@ -3614,7 +3634,7 @@ export default function AdminDashboard({ initialData }) {
                   {linkedinPostResult.error ? (
                     <Alert type="error">Publication LinkedIn impossible : {linkedinPostResult.error}</Alert>
                   ) : linkedinPostResult.ok ? (
-                    <Alert type="success">Post publie sur LinkedIn. Identifiant retourne : <strong>{linkedinPostResult.postId || "non fourni"}</strong></Alert>
+                    <Alert type="success">Post publié sur LinkedIn ✓ — visible dans l'historique ci-dessous.</Alert>
                   ) : linkedinPostResult.generated ? (
                     <Alert type="success">
                       {linkedinPostResult.mode === "image-ai"
@@ -3625,6 +3645,67 @@ export default function AdminDashboard({ initialData }) {
                   ) : null}
                 </div>
               )}
+
+              {/* ── Historique des posts publiés ── */}
+              <div style={{ marginTop: 28 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                  <button
+                    onClick={() => setShowLinkedinHistory(h => !h)}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 7, background: showLinkedinHistory ? "#1E3A78" : "#f0f4fc", color: showLinkedinHistory ? "#fff" : "#1E3A78", border: "1.5px solid #1E3A78", borderRadius: 10, padding: "8px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
+                  >
+                    📋 Historique des posts {linkedinPostHistory.length > 0 && <span style={{ background: showLinkedinHistory ? "rgba(255,255,255,0.25)" : "#1E3A78", color: "#fff", borderRadius: 100, padding: "1px 8px", fontSize: 11 }}>{linkedinPostHistory.length}</span>}
+                  </button>
+                  {linkedinPostHistory.length > 0 && (
+                    <button
+                      onClick={() => { if (confirm("Vider tout l'historique ?")) { setLinkedinPostHistory([]); localStorage.removeItem("lexpat_linkedin_posts"); } }}
+                      style={{ fontSize: 11, color: "#e53935", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                    >Vider</button>
+                  )}
+                </div>
+
+                {showLinkedinHistory && (
+                  <div style={{ border: "1px solid #e2eaf3", borderRadius: 14, overflow: "hidden" }}>
+                    {linkedinPostHistory.length === 0 ? (
+                      <p style={{ padding: "20px 16px", fontSize: 13, color: "#8a9db8", textAlign: "center" }}>Aucun post publié pour l'instant.</p>
+                    ) : (
+                      linkedinPostHistory.map((entry, i) => (
+                        <div key={entry.id} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px", borderBottom: i < linkedinPostHistory.length - 1 ? "1px solid #f0f4f8" : "none", background: i % 2 === 0 ? "#fff" : "#fafbfd" }}>
+                          {/* Miniature image si dispo */}
+                          {entry.imageDataUrl ? (
+                            <img src={entry.imageDataUrl} alt="" style={{ width: 56, height: 32, objectFit: "cover", borderRadius: 6, flexShrink: 0, border: "1px solid #e2eaf3" }} />
+                          ) : (
+                            <div style={{ width: 56, height: 32, background: "#eef1fb", borderRadius: 6, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
+                              {entry.articleUrl ? "🔗" : "📝"}
+                            </div>
+                          )}
+                          {/* Texte */}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#1E3A78", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {entry.commentary?.slice(0, 90) || "(sans texte)"}…
+                            </p>
+                            {entry.articleUrl && (
+                              <p style={{ margin: "2px 0 0", fontSize: 11, color: "#57B7AF" }}>🔗 {entry.articleUrl}</p>
+                            )}
+                            <p style={{ margin: "3px 0 0", fontSize: 11, color: "#8a9db8" }}>
+                              {new Date(entry.publishedAt).toLocaleDateString("fr-BE", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              {entry.author && <span style={{ marginLeft: 8, color: "#b0bec5" }}>· {entry.author.split(":").pop()}</span>}
+                            </p>
+                          </div>
+                          {/* Lien LinkedIn si ID disponible */}
+                          {entry.id && !entry.id.startsWith("local-") && (
+                            <a
+                              href={`https://www.linkedin.com/feed/update/${entry.id}/`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ flexShrink: 0, fontSize: 11, fontWeight: 700, color: "#0077b5", textDecoration: "none", border: "1px solid #0077b5", borderRadius: 8, padding: "4px 10px", whiteSpace: "nowrap" }}
+                            >Voir →</a>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
