@@ -998,6 +998,7 @@ export default function AdminDashboard({ initialData }) {
   });
   const [linkedinPostLoading, setLinkedinPostLoading] = useState(false);
   const [linkedinPostResult, setLinkedinPostResult] = useState(null);
+  const [linkedinImageLoading, setLinkedinImageLoading] = useState(false);
 
   // ── Analytics tab state ─────────────────────────────────────────────────────
   const [analyticsInputs, setAnalyticsInputs] = useState({
@@ -1581,6 +1582,37 @@ export default function AdminDashboard({ initialData }) {
       setLinkedinPostResult({ error: e.message });
     } finally {
       setLinkedinPostLoading(false);
+    }
+  };
+
+  // ── Génération image LinkedIn via DALL-E ────────────────────────────────────
+  const generateLinkedinImage = async () => {
+    setLinkedinImageLoading(true);
+    setLinkedinPostResult(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/generate-image", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: linkedinPostForm.topic,
+          tone: linkedinPostForm.tone,
+          audience: linkedinPostForm.audience,
+          commentary: linkedinPostForm.commentary,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLinkedinPostForm((prev) => ({
+        ...prev,
+        imageDataUrl: json.dataUrl,
+        imageFileName: "image-linkedin-ia.png",
+        articleUrl: "",
+      }));
+      setLinkedinPostResult({ generated: true, mode: "image-ai" });
+    } catch (e) {
+      setLinkedinPostResult({ error: `Image IA : ${e.message}` });
+    } finally {
+      setLinkedinImageLoading(false);
     }
   };
 
@@ -3491,33 +3523,54 @@ export default function AdminDashboard({ initialData }) {
                     <div style={{ border: "1.5px dashed #c8d8ed", borderRadius: 12, padding: 14, background: "#f8fbff" }}>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 8 }}>🖼 Image</div>
                       {linkedinPostForm.imageDataUrl ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ height: 56, width: 80, objectFit: "cover", borderRadius: 8, border: "1px solid #e3eaf1" }} />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 12, color: "#5d6e83", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{linkedinPostForm.imageFileName}</div>
-                            <button type="button" onClick={() => setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: "", imageFileName: "" }))} style={{ marginTop: 6, fontSize: 11, color: "#e74c3c", background: "none", border: "none", cursor: "pointer", padding: 0 }}>✕ Retirer</button>
+                        <div>
+                          <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ width: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 8, border: "1px solid #e3eaf1", marginBottom: 8 }} />
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ fontSize: 11, color: "#5d6e83", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{linkedinPostForm.imageFileName}</span>
+                            <button
+                              type="button"
+                              onClick={generateLinkedinImage}
+                              disabled={linkedinImageLoading}
+                              style={{ fontSize: 11, fontWeight: 700, color: "#1E3A78", background: "#eef2fb", border: "1px solid #c5d4f3", borderRadius: 6, padding: "3px 8px", cursor: linkedinImageLoading ? "wait" : "pointer", flexShrink: 0 }}
+                            >
+                              {linkedinImageLoading ? "⏳" : "↺ Régénérer"}
+                            </button>
+                            <button type="button" onClick={() => setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: "", imageFileName: "" }))} style={{ fontSize: 11, color: "#e74c3c", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}>✕</button>
                           </div>
                         </div>
                       ) : (
-                        <label style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" }}>
-                          <span style={{ fontSize: 24 }}>📁</span>
-                          <span style={{ fontSize: 12, color: "#8a9db8", textAlign: "center" }}>Cliquez ou déposez une image<br/>(JPG, PNG, WebP)</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-                              const reader = new FileReader();
-                              reader.onload = (ev) => {
-                                setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: ev.target.result, imageFileName: file.name, articleUrl: "" }));
-                              };
-                              reader.readAsDataURL(file);
-                              e.target.value = "";
-                            }}
-                          />
-                        </label>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {/* Génération IA */}
+                          <button
+                            type="button"
+                            onClick={generateLinkedinImage}
+                            disabled={linkedinImageLoading}
+                            style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1.5px solid #1E3A78", background: "linear-gradient(135deg,#1E3A78,#244892)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: linkedinImageLoading ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                          >
+                            {linkedinImageLoading ? "⏳ Génération en cours…" : "✨ Générer une image IA"}
+                          </button>
+                          <div style={{ textAlign: "center", fontSize: 10, color: "#b0bec5" }}>ou</div>
+                          {/* Upload manuel */}
+                          <label style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", padding: "8px", borderRadius: 8, border: "1px dashed #c8d8ed" }}>
+                            <span style={{ fontSize: 18 }}>📁</span>
+                            <span style={{ fontSize: 11, color: "#8a9db8", textAlign: "center" }}>Importer depuis votre appareil</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const reader = new FileReader();
+                                reader.onload = (ev) => {
+                                  setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: ev.target.result, imageFileName: file.name, articleUrl: "" }));
+                                };
+                                reader.readAsDataURL(file);
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
                       )}
                     </div>
 
@@ -3564,8 +3617,10 @@ export default function AdminDashboard({ initialData }) {
                     <Alert type="success">Post publie sur LinkedIn. Identifiant retourne : <strong>{linkedinPostResult.postId || "non fourni"}</strong></Alert>
                   ) : linkedinPostResult.generated ? (
                     <Alert type="success">
-                      Brouillon généré via {linkedinPostResult.mode === "claude" ? "Claude (Anthropic) ✨" : linkedinPostResult.mode === "openai" ? "OpenAI" : "générateur local — ajoutez ANTHROPIC_API_KEY dans Vercel pour utiliser Claude"}.
-                      {" "}Modifiez le texte puis cliquez sur "Publier sur LinkedIn".
+                      {linkedinPostResult.mode === "image-ai"
+                        ? "Image générée par DALL-E 3 ✨ — vous pouvez la régénérer ou la modifier."
+                        : <>Brouillon généré via {linkedinPostResult.mode === "claude" ? "Claude (Anthropic) ✨" : linkedinPostResult.mode === "openai" ? "OpenAI" : "générateur local — ajoutez ANTHROPIC_API_KEY dans Vercel pour utiliser Claude"}. Modifiez le texte puis cliquez sur "Publier sur LinkedIn".</>
+                      }
                     </Alert>
                   ) : null}
                 </div>
