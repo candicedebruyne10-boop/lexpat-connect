@@ -24,33 +24,33 @@ export default function SimulateurPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <div className="bg-[#1E3A78] px-4 pb-12 pt-14 text-center text-white">
+      <div className="bg-white px-4 pb-12 pt-14 text-center">
 
         {/* Badge double-dot : rose + turquoise */}
-        <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#a8c4f0]">
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#d4e8e6] bg-[#f0faf9] px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#57b7af]">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e91e8c]" />
           Outil gratuit
-          <span className="text-white/25">·</span>
+          <span className="text-[#c0d4d2]">·</span>
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57b7af]" style={{ animationDelay: "0.6s" }} />
           Résultat immédiat
-          <span className="text-white/25">·</span>
+          <span className="text-[#c0d4d2]">·</span>
           Listes officielles 2026
         </p>
 
         {/* H1 avec "possible ?" en rose */}
-        <h1 className="mt-5 text-[2rem] font-extrabold tracking-tight leading-tight sm:text-5xl">
+        <h1 className="mt-5 text-[2rem] font-extrabold tracking-tight leading-tight text-[#1E3A78] sm:text-5xl">
           Mon recrutement est-il<br />
           <span style={{ color: "#e91e8c" }}>possible&nbsp;?</span>
         </h1>
 
-        {/* Description avec concepts-clés en turquoise */}
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#b8cef0]">
+        {/* Description avec concepts-clés */}
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#4a5e76]">
           Ce simulateur vérifie en{" "}
-          <strong className="font-bold text-[#57b7af]">3 minutes</strong>{" "}
+          <strong className="font-bold text-[#1E3A78]">3 minutes</strong>{" "}
           si votre poste figure sur les{" "}
           <strong className="font-bold text-[#57b7af]">listes officielles de pénurie</strong>{" "}
           en Belgique — et vous indique la procédure applicable, les{" "}
-          <strong className="font-bold text-white/90">délais</strong> et les conditions pour obtenir un{" "}
+          <strong className="font-bold text-[#1E3A78]">délais</strong> et les conditions pour obtenir un{" "}
           <strong className="font-bold text-[#57b7af]">permis unique</strong>.
         </p>
 
@@ -80,31 +80,30 @@ export default function SimulateurPage() {
               key={title}
               className="rounded-2xl p-5"
               style={{
-                background: "rgba(255,255,255,0.06)",
+                background: "#fff",
+                border: `1px solid ${accent}33`,
                 borderTop: `3px solid ${accent}`,
-                borderLeft: "0.5px solid rgba(255,255,255,0.10)",
-                borderRight: "0.5px solid rgba(255,255,255,0.10)",
-                borderBottom: "0.5px solid rgba(255,255,255,0.10)",
+                boxShadow: "0 2px 12px rgba(30,58,120,0.06)",
               }}
             >
               <span
                 className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
-                style={{ background: `${accent}22`, color: accent }}
+                style={{ background: `${accent}18`, color: accent }}
               >
                 {icon}
               </span>
-              <p className="mt-3 text-sm font-bold text-white">{title}</p>
-              <p className="mt-1 text-[13px] leading-6 text-[#b8cef0]">{text}</p>
+              <p className="mt-3 text-sm font-bold text-[#1E3A78]">{title}</p>
+              <p className="mt-1 text-[13px] leading-6 text-[#5d6e83]">{text}</p>
             </div>
           ))}
         </div>
 
-        {/* Pour qui ? — turquoise + rose */}
-        <p className="mt-8 text-[13px] text-[#8aa8d8]">
+        {/* Pour qui ? */}
+        <p className="mt-8 text-[13px] text-[#8a9bb0]">
           Pour les{" "}
           <strong style={{ color: "#57b7af" }}>employeurs belges</strong>{" "}
           qui veulent recruter hors UE · et les{" "}
-          <strong style={{ color: "#f48fb1" }}>travailleurs internationaux</strong>{" "}
+          <strong style={{ color: "#e91e8c" }}>travailleurs internationaux</strong>{" "}
           qui veulent connaître leurs chances
         </p>
       </div>
