@@ -3379,17 +3379,38 @@ export default function AdminDashboard({ initialData }) {
                   <button
                     style={{ ...btn.base, ...btn.ghost }}
                     onClick={generateLinkedinPost}
-                    disabled={!linkedinStatus?.connected || linkedinPostLoading}
+                    disabled={linkedinPostLoading}
                   >
-                    {linkedinPostLoading ? "Generation..." : "Generer avec IA"}
+                    {linkedinPostLoading ? "⏳ Génération…" : "✨ Générer avec IA"}
                   </button>
                   <button
                     style={{ ...btn.base, ...btn.primary }}
                     onClick={publishLinkedinPost}
-                    disabled={!linkedinStatus?.connected || linkedinPostLoading}
+                    disabled={!linkedinStatus?.connected || linkedinPostLoading || !linkedinPostForm.commentary}
+                    title={!linkedinStatus?.connected ? "Connectez LinkedIn pour publier" : ""}
                   >
-                    {linkedinPostLoading ? "Publication..." : "Publier sur LinkedIn"}
+                    {linkedinPostLoading ? "Publication…" : "Publier sur LinkedIn"}
                   </button>
+                </div>
+              </div>
+
+              {/* Presets rapides */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Démarrage rapide</div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {[
+                    { label: "🎯 Simulateur", topic: "Mon recrutement international est-il possible ? Simulateur gratuit", audience: "DRH, PME belges, responsables RH", offer: "Simulateur d'éligibilité gratuit — réponse en 3 minutes sur les listes pénurie 2026", tone: "direct", keywords: "RecrutementInternational, PermisUnique, Belgique, RH", cta: "Testez gratuitement → lexpat-connect.be/simulateur-eligibilite" },
+                    { label: "📋 Listes pénurie", topic: "Les listes de pénurie 2026 sont publiées — ce que ça change pour votre recrutement", audience: "Employeurs belges, avocats RH, DRH", offer: "Analyse des nouvelles listes Actiris, Forem et VDAB 2026", tone: "expert", keywords: "ListesPénurie, PermisUnique, RHBelgique, RecrutementHorsUE", cta: "Vérifiez votre poste → lexpat-connect.be/simulateur-eligibilite" },
+                    { label: "🤝 Témoignage", topic: "Comment une PME belge a recruté un profil introuvable localement en 3 semaines", audience: "PME belges, fondateurs, dirigeants", offer: "LEXPAT Connect : mise en relation + accompagnement permis unique", tone: "warm", keywords: "Recrutement, PMEBelgique, ImmigrationProfessionnelle", cta: "Découvrez la plateforme → lexpat-connect.be" },
+                    { label: "👤 Travailleurs", topic: "Votre profil visible auprès des employeurs belges qui recrutent hors UE", audience: "Professionnels internationaux, expatriés", offer: "Plateforme gratuite pour travailleurs — créez votre profil visible", tone: "warm", keywords: "TravaillerEnBelgique, PermisUnique, Emploi, Expatrié", cta: "Créez votre profil → lexpat-connect.be/inscription" },
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => setLinkedinPostForm((prev) => ({ ...prev, ...preset, commentary: "" }))}
+                      style={{ padding: "5px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1.5px solid #d0dcf0", background: "#f0f4ff", color: "#1E3A78" }}
+                    >{preset.label}</button>
+                  ))}
                 </div>
               </div>
 
@@ -3461,7 +3482,10 @@ export default function AdminDashboard({ initialData }) {
                   ) : linkedinPostResult.ok ? (
                     <Alert type="success">Post publie sur LinkedIn. Identifiant retourne : <strong>{linkedinPostResult.postId || "non fourni"}</strong></Alert>
                   ) : linkedinPostResult.generated ? (
-                    <Alert type="success">Brouillon genere ({linkedinPostResult.mode === "openai" ? "OpenAI" : "mode assiste local"}). Vous pouvez maintenant l'editer puis le publier.</Alert>
+                    <Alert type="success">
+                      Brouillon généré via {linkedinPostResult.mode === "claude" ? "Claude (Anthropic) ✨" : linkedinPostResult.mode === "openai" ? "OpenAI" : "générateur local — ajoutez ANTHROPIC_API_KEY dans Vercel pour utiliser Claude"}.
+                      {" "}Modifiez le texte puis cliquez sur "Publier sur LinkedIn".
+                    </Alert>
                   ) : null}
                 </div>
               )}
