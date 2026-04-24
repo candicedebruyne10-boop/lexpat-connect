@@ -1107,83 +1107,118 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
 
             {/* ÉTAPE 1 — Contexte de l'emploi */}
             {step === 1 && (
-              <div className="space-y-5">
-                <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Job context" : "Contexte de l'emploi"}</h2>
-                <p className="text-sm text-[#607086]">{isEn ? "Indicate the region, job title and contract type offered." : "Indiquez la région, le métier et le type de contrat proposé."}</p>
+              <div className="space-y-6">
 
-                <label>
-                  <FieldLabel required>{isEn ? "Recruitment region" : "Région de recrutement"}</FieldLabel>
+                {/* Titre + intro */}
+                <div>
+                  <h2 className="text-xl font-bold text-[#1E3A78]">{isEn ? "Job context" : "Le poste à pourvoir"}</h2>
+                  <p className="mt-1 text-sm text-[#607086]">
+                    {isEn
+                      ? "2 required fields — takes 30 seconds."
+                      : "2 champs obligatoires — 30 secondes suffisent."}
+                  </p>
+                </div>
+
+                {/* ── BLOC 1 : Région ── */}
+                <div className="rounded-2xl border border-[#e2eaf3] bg-[#f8fbff] p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1E3A78] text-[11px] font-bold text-white">1</span>
+                    <span className="text-sm font-bold text-[#1E3A78]">
+                      {isEn ? "Where is the job located?" : "Où se situe le poste ?"}
+                    </span>
+                    {data.region && (
+                      <span className="ml-auto text-[11px] font-semibold text-[#57b7af]">✓ {isEn ? "Selected" : "Sélectionné"}</span>
+                    )}
+                  </div>
                   <RegionSelector
                     value={regionLabels}
                     onChange={(v) => set("region", v)}
-                    helperText={isEn ? "Select the region where the worker will mainly be based." : "Sélectionnez la région où le travailleur sera basé."}
+                    helperText={null}
                     locale={locale}
                   />
-                </label>
+                </div>
 
-                <label>
-                  <FieldLabel required>{isEn ? "Target occupation" : "Métier recherché"}</FieldLabel>
+                {/* ── BLOC 2 : Métier ── */}
+                <div className={`rounded-2xl border p-4 transition-all ${data.region ? "border-[#e2eaf3] bg-[#f8fbff]" : "border-[#ececec] bg-[#fafafa] opacity-60"}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold text-white ${data.region ? "bg-[#1E3A78]" : "bg-[#c0ccd8]"}`}>2</span>
+                    <span className="text-sm font-bold text-[#1E3A78]">
+                      {isEn ? "What is the job title?" : "Quel est le métier ?"}
+                    </span>
+                    {data.profession && data.profession !== "Autre profession" && (
+                      <span className="ml-auto text-[11px] font-semibold text-[#57b7af]">✓ {isEn ? "Selected" : "Sélectionné"}</span>
+                    )}
+                  </div>
                   {data.region ? (
-                    <select
-                      className="field-input"
-                      value={data.profession}
-                      onChange={(e) => set("profession", e.target.value)}
-                      required
-                    >
-                      <option value="" disabled>{isEn ? "Select the target occupation" : "Sélectionnez le métier visé"}</option>
-                      {professionGroups.map((group) => (
-                        <optgroup key={group.label} label={group.label}>
-                          {group.options.map((job) => (
-                            <option key={`${group.label}-${job.value}`} value={job.value}>{job.label}</option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
+                    <>
+                      <select
+                        className="field-input"
+                        value={data.profession}
+                        onChange={(e) => set("profession", e.target.value)}
+                        required
+                      >
+                        <option value="" disabled>{isEn ? "Select the target occupation" : "Sélectionnez le métier visé"}</option>
+                        {professionGroups.map((group) => (
+                          <optgroup key={group.label} label={group.label}>
+                            {group.options.map((job) => (
+                              <option key={`${group.label}-${job.value}`} value={job.value}>{job.label}</option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+                      {regionLabels.length === 1 && (
+                        <p className="mt-2 text-xs text-[#57b7af]">
+                          {isEn
+                            ? `↑ Only shortage occupations for ${displayedRegionLabels[0]} (official 2026 list)`
+                            : `↑ Uniquement les métiers en pénurie pour ${regionLabels[0]} — liste officielle 2026`}
+                        </p>
+                      )}
+                    </>
                   ) : (
-                    <div className="field-input flex cursor-default items-center text-[#8a9bb0]">
-                      {isEn ? "Select a region first to choose an occupation" : "Sélectionnez d'abord une région pour choisir un métier"}
-                    </div>
-                  )}
-                  {data.region && regionLabels.length === 1 && (
-                    <p className="mt-1.5 text-xs text-[#57b7af]">
-                      {isEn
-                        ? `Official shortage occupation list for ${displayedRegionLabels[0]} — 2026 update`
-                        : `Liste officielle des métiers en pénurie pour ${regionLabels[0]} — mise à jour 2026`}
+                    <p className="text-sm text-[#a0afc0]">
+                      {isEn ? "👆 Select a region above first" : "👆 Choisissez d'abord la région ci-dessus"}
                     </p>
                   )}
-                </label>
 
-                {data.profession === "Autre profession" && (
-                  <label>
-                    <FieldLabel required>{isEn ? "Specify the job title" : "Précisez l'intitulé du poste"}</FieldLabel>
-                    <input
-                      className="field-input"
-                      type="text"
-                      placeholder={isEn ? "E.g. HVAC technician" : "Ex. : Technicien CVC"}
-                      value={data.sector}
-                      onChange={(e) => set("sector", e.target.value)}
-                    />
-                  </label>
-                )}
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label>
-                    <FieldLabel>{isEn ? "Contract type" : "Type de contrat"}</FieldLabel>
-                    <select className="field-input" value={data.contractType} onChange={(e) => set("contractType", e.target.value)}>
-                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
-                      <option value="CDI">{isEn ? "Permanent contract" : "CDI"}</option>
-                      <option value="CDD">{isEn ? "Fixed-term contract" : "CDD"}</option>
-                    </select>
-                  </label>
-                  <label>
-                    <FieldLabel>{isEn ? "Working time" : "Temps de travail"}</FieldLabel>
-                    <select className="field-input" value={data.fullTime} onChange={(e) => set("fullTime", e.target.value)}>
-                      <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
-                      <option value="full">{isEn ? "Full-time" : "Temps plein"}</option>
-                      <option value="partial">{isEn ? "Part-time" : "Temps partiel"}</option>
-                    </select>
-                  </label>
+                  {data.profession === "Autre profession" && (
+                    <div className="mt-3">
+                      <FieldLabel required>{isEn ? "Specify the job title" : "Précisez l'intitulé du poste"}</FieldLabel>
+                      <input
+                        className="field-input"
+                        type="text"
+                        placeholder={isEn ? "E.g. HVAC technician" : "Ex. : Technicien CVC"}
+                        value={data.sector}
+                        onChange={(e) => set("sector", e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
+
+                {/* ── BLOC 3 : Contrat + temps (optionnel) ── */}
+                <div className="rounded-2xl border border-dashed border-[#dce7ef] p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#8a9bb0]">
+                    {isEn ? "Optional — refines the result" : "Facultatif — affine le résultat"}
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label>
+                      <FieldLabel>{isEn ? "Contract type" : "Type de contrat"}</FieldLabel>
+                      <select className="field-input" value={data.contractType} onChange={(e) => set("contractType", e.target.value)}>
+                        <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                        <option value="CDI">{isEn ? "Permanent contract" : "CDI"}</option>
+                        <option value="CDD">{isEn ? "Fixed-term contract" : "CDD"}</option>
+                      </select>
+                    </label>
+                    <label>
+                      <FieldLabel>{isEn ? "Working time" : "Temps de travail"}</FieldLabel>
+                      <select className="field-input" value={data.fullTime} onChange={(e) => set("fullTime", e.target.value)}>
+                        <option value="">{isEn ? "Select" : "Sélectionnez"}</option>
+                        <option value="full">{isEn ? "Full-time" : "Temps plein"}</option>
+                        <option value="partial">{isEn ? "Part-time" : "Temps partiel"}</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
               </div>
             )}
 

@@ -60,11 +60,11 @@ export default function RegionSelector({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#dce7ef] bg-[#f8fbfd] px-4 py-3 text-[11px] leading-5 text-[#6f8198]">
+      <div className="flex items-start justify-between gap-3 text-[11px] leading-5 text-[#6f8198]">
         <p className="max-w-[44rem]">
-          {helperText || (locale === "en"
+          {helperText !== null && (helperText || (locale === "en"
             ? "You can select one, two or all three regions."
-            : "Vous pouvez sélectionner une, deux ou trois régions.")}
+            : "Vous pouvez sélectionner une, deux ou trois régions."))}
         </p>
         <div className="group relative flex-shrink-0">
           <button
