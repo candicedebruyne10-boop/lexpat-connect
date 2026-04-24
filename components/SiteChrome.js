@@ -275,43 +275,88 @@ export default function SiteChrome({ children }) {
         </div>
 
         {/* Nav mobile */}
-        <nav ref={mobileNavRef} className="border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden" style={{ position: "relative" }}>
+        <nav ref={mobileNavRef} className="border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden">
           <div className="space-y-2">
-          {navigation.filter((item) => item.highlight).map((item) => (
-            <Link
-              key={item.href}
-              href={localizeHref(item.href, locale)}
-              className="flex w-full items-center justify-center rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(233,30,140,0.22)]"
-              style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)" }}
-            >
-              ✦ {item.label}
-            </Link>
-          ))}
-          <div className="flex flex-wrap items-start gap-2">
-          {navigation.filter((item) => !item.highlight).map((item) => {
-            const dd = navDropdowns[item.href];
-            return dd ? (
-              <NavDropdown
-                key={item.href}
-                href={localizeHref(item.href, locale)}
-                label={item.label}
-                items={dd.items.map((sub) => ({ ...sub, href: localizeHref(sub.href, locale) }))}
-                color={dd.color}
-                mobile
-                isOpen={openMobileMenu === item.href}
-                onToggle={() => setOpenMobileMenu((v) => v === item.href ? null : item.href)}
-              />
-            ) : (
+
+            {/* Bouton CTA rose — pleine largeur */}
+            {navigation.filter((item) => item.highlight).map((item) => (
               <Link
                 key={item.href}
                 href={localizeHref(item.href, locale)}
-                className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#e3eaf1] bg-white px-3 py-2 text-xs font-semibold text-center transition hover:border-[#c5d4f3] hover:text-[#1E3A78]"
+                className="flex w-full items-center justify-center rounded-full px-4 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(233,30,140,0.22)]"
+                style={{ background: "linear-gradient(135deg, #e91e8c, #c2177e)" }}
               >
-                {item.label}
+                ✦ {item.label}
               </Link>
-            );
-          })}
-          </div>
+            ))}
+
+            {/* Rangée de boutons — pas de dropdown absolu ici */}
+            <div className="flex flex-wrap items-center gap-2">
+              {navigation.filter((item) => !item.highlight).map((item) => {
+                const dd = navDropdowns[item.href];
+                const dotColor = dd?.color === "blue" ? "#1d3b8b" : dd?.color === "teal" ? "#57b7af" : "#8a9bb0";
+                const isOpen = openMobileMenu === item.href;
+                return dd ? (
+                  <button
+                    key={item.href}
+                    type="button"
+                    onClick={() => setOpenMobileMenu((v) => v === item.href ? null : item.href)}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border bg-white px-3 py-2 text-xs font-semibold transition"
+                    style={{
+                      borderColor: isOpen ? dotColor : "#e3eaf1",
+                      color: isOpen ? dotColor : "#607086",
+                    }}
+                  >
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, flexShrink: 0, display: "inline-block" }} />
+                    {item.label}
+                    <svg style={{ width: 12, height: 12, flexShrink: 0, transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "none" }} viewBox="0 0 12 12" fill="none">
+                      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={localizeHref(item.href, locale)}
+                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#e3eaf1] bg-white px-3 py-2 text-xs font-semibold transition hover:border-[#c5d4f3] hover:text-[#1E3A78]"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Panneau pleine largeur sous les boutons */}
+            {openMobileMenu && navDropdowns[openMobileMenu] && (() => {
+              const dd = navDropdowns[openMobileMenu];
+              const stripeColor = dd.color === "blue" ? "#1d3b8b" : dd.color === "teal" ? "#57b7af" : "#8a9bb0";
+              const chipStyle = dd.color === "blue"
+                ? { borderColor: "#c5d4f3", background: "#f0f4fd", color: "#1E3A78" }
+                : dd.color === "teal"
+                ? { borderColor: "#cde2df", background: "#f0faf9", color: "#57b7af" }
+                : { borderColor: "#e3eaf1", background: "#fff", color: "#607086" };
+              return (
+                <div className="overflow-hidden rounded-[18px] border border-[#e3eaf1] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.10)]">
+                  <div style={{ height: 3, background: stripeColor }} />
+                  <div className="grid gap-1 p-2">
+                    {dd.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={localizeHref(item.href, locale)}
+                        onClick={() => setOpenMobileMenu(null)}
+                        className="block rounded-2xl border px-4 py-3 text-sm font-medium transition"
+                        style={chipStyle}
+                      >
+                        <span className="block font-semibold text-[#1E3A78]">{item.label}</span>
+                        {item.description && (
+                          <span className="mt-0.5 block text-xs leading-5 text-[#8a9bb0]">{item.description}</span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
           </div>
         </nav>
       </header>
