@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -17,6 +18,25 @@ export default function SiteChrome({ children }) {
   const locale   = detectLocaleFromPathname(pathname);
   const copy     = siteCopy[locale];
   const isEn     = locale === "en";
+
+  // Mobile nav — un seul dropdown ouvert à la fois, fermeture au clic extérieur
+  const [openMobileMenu, setOpenMobileMenu] = useState(null);
+  const mobileNavRef = useRef(null);
+
+  useEffect(() => {
+    if (!openMobileMenu) return;
+    function handleOutside(e) {
+      if (mobileNavRef.current && !mobileNavRef.current.contains(e.target)) {
+        setOpenMobileMenu(null);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+    };
+  }, [openMobileMenu]);
 
   /* ── Navigation principale ─────────────────────────────────────────────── */
   const navigation = [
@@ -255,7 +275,7 @@ export default function SiteChrome({ children }) {
         </div>
 
         {/* Nav mobile */}
-        <nav className="border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden">
+        <nav ref={mobileNavRef} className="border-t border-[#f0f4f8] px-4 py-2.5 text-sm font-medium text-[#607086] lg:hidden" style={{ position: "relative" }}>
           <div className="space-y-2">
           {navigation.filter((item) => item.highlight).map((item) => (
             <Link
@@ -278,6 +298,8 @@ export default function SiteChrome({ children }) {
                 items={dd.items.map((sub) => ({ ...sub, href: localizeHref(sub.href, locale) }))}
                 color={dd.color}
                 mobile
+                isOpen={openMobileMenu === item.href}
+                onToggle={() => setOpenMobileMenu((v) => v === item.href ? null : item.href)}
               />
             ) : (
               <Link

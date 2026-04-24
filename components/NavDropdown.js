@@ -66,26 +66,37 @@ function NavIcon({ name }) {
 /**
  * NavDropdown
  * Props:
- *   label   : string
- *   href    : string
- *   items   : Array<{ href, label, description?, icon? }>
- *   color   : 'blue' | 'teal' | 'slate'
- *   mobile  : bool
+ *   label    : string
+ *   href     : string
+ *   items    : Array<{ href, label, description?, icon? }>
+ *   color    : 'blue' | 'teal' | 'slate'
+ *   mobile   : bool
+ *   isOpen   : bool  (controlled — mobile only)
+ *   onToggle : fn    (controlled — mobile only)
  */
-export default function NavDropdown({ label, href, items, color = 'slate', mobile = false }) {
-  const [open, setOpen] = useState(false);
+export default function NavDropdown({ label, href, items, color = 'slate', mobile = false, isOpen: isOpenProp, onToggle }) {
+  const [openInternal, setOpenInternal] = useState(false);
   const closeTimer = useRef(null);
   const p = palette[color] ?? palette.slate;
 
-  function openMenu()  { clearTimeout(closeTimer.current); setOpen(true); }
-  function closeMenu() { closeTimer.current = setTimeout(() => setOpen(false), 160); }
+  // Controlled mode when parent passes isOpen + onToggle; otherwise internal state
+  const controlled = isOpenProp !== undefined && onToggle !== undefined;
+  const open = controlled ? isOpenProp : openInternal;
+
+  function openMenu()  { clearTimeout(closeTimer.current); if (!controlled) setOpenInternal(true); }
+  function closeMenu() { if (!controlled) closeTimer.current = setTimeout(() => setOpenInternal(false), 160); }
+
+  function toggleMobile() {
+    if (controlled) onToggle();
+    else setOpenInternal((v) => !v);
+  }
 
   /* ── MOBILE ──────────────────────────────────────────────────────── */
   if (mobile) {
     return (
-      <div className="relative shrink-0">
+      <div className="relative shrink-0" style={{ zIndex: 1 }}>
         <button
-          onClick={() => setOpen((v) => !v)}
+          onClick={toggleMobile}
           className={`flex items-center justify-between gap-2 rounded-full border px-3 py-2 text-left text-xs font-semibold transition
             ${open
               ? `border-current ${p.navText} bg-white`

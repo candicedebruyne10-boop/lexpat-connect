@@ -990,6 +990,11 @@ export default function AdminDashboard({ initialData }) {
     cta: "",
     author: "",
     commentary: "",
+    imageDataUrl: "",
+    imageFileName: "",
+    articleUrl: "",
+    articleTitle: "",
+    articleDescription: "",
   });
   const [linkedinPostLoading, setLinkedinPostLoading] = useState(false);
   const [linkedinPostResult, setLinkedinPostResult] = useState(null);
@@ -1561,6 +1566,12 @@ export default function AdminDashboard({ initialData }) {
         body: JSON.stringify({
           author: linkedinPostForm.author,
           commentary: linkedinPostForm.commentary,
+          ...(linkedinPostForm.imageDataUrl ? { imageDataUrl: linkedinPostForm.imageDataUrl } : {}),
+          ...(linkedinPostForm.articleUrl?.trim() && !linkedinPostForm.imageDataUrl ? {
+            articleUrl: linkedinPostForm.articleUrl.trim(),
+            articleTitle: linkedinPostForm.articleTitle?.trim() || "",
+            articleDescription: linkedinPostForm.articleDescription?.trim() || "",
+          } : {}),
         }),
       });
       const json = await res.json();
@@ -3468,6 +3479,76 @@ export default function AdminDashboard({ initialData }) {
                     style={{ ...inputStyle, minHeight: 180, resize: "vertical" }}
                     placeholder="Le texte genere apparaitra ici. Vous pouvez le modifier avant publication."
                   />
+                </div>
+
+                {/* ── Image ou lien (optionnel) ── */}
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                    Contenu visuel (optionnel — image OU lien)
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {/* Image */}
+                    <div style={{ border: "1.5px dashed #c8d8ed", borderRadius: 12, padding: 14, background: "#f8fbff" }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 8 }}>🖼 Image</div>
+                      {linkedinPostForm.imageDataUrl ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ height: 56, width: 80, objectFit: "cover", borderRadius: 8, border: "1px solid #e3eaf1" }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 12, color: "#5d6e83", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{linkedinPostForm.imageFileName}</div>
+                            <button type="button" onClick={() => setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: "", imageFileName: "" }))} style={{ marginTop: 6, fontSize: 11, color: "#e74c3c", background: "none", border: "none", cursor: "pointer", padding: 0 }}>✕ Retirer</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <label style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                          <span style={{ fontSize: 24 }}>📁</span>
+                          <span style={{ fontSize: 12, color: "#8a9db8", textAlign: "center" }}>Cliquez ou déposez une image<br/>(JPG, PNG, WebP)</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              const reader = new FileReader();
+                              reader.onload = (ev) => {
+                                setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: ev.target.result, imageFileName: file.name, articleUrl: "" }));
+                              };
+                              reader.readAsDataURL(file);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* Lien article */}
+                    <div style={{ border: "1.5px dashed #c8d8ed", borderRadius: 12, padding: 14, background: "#f8fbff" }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 8 }}>🔗 Lien web (aperçu automatique)</div>
+                      <input
+                        value={linkedinPostForm.articleUrl}
+                        onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, articleUrl: e.target.value, imageDataUrl: e.target.value ? "" : prev.imageDataUrl, imageFileName: e.target.value ? "" : prev.imageFileName }))}
+                        style={{ ...inputStyle, marginBottom: 8 }}
+                        placeholder="https://lexpat-connect.be/simulateur-eligibilite"
+                      />
+                      <input
+                        value={linkedinPostForm.articleTitle}
+                        onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, articleTitle: e.target.value }))}
+                        style={{ ...inputStyle, marginBottom: 8 }}
+                        placeholder="Titre (optionnel)"
+                      />
+                      <input
+                        value={linkedinPostForm.articleDescription}
+                        onChange={(e) => setLinkedinPostForm((prev) => ({ ...prev, articleDescription: e.target.value }))}
+                        style={inputStyle}
+                        placeholder="Description courte (optionnel)"
+                      />
+                    </div>
+                  </div>
+                  {linkedinPostForm.imageDataUrl && linkedinPostForm.articleUrl && (
+                    <div style={{ marginTop: 8, fontSize: 11, color: "#e97f00", background: "#fff8ed", borderRadius: 8, padding: "6px 10px" }}>
+                      ⚠️ Image et lien tous deux renseignés — l'image sera utilisée (LinkedIn n'accepte qu'un seul type de contenu par post).
+                    </div>
+                  )}
                 </div>
               </div>
 
