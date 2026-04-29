@@ -336,9 +336,10 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
             <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#57B7AF", marginBottom: 6 }}>
               {copy.primaryLabel}
             </p>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#1E3A78", marginBottom: 3 }}>
-              {copy.primary} →
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#1E3A78", lineHeight: 1.35 }}>
+              {copy.primary}
             </p>
+            <p style={{ fontSize: 20, fontWeight: 800, color: "#1E3A78", marginBottom: 3, lineHeight: 1 }}>→</p>
             <p style={{ fontSize: 12, color: "#8a9bb0" }}>{copy.primarySub}</p>
           </Link>
           {/* Voie B — Simulateur (rose) */}
@@ -354,9 +355,10 @@ function HeroContentDesktop({ primaryHref, secondaryHref, copy }) {
             <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#b5005c", marginBottom: 6 }}>
               {copy.secondaryLabel}
             </p>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#8c0045", marginBottom: 3 }}>
-              {copy.secondary} →
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#8c0045", lineHeight: 1.35 }}>
+              {copy.secondary}
             </p>
+            <p style={{ fontSize: 20, fontWeight: 800, color: "#8c0045", marginBottom: 3, lineHeight: 1 }}>→</p>
             <p style={{ fontSize: 12, color: "#b06080", marginBottom: 8 }}>{copy.secondarySub}</p>
             <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
               {copy.secondaryBadges.map(b => (
@@ -406,9 +408,10 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
           <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#57B7AF", marginBottom: 5 }}>
             {copy.primaryLabel}
           </p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#1E3A78", marginBottom: 2 }}>
-            {copy.primary} →
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#1E3A78", lineHeight: 1.35 }}>
+            {copy.primary}
           </p>
+          <p style={{ fontSize: 18, fontWeight: 800, color: "#1E3A78", marginBottom: 2, lineHeight: 1 }}>→</p>
           <p style={{ fontSize: 11, color: "#8a9bb0" }}>{copy.primarySub}</p>
         </Link>
         {/* Voie B — Simulateur (rose) */}
@@ -424,9 +427,10 @@ function HeroContent({ primaryHref, secondaryHref, copy }) {
           <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase", color: "#b5005c", marginBottom: 5 }}>
             {copy.secondaryLabel}
           </p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#8c0045", marginBottom: 2 }}>
-            {copy.secondary} →
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#8c0045", lineHeight: 1.35 }}>
+            {copy.secondary}
           </p>
+          <p style={{ fontSize: 18, fontWeight: 800, color: "#8c0045", marginBottom: 2, lineHeight: 1 }}>→</p>
           <p style={{ fontSize: 11, color: "#b06080", marginBottom: 7 }}>{copy.secondarySub}</p>
           <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             {copy.secondaryBadges.map(b => (
