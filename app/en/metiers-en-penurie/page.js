@@ -1,6 +1,7 @@
 import { CtaBanner, Hero, Section } from "../../../components/Sections";
 import { shortageJobs2026 } from "../../../lib/shortageJobs2026";
 import { translateGroupTitle, translateProfessionLabel, translateRegionLabel } from "../../../lib/professions";
+import { FLANDRE_MB_21 } from "../../../lib/flandreKnelpuntberoepen";
 
 export const metadata = {
   title: "Shortage occupations by region in Belgium | LEXPAT Connect",
@@ -187,6 +188,19 @@ export default function MetiersPageEn() {
                   </div>
                 </div>
 
+                {/* Flanders legend */}
+                {region.id === "flandre" && (
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] font-semibold text-amber-700">
+                      ✦ Full labour market test exemption
+                      <span className="font-normal text-amber-600">— Ministerial Decree 1 Dec. 2025 · 21 occupations</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d4e8e6] bg-[#f0faf9] px-3 py-1.5 text-[11px] font-semibold text-[#57b7af]">
+                      ● 9-week labour market test required (VDAB + EURES)
+                    </span>
+                  </div>
+                )}
+
                 <div className="mt-6 grid gap-5 xl:grid-cols-2">
                   {region.groups.map((group) => (
                     <section
@@ -194,13 +208,25 @@ export default function MetiersPageEn() {
                       className={`rounded-[26px] border p-5 ${style.soft} ${style.border}`}
                     >
                       <h3 className="text-lg font-semibold text-[#1E3A78]">{tGroupTitle(group.title)}</h3>
-                      <ul className="mt-4 space-y-3">
-                        {group.jobs.map((job) => (
-                          <li key={job} className="flex items-start gap-3 text-sm leading-6 text-[#334155]">
-                            <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
-                            <span>{translateProfessionLabel(job, "en")}</span>
-                          </li>
-                        ))}
+                      <ul className="mt-4 space-y-2.5">
+                        {group.jobs.map((job) => {
+                          const isMB = region.id === "flandre" && FLANDRE_MB_21.has(job);
+                          return (
+                            <li key={job} className="flex items-start gap-3 text-sm leading-6 text-[#334155]">
+                              {isMB ? (
+                                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-amber-400 shadow-[0_0_0_3px_rgba(251,191,36,0.20)]" />
+                              ) : (
+                                <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
+                              )}
+                              <span className="flex-1">{translateProfessionLabel(job, "en")}</span>
+                              {isMB && (
+                                <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                                  ✦ Full exemption
+                                </span>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </section>
                   ))}
