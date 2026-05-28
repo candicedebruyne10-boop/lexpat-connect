@@ -5,7 +5,7 @@
 import AdminLoader from "../../components/AdminLoader";
 
 export const metadata = {
-  title: "Admin | LEXPAT Connect",
+  title: "DASHBOARD LEXPAT_CONNECT",
   description: "Back-office administrateur LEXPAT Connect.",
   robots: { index: false, follow: false },
 };
