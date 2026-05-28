@@ -13,3 +13,5 @@ yarn-error.log*
 pnpm-debug.log*
 .env.local.save
 .env*.save
+netlify.toml
+.netlifyignore
