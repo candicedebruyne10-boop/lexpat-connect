@@ -1,17 +1,11 @@
 import {
   HeroPremium,
-  ConversionBar,
-  DualEntry,
   FeaturedProfiles,
   ShortageJobsQuickLink,
   SimulateurTeaser,
   HowItWorksPremium,
-  PresentationVideoSection,
-  JobSectors,
   LexpatStrip,
   TestimonialsStrip,
-  CtaBannerDark,
-  MatchingPreview
 } from "../../components/Sections";
 import { getServiceClient } from "../../lib/supabase/server";
 import { normalizeRegion } from "../../lib/matching";
@@ -102,10 +96,8 @@ export default async function HomePageEn() {
         showProofCard={true}
       />
 
-      <ConversionBar locale="en" />
-
-      <div id="acces">
-        <DualEntry locale="en" />
+      <div id="comment-ca-marche">
+        <HowItWorksPremium locale="en" />
       </div>
 
       {featuredProfiles.length > 0 && (
@@ -120,31 +112,11 @@ export default async function HomePageEn() {
         <SimulateurTeaser locale="en" />
       </div>
 
-      <div id="comment-ca-marche">
-        <HowItWorksPremium locale="en" />
-      </div>
-
-      <div id="mise-en-relation">
-        <MatchingPreview locale="en" />
-      </div>
-
-      <PresentationVideoSection locale="en" />
-
-      <div id="secteurs">
-        <JobSectors locale="en" />
-      </div>
+      <TestimonialsStrip locale="en" />
 
       <div id="lexpat">
         <LexpatStrip locale="en" />
       </div>
-
-      <TestimonialsStrip locale="en" />
-
-      <CtaBannerDark
-        locale="en"
-        primaryHref="/en/employeurs"
-        secondaryHref="/en/travailleurs"
-      />
     </>
   );
 }

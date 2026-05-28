@@ -44,8 +44,7 @@ export default function SiteChrome({ children }) {
     { href: "/employeurs",    label: isEn ? "Employers"   : "Employeurs",   color: "blue" },
     { href: "/travailleurs",  label: isEn ? "Workers"     : "Travailleurs",  color: "teal" },
     { href: "/permis-unique", label: isEn ? "Immigration" : "Immigration" },
-    { href: "/recrutement-international", label: isEn ? "Cities & sectors" : "Villes & secteurs", color: "slate" },
-    { href: "/simulateur-eligibilite", label: isEn ? "Is my recruitment possible?" : "Mon recrutement est-il possible ?", highlight: true },
+    { href: "/simulateur-eligibilite", label: isEn ? "Simulator" : "Simulateur", highlight: true },
   ];
 
   const navDropdowns = {
@@ -69,41 +68,6 @@ export default function SiteChrome({ children }) {
           label: isEn ? "Available candidates" : "Candidats disponibles",
           description: isEn ? "Browse qualified international profiles" : "Parcourez les profils qualifiés disponibles",
           icon: "search",
-        },
-      ],
-    },
-    "/recrutement-international": {
-      color: "slate",
-      items: [
-        {
-          href: "/recrutement-international",
-          label: isEn ? "International recruitment" : "Recrutement international",
-          description: isEn ? "6 in 10 Belgian companies already recruit internationally" : "6 entreprises sur 10 recrutent déjà des profils étrangers",
-          icon: "globe",
-        },
-        {
-          href: "/employeurs/liege-metiers-en-penurie",
-          label: "Liège",
-          description: isEn ? "Shortage occupations in Liège" : "Métiers en pénurie à Liège",
-          icon: "pin",
-        },
-        {
-          href: "/employeurs/anvers-metiers-en-penurie",
-          label: isEn ? "Antwerp" : "Anvers",
-          description: isEn ? "Shortage occupations in Antwerp" : "Métiers en pénurie à Anvers",
-          icon: "pin",
-        },
-        {
-          href: "/employeurs/gand-metiers-en-penurie",
-          label: isEn ? "Ghent" : "Gand",
-          description: isEn ? "Shortage occupations in Ghent" : "Métiers en pénurie à Gand",
-          icon: "pin",
-        },
-        {
-          href: "/employeurs/bruges-metiers-en-penurie",
-          label: "Bruges",
-          description: isEn ? "Shortage occupations in Bruges" : "Métiers en pénurie à Bruges",
-          icon: "pin",
         },
       ],
     },
@@ -140,22 +104,10 @@ export default function SiteChrome({ children }) {
           icon: "doc",
         },
         {
-          href: "/travailleurs-hautement-qualifies",
-          label: isEn ? "Highly qualified workers" : "Travailleurs hautement qualifiés",
-          description: isEn ? "Salary thresholds and EU Blue Card" : "Seuils salariaux et Carte bleue européenne",
-          icon: "star",
-        },
-        {
           href: "/metiers-en-penurie",
           label: isEn ? "Shortage jobs"      : "Métiers en pénurie",
           description: isEn ? "Occupations opening faster international recruitment" : "Professions ouvrant des voies de recrutement international plus rapides",
           icon: "pin",
-        },
-        {
-          href: "/revenir-en-belgique-apres-un-retour",
-          label: isEn ? "Return guarantees" : "Garanties de retour",
-          description: isEn ? "What happens if a worker leaves Belgium and hopes to come back later" : "Ce qu'il faut vérifier avant de quitter la Belgique en espérant y revenir plus tard",
-          icon: "globe",
         },
       ],
     },
@@ -415,6 +367,15 @@ export default function SiteChrome({ children }) {
                     <Link href={localizeHref("/metiers-en-penurie", locale)} className="block transition hover:text-[#1E3A78]">
                       {isEn ? "Shortage jobs" : "Métiers en pénurie"}
                     </Link>
+                    <Link href={localizeHref("/recrutement-international", locale)} className="block transition hover:text-[#1E3A78]">
+                      {isEn ? "International recruitment" : "Recrutement international"}
+                    </Link>
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 pt-1 text-xs text-[#8a9bb0]">
+                    <Link href={localizeHref("/employeurs/anvers-metiers-en-penurie", locale)} className="transition hover:text-[#1E3A78]">{isEn ? "Antwerp" : "Anvers"}</Link>
+                    <Link href={localizeHref("/employeurs/gand-metiers-en-penurie", locale)} className="transition hover:text-[#1E3A78]">{isEn ? "Ghent" : "Gand"}</Link>
+                    <Link href={localizeHref("/employeurs/bruges-metiers-en-penurie", locale)} className="transition hover:text-[#1E3A78]">Bruges</Link>
+                    <Link href={localizeHref("/employeurs/liege-metiers-en-penurie", locale)} className="transition hover:text-[#1E3A78]">Liège</Link>
                   </div>
                 </div>
 
@@ -452,6 +413,12 @@ export default function SiteChrome({ children }) {
                   </Link>
                   <Link href={localizeHref("/permis-unique", locale)} className="block transition hover:text-[#1E3A78]">
                     {isEn ? "Understand the single permit" : "Comprendre le permis unique"}
+                  </Link>
+                  <Link href={localizeHref("/travailleurs-hautement-qualifies", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Highly qualified workers" : "Travailleurs hautement qualifiés"}
+                  </Link>
+                  <Link href={localizeHref("/revenir-en-belgique-apres-un-retour", locale)} className="block transition hover:text-[#1E3A78]">
+                    {isEn ? "Return guarantees" : "Garanties de retour"}
                   </Link>
                   <Link href={localizeHref("/connexion", locale)} className="block transition hover:text-[#1E3A78]">
                     {isEn ? "Sign in" : "Se connecter"}
