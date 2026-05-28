@@ -4204,6 +4204,67 @@ export default function AdminDashboard({ initialData }) {
                     )}
                   </div>
 
+                  {/* ── Plan d'action sécurité ── */}
+                  <div style={{ ...card, marginBottom: 24, borderLeft: "5px solid #1E3A78" }}>
+                    <p style={{ margin: "0 0 16px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>📋 Plan d'action sécurité</p>
+                    <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+
+                      {/* Colonne Fait */}
+                      <div>
+                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 700, color: "#15803d", textTransform: "uppercase", letterSpacing: "0.08em" }}>✅ Fait — code &amp; base de données</p>
+                        {[
+                          { label: "Migration 011 appliquée", desc: "RLS activé sur matches et match_notification_logs, fix escalade de privilèges sur user_roles, GRANTs PostgREST, fonction current_user_role()" },
+                          { label: "Onglet Sécurité dans le dashboard", desc: "Vue d'ensemble des secrets, migrations, accès et règles d'or" },
+                          { label: ".env.local.save protégé", desc: "Ajouté dans .gitignore — ne sera jamais commité par accident" },
+                        ].map(item => (
+                          <div key={item.label} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid #f0f4fb" }}>
+                            <span style={{ color: "#22c55e", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✓</span>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
+                              <p style={{ margin: 0, fontSize: 11, color: "#8a9db8", lineHeight: 1.5 }}>{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Colonne À vérifier */}
+                      <div>
+                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.08em" }}>⏳ À vérifier ici même</p>
+                        {[
+                          { label: "Toutes les migrations affichent ✅", desc: "Panneau « Migrations SQL » ci-dessous — 11/11 requis" },
+                          { label: "Secrets critiques configurés", desc: "SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, CONTACT_EMAIL — panneau ci-dessous" },
+                        ].map(item => (
+                          <div key={item.label} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid #f0f4fb" }}>
+                            <span style={{ color: "#f59e0b", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>⏳</span>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
+                              <p style={{ margin: 0, fontSize: 11, color: "#8a9db8", lineHeight: 1.5 }}>{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Colonne Infrastructure hors code */}
+                      <div>
+                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.08em" }}>⚠️ Infrastructure hors code</p>
+                        {[
+                          { label: "OVH DNS — enregistrement SPF", desc: 'Sous-domaine send · TXT : v=spf1 include:amazonses.com ~all' },
+                          { label: "Vercel — DKIM actif via Resend", desc: "Resend → Domains → vérifier ✅ SPF + DKIM + DMARC" },
+                          { label: "LinkedIn — reconnecter le compte", desc: "Dashboard → onglet LinkedIn Ads → bouton Connecter LinkedIn" },
+                        ].map(item => (
+                          <div key={item.label} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid #f0f4fb" }}>
+                            <span style={{ color: "#ef4444", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>!</span>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
+                              <p style={{ margin: 0, fontSize: 11, color: "#8a9db8", lineHeight: 1.5, fontFamily: item.label.includes("SPF") ? "monospace" : "inherit" }}>{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                    </div>
+                  </div>
+
                   <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
 
                     {/* ── Administrateurs actifs ── */}
