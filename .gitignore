@@ -1,5 +1,6 @@
 node_modules
 .next
+.netlify
 out
 coverage
 .env
@@ -10,3 +11,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.env.local.save
+.env*.save
