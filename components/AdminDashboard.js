@@ -13,6 +13,7 @@ const TABS = [
   { id: "emailing",   label: "Emailing",         icon: "✉️" },
   { id: "studio",     label: "Studio IA",        icon: "✨" },
   { id: "linkedin",   label: "LinkedIn Ads",     icon: "in" },
+  { id: "security",   label: "Sécurité données", icon: "🔒" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
   { id: "history",    label: "Historique",       icon: "📋" },
 ];
@@ -1239,6 +1240,11 @@ export default function AdminDashboard({ initialData }) {
   const [campaignsError, setCampaignsError]   = useState(null);
   const [expandedCampaign, setExpandedCampaign] = useState(null);
 
+  // ── Sécurité données state ───────────────────────────────────────────────────
+  const [securityData,    setSecurityData]    = useState(null);
+  const [securityLoading, setSecurityLoading] = useState(false);
+  const [securityError,   setSecurityError]   = useState(null);
+
   // ── Email individuel state ───────────────────────────────────────────────────
   const [soloEmail,     setSoloEmail]     = useState("");
   const [soloPrenom,    setSoloPrenom]    = useState("");
@@ -1494,6 +1500,30 @@ export default function AdminDashboard({ initialData }) {
   useEffect(() => {
     if (activeTab === "history") fetchCampaigns(1);
   }, [activeTab, fetchCampaigns]);
+
+  // ── Sécurité données ───────────────────────────────────────────────────────
+
+  const fetchSecurityStatus = useCallback(async () => {
+    if (!token) return;
+    setSecurityLoading(true);
+    setSecurityError(null);
+    try {
+      const res = await fetch("/api/admin/security", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setSecurityData(json);
+    } catch (err) {
+      setSecurityError(err.message);
+    } finally {
+      setSecurityLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (activeTab === "security" && !securityData) fetchSecurityStatus();
+  }, [activeTab, securityData, fetchSecurityStatus]);
 
   // ── LinkedIn status ────────────────────────────────────────────────────────
 
@@ -3174,6 +3204,9 @@ export default function AdminDashboard({ initialData }) {
               <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
                 Rédigez emails et posts réseaux sociaux en décrivant ce que vous voulez. L'IA connaît LEXPAT Connect, ses audiences et le droit belge de l'immigration.
               </p>
+              <p style={{ margin: "6px 0 0", fontSize: 11, color: "#b0bccf" }}>
+                Modèle actif : <strong style={{ color: "#607086" }}>Claude Haiku</strong> par défaut — modifiable via la variable <code style={{ background: "#f0f4fb", borderRadius: 4, padding: "1px 5px", fontSize: 11 }}>CLAUDE_MODEL</code> dans Vercel (ex. <code style={{ background: "#f0f4fb", borderRadius: 4, padding: "1px 5px", fontSize: 11 }}>claude-sonnet-4-6</code> pour plus de qualité).
+              </p>
             </div>
 
             {/* ── Switcher Email / Post social ───────────────────────────────── */}
@@ -4090,6 +4123,237 @@ export default function AdminDashboard({ initialData }) {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════
+            ONGLET — SÉCURITÉ DONNÉES
+        ════════════════════════════════════════════════════ */}
+        {activeTab === "security" && (
+          <div>
+            {/* En-tête */}
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 28, gap: 16, flexWrap: "wrap" }}>
+              <div>
+                <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>🔒 Sécurité des données</h2>
+                <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
+                  Vue d'ensemble de la protection des données, des accès et des secrets configurés. Consultez cet onglet avant toute modification sensible.
+                </p>
+              </div>
+              <button
+                style={{ ...btn.base, ...btn.ghost, fontSize: 12, flexShrink: 0 }}
+                onClick={() => { setSecurityData(null); fetchSecurityStatus(); }}
+              >
+                ↺ Actualiser
+              </button>
+            </div>
+
+            {securityLoading && (
+              <div style={{ color: "#8a9db8", fontSize: 14, padding: "32px 0" }}>Chargement du statut de sécurité…</div>
+            )}
+            {securityError && (
+              <div style={{ ...card, borderLeft: "4px solid #e53e3e", background: "#fff5f5", color: "#c53030", fontSize: 13, padding: "16px 20px", marginBottom: 20 }}>
+                ⚠️ {securityError}
+              </div>
+            )}
+
+            {securityData && (() => {
+              const { adminRoles, roleCount, envVars, migrations, hardcodedAdmins, checkedAt } = securityData;
+
+              // ── Helpers visuels ──
+              const Pill = ({ ok, labelOk, labelKo }) => (
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 5,
+                  padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700,
+                  background: ok ? "#f0fdf4" : "#fff5f5",
+                  color: ok ? "#15803d" : "#dc2626",
+                  border: `1px solid ${ok ? "#bbf7d0" : "#fecaca"}`,
+                }}>
+                  {ok ? "✓" : "✗"} {ok ? labelOk : labelKo}
+                </span>
+              );
+
+              // Calcul score global
+              const criticalEnv = ["SUPABASE_SERVICE_ROLE_KEY", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "RESEND_API_KEY", "CONTACT_EMAIL"];
+              const missingCritical = criticalEnv.filter(k => !envVars[k]);
+              const allMigrationsOk = migrations.every(m => m.ok);
+              const score = missingCritical.length === 0 && allMigrationsOk ? "good" : missingCritical.length > 0 ? "critical" : "warn";
+
+              return (
+                <>
+                  {/* ── Bandeau de statut global ── */}
+                  <div style={{
+                    ...card,
+                    marginBottom: 24,
+                    borderLeft: `5px solid ${score === "good" ? "#22c55e" : score === "warn" ? "#f59e0b" : "#ef4444"}`,
+                    background: score === "good" ? "#f0fdf4" : score === "warn" ? "#fffbeb" : "#fff5f5",
+                    display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+                  }}>
+                    <span style={{ fontSize: 32 }}>{score === "good" ? "🟢" : score === "warn" ? "🟡" : "🔴"}</span>
+                    <div>
+                      <p style={{ margin: "0 0 2px", fontWeight: 800, fontSize: 15, color: "#1E3A78" }}>
+                        {score === "good" ? "Aucun problème critique détecté" : score === "warn" ? "Migrations incomplètes" : `${missingCritical.length} variable(s) critique(s) manquante(s)`}
+                      </p>
+                      <p style={{ margin: 0, fontSize: 12, color: "#607086" }}>
+                        Vérifié le {new Date(checkedAt).toLocaleString("fr-BE", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                    {missingCritical.length > 0 && (
+                      <div style={{ marginLeft: "auto", fontSize: 12, color: "#dc2626", fontWeight: 700 }}>
+                        Manquant : {missingCritical.join(", ")}
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+
+                    {/* ── Administrateurs actifs ── */}
+                    <div style={card}>
+                      <p style={{ margin: "0 0 14px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>👤 Administrateurs actifs</p>
+                      <p style={{ margin: "0 0 10px", fontSize: 12, color: "#8a9db8" }}>Emails hardcodés (toujours admin) :</p>
+                      {hardcodedAdmins.map(email => (
+                        <div key={email} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderBottom: "1px solid #f0f4fb" }}>
+                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1E3A78", flexShrink: 0 }} />
+                          <span style={{ fontSize: 13, color: "#1E3A78", fontWeight: 600 }}>{email}</span>
+                          <span style={{ marginLeft: "auto", fontSize: 11, color: "#8a9db8" }}>hardcodé</span>
+                        </div>
+                      ))}
+                      {adminRoles.length > 0 && (
+                        <>
+                          <p style={{ margin: "14px 0 10px", fontSize: 12, color: "#8a9db8" }}>Admins en base (user_roles) :</p>
+                          {adminRoles.map(r => (
+                            <div key={r.user_id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderBottom: "1px solid #f0f4fb" }}>
+                              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#e91e8c", flexShrink: 0 }} />
+                              <span style={{ fontSize: 12, color: "#607086", fontFamily: "monospace" }}>{r.user_id.slice(0, 8)}…</span>
+                              <span style={{ marginLeft: "auto", fontSize: 11, color: "#8a9db8" }}>depuis le {new Date(r.created_at).toLocaleDateString("fr-BE")}</span>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      {adminRoles.length === 0 && (
+                        <p style={{ fontSize: 12, color: "#22c55e", marginTop: 10 }}>✓ Aucun admin supplémentaire en base — normal si vous n'en avez pas créé.</p>
+                      )}
+                      <div style={{ marginTop: 14, padding: "10px 12px", background: "#f0f4fb", borderRadius: 10, fontSize: 12, color: "#607086" }}>
+                        <strong>Distribution des rôles :</strong>{" "}
+                        {Object.entries(roleCount).map(([role, count]) => `${count} ${role}`).join(" · ") || "aucun rôle assigné"}
+                      </div>
+                    </div>
+
+                    {/* ── Secrets configurés ── */}
+                    <div style={card}>
+                      <p style={{ margin: "0 0 14px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>🔑 Secrets & variables d'environnement</p>
+                      <p style={{ margin: "0 0 12px", fontSize: 12, color: "#8a9db8" }}>Seule la présence est vérifiée — jamais les valeurs.</p>
+                      {[
+                        { key: "SUPABASE_SERVICE_ROLE_KEY",     label: "Supabase service role",   critical: true },
+                        { key: "NEXT_PUBLIC_SUPABASE_URL",      label: "Supabase URL",             critical: true },
+                        { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", label: "Supabase anon key",        critical: true },
+                        { key: "RESEND_API_KEY",                label: "Resend (emails)",          critical: true },
+                        { key: "CONTACT_EMAIL",                 label: "Email admin (CONTACT_EMAIL)", critical: true },
+                        { key: "ANTHROPIC_API_KEY",             label: "Claude Haiku (Studio IA)", critical: false },
+                        { key: "OPENAI_API_KEY",                label: "OpenAI (fallback IA)",     critical: false },
+                        { key: "LINKEDIN_CLIENT_ID",            label: "LinkedIn OAuth client ID", critical: false },
+                        { key: "LINKEDIN_CLIENT_SECRET",        label: "LinkedIn OAuth secret",    critical: false },
+                        { key: "NEXT_PUBLIC_GA_MEASUREMENT_ID", label: "Google Analytics 4",       critical: false },
+                      ].map(({ key, label, critical }) => (
+                        <div key={key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid #f0f4fb" }}>
+                          <span style={{ fontSize: 14 }}>{envVars[key] ? "✅" : critical ? "🔴" : "⚪"}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: envVars[key] ? "#15803d" : critical ? "#dc2626" : "#8a9db8" }}>{label}</p>
+                            <p style={{ margin: 0, fontSize: 11, color: "#b0bccf", fontFamily: "monospace" }}>{key}</p>
+                          </div>
+                          <Pill ok={envVars[key]} labelOk="Configuré" labelKo={critical ? "MANQUANT" : "Non défini"} />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* ── État des migrations ── */}
+                    <div style={card}>
+                      <p style={{ margin: "0 0 14px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>🗄️ Migrations SQL ({migrations.filter(m => m.ok).length}/{migrations.length} détectées)</p>
+                      <p style={{ margin: "0 0 12px", fontSize: 12, color: "#8a9db8" }}>Vérification par existence des tables en base.</p>
+                      {migrations.map(m => (
+                        <div key={m.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "7px 0", borderBottom: "1px solid #f0f4fb" }}>
+                          <span style={{ fontSize: 13, marginTop: 1 }}>{m.ok ? "✅" : "❌"}</span>
+                          <div>
+                            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{m.id}</p>
+                            <p style={{ margin: 0, fontSize: 11, color: "#8a9db8" }}>{m.label}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {!allMigrationsOk && (
+                        <div style={{ marginTop: 14, padding: "10px 12px", background: "#fff5f5", borderRadius: 10, fontSize: 12, color: "#dc2626", fontWeight: 600 }}>
+                          ⚠️ Des migrations manquent. Appliquez-les dans Supabase → SQL Editor depuis le dossier <code>supabase/</code> du projet.
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── Matrice des accès par table ── */}
+                    <div style={{ ...card, gridColumn: "1 / -1" }}>
+                      <p style={{ margin: "0 0 4px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>📋 Matrice des accès par table</p>
+                      <p style={{ margin: "0 0 16px", fontSize: 12, color: "#8a9db8" }}>Qui peut lire et écrire quoi. Toutes les opérations sensibles passent par le service_role (API routes Next.js).</p>
+                      <div style={{ overflowX: "auto" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                          <thead>
+                            <tr style={{ background: "#f0f4fb" }}>
+                              {["Table", "Visiteur (anon)", "Travailleur connecté", "Employeur connecté", "Admin / service_role", "Données sensibles"].map(h => (
+                                <th key={h} style={{ padding: "8px 12px", textAlign: "left", color: "#607086", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { table: "worker_profiles",         anon: "profils visibles (job+secteur)", worker: "son propre profil", employer: "profils visibles", admin: "tout", sensitive: "🔴 nom, email, tel, adresse" },
+                              { table: "worker_cv_items",         anon: "—", worker: "ses propres items", employer: "—", admin: "tout", sensitive: "🟡 historique pro" },
+                              { table: "worker_documents",        anon: "—", worker: "ses propres docs", employer: "—", admin: "tout", sensitive: "🔴 docs identité, CV" },
+                              { table: "employer_profiles",       anon: "—", worker: "—", employer: "son profil", admin: "tout", sensitive: "🟡 infos société" },
+                              { table: "employer_members",        anon: "—", worker: "—", employer: "ses membres", admin: "tout", sensitive: "🟡 email pro, tel" },
+                              { table: "job_offers",              anon: "offres publiées", worker: "offres publiées", employer: "ses offres", admin: "tout", sensitive: "🟢 non" },
+                              { table: "job_applications",        anon: "—", worker: "ses candidatures", employer: "candidatures sur ses offres", admin: "tout", sensitive: "🟡 notes employeur" },
+                              { table: "matches",                 anon: "—", worker: "ses matchs", employer: "matchs sur ses offres", admin: "tout", sensitive: "🟡 score de matching" },
+                              { table: "conversations / messages",anon: "—", worker: "ses conversations", employer: "ses conversations", admin: "tout", sensitive: "🔴 messages privés" },
+                              { table: "user_roles",              anon: "—", worker: "son propre rôle", employer: "son propre rôle", admin: "tout", sensitive: "🟡 rôle app" },
+                              { table: "referrals",               anon: "—", worker: "ses parrainages", employer: "—", admin: "tout", sensitive: "🟡 liens de parrainage" },
+                              { table: "test_feedback",           anon: "—", worker: "—", employer: "—", admin: "service_role only", sensitive: "🟡 feedback testeurs" },
+                              { table: "email_campaigns",         anon: "—", worker: "—", employer: "—", admin: "service_role only", sensitive: "🔴 liste emails envoyés" },
+                              { table: "match_notification_logs", anon: "—", worker: "—", employer: "—", admin: "service_role only", sensitive: "🔴 emails utilisateurs" },
+                              { table: "linkedin_admin_connections", anon: "—", worker: "—", employer: "—", admin: "propriétaire only", sensitive: "🔴 token OAuth LinkedIn" },
+                            ].map((row, i) => (
+                              <tr key={row.table} style={{ background: i % 2 === 0 ? "#fff" : "#fafbfd", borderBottom: "1px solid #f0f4fb" }}>
+                                <td style={{ padding: "8px 12px", fontWeight: 700, color: "#1E3A78", fontFamily: "monospace", fontSize: 11, whiteSpace: "nowrap" }}>{row.table}</td>
+                                <td style={{ padding: "8px 12px", color: row.anon === "—" ? "#c5cdd8" : "#607086" }}>{row.anon}</td>
+                                <td style={{ padding: "8px 12px", color: row.worker === "—" ? "#c5cdd8" : "#607086" }}>{row.worker}</td>
+                                <td style={{ padding: "8px 12px", color: row.employer === "—" ? "#c5cdd8" : "#607086" }}>{row.employer}</td>
+                                <td style={{ padding: "8px 12px", color: "#607086" }}>{row.admin}</td>
+                                <td style={{ padding: "8px 12px" }}>{row.sensitive}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* ── Règles d'or ── */}
+                    <div style={{ ...card, gridColumn: "1 / -1", borderTop: "4px solid #f59e0b", background: "#fffbeb" }}>
+                      <p style={{ margin: "0 0 16px", fontWeight: 800, fontSize: 14, color: "#92400e" }}>⚠️ Règles à ne jamais enfreindre</p>
+                      <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+                        {[
+                          { icon: "🚫", title: "Ne jamais exposer SUPABASE_SERVICE_ROLE_KEY", desc: "Cette clé bypasse toute la sécurité RLS. Elle ne doit apparaître que dans les API routes Next.js, jamais dans le code client ni les logs." },
+                          { icon: "🚫", title: "Ne jamais SELECT * sur worker_profiles côté client", desc: "Sélectionnez uniquement les colonnes nécessaires. Les colonnes birth_date, phone, email, address ne doivent jamais être exposées à un visiteur non connecté." },
+                          { icon: "🚫", title: "Ne pas promouvoir un rôle admin côté client", desc: "Le changement de rôle vers 'admin' doit toujours passer par une API route utilisant le service_role. La RLS bloque l'auto-promotion, mais restez vigilante." },
+                          { icon: "🚫", title: "Ne jamais committer de fichier .env", desc: "Les fichiers .env.local sont dans .gitignore. Vérifiez git status avant chaque commit contenant des configs." },
+                          { icon: "⚠️", title: "Toute nouvelle table doit avoir RLS activée", desc: "CREATE TABLE sans ALTER TABLE ... ENABLE ROW LEVEL SECURITY laisse la table ouverte à tous les utilisateurs authentifiés. Toujours ajouter les deux lignes." },
+                          { icon: "⚠️", title: "Vérifier les GRANTs après chaque nouvelle migration", desc: "Sans GRANT explicite sur les nouveaux rôles (anon / authenticated), PostgREST refusera l'accès même si la RLS policy l'autorise (règle Supabase 2026)." },
+                        ].map(rule => (
+                          <div key={rule.title} style={{ padding: "12px 14px", background: "#fff", borderRadius: 12, border: "1px solid #fde68a" }}>
+                            <p style={{ margin: "0 0 4px", fontWeight: 700, fontSize: 13, color: "#92400e" }}>{rule.icon} {rule.title}</p>
+                            <p style={{ margin: 0, fontSize: 12, color: "#78350f", lineHeight: 1.6 }}>{rule.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
 
