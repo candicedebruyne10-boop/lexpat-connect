@@ -3214,10 +3214,12 @@ export default function AdminDashboard({ initialData }) {
                 />
               ) : <EmptyState text="Aucun matching." />}
             </SectionCard>
-          </div>}
+          </div>
+        )}
 
-            {/* ── Sous-onglet Studio IA ── */}
-            {prospectionTab === "studio" && <div>
+        {/* ── Sous-onglet Studio IA ── */}
+        {activeTab === "prospection" && prospectionTab === "studio" && (
+          <div>
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>✨ Studio IA</h2>
               <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
