@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin LinkedIn — Lexpat Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green:   #2E5E1E;
+  --green2:  #3E7A2A;
+  --light:   #EFF4EC;
+  --bg:      #F7F8F6;
+  --white:   #FFFFFF;
+  --text:    #1A1A1A;
+  --muted:   #6B7280;
+  --border:  #E5E7EB;
+  --red:     #DC2626;
+  --orange:  #D97706;
+  --blue:    #2563EB;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--green);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-title { color: #fff; font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+.topbar-title svg { opacity: 0.85; }
+.topbar-badge { background: rgba(255,255,255,0.18); color: #fff; font-size: 0.72rem; padding: 0.2rem 0.65rem; border-radius: 20px; font-weight: 400; }
+
+/* ── LAYOUT ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ── STATS ── */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; }
+.stat-card .label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+.stat-card .value { font-size: 1.9rem; font-weight: 600; color: var(--text); line-height: 1; }
+.stat-card .sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+/* ── FORM CARD ── */
+.form-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; overflow: hidden; }
+.form-card-header { background: var(--light); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.form-card-header h2 { font-size: 0.9rem; font-weight: 600; color: var(--green); display: flex; align-items: center; gap: 0.5rem; }
+.form-card-body { padding: 1.5rem; display: none; }
+.form-card-body.open { display: block; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-grid.full { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+.field label { font-size: 0.75rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.field input, .field select, .field textarea {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color 0.15s;
+  outline: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green2); }
+.field textarea { resize: vertical; min-height: 90px; }
+
+.type-it    { --c: #2563EB; --bg: #EFF6FF; }
+.type-infirmiers { --c: #7C3AED; --bg: #F5F3FF; }
+.type-autre { --c: #6B7280; --bg: #F3F4F6; }
+
+.form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-radius: 6px; font-size: 0.84rem; font-family: inherit; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.15s; }
+.btn-primary { background: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(46,94,30,0.25); }
+.btn-primary:hover { opacity: 0.88; }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg); }
+
+/* ── FILTERS ── */
+.filters { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.filter-btn { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.filter-btn.active { border-color: var(--green); background: var(--light); color: var(--green); }
+.filter-search { flex: 1; min-width: 180px; border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.84rem; font-family: inherit; outline: none; }
+.filter-search:focus { border-color: var(--green2); }
+
+/* ── POSTS LIST ── */
+.posts-wrap { display: flex; flex-direction: column; gap: 0.85rem; }
+.post-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start; transition: box-shadow 0.15s; }
+.post-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+.post-type-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+.post-main { flex: 1; min-width: 0; }
+.post-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.post-date { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+.post-type-badge { font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
+.post-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; white-space: pre-wrap; margin-bottom: 0.75rem; }
+.post-text.collapsed { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.post-expand { font-size: 0.75rem; color: var(--green); cursor: pointer; font-weight: 500; margin-bottom: 0.75rem; display: inline-block; }
+
+.post-stats { display: flex; gap: 1.25rem; }
+.stat-pill { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--muted); }
+.stat-pill svg { opacity: 0.6; }
+
+.post-notes { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); line-height: 1.5; }
+
+.post-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+.icon-btn { background: none; border: none; cursor: pointer; padding: 0.35rem; border-radius: 4px; color: var(--muted); transition: all 0.15s; }
+.icon-btn:hover { background: var(--bg); color: var(--text); }
+.icon-btn.delete:hover { color: var(--red); background: #FEF2F2; }
+
+/* ── EMPTY STATE ── */
+.empty { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+.empty svg { opacity: 0.25; margin-bottom: 1rem; }
+.empty p { font-size: 0.9rem; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--white); border-radius: 10px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 1rem; font-weight: 600; }
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem; }
+
+@media (max-width: 640px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .container { padding: 1.25rem 1rem; }
+  .topbar { padding: 0 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-title">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    Lexpat Connect — Historique LinkedIn
+  </div>
+  <span class="topbar-badge" id="topbar-count">0 posts</span>
+</header>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">Total posts</div>
+      <div class="value" id="stat-total">0</div>
+      <div class="sub">depuis le début</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Vues totales</div>
+      <div class="value" id="stat-views">0</div>
+      <div class="sub">impressions cumulées</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Réactions</div>
+      <div class="value" id="stat-likes">0</div>
+      <div class="sub">likes + commentaires</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Réponses reçues</div>
+      <div class="value" id="stat-replies">0</div>
+      <div class="sub">contacts intéressés</div>
+    </div>
+  </div>
+
+  <!-- Formulaire ajout -->
+  <div class="form-card">
+    <div class="form-card-header" onclick="toggleForm()">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un post LinkedIn
+      </h2>
+      <svg id="form-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="form-card-body" id="form-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Date de publication</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="field">
+          <label>Secteur ciblé</label>
+          <select id="f-type">
+            <option value="IT">🖥️ IT / Tech</option>
+            <option value="Infirmiers">🏥 Infirmiers / Soins</option>
+            <option value="Général">📢 Général Lexpat</option>
+            <option value="Autre">💬 Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full" style="margin-top:1rem">
+        <div class="field">
+          <label>Texte du post</label>
+          <textarea id="f-text" placeholder="Colle ici le texte de ton post LinkedIn…"></textarea>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:1rem">
+        <div class="field">
+          <label>👁️ Vues (impressions)</label>
+          <input type="number" id="f-views" placeholder="ex: 1250" min="0">
+        </div>
+        <div class="field">
+          <label>👍 Likes</label>
+          <input type="number" id="f-likes" placeholder="ex: 34" min="0">
+        </div>
+        <div class="field">
+          <label>💬 Commentaires</label>
+          <input type="number" id="f-comments" placeholder="ex: 8" min="0">
+        </div>
+        <div class="field">
+          <label>📩 Réponses / contacts intéressés</label>
+          <input type="number" id="f-replies" placeholder="ex: 3" min="0">
+        </div>
+      </div>
+      <div class="form-grid full" style="margin-top:1rem">
+        <div class="field">
+          <label>Notes / observations</label>
+          <input type="text" id="f-notes" placeholder="ex: Bonne portée, 2 demandes de RDV reçues…">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="resetForm()">Annuler</button>
+        <button class="btn btn-primary" onclick="savePost()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('tous', this)">Tous</button>
+    <button class="filter-btn" onclick="setFilter('IT', this)">🖥️ IT</button>
+    <button class="filter-btn" onclick="setFilter('Infirmiers', this)">🏥 Infirmiers</button>
+    <button class="filter-btn" onclick="setFilter('Général', this)">📢 Général</button>
+    <button class="filter-btn" onclick="setFilter('Autre', this)">💬 Autre</button>
+    <input class="filter-search" type="text" placeholder="🔍 Rechercher dans les posts…" oninput="setSearch(this.value)">
+  </div>
+
+  <!-- Liste posts -->
+  <div class="posts-wrap" id="posts-list"></div>
+
+</div>
+
+<!-- Modal édition -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Modifier le post</h3>
+      <button class="icon-btn" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="e-id">
+      <div class="form-grid">
+        <div class="field"><label>Date</label><input type="date" id="e-date"></div>
+        <div class="field"><label>Secteur</label>
+          <select id="e-type">
+            <option value="IT">🖥️ IT / Tech</option>
+            <option value="Infirmiers">🏥 Infirmiers / Soins</option>
+            <option value="Général">📢 Général Lexpat</option>
+            <option value="Autre">💬 Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full" style="margin-top:1rem">
+        <div class="field"><label>Texte du post</label><textarea id="e-text" style="min-height:120px"></textarea></div>
+      </div>
+      <div class="form-grid" style="margin-top:1rem">
+        <div class="field"><label>👁️ Vues</label><input type="number" id="e-views" min="0"></div>
+        <div class="field"><label>👍 Likes</label><input type="number" id="e-likes" min="0"></div>
+        <div class="field"><label>💬 Commentaires</label><input type="number" id="e-comments" min="0"></div>
+        <div class="field"><label>📩 Réponses</label><input type="number" id="e-replies" min="0"></div>
+      </div>
+      <div class="form-grid full" style="margin-top:1rem">
+        <div class="field"><label>Notes</label><input type="text" id="e-notes"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="updatePost()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Mettre à jour
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STORAGE ──
+const KEY = 'lexpat_linkedin_posts';
+let posts = [];
+let filter = 'tous';
+let search = '';
+
+try { posts = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) {}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(posts)); }
+
+// ── TYPE CONFIG ──
+const TYPE_CONFIG = {
+  'IT':         { color: '#2563EB', bg: '#EFF6FF', dot: '#2563EB' },
+  'Infirmiers': { color: '#7C3AED', bg: '#F5F3FF', dot: '#7C3AED' },
+  'Général':    { color: '#059669', bg: '#ECFDF5', dot: '#059669' },
+  'Autre':      { color: '#6B7280', bg: '#F3F4F6', dot: '#9CA3AF' },
+};
+
+function typeConf(t) { return TYPE_CONFIG[t] || TYPE_CONFIG['Autre']; }
+
+// ── FORM TOGGLE ──
+function toggleForm() {
+  const body = document.getElementById('form-body');
+  const chev = document.getElementById('form-chevron');
+  body.classList.toggle('open');
+  chev.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+function resetForm() {
+  ['f-date','f-text','f-views','f-likes','f-comments','f-replies','f-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-type').value = 'IT';
+  document.getElementById('form-body').classList.remove('open');
+  document.getElementById('form-chevron').style.transform = '';
+}
+
+// ── SET TODAY DATE ──
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+// ── SAVE POST ──
+function savePost() {
+  const text = document.getElementById('f-text').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!text) { alert('Merci d\'entrer le texte du post.'); return; }
+  if (!date) { alert('Merci d\'entrer la date.'); return; }
+
+  const post = {
+    id: Date.now(),
+    date,
+    type: document.getElementById('f-type').value,
+    text,
+    views:    parseInt(document.getElementById('f-views').value) || 0,
+    likes:    parseInt(document.getElementById('f-likes').value) || 0,
+    comments: parseInt(document.getElementById('f-comments').value) || 0,
+    replies:  parseInt(document.getElementById('f-replies').value) || 0,
+    notes:    document.getElementById('f-notes').value.trim(),
+  };
+
+  posts.unshift(post);
+  save();
+  resetForm();
+  render();
+}
+
+// ── FILTER ──
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+function setSearch(v) { search = v.toLowerCase(); render(); }
+
+// ── DELETE ──
+function deletePost(id) {
+  if (!confirm('Supprimer ce post ?')) return;
+  posts = posts.filter(p => p.id !== id);
+  save(); render();
+}
+
+// ── EDIT ──
+function openEdit(id) {
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('e-id').value = p.id;
+  document.getElementById('e-date').value = p.date;
+  document.getElementById('e-type').value = p.type;
+  document.getElementById('e-text').value = p.text;
+  document.getElementById('e-views').value = p.views || '';
+  document.getElementById('e-likes').value = p.likes || '';
+  document.getElementById('e-comments').value = p.comments || '';
+  document.getElementById('e-replies').value = p.replies || '';
+  document.getElementById('e-notes').value = p.notes || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+function updatePost() {
+  const id = parseInt(document.getElementById('e-id').value);
+  const idx = posts.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  posts[idx] = {
+    ...posts[idx],
+    date:     document.getElementById('e-date').value,
+    type:     document.getElementById('e-type').value,
+    text:     document.getElementById('e-text').value.trim(),
+    views:    parseInt(document.getElementById('e-views').value) || 0,
+    likes:    parseInt(document.getElementById('e-likes').value) || 0,
+    comments: parseInt(document.getElementById('e-comments').value) || 0,
+    replies:  parseInt(document.getElementById('e-replies').value) || 0,
+    notes:    document.getElementById('e-notes').value.trim(),
+  };
+  save(); closeModal(); render();
+}
+
+// ── TOGGLE TEXT ──
+function toggleText(id) {
+  const el = document.getElementById('text-' + id);
+  const btn = document.getElementById('expand-' + id);
+  if (el.classList.contains('collapsed')) {
+    el.classList.remove('collapsed');
+    btn.textContent = 'Voir moins ↑';
+  } else {
+    el.classList.add('collapsed');
+    btn.textContent = 'Voir plus ↓';
+  }
+}
+
+// ── FORMAT DATE ──
+function fmtDate(d) {
+  const [y,m,day] = d.split('-');
+  const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+  return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+}
+
+// ── RENDER ──
+function render() {
+  let visible = posts;
+
+  if (filter !== 'tous') visible = visible.filter(p => p.type === filter);
+  if (search) visible = visible.filter(p =>
+    p.text.toLowerCase().includes(search) ||
+    (p.notes || '').toLowerCase().includes(search)
+  );
+
+  // Stats globales (sur tous les posts, pas filtrés)
+  const totalViews   = posts.reduce((a, p) => a + (p.views || 0), 0);
+  const totalLikes   = posts.reduce((a, p) => a + (p.likes || 0) + (p.comments || 0), 0);
+  const totalReplies = posts.reduce((a, p) => a + (p.replies || 0), 0);
+  document.getElementById('stat-total').textContent = posts.length;
+  document.getElementById('stat-views').textContent = totalViews >= 1000 ? (totalViews/1000).toFixed(1)+'k' : totalViews;
+  document.getElementById('stat-likes').textContent = totalLikes;
+  document.getElementById('stat-replies').textContent = totalReplies;
+  document.getElementById('topbar-count').textContent = posts.length + ' post' + (posts.length !== 1 ? 's' : '');
+
+  const list = document.getElementById('posts-list');
+
+  if (visible.length === 0) {
+    list.innerHTML = `<div class="empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      <p>${posts.length === 0 ? 'Aucun post enregistré. Clique sur "+ Ajouter un post" pour commencer.' : 'Aucun post ne correspond à ce filtre.'}</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = visible.map(p => {
+    const tc = typeConf(p.type);
+    const isLong = p.text.length > 240;
+    return `
+    <div class="post-card">
+      <div class="post-type-dot" style="background:${tc.dot}"></div>
+      <div class="post-main">
+        <div class="post-meta">
+          <span class="post-date">${fmtDate(p.date)}</span>
+          <span class="post-type-badge" style="background:${tc.bg};color:${tc.color}">${p.type}</span>
+        </div>
+        <div class="post-text ${isLong ? 'collapsed' : ''}" id="text-${p.id}">${escHtml(p.text)}</div>
+        ${isLong ? `<span class="post-expand" id="expand-${p.id}" onclick="toggleText(${p.id})">Voir plus ↓</span>` : ''}
+        <div class="post-stats">
+          ${p.views ? `<span class="stat-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${p.views >= 1000 ? (p.views/1000).toFixed(1)+'k' : p.views} vues</span>` : ''}
+          ${p.likes ? `<span class="stat-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>${p.likes} likes</span>` : ''}
+          ${p.comments ? `<span class="stat-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${p.comments} comments</span>` : ''}
+          ${p.replies ? `<span class="stat-pill" style="color:#059669"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>${p.replies} réponse${p.replies > 1 ? 's' : ''}</span>` : ''}
+        </div>
+        ${p.notes ? `<div class="post-notes">📝 ${escHtml(p.notes)}</div>` : ''}
+      </div>
+      <div class="post-actions">
+        <button class="icon-btn" onclick="openEdit(${p.id})" title="Modifier">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="icon-btn delete" onclick="deletePost(${p.id})" title="Supprimer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Close modal on overlay click
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── INIT ──
+render();
+
+// Ajouter quelques posts de démo si vide
+if (posts.length === 0) {
+  posts = [
+    {
+      id: 1,
+      date: new Date().toISOString().split('T')[0],
+      type: 'IT',
+      text: "🚀 Recruter des développeurs seniors en Belgique en 2026, c'est devenu un vrai casse-tête.\n\nLes délais s'allongent, les profils manquent, et les salaires s'envolent.\n\nChez Lexpat Connect, nous aidons les entreprises belges à recruter légalement des talents IT à l'international — développeurs, data engineers, experts cloud — en gérant toutes les démarches administratives.\n\nVous voulez en savoir plus ? Envoyez-moi un message. 👇",
+      views: 1240,
+      likes: 42,
+      comments: 8,
+      replies: 3,
+      notes: "Bon engagement. 3 demandes de contact reçues dont 1 RDV fixé."
+    },
+    {
+      id: 2,
+      date: new Date(Date.now() - 3*24*60*60*1000).toISOString().split('T')[0],
+      type: 'Infirmiers',
+      text: "La pénurie d'infirmiers en Belgique est une réalité que vivent chaque jour les directeurs de maisons de repos.\n\nDes postes vacants depuis des mois. Des équipes épuisées. Des résidents qui méritent mieux.\n\nLexpat Connect accompagne les établissements de soins belges dans le recrutement d'infirmiers diplômés à l'étranger, avec un accompagnement complet : permis de travail, reconnaissance des diplômes, intégration.\n\n📩 Contactez-nous pour une première conversation.",
+      views: 890,
+      likes: 31,
+      comments: 12,
+      replies: 5,
+      notes: "Très bon taux d'engagement. 5 directeurs RH ont répondu."
+    }
+  ];
+  save();
+  render();
+}
+</script>
+</body>
+</html>

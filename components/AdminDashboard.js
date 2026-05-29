@@ -9,9 +9,7 @@ const TABS = [
   { id: "overview",    label: "Vue d'ensemble",  icon: "📊" },
   { id: "coach",       label: "Coach IA",         icon: "🤖" },
   { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
-  { id: "contacts",   label: "Contacts",         icon: "👥" },
-  { id: "emailing",   label: "Emailing",         icon: "✉️" },
-  { id: "studio",     label: "Studio IA",        icon: "✨" },
+  { id: "prospection", label: "Prospection",      icon: "✨" },
   { id: "linkedin",   label: "LinkedIn Ads",     icon: "in" },
   { id: "security",   label: "Sécurité données", icon: "🔒" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
@@ -905,6 +903,7 @@ export default function AdminDashboard({ initialData }) {
   }, [token]);
 
   const [activeTab, setActiveTab] = useState("overview");
+  const [prospectionTab, setProspectionTab] = useState("contacts"); // "contacts" | "emailing" | "studio"
 
   // ── Overview state ──────────────────────────────────────────────────────────
   const [kpis, setKpis]               = useState(null);
@@ -1473,8 +1472,8 @@ export default function AdminDashboard({ initialData }) {
   }, [token]);
 
   useEffect(() => {
-    if (activeTab === "contacts") fetchContacts(segment);
-  }, [activeTab, segment, fetchContacts]);
+    if (activeTab === "prospection" && prospectionTab === "contacts") fetchContacts(segment);
+  }, [activeTab, prospectionTab, segment, fetchContacts]);
 
   // ── Fetch campaigns ─────────────────────────────────────────────────────────
 
@@ -1825,7 +1824,8 @@ export default function AdminDashboard({ initialData }) {
 
   const useSelectionForEmail = () => {
     setEmailSegment(segment);
-    setActiveTab("emailing");
+    setActiveTab("prospection");
+    setProspectionTab("emailing");
   };
 
   const [retryLoading, setRetryLoading] = useState(null); // campaign id en cours
@@ -1978,10 +1978,10 @@ export default function AdminDashboard({ initialData }) {
 
                 <h3 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#57B7AF", textTransform: "uppercase", letterSpacing: 1 }}>Actions rapides</h3>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <button style={{ ...btn.base, ...btn.primary }} onClick={() => { setEmailSegment("workers_hidden"); setEmailTemplate("visibility_initial"); setActiveTab("emailing"); }}>
+                  <button style={{ ...btn.base, ...btn.primary }} onClick={() => { setEmailSegment("workers_hidden"); setEmailTemplate("visibility_initial"); setActiveTab("prospection"); setProspectionTab("emailing"); }}>
                     ✉️ Campagne profils masqués
                   </button>
-                  <button style={{ ...btn.base, ...btn.ghost }} onClick={() => { setSegment("employers_without_offers"); setActiveTab("contacts"); }}>
+                  <button style={{ ...btn.base, ...btn.ghost }} onClick={() => { setSegment("employers_without_offers"); setActiveTab("prospection"); setProspectionTab("contacts"); }}>
                     🏢 Employeurs sans offre
                   </button>
                   <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setActiveTab("history")}>
@@ -2057,7 +2057,7 @@ export default function AdminDashboard({ initialData }) {
                                 key={insight.id}
                                 insight={insight}
                                 token={token}
-                                onViewSegment={seg => { setSegment(seg); setActiveTab("contacts"); }}
+                                onViewSegment={seg => { setSegment(seg); setActiveTab("prospection"); setProspectionTab("contacts"); }}
                                 onSent={fetchKpis}
                               />
                             ))}
@@ -2075,7 +2075,7 @@ export default function AdminDashboard({ initialData }) {
                                 key={insight.id}
                                 insight={insight}
                                 token={token}
-                                onViewSegment={seg => { setSegment(seg); setActiveTab("contacts"); }}
+                                onViewSegment={seg => { setSegment(seg); setActiveTab("prospection"); setProspectionTab("contacts"); }}
                                 onSent={fetchKpis}
                               />
                             ))}
@@ -2344,10 +2344,36 @@ export default function AdminDashboard({ initialData }) {
         )}
 
         {/* ════════════════════════════════════════════════════
-            ONGLET 2 — CONTACTS
+            ONGLET PROSPECTION — Contacts / Emailing / Studio IA
         ════════════════════════════════════════════════════ */}
-        {activeTab === "contacts" && (
+        {activeTab === "prospection" && (
           <div>
+            {/* ── Sous-navigation ── */}
+            <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "#f0f4fb", borderRadius: 14, padding: 4, width: "fit-content" }}>
+              {[
+                { id: "contacts", label: "👥 Contacts" },
+                { id: "emailing", label: "✉️ Emailing" },
+                { id: "studio",   label: "✨ Studio IA" },
+              ].map(sub => (
+                <button
+                  key={sub.id}
+                  onClick={() => setProspectionTab(sub.id)}
+                  style={{
+                    padding: "9px 22px", borderRadius: 10, fontWeight: 700, fontSize: 13,
+                    cursor: "pointer", border: "none",
+                    background: prospectionTab === sub.id ? "#fff" : "transparent",
+                    color: prospectionTab === sub.id ? "#1E3A78" : "#8a9db8",
+                    boxShadow: prospectionTab === sub.id ? "0 1px 6px rgba(30,58,120,0.10)" : "none",
+                    transition: "all .15s",
+                  }}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ── Sous-onglet Contacts ── */}
+            {prospectionTab === "contacts" && <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
               <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre de contacts</h2>
               {selectedIds.size > 0 && (
@@ -2488,14 +2514,10 @@ export default function AdminDashboard({ initialData }) {
                 )}
               </div>
             </div>
-          </div>
-        )}
+          </div>}
 
-        {/* ════════════════════════════════════════════════════
-            ONGLET 3 — EMAILING
-        ════════════════════════════════════════════════════ */}
-        {activeTab === "emailing" && (
-          <div>
+            {/* ── Sous-onglet Emailing ── */}
+            {prospectionTab === "emailing" && <div>
             <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre d'emailing</h2>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
@@ -3130,7 +3152,8 @@ export default function AdminDashboard({ initialData }) {
                 </div>
 
               </div>
-            </div>
+            </div>}
+
           </div>
         )}
 
@@ -3191,14 +3214,10 @@ export default function AdminDashboard({ initialData }) {
                 />
               ) : <EmptyState text="Aucun matching." />}
             </SectionCard>
-          </div>
-        )}
+          </div>}
 
-        {/* ════════════════════════════════════════════════════
-            ONGLET STUDIO IA
-        ════════════════════════════════════════════════════ */}
-        {activeTab === "studio" && (
-          <div>
+            {/* ── Sous-onglet Studio IA ── */}
+            {prospectionTab === "studio" && <div>
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>✨ Studio IA</h2>
               <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
@@ -3382,7 +3401,7 @@ export default function AdminDashboard({ initialData }) {
                           <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => copyToClipboard(aiEmailBodyEdit, "body")}>
                             {copiedField === "body" ? "✓" : "Copier"}
                           </button>
-                          <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => { setEmailTemplate("custom"); setEmailCustomBody(aiEmailBodyEdit); setEmailSubject(aiEmailSubjectEdit); setActiveTab("emailing"); }}>
+                          <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => { setEmailTemplate("custom"); setEmailCustomBody(aiEmailBodyEdit); setEmailSubject(aiEmailSubjectEdit); setActiveTab("prospection"); setProspectionTab("emailing"); }}>
                             → Campagne
                           </button>
                         </div>

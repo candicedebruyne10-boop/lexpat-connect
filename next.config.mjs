@@ -29,10 +29,43 @@ const nextConfig = {
         destination: '/en/contact',
         permanent: false
       },
+      // Accompagnement juridique → permis unique (contenu absorbé dans #cabinet-lexpat)
+      {
+        source: '/accompagnement-juridique',
+        destination: '/permis-unique#cabinet-lexpat',
+        permanent: true
+      },
+      {
+        source: '/en/accompagnement-juridique',
+        destination: '/en/permis-unique#cabinet-lexpat',
+        permanent: true
+      },
+      // Travailleurs hautement qualifiés → section #qualifies dans /travailleurs
+      {
+        source: '/travailleurs-hautement-qualifies',
+        destination: '/travailleurs#qualifies',
+        permanent: true
+      },
+      {
+        source: '/en/highly-qualified-workers',
+        destination: '/en/workers#qualifies',
+        permanent: true
+      },
+      // Revenir en Belgique → section #retour dans /travailleurs
+      {
+        source: '/revenir-en-belgique-apres-un-retour',
+        destination: '/travailleurs#retour',
+        permanent: true
+      },
+      {
+        source: '/en/returning-to-belgium-after-leaving',
+        destination: '/en/workers#retour',
+        permanent: true
+      },
       // Slugs FR/EN inversés — correction des arbres de routes
       {
         source: '/returning-to-belgium-after-leaving',
-        destination: '/revenir-en-belgique-apres-un-retour',
+        destination: '/travailleurs#retour',
         permanent: true
       },
       {

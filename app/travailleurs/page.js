@@ -62,6 +62,69 @@ const candidateFaq = [
   }
 ];
 
+const qualifiesRegions = [
+  {
+    region: "Bruxelles-Capitale",
+    color: "#1d3b8b",
+    bg: "#eef5ff",
+    border: "#c5d8f5",
+    conditions: [
+      { label: "Qualification", value: "Diplôme de l'enseignement supérieur pertinent" },
+      { label: "Salaire minimum", value: "3 703,44 €/mois brut (au 1er janvier 2025)" }
+    ]
+  },
+  {
+    region: "Région flamande",
+    color: "#2b6f3e",
+    bg: "#eef9f2",
+    border: "#b8e4c6",
+    conditions: [
+      { label: "Qualification", value: "Diplôme supérieur, OU 3 ans d'expérience sur 7 ans, OU manager/spécialiste IT" },
+      { label: "Salaire minimum", value: "50 310 €/an (53 220 € en 2026)" }
+    ]
+  },
+  {
+    region: "Région wallonne",
+    color: "#7c3a1e",
+    bg: "#fff7f3",
+    border: "#f5cdb8",
+    conditions: [
+      { label: "Qualification", value: "Diplôme de l'enseignement supérieur (3 ans ou niveau 5)" },
+      { label: "Salaire minimum", value: "48 912 €/an brut (2025)" }
+    ]
+  }
+];
+
+const qualifiesAdvantages = [
+  {
+    title: "Permis jusqu'à 3 ans",
+    text: "Contrairement à la règle générale (max. 1 an), les travailleurs hautement qualifiés peuvent obtenir une autorisation allant jusqu'à 3 ans."
+  },
+  {
+    title: "Dispense d'examen du marché",
+    text: "L'employeur n'a pas à prouver l'absence de candidat local. La procédure est plus rapide et moins contraignante."
+  },
+  {
+    title: "Mobilité simplifiée",
+    text: "En Wallonie, une activité complémentaire chez un autre employeur est possible sans autorisation explicite."
+  }
+];
+
+const retourPoints = [
+  {
+    title: "Le retour est souvent incontournable",
+    text: "Pour obtenir un permis unique depuis la Belgique en situation irrégulière, la procédure se fait en principe depuis le pays d'origine. Partir est souvent une étape nécessaire, pas un abandon."
+  },
+  {
+    title: "Si le dossier est complet, les chances sont réelles",
+    text: "Avec un employeur engagé, un secteur éligible et des documents en ordre, le permis unique peut être octroyé de façon quasi-automatique."
+  },
+  {
+    title: "Préparez votre situation avant de partir",
+    text: "Vérifiez d'abord l'absence d'interdiction d'entrée et assurez-vous d'avoir une base légale de retour. Un départ non préparé peut fermer des portes sans le savoir."
+  }
+];
+
 const candidateFaqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -116,7 +179,9 @@ export default function TravailleursPage() {
               { n: "02", href: "#comment-ca-marche",  title: "Comment ça marche",                       desc: "Le parcours en 3 étapes, sans jargon." },
               { n: "03", href: "#espace-travailleur", title: "L'espace travailleur",     desc: "L'interface dédiée aux candidats." },
               { n: "04", href: "/travailleurs/rejoindre", title: "Créer mon profil",                       desc: "Formulaire guidé en 4 étapes pour présenter votre parcours." },
-              { n: "05", href: "#faq",                title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
+              { n: "05", href: "#qualifies",           title: "Profils hautement qualifiés",             desc: "Conditions par région et avantages spécifiques." },
+              { n: "06", href: "#retour",              title: "Revenir en Belgique après un retour",      desc: "Ce que ça implique concrètement si vous êtes sans papiers." },
+              { n: "07", href: "#faq",                title: "Questions fréquentes",                    desc: "Les réponses aux doutes les plus courants." },
             ].map(({ n, href, title, desc }) => (
               <a
                 key={href}
@@ -206,10 +271,51 @@ export default function TravailleursPage() {
       </Section>
       </div>
 
+      <div id="qualifies">
+      <Section
+        title="Profils hautement qualifiés"
+        intro="Si votre profil est qualifié, l'accès au marché du travail belge est souvent plus rapide : moins de contraintes, permis plus long, et pas de justification à apporter sur l'absence de candidat local."
+        kicker="Accès facilité"
+        muted
+      >
+        <div className="grid gap-5 md:grid-cols-3">
+          {qualifiesRegions.map((r) => (
+            <div
+              key={r.region}
+              className="rounded-2xl border p-5"
+              style={{ borderColor: r.border, background: r.bg }}
+            >
+              <p className="text-sm font-bold" style={{ color: r.color }}>{r.region}</p>
+              <ul className="mt-3 space-y-3">
+                {r.conditions.map((c) => (
+                  <li key={c.label} className="text-xs leading-relaxed text-[#4f6178]">
+                    <span className="font-semibold">{c.label} :</span> {c.value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8">
+          <BulletList items={qualifiesAdvantages} />
+        </div>
+      </Section>
+      </div>
+
+      <div id="retour">
+      <Section
+        title="Revenir en Belgique pour obtenir un permis"
+        intro="Si vous êtes en séjour irrégulier en Belgique et souhaitez obtenir un permis de travail, voici ce que ça implique concrètement."
+        kicker="Retour & permis"
+      >
+        <BulletList items={retourPoints} />
+      </Section>
+      </div>
+
       <CtaBanner
         title="Une question de séjour ou de droit au travail peut être traitée ensuite"
         text="Une fois la mise en relation engagée, le cabinet LEXPAT peut intervenir si votre situation appelle un accompagnement juridique distinct."
-        primaryHref="/accompagnement-juridique"
+        primaryHref="/permis-unique#cabinet-lexpat"
         primaryLabel="Voir le relais juridique"
         secondaryHref="/contact"
         secondaryLabel="Nous écrire"
