@@ -3155,6 +3155,7 @@ export default function AdminDashboard({ initialData }) {
             </div>}
 
           </div>
+        </div>
         )}
 
         {/* ════════════════════════════════════════════════════
