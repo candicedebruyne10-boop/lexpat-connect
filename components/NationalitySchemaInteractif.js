@@ -487,6 +487,7 @@ export default function NationalitySchemaInteractif() {
           )}
         </aside>
       </div>
+    </div>
     </section>
   );
 }
