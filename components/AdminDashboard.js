@@ -903,7 +903,7 @@ export default function AdminDashboard({ initialData }) {
   }, [token]);
 
   const [activeTab, setActiveTab] = useState("overview");
-  const [prospectionTab, setProspectionTab] = useState("contacts"); // "contacts" | "emailing" | "studio"
+  const [prospectionTab, setProspectionTab] = useState("contacts"); // "contacts" | "emailing"
 
   // ── Overview state ──────────────────────────────────────────────────────────
   const [kpis, setKpis]               = useState(null);
@@ -2352,8 +2352,7 @@ export default function AdminDashboard({ initialData }) {
             <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "#f0f4fb", borderRadius: 14, padding: 4, width: "fit-content" }}>
               {[
                 { id: "contacts", label: "👥 Contacts" },
-                { id: "emailing", label: "✉️ Emailing" },
-                { id: "studio",   label: "✨ Studio IA" },
+                { id: "emailing", label: "✉️ Emailing & IA" },
               ].map(sub => (
                 <button
                   key={sub.id}
@@ -2516,9 +2515,226 @@ export default function AdminDashboard({ initialData }) {
             </div>
           </div>}
 
-            {/* ── Sous-onglet Emailing ── */}
+            {/* ── Sous-onglet Emailing & IA ── */}
             {prospectionTab === "emailing" && <div>
-            <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre d'emailing</h2>
+
+            {/* ══ Studio IA ══════════════════════════════════════════════════ */}
+            <div style={{ marginBottom: 8 }}>
+              <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>✨ Studio IA</h2>
+              <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
+                Rédigez emails et posts réseaux sociaux en décrivant ce que vous voulez. L'IA connaît LEXPAT Connect, ses audiences et le droit belge de l'immigration.
+              </p>
+              <p style={{ margin: "4px 0 0", fontSize: 11, color: "#b0bccf" }}>
+                Modèle actif : <strong style={{ color: "#607086" }}>Claude Haiku</strong> — modifiable via <code style={{ background: "#f0f4fb", borderRadius: 4, padding: "1px 5px", fontSize: 11 }}>CLAUDE_MODEL</code> dans Vercel.
+              </p>
+            </div>
+
+            {/* Switcher Email / Post social */}
+            <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "#f0f4fb", borderRadius: 12, padding: 4, width: "fit-content" }}>
+              {[
+                { id: "email", label: "✉️  Email" },
+                { id: "post",  label: "📣  Post réseau social" },
+              ].map(m => (
+                <button
+                  key={m.id}
+                  onClick={() => { setAiStudioMode(m.id); setAiEmailResult(null); setAiEmailError(null); }}
+                  style={{
+                    padding: "8px 20px", borderRadius: 9, fontWeight: 700, fontSize: 13, cursor: "pointer", border: "none",
+                    background: aiStudioMode === m.id ? "#fff" : "transparent",
+                    color: aiStudioMode === m.id ? "#1E3A78" : "#8a9db8",
+                    boxShadow: aiStudioMode === m.id ? "0 1px 6px rgba(30,58,120,0.10)" : "none",
+                    transition: "all .15s",
+                  }}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 24, alignItems: "start", marginBottom: 32 }}>
+
+              {/* Formulaire gauche */}
+              <div style={{ ...card, borderTop: `3px solid ${aiStudioMode === "email" ? "#57B7AF" : "#e91e8c"}` }}>
+                {aiStudioMode === "email" ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: "#1E3A78" }}>✉️ Rédiger un email</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <div>
+                        <label style={labelStyle}>Type de destinataire</label>
+                        <select value={aiEmailAudience} onChange={e => setAiEmailAudience(e.target.value)} style={inputStyle}>
+                          <option value="employer">Employeur belge</option>
+                          <option value="worker">Travailleur international</option>
+                          <option value="partner">Partenaire / cabinet RH</option>
+                          <option value="press">Journaliste / presse</option>
+                          <option value="external">Contact externe (autre)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Langue</label>
+                        <select value={aiEmailLocale} onChange={e => setAiEmailLocale(e.target.value)} style={inputStyle}>
+                          <option value="fr">Français</option>
+                          <option value="en">English</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Email du destinataire (optionnel)</label>
+                      <input type="email" placeholder="contact@entreprise.be" value={aiEmailTo} onChange={e => setAiEmailTo(e.target.value)} style={inputStyle} />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: "#1E3A78" }}>📣 Rédiger un post</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <div>
+                        <label style={labelStyle}>Réseau social</label>
+                        <select value={aiPostNetwork} onChange={e => setAiPostNetwork(e.target.value)} style={inputStyle}>
+                          <option value="linkedin">LinkedIn</option>
+                          <option value="instagram">Instagram</option>
+                          <option value="facebook">Facebook</option>
+                          <option value="twitter">X (Twitter)</option>
+                          <option value="generic">Générique</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Langue</label>
+                        <select value={aiEmailLocale} onChange={e => setAiEmailLocale(e.target.value)} style={inputStyle}>
+                          <option value="fr">Français</option>
+                          <option value="en">English</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Ton</label>
+                      <select value={aiPostTone} onChange={e => setAiPostTone(e.target.value)} style={inputStyle}>
+                        <option value="expert">Expert & pédagogique</option>
+                        <option value="human">Humain & proche</option>
+                        <option value="impactful">Percutant & direct</option>
+                        <option value="storytelling">Storytelling</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ marginTop: 14 }}>
+                  <label style={labelStyle}>{aiStudioMode === "email" ? "Décrivez l'email voulu" : "Décrivez le post voulu"}</label>
+                  <textarea
+                    rows={4}
+                    placeholder={aiStudioMode === "email"
+                      ? "Ex : Email de prospection pour un DRH dans le secteur de la construction en Flandre, qui ne connaît pas encore LEXPAT Connect."
+                      : "Ex : Post LinkedIn pour annoncer que les 21 professions flamandes ont une dispense totale du test marché depuis le 1er janvier 2026."}
+                    value={aiEmailPrompt}
+                    onChange={e => setAiEmailPrompt(e.target.value)}
+                    style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit", minHeight: 90 }}
+                  />
+                </div>
+
+                <button
+                  style={{ ...btn.base, ...(aiStudioMode === "email" ? btn.teal : { background: "linear-gradient(135deg,#c0006a,#e91e8c)", color: "#fff" }), width: "100%", justifyContent: "center", marginTop: 6, opacity: aiEmailLoading || !aiEmailPrompt.trim() ? 0.6 : 1 }}
+                  disabled={aiEmailLoading || !aiEmailPrompt.trim()}
+                  onClick={aiStudioMode === "email" ? generateAiEmail : generateAiPost}
+                >
+                  {aiEmailLoading ? "⏳ Génération…" : aiStudioMode === "email" ? "✨ Générer l'email" : "✨ Générer le post"}
+                </button>
+
+                {aiEmailError && (
+                  <div style={{ marginTop: 10, background: "#fef3f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#b91c1c" }}>⚠️ {aiEmailError}</div>
+                )}
+              </div>
+
+              {/* Résultat + historique droite */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {aiStudioMode === "email" && aiEmailResult && (
+                  <div style={{ ...card }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#0d7c6e" }}>✓ Brouillon généré</span>
+                      {aiEmailResult.mode === "fallback" && <span style={{ fontSize: 10, background: "#fff8e6", border: "1px solid #fcd34d", color: "#92400e", borderRadius: 20, padding: "2px 9px", fontWeight: 700 }}>Mode local</span>}
+                    </div>
+                    {aiEmailTo && <div style={{ background: "#f0f4fb", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#4a6b99", marginBottom: 12 }}><strong>À :</strong> {aiEmailTo}</div>}
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                        <label style={{ ...labelStyle, marginBottom: 0, fontSize: 11 }}>SUJET</label>
+                        <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => copyToClipboard(aiEmailSubjectEdit, "subject")}>{copiedField === "subject" ? "✓" : "Copier"}</button>
+                      </div>
+                      <input value={aiEmailSubjectEdit} onChange={e => setAiEmailSubjectEdit(e.target.value)} style={{ ...inputStyle, fontWeight: 600, fontSize: 13 }} />
+                    </div>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                        <label style={{ ...labelStyle, marginBottom: 0, fontSize: 11 }}>CORPS</label>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => copyToClipboard(aiEmailBodyEdit, "body")}>{copiedField === "body" ? "✓" : "Copier"}</button>
+                          <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => { setEmailTemplate("custom"); setEmailCustomBody(aiEmailBodyEdit); setEmailSubject(aiEmailSubjectEdit); }}>↓ Utiliser en campagne</button>
+                        </div>
+                      </div>
+                      <textarea rows={9} value={aiEmailBodyEdit} onChange={e => setAiEmailBodyEdit(e.target.value)} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, fontFamily: "inherit", fontSize: 12 }} />
+                    </div>
+                  </div>
+                )}
+
+                {aiStudioMode === "post" && aiPostResult && (
+                  <div style={{ ...card }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#0d7c6e" }}>✓ Post généré</span>
+                      <span style={{ fontSize: 10, background: "#fce4f0", border: "1px solid rgba(233,30,140,0.3)", color: "#b5005c", borderRadius: 20, padding: "2px 9px", fontWeight: 700 }}>
+                        {aiPostNetwork === "linkedin" ? "LinkedIn" : aiPostNetwork === "instagram" ? "Instagram" : aiPostNetwork === "facebook" ? "Facebook" : aiPostNetwork === "twitter" ? "X/Twitter" : "Générique"}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <label style={{ ...labelStyle, marginBottom: 0, fontSize: 11 }}>TEXTE DU POST</label>
+                      <button style={{ ...btn.base, ...btn.ghost, fontSize: 10, padding: "3px 10px" }} onClick={() => copyToClipboard(aiPostTextEdit, "post")}>{copiedField === "post" ? "✓ Copié !" : "Copier"}</button>
+                    </div>
+                    <textarea rows={10} value={aiPostTextEdit} onChange={e => setAiPostTextEdit(e.target.value)} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, fontFamily: "inherit", fontSize: 12 }} />
+                    {aiPostNetwork === "linkedin" && (
+                      <button style={{ ...btn.base, background: "#0a66c2", color: "#fff", marginTop: 10, justifyContent: "center", width: "100%", fontSize: 12 }} onClick={() => { setLinkedinPostForm(f => ({ ...f, commentary: aiPostTextEdit })); setActiveTab("linkedin"); }}>
+                        → Publier sur LinkedIn
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {!aiEmailResult && !aiPostResult && !aiEmailLoading && (
+                  <div style={{ ...card, textAlign: "center", color: "#8a9db8", fontSize: 13, padding: "36px 24px" }}>
+                    <div style={{ fontSize: 32, marginBottom: 10 }}>✨</div>
+                    Décrivez ce que vous voulez à gauche,<br />le brouillon apparaîtra ici.
+                  </div>
+                )}
+
+                {aiEmailHistory.length > 0 && (
+                  <div style={{ ...card }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78" }}>📋 Historique ({aiEmailHistory.length})</span>
+                      <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#b91c1c" }} onClick={() => { if (confirm("Vider l'historique ?")) { setAiEmailHistory([]); localStorage.removeItem("lexpat_email_drafts"); } }}>Vider</button>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 280, overflowY: "auto" }}>
+                      {aiEmailHistory.map(entry => (
+                        <div key={entry.id} style={{ background: "#f8faff", border: "1px solid #e2eaf3", borderRadius: 9, padding: "9px 12px", cursor: "pointer" }}
+                          onClick={() => {
+                            if (entry.type === "post") { setAiStudioMode("post"); setAiPostResult(entry); setAiPostTextEdit(entry.text || ""); }
+                            else { setAiStudioMode("email"); setAiEmailResult(entry); setAiEmailSubjectEdit(entry.subject || ""); setAiEmailBodyEdit(entry.body || ""); }
+                            setAiEmailPrompt(entry.prompt || "");
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 2 }}>
+                            <span style={{ fontSize: 10, background: entry.type === "post" ? "#fce4f0" : "#eef1fb", border: `1px solid ${entry.type === "post" ? "rgba(233,30,140,0.2)" : "#d0d8f0"}`, color: entry.type === "post" ? "#b5005c" : "#1E3A78", borderRadius: 20, padding: "1px 7px", fontWeight: 700 }}>
+                              {entry.type === "post" ? (entry.network || "Post") : "Email"}
+                            </span>
+                            <span style={{ fontSize: 11, color: "#8a9db8" }}>{new Date(entry.createdAt).toLocaleDateString("fr-BE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                          </div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: "#334155" }}>{entry.subject || (entry.text || "").slice(0, 60) + "…"}</div>
+                          <div style={{ fontSize: 11, color: "#8a9db8", fontStyle: "italic", marginTop: 2 }}>"{(entry.prompt || "").slice(0, 70)}{(entry.prompt || "").length > 70 ? "…" : ""}"</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── Séparateur ─────────────────────────────────────────────── */}
+            <div style={{ borderTop: "2px solid #e8eef8", marginBottom: 32, paddingTop: 32 }}>
+              <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Centre d'emailing</h2>
+              <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>Configurez et envoyez vos campagnes email — ou utilisez le brouillon généré ci-dessus.</p>
+            </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
 
@@ -3218,8 +3434,8 @@ export default function AdminDashboard({ initialData }) {
           </div>
         )}
 
-        {/* ── Sous-onglet Studio IA ── */}
-        {activeTab === "prospection" && prospectionTab === "studio" && (
+        {/* ── [Studio IA fusionné dans Emailing] ── */}
+        {false && (
           <div>
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>✨ Studio IA</h2>
