@@ -114,10 +114,10 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
   const copy = locale === "en"
     ? {
         badge: "Belgium · shortage occupations · international recruitment",
-        title1: "Hire the qualified",
-        title2: "international talent",
-        title3: "you need.",
-        desc: "Profiles available now for your shortage occupations in Belgium — quickly and with full legal security.",
+        title1: "Hire a qualified",
+        title2: "international profile —",
+        title3: "legal support included.",
+        desc: "Profiles available now in shortage occupations. And if your hire requires a single permit, LEXPAT's law firm steps in — no new contact, no extra steps.",
         subline: "Qualified profiles are already available on the platform.",
         primary: "See available profiles",
         secondary: "Test feasibility",
@@ -141,10 +141,10 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
       }
     : {
         badge: "Belgique · Métiers en pénurie · Recrutement international",
-        title1: "Recrutez les talents",
-        title2: "internationaux qualifiés",
-        title3: "dont vous avez besoin.",
-        desc: "Des profils disponibles dès maintenant pour vos métiers en pénurie en Belgique — rapidement et en toute sécurité légale.",
+        title1: "Recrutez un profil qualifié",
+        title2: "à l'international —",
+        title3: "le juridique est déjà là.",
+        desc: "Des profils disponibles maintenant dans les métiers en pénurie. Et si votre recrutement nécessite un permis unique, le cabinet d'avocats LEXPAT prend le relais — sans changer d'interlocuteur.",
         subline: "Des profils qualifiés sont déjà disponibles sur la plateforme.",
         primary: "Voir les profils disponibles",
         secondary: "Tester la faisabilité",
