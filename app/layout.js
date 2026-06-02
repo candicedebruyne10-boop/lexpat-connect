@@ -36,7 +36,7 @@ export const metadata = {
     url: "https://lexpat-connect.be",
     images: [
       {
-        url: "/hero-image.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "LEXPAT Connect — Recrutement international en Belgique",
@@ -48,7 +48,7 @@ export const metadata = {
     title: "LEXPAT Connect — Recrutement international en Belgique",
     description:
       "Profils qualifiés disponibles maintenant dans les métiers en pénurie. Recrutez rapidement — le cabinet LEXPAT sécurise le juridique si nécessaire.",
-    images: ["/hero-image.jpg"],
+    images: ["/og-image.jpg"],
   },
 };
 
