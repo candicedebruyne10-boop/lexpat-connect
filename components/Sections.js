@@ -1229,36 +1229,36 @@ const CABINET_METHOD = {
 const CABINET_TESTIMONIALS = {
   fr: [
     {
-      name: "Simon N.",
-      role: "Comptable et gerant",
-      text: "Une approche tres structuree, un suivi rassurant et une vraie maitrise des procedures."
+      name: "Alan Smith",
+      role: "Permis de travail — travailleur hautement qualifié",
+      text: "Depuis 3 ans que je leur confie mon dossier de permis de travail, ils me disent toujours quelles sont mes chances — et aujourd'hui encore j'ai reçu une réponse positive pour travailleur hautement qualifié."
     },
     {
-      name: "Moncef B.",
-      role: "CEO",
-      text: "Le dossier a ete pris en main avec rigueur et clarte. On sait exactement ou l'on va."
+      name: "Moncef Ben Hamida",
+      role: "CEO — carte professionnelle & titre de séjour",
+      text: "Maître Candice Debruyne a démontré l'étendue de son expertise lorsque je l'ai mandatée pour obtenir ma carte professionnelle et mon titre de séjour à Bruxelles. Elle m'a expliqué clairement les démarches. Je la recommande vivement."
     },
     {
       name: "Sal. B.",
-      role: "Client prive",
-      text: "Le cabinet donne le sentiment d'etre accompagne du debut a la fin, sans zones grises."
+      role: "Résidence permanente en Belgique",
+      text: "J'étais ravie d'avoir un cabinet extrêmement compétent à mes côtés au moment où j'en avais le plus besoin. J'ai obtenu mon statut de résident permanent et je leur suis éternellement reconnaissante pour leur service courtois et professionnel."
     }
   ],
   en: [
     {
-      name: "Simon N.",
-      role: "Accountant and manager",
-      text: "A very structured approach, reassuring follow-up and a real command of the procedures."
+      name: "Alan Smith",
+      role: "Work permit — highly qualified worker",
+      text: "For 3 years I have entrusted my work permit file to them — they always tell me my chances, and today I received another positive result for highly qualified worker status."
     },
     {
-      name: "Moncef B.",
-      role: "CEO",
-      text: "The case was handled with rigor and clarity. You always know where things stand."
+      name: "Moncef Ben Hamida",
+      role: "CEO — professional card & residence permit",
+      text: "Attorney Candice Debruyne demonstrated the full extent of her expertise when I mandated her to obtain my professional card and residence permit in Brussels. She explained each step clearly. I highly recommend her."
     },
     {
       name: "Sal. B.",
-      role: "Private client",
-      text: "The firm makes you feel supported from beginning to end, without grey areas."
+      role: "Permanent residence in Belgium",
+      text: "I was delighted to have an extremely competent firm by my side when I needed it most. I obtained my permanent residence status and I am eternally grateful for their courteous and professional service."
     }
   ]
 };
