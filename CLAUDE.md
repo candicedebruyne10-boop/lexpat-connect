@@ -113,7 +113,7 @@ Transactional emails use **Resend** + **react-email** (components in `emails/`).
 - Inline styles use shared style objects (`btn`, `card`, `labelStyle`, `inputStyle`) defined at the top of the relevant component file — not Tailwind classes. Tailwind is present but used minimally.
 - `components/SiteChrome.js` — header + footer wrapper. Navigation items and dropdown menus are defined here. The `highlight: true` flag on a nav item triggers the accent-styled CTA button.
 - `components/AuthProvider.js` — React context wrapping the entire app, exposes `{ user, session, loading, signOut }` via `useAuth()`.
-- `components/AdminDashboard.js` — single large client component (~4000+ lines). Tab IDs: `overview`, `crm`, `campaigns`, `emailing`, `studio`, `linkedin`, `referrals`, `traffic`. Studio IA tab handles both email drafting and social post generation; history stored in localStorage under `lexpat_studio_history` (max 30 entries).
+- `components/AdminDashboard.js` — single large client component (~4800+ lines). Top-level tab IDs: `overview`, `crm`, `prospection`, `linkedin`, `referrals`, `traffic`. The `prospection` tab has sub-tabs (`contacts` | `emailing`) managed by `prospectionTab` state. The old `studio` and `campaigns` tabs have been merged into `emailing`. The emailing sub-tab has two modes toggled by `emailWizardStep` state: 0 = mode classique (flat form + inline ✨ Aide IA block), 1-4 = wizard guidé (stepper: segment → contenu IA → aperçu → envoyer). AI email/post generation state lives in `aiEmailPrompt`, `aiEmailResult`, `aiEmailHistory` etc. History stored in localStorage under `lexpat_email_drafts` (max 30 entries).
 
 ### Database migrations
 
@@ -124,6 +124,8 @@ Sequential SQL files in `supabase/` (001–010). Apply manually in Supabase dash
 Permanent redirects defined in `next.config.mjs`:
 - `/liste-metiers-penurie` → `/metiers-en-penurie`
 - `/liste-metiers-en-penurie` → `/metiers-en-penurie`
+- `/accompagnement-juridique` → `/permis-unique`
+- `/en/legal-support` → `/en/single-permit`
 
 ### Deployment
 
