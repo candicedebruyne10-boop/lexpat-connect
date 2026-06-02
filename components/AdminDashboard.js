@@ -1050,6 +1050,7 @@ export default function AdminDashboard({ initialData }) {
   const [pendingDryRun, setPendingDryRun] = useState(false);
   const [previewHtml, setPreviewHtml]     = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [emailWizardStep, setEmailWizardStep] = useState(0); // 0 = mode classique, 1-4 = wizard guidé
 
   // ── LinkedIn Ads state ─────────────────────────────────────────────────────
   const [linkedinStatus, setLinkedinStatus] = useState(null);
@@ -2518,7 +2519,271 @@ export default function AdminDashboard({ initialData }) {
             {/* ── Sous-onglet Emailing ── */}
             {prospectionTab === "emailing" && <div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            {/* ── Barre de mode : Classique / Guidé ── */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900, color: "#1E3A78" }}>✉️ Emailing</h2>
+                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#8a9db8" }}>
+                  {emailWizardStep === 0 ? "Mode classique — configurez librement votre campagne." : `Étape ${emailWizardStep} / 4`}
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                <button
+                  onClick={() => setEmailWizardStep(0)}
+                  style={{ padding: "7px 16px", borderRadius: 9, fontWeight: 700, fontSize: 12, cursor: "pointer", border: "1px solid #dde4f5", background: emailWizardStep === 0 ? "#1E3A78" : "#f5f7ff", color: emailWizardStep === 0 ? "#fff" : "#8a9db8", transition: "all .15s" }}
+                >
+                  ⚙️ Classique
+                </button>
+                <button
+                  onClick={() => setEmailWizardStep(1)}
+                  style={{ padding: "7px 16px", borderRadius: 9, fontWeight: 700, fontSize: 12, cursor: "pointer", border: "1px solid #dde4f5", background: emailWizardStep > 0 ? "#57B7AF" : "#f5f7ff", color: emailWizardStep > 0 ? "#fff" : "#8a9db8", transition: "all .15s" }}
+                >
+                  🧭 Mode guidé
+                </button>
+              </div>
+            </div>
+
+            {/* ══ WIZARD GUIDÉ ══════════════════════════════════════════════════════ */}
+            {emailWizardStep > 0 && (() => {
+              const stepLabels = ["Segment cible", "Contenu IA", "Aperçu", "Envoyer"];
+
+              return (
+                <div>
+                  {/* Stepper barre */}
+                  <div style={{ display: "flex", gap: 0, marginBottom: 28 }}>
+                    {stepLabels.map((label, i) => {
+                      const step = i + 1;
+                      const active = emailWizardStep === step;
+                      const done   = emailWizardStep > step;
+                      return (
+                        <div key={step} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, position: "relative" }}>
+                          {i > 0 && <div style={{ position: "absolute", left: 0, top: 16, width: "50%", height: 2, background: done || active ? "#57B7AF" : "#e2eaf3" }} />}
+                          {i < 3 && <div style={{ position: "absolute", right: 0, top: 16, width: "50%", height: 2, background: done ? "#57B7AF" : "#e2eaf3" }} />}
+                          <div style={{ width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1, fontWeight: 800, fontSize: 13, background: done ? "#57B7AF" : active ? "#1E3A78" : "#e2eaf3", color: done || active ? "#fff" : "#8a9db8", transition: "all .2s" }}>
+                            {done ? "✓" : step}
+                          </div>
+                          <span style={{ fontSize: 11, fontWeight: active ? 700 : 400, color: active ? "#1E3A78" : done ? "#57B7AF" : "#8a9db8" }}>{label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* ── Étape 1 : Segment ── */}
+                  {emailWizardStep === 1 && (
+                    <div style={{ ...card, maxWidth: 560, margin: "0 auto" }}>
+                      <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>1 — Qui voulez-vous contacter ?</h3>
+                      <p style={{ margin: "0 0 20px", fontSize: 13, color: "#607086" }}>Choisissez le segment cible. L'email sera envoyé à tous les contacts de ce groupe qui ont une adresse email valide.</p>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                        <div>
+                          <label style={labelStyle}>Nom de la campagne (optionnel)</label>
+                          <input type="text" placeholder="Ex : Relance profils masqués — juin 2026" value={emailName} onChange={e => setEmailName(e.target.value)} style={inputStyle} />
+                        </div>
+                        <div>
+                          <label style={labelStyle}>Segment cible</label>
+                          <select value={emailSegment} onChange={e => setEmailSegment(e.target.value)} style={inputStyle}>
+                            {Object.entries(SEGMENT_GROUPS).map(([group, segs]) => (
+                              <optgroup key={group} label={group}>
+                                {segs.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+                              </optgroup>
+                            ))}
+                          </select>
+                          <div style={{ fontSize: 12, color: "#8a9db8", marginTop: 6 }}>
+                            Conseil : pour une première campagne, commencez par un segment précis (ex : <em>Travailleurs — profil masqué</em>).
+                          </div>
+                        </div>
+                        <div>
+                          <label style={labelStyle}>Langue d'envoi</label>
+                          <select value={emailLocale} onChange={e => setEmailLocale(e.target.value)} style={inputStyle}>
+                            <option value="auto">Automatique (langue du contact)</option>
+                            <option value="fr">Français uniquement</option>
+                            <option value="en">Anglais uniquement</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
+                        <button style={{ ...btn.base, ...btn.primary }} onClick={() => setEmailWizardStep(2)}>
+                          Suivant → Contenu
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Étape 2 : Contenu IA ── */}
+                  {emailWizardStep === 2 && (
+                    <div style={{ ...card, maxWidth: 620, margin: "0 auto" }}>
+                      <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>2 — Quel est votre message ?</h3>
+                      <p style={{ margin: "0 0 20px", fontSize: 13, color: "#607086" }}>Décrivez l'email en quelques mots — l'IA rédige le sujet et le corps. Vous pouvez aussi choisir un template standard.</p>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                        <div>
+                          <label style={labelStyle}>Template de base</label>
+                          <select value={emailTemplate} onChange={e => setEmailTemplate(e.target.value)} style={inputStyle}>
+                            {TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                          </select>
+                          <div style={{ fontSize: 11, color: "#8a9db8", marginTop: 4 }}>{TEMPLATES.find(t => t.id === emailTemplate)?.description}</div>
+                        </div>
+
+                        <div style={{ background: "#f5f7ff", border: "1px solid #dde4f5", borderRadius: 12, padding: "14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 800, color: "#1E3A78" }}>✨ Aide IA</span>
+                            <span style={{ fontSize: 11, color: "#8a9db8" }}>— facultatif, mais recommandé</span>
+                          </div>
+                          <textarea
+                            rows={3}
+                            placeholder="Ex : Email de prospection pour un DRH flamand qui ne connaît pas encore LEXPAT Connect."
+                            value={aiEmailPrompt}
+                            onChange={e => setAiEmailPrompt(e.target.value)}
+                            style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit", fontSize: 12 }}
+                          />
+                          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                            <select value={aiEmailAudience} onChange={e => setAiEmailAudience(e.target.value)} style={{ ...inputStyle, flex: "1 1 160px", fontSize: 12, padding: "6px 10px" }}>
+                              <option value="employer">Employeur belge</option>
+                              <option value="worker">Travailleur international</option>
+                              <option value="partner">Partenaire / cabinet RH</option>
+                              <option value="press">Journaliste / presse</option>
+                              <option value="external">Contact externe</option>
+                            </select>
+                            <button
+                              style={{ ...btn.base, ...btn.teal, fontSize: 12, padding: "7px 16px", opacity: aiEmailLoading || !aiEmailPrompt.trim() ? 0.6 : 1 }}
+                              disabled={aiEmailLoading || !aiEmailPrompt.trim()}
+                              onClick={generateAiEmail}
+                            >
+                              {aiEmailLoading ? "⏳ Génération…" : "✨ Générer"}
+                            </button>
+                          </div>
+                          {aiEmailError && <div style={{ fontSize: 12, color: "#b91c1c" }}>⚠️ {aiEmailError}</div>}
+                          {aiEmailResult && (
+                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                              <span style={{ fontSize: 12, color: "#0d7c6e", fontWeight: 700 }}>✓ Brouillon prêt</span>
+                              <button style={{ ...btn.base, ...btn.ghost, fontSize: 11, padding: "4px 12px" }} onClick={() => { setEmailTemplate("custom"); setEmailCustomBody(aiEmailBodyEdit); setEmailSubject(aiEmailSubjectEdit); }}>
+                                ↓ Appliquer
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {emailTemplate === "custom" && (
+                          <div>
+                            <label style={labelStyle}>Corps du message</label>
+                            <textarea
+                              ref={el => { customBodyRef.current = el; }}
+                              rows={7}
+                              placeholder={`Bonjour {{name}},\n\nVotre message ici…\n\nL'équipe LEXPAT Connect`}
+                              value={emailCustomBody}
+                              onChange={e => setEmailCustomBody(e.target.value)}
+                              style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "inherit" }}
+                            />
+                          </div>
+                        )}
+
+                        <div>
+                          <label style={labelStyle}>Sujet de l'email (laissez vide pour le sujet par défaut)</label>
+                          <input type="text" placeholder="Sujet de l'email…" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} style={inputStyle} />
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
+                        <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setEmailWizardStep(1)}>← Retour</button>
+                        <button style={{ ...btn.base, ...btn.primary }} onClick={async () => {
+                          setPreviewLoading(true);
+                          const params = new URLSearchParams({ template: emailTemplate, locale: emailLocale === "auto" ? "fr" : emailLocale });
+                          if (emailTemplate === "custom" && emailCustomBody) params.set("custom_html", emailCustomBody);
+                          const res = await fetch(`/api/admin/campaigns/preview?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+                          const html = await res.text();
+                          setPreviewHtml(html);
+                          setPreviewLoading(false);
+                          setEmailWizardStep(3);
+                        }}>
+                          {previewLoading ? "⏳ Chargement…" : "Suivant → Aperçu"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Étape 3 : Aperçu ── */}
+                  {emailWizardStep === 3 && (
+                    <div style={{ ...card, maxWidth: 720, margin: "0 auto" }}>
+                      <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>3 — Vérifiez l'aperçu</h3>
+                      <p style={{ margin: "0 0 16px", fontSize: 13, color: "#607086" }}>Voici à quoi ressemblera votre email. Relisez avant d'envoyer.</p>
+
+                      <div style={{ display: "flex", gap: 10, marginBottom: 16, padding: "10px 14px", background: "#f8faff", borderRadius: 10, fontSize: 13 }}>
+                        <span><strong>Segment :</strong> {Object.values(SEGMENT_GROUPS).flat().find(s => s.id === emailSegment)?.label || emailSegment}</span>
+                        {emailSubject && <><span style={{ color: "#8a9db8" }}>·</span><span><strong>Sujet :</strong> {emailSubject}</span></>}
+                        <span style={{ color: "#8a9db8" }}>·</span>
+                        <span><strong>Template :</strong> {TEMPLATES.find(t => t.id === emailTemplate)?.label}</span>
+                      </div>
+
+                      {previewHtml ? (
+                        <iframe
+                          srcDoc={previewHtml}
+                          style={{ width: "100%", height: 480, border: "1px solid #e2eaf3", borderRadius: 10 }}
+                          title="Aperçu email"
+                        />
+                      ) : (
+                        <div style={{ textAlign: "center", color: "#8a9db8", padding: 48 }}>⏳ Chargement de l'aperçu…</div>
+                      )}
+
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 20 }}>
+                        <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setEmailWizardStep(2)}>← Modifier le contenu</button>
+                        <button style={{ ...btn.base, ...btn.primary }} onClick={() => setEmailWizardStep(4)}>
+                          Suivant → Envoyer
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Étape 4 : Envoyer ── */}
+                  {emailWizardStep === 4 && (
+                    <div style={{ ...card, maxWidth: 560, margin: "0 auto" }}>
+                      <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>4 — Lancer la campagne</h3>
+                      <p style={{ margin: "0 0 20px", fontSize: 13, color: "#607086" }}>Récapitulatif avant envoi. Commencez par une simulation pour vérifier sans risque.</p>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "#f8faff", borderRadius: 12, padding: "14px 16px", marginBottom: 20, fontSize: 13 }}>
+                        <div><strong>Segment :</strong> {Object.values(SEGMENT_GROUPS).flat().find(s => s.id === emailSegment)?.label || emailSegment}</div>
+                        <div><strong>Template :</strong> {TEMPLATES.find(t => t.id === emailTemplate)?.label}</div>
+                        {emailSubject && <div><strong>Sujet :</strong> {emailSubject}</div>}
+                        {emailName && <div><strong>Nom campagne :</strong> {emailName}</div>}
+                        <div><strong>Langue :</strong> {emailLocale === "auto" ? "Automatique" : emailLocale === "fr" ? "Français" : "Anglais"}</div>
+                      </div>
+
+                      {selectedIds.size > 0 && (
+                        <Alert type="info">
+                          📌 Envoi limité aux <strong>{selectedIds.size} contacts sélectionnés</strong>.{" "}
+                          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#1d4ed8", fontWeight: 700, padding: 0 }} onClick={() => setSelectedIds(new Set())}>Annuler</button>
+                        </Alert>
+                      )}
+
+                      {emailResult && !emailLoading && (
+                        <div style={{ marginBottom: 16, padding: "12px 16px", background: emailResult.error ? "#fef3f2" : "#f0fdf4", border: `1px solid ${emailResult.error ? "#fca5a5" : "#86efac"}`, borderRadius: 10, fontSize: 13 }}>
+                          {emailResult.error
+                            ? <span style={{ color: "#b91c1c" }}>⚠️ {emailResult.error}</span>
+                            : <span style={{ color: "#15803d" }}>✓ {emailResult.isDryRun ? "Simulation réussie" : "Campagne envoyée"} — {emailResult.sent ?? 0} envoyé(s), {emailResult.skipped ?? 0} ignoré(s), {emailResult.failed ?? 0} échec(s)</span>
+                          }
+                        </div>
+                      )}
+
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "space-between" }}>
+                        <button style={{ ...btn.base, ...btn.ghost }} onClick={() => setEmailWizardStep(3)}>← Retour</button>
+                        <div style={{ display: "flex", gap: 10 }}>
+                          <button style={{ ...btn.base, ...btn.ghost }} disabled={emailLoading} onClick={() => sendCampaign(true)}>
+                            {emailLoading ? "⏳ Simulation…" : "🧪 Simuler d'abord"}
+                          </button>
+                          <button style={{ ...btn.base, ...btn.primary }} disabled={emailLoading} onClick={() => { setPendingDryRun(false); setShowConfirm(true); }}>
+                            {emailLoading ? "⏳ Envoi…" : "🚀 Envoyer pour de vrai"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+            {/* ══ FIN WIZARD ══════════════════════════════════════════════════════ */}
+
+            {/* ══ MODE CLASSIQUE ══════════════════════════════════════════════════ */}
+            {emailWizardStep === 0 && <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
 
               {/* Config panneau */}
               <div style={{ ...card, display: "flex", flexDirection: "column", gap: 18 }}>
@@ -2770,7 +3035,8 @@ export default function AdminDashboard({ initialData }) {
                   </div>
                 )}
               </div>
-            </div>
+            </div>}
+            {/* ══ FIN MODE CLASSIQUE ══════════════════════════════════════════════ */}
 
             {/* ── Section : Email individuel ──────────────────────────────── */}
             <div style={{ marginTop: 32, ...card }}>
