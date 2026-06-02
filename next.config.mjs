@@ -18,15 +18,15 @@ const nextConfig = {
         destination: '/metiers-en-penurie',
         permanent: true
       },
-      // Page testeurs — redirigée vers /contact en production
+      // Page testeurs — redirigée vers /admin
       {
         source: '/retours-test',
-        destination: '/contact',
+        destination: '/admin',
         permanent: false
       },
       {
         source: '/en/retours-test',
-        destination: '/en/contact',
+        destination: '/admin',
         permanent: false
       },
       // Accompagnement juridique → permis unique (contenu absorbé dans #cabinet-lexpat)
