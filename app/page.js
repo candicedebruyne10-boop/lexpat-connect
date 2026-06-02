@@ -1,3 +1,4 @@
+import Script from "next/script";
 import {
   HeroPremium,
   FeaturedProfiles,
@@ -9,6 +10,51 @@ import {
 } from "../components/Sections";
 import { getServiceClient } from "../lib/supabase/server";
 import { normalizeRegion } from "../lib/matching";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://lexpat-connect.be/#organization",
+      "name": "LEXPAT Connect",
+      "url": "https://lexpat-connect.be",
+      "logo": "https://lexpat-connect.be/logo-lexpat-connect.png",
+      "description": "Plateforme belge de mise en relation entre employeurs et travailleurs internationaux qualifiés dans les métiers en pénurie. Permis unique géré par le cabinet d'avocats LEXPAT si nécessaire.",
+      "foundingLocation": { "@type": "Place", "name": "Bruxelles, Belgique" },
+      "areaServed": { "@type": "Country", "name": "Belgique" },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://lexpat-connect.be/contact",
+        "availableLanguage": ["French", "English"]
+      },
+      "sameAs": ["https://www.lexpat.be"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://lexpat-connect.be/#website",
+      "url": "https://lexpat-connect.be",
+      "name": "LEXPAT Connect",
+      "publisher": { "@id": "https://lexpat-connect.be/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lexpat-connect.be/simulateur-eligibilite?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://lexpat-connect.be/#service",
+      "name": "Recrutement international dans les métiers en pénurie en Belgique",
+      "provider": { "@id": "https://lexpat-connect.be/#organization" },
+      "serviceType": "Recrutement international",
+      "areaServed": { "@type": "Country", "name": "Belgique" },
+      "description": "Mise en relation entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie (Actiris, Forem, VDAB). Accompagnement permis unique par le cabinet LEXPAT si nécessaire.",
+      "url": "https://lexpat-connect.be/employeurs"
+    }
+  ]
+};
 
 export const metadata = {
   title: "LEXPAT Connect — Recrutez un profil international qualifié en Belgique, sans vous perdre dans les démarches",
@@ -101,6 +147,11 @@ export default async function HomePage() {
   ]);
   return (
     <>
+      <Script
+        id="json-ld-homepage"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HeroPremium
         primaryHref="/base-de-profils"
         secondaryHref="/simulateur-eligibilite"
