@@ -10,6 +10,7 @@ const TABS = [
   { id: "coach",       label: "Coach IA",         icon: "🤖" },
   { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
   { id: "prospection", label: "Prospection",      icon: "✨" },
+  { id: "promo",       label: "Promo",            icon: "📣" },
   { id: "linkedin",   label: "LinkedIn Ads",     icon: "in" },
   { id: "security",   label: "Sécurité données", icon: "🔒" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
@@ -1051,6 +1052,24 @@ export default function AdminDashboard({ initialData }) {
   const [previewHtml, setPreviewHtml]     = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [emailWizardStep, setEmailWizardStep] = useState(0); // 0 = mode classique, 1-4 = wizard guidé
+
+  // ── Promo state ────────────────────────────────────────────────────────────
+  const [promoCopied, setPromoCopied]   = useState(null);
+  const [utmSource, setUtmSource]       = useState("linkedin");
+  const [utmMedium, setUtmMedium]       = useState("social");
+  const [utmCampaign, setUtmCampaign]   = useState("prospection-2026");
+  const [utmPage, setUtmPage]           = useState("/employeurs");
+  const promoBase = "https://lexpat-connect.be";
+  function buildUtm() {
+    const params = new URLSearchParams({ utm_source: utmSource, utm_medium: utmMedium, utm_campaign: utmCampaign });
+    return `${promoBase}${utmPage}?${params.toString()}`;
+  }
+  function copyPromo(text, key) {
+    navigator.clipboard.writeText(text).then(() => {
+      setPromoCopied(key);
+      setTimeout(() => setPromoCopied(null), 2000);
+    });
+  }
 
   // ── LinkedIn Ads state ─────────────────────────────────────────────────────
   const [linkedinStatus, setLinkedinStatus] = useState(null);
@@ -4908,6 +4927,191 @@ export default function AdminDashboard({ initialData }) {
           </div>
         </div>
       )}
+
+      {/* ══ PROMO ══════════════════════════════════════════════════════════════ */}
+      {activeTab === "promo" && (
+        <div>
+          <div style={{ marginBottom: 28 }}>
+            <h2 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>📣 Kit de promotion</h2>
+            <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>Textes prêts à copier-coller, QR code et liens trackés — pour promouvoir LEXPAT Connect partout.</p>
+          </div>
+
+          {/* ── Section 1 : Kit de communication ── */}
+          <div style={{ marginBottom: 40 }}>
+            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>💬 Messages prêts à l'emploi</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+              {[
+                {
+                  key: "employer_linkedin",
+                  audience: "👔 Employeur",
+                  channel: "LinkedIn DM",
+                  color: "#0a66c2",
+                  text: `Bonjour [Prénom],\n\nJe voulais vous partager une ressource utile si vous recrutez dans des métiers en tension : LEXPAT Connect permet d'accéder à des profils internationaux qualifiés dans les métiers en pénurie en Belgique.\n\nSi le recrutement nécessite un permis unique, le cabinet d'avocats LEXPAT prend le relais directement — pas besoin de gérer ça de votre côté.\n\nLien : https://lexpat-connect.be/employeurs\n\nBonne journée,\nCandice`,
+                },
+                {
+                  key: "employer_email",
+                  audience: "👔 Employeur",
+                  channel: "Email froid",
+                  color: "#1E3A78",
+                  text: `Objet : Profils internationaux qualifiés dans les métiers en pénurie — LEXPAT Connect\n\nBonjour [Prénom],\n\nVous recrutez dans un métier difficile à pourvoir localement ?\n\nLEXPAT Connect vous donne accès à des travailleurs internationaux qualifiés dans les métiers en pénurie en Belgique — avec un cadre juridique sécurisé si un permis unique est nécessaire.\n\n→ Voir les profils disponibles : https://lexpat-connect.be/base-de-profils\n→ Vérifier l'éligibilité de votre poste (gratuit, 3 min) : https://lexpat-connect.be/simulateur-eligibilite\n\nJe reste disponible si vous avez des questions.\n\nBien à vous,\nCandice Debruyne\ncabinet LEXPAT — lexpat-connect.be`,
+                },
+                {
+                  key: "employer_pitch",
+                  audience: "👔 Employeur",
+                  channel: "Pitch oral 30 sec",
+                  color: "#57B7AF",
+                  text: `LEXPAT Connect, c'est une plateforme belge qui connecte les employeurs à des travailleurs internationaux qualifiés dans les métiers en pénurie. Ce qui nous différencie : si le recrutement nécessite un permis unique, le cabinet d'avocats LEXPAT gère tout le juridique — sans changer d'interlocuteur. Tout est dans un seul endroit : lexpat-connect.be`,
+                },
+                {
+                  key: "worker_whatsapp",
+                  audience: "🧑‍💼 Travailleur",
+                  channel: "WhatsApp / message",
+                  color: "#25D366",
+                  text: `Bonjour ! Je voulais vous partager une plateforme belge qui peut vous aider à trouver un emploi en Belgique dans votre domaine : LEXPAT Connect.\n\nVous créez un profil gratuit et les employeurs belges qui recrutent dans votre secteur peuvent vous trouver directement. Si un permis de travail est nécessaire, un cabinet d'avocats s'en occupe.\n\nLien pour s'inscrire : https://lexpat-connect.be/travailleurs`,
+                },
+                {
+                  key: "partner_network",
+                  audience: "🤝 Partenaire / réseau",
+                  channel: "Email ou message réseau",
+                  color: "#8b5cf6",
+                  text: `Bonjour [Prénom],\n\nJe développe actuellement LEXPAT Connect, une plateforme belge de recrutement international dans les métiers en pénurie, adossée au cabinet d'avocats LEXPAT.\n\nJe serais ravie d'explorer si une collaboration ou un échange de bonnes pratiques pourrait avoir du sens entre nos structures.\n\nVous trouverez plus d'informations ici : https://lexpat-connect.be\n\nBien à vous,\nCandice`,
+                },
+              ].map(({ key, audience, channel, color, text }) => (
+                <div key={key} style={{ ...card, borderLeft: `3px solid ${color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{audience}</span>
+                      <span style={{ fontSize: 11, background: "#f0f4fb", border: "1px solid #dde4f5", borderRadius: 20, padding: "2px 10px", color: "#607086" }}>{channel}</span>
+                    </div>
+                    <button
+                      style={{ ...btn.base, ...btn.ghost, fontSize: 11, padding: "4px 14px" }}
+                      onClick={() => copyPromo(text, key)}
+                    >
+                      {promoCopied === key ? "✓ Copié !" : "Copier"}
+                    </button>
+                  </div>
+                  <pre style={{ margin: 0, fontSize: 12, color: "#3d5470", lineHeight: 1.7, whiteSpace: "pre-wrap", fontFamily: "inherit", background: "#f8faff", borderRadius: 8, padding: "10px 14px" }}>
+                    {text}
+                  </pre>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Section 2 : QR Code ── */}
+          <div style={{ marginBottom: 40 }}>
+            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>📱 QR Code</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 24, alignItems: "center", ...card }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(promoBase)}&bgcolor=ffffff&color=1E3A78&margin=2`}
+                  alt="QR Code LEXPAT Connect"
+                  style={{ border: "1px solid #e2eaf3", borderRadius: 8 }}
+                />
+                <a
+                  href={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(promoBase)}&bgcolor=ffffff&color=1E3A78&margin=4`}
+                  download="qr-lexpat-connect.png"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ ...btn.base, ...btn.ghost, fontSize: 12 }}
+                >
+                  ⬇ Télécharger (HD)
+                </a>
+              </div>
+              <div>
+                <p style={{ margin: "0 0 8px", fontSize: 14, fontWeight: 700, color: "#1E3A78" }}>À imprimer ou partager</p>
+                <p style={{ margin: "0 0 16px", fontSize: 13, color: "#607086", lineHeight: 1.7 }}>
+                  Ce QR code pointe vers <strong>lexpat-connect.be</strong>. Utilisez-le sur vos cartes de visite, présentations, salons RH ou formations.
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {["Carte de visite", "Présentation PowerPoint", "Salon / événement RH", "Formation ou conférence", "Email signature"].map(use => (
+                    <span key={use} style={{ fontSize: 11, background: "#f0f4fb", border: "1px solid #dde4f5", borderRadius: 20, padding: "4px 12px", color: "#4a6b99" }}>{use}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Section 3 : Liens UTM ── */}
+          <div>
+            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>🔗 Liens trackés (UTM)</h3>
+            <div style={{ ...card }}>
+              <p style={{ margin: "0 0 16px", fontSize: 13, color: "#607086" }}>
+                Créez des liens avec paramètres UTM pour savoir d'où viennent vos visiteurs dans Google Analytics.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
+                <div>
+                  <label style={labelStyle}>Source (d'où vient le clic)</label>
+                  <select value={utmSource} onChange={e => setUtmSource(e.target.value)} style={inputStyle}>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="email">Email</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="evenement">Événement</option>
+                    <option value="partenaire">Partenaire</option>
+                    <option value="autre">Autre</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Medium (type de canal)</label>
+                  <select value={utmMedium} onChange={e => setUtmMedium(e.target.value)} style={inputStyle}>
+                    <option value="social">Social</option>
+                    <option value="email">Email</option>
+                    <option value="cpc">CPC (payant)</option>
+                    <option value="referral">Referral</option>
+                    <option value="qr">QR code</option>
+                    <option value="offline">Offline</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Campagne (nom de l'action)</label>
+                  <input type="text" value={utmCampaign} onChange={e => setUtmCampaign(e.target.value)} style={inputStyle} placeholder="ex: prospection-2026" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Page de destination</label>
+                  <select value={utmPage} onChange={e => setUtmPage(e.target.value)} style={inputStyle}>
+                    <option value="/">Accueil</option>
+                    <option value="/employeurs">Employeurs</option>
+                    <option value="/travailleurs">Travailleurs</option>
+                    <option value="/base-de-profils">Profils disponibles</option>
+                    <option value="/simulateur-eligibilite">Simulateur</option>
+                    <option value="/permis-unique">Permis unique</option>
+                    <option value="/recrutement-international">Recrutement international</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ background: "#f0f4fb", border: "1px solid #dde4f5", borderRadius: 10, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <code style={{ fontSize: 12, color: "#1E3A78", wordBreak: "break-all" }}>{buildUtm()}</code>
+                <button style={{ ...btn.base, ...btn.teal, fontSize: 12, flexShrink: 0 }} onClick={() => copyPromo(buildUtm(), "utm")}>
+                  {promoCopied === "utm" ? "✓ Copié !" : "Copier le lien"}
+                </button>
+              </div>
+
+              {/* Liens pré-construits */}
+              <div style={{ marginTop: 20 }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 10 }}>Liens rapides pré-construits :</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {[
+                    { label: "LinkedIn → Employeurs", url: `${promoBase}/employeurs?utm_source=linkedin&utm_medium=social&utm_campaign=prospection-employeurs` },
+                    { label: "Email → Simulateur", url: `${promoBase}/simulateur-eligibilite?utm_source=email&utm_medium=email&utm_campaign=prospection-simulateur` },
+                    { label: "QR code événement → Accueil", url: `${promoBase}/?utm_source=evenement&utm_medium=qr&utm_campaign=networking-2026` },
+                    { label: "WhatsApp → Travailleurs", url: `${promoBase}/travailleurs?utm_source=whatsapp&utm_medium=social&utm_campaign=prospection-travailleurs` },
+                  ].map(({ label, url }) => (
+                    <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8faff", borderRadius: 8, padding: "8px 12px", gap: 10 }}>
+                      <span style={{ fontSize: 12, color: "#3d5470" }}>{label}</span>
+                      <button style={{ ...btn.base, ...btn.ghost, fontSize: 11, padding: "3px 12px", flexShrink: 0 }} onClick={() => copyPromo(url, label)}>
+                        {promoCopied === label ? "✓" : "Copier"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ══ FIN PROMO ════════════════════════════════════════════════════════════ */}
 
       {/* ── Modale de confirmation ── */}
       {showConfirm && (
