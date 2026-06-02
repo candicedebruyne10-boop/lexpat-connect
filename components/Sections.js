@@ -2042,39 +2042,39 @@ export function MatchingPreview({ locale = "fr" }) {
    ───────────────────────────────────────────────────────────────────────────── */
 const TESTIMONIALS = [
   {
-    initials: "G.P.",
-    name: "G. P.",
-    role: { fr: "Cliente accompagnée sur un permis unique", en: "Client — single work permit" },
+    initials: "SN",
+    name: "Simon Nkuete",
+    role: { fr: "Comptable & gérant d'entreprise", en: "Accountant & business manager" },
     quote: {
-      fr: "En 5 mois, nous avons obtenu ce que nous attendions depuis près d'un an et demi. Travail sérieux, efficace, professionnel, toujours disponible, à l'écoute de son client…",
-      en: "In 5 months, we obtained what we had been waiting for for almost a year and a half. Serious, efficient, professional, always available, attentive to their client…",
+      fr: "Je ne peux qu'exprimer toute ma gratitude à Maître Debruyne et à toute son équipe pour leur dévouement. Merci pour votre professionnalisme et votre rapidité — toutes les procédures engagées par votre intermédiaire ont abouti à une issue favorable.",
+      en: "I can only express my gratitude to Attorney Debruyne and her entire team for their dedication. Thank you for your professionalism and speed — every procedure handled through you resulted in a favourable outcome.",
     },
   },
   {
-    initials: "A.S.",
-    name: "A. S.",
-    role: { fr: "Travailleur hautement qualifié", en: "Highly qualified worker" },
+    initials: "AS",
+    name: "Alan Smith",
+    role: { fr: "Permis de travail — travailleur hautement qualifié", en: "Work permit — highly qualified worker" },
     quote: {
       fr: "Depuis 3 ans que je leur confie mon dossier de permis de travail, ils me disent toujours quelles sont mes chances et aujourd'hui encore j'ai reçu du positif pour travailleur hautement qualifié.",
       en: "For 3 years I have entrusted them with my work permit file. They always tell me what my chances are, and once again I received a positive outcome as a highly qualified worker.",
     },
   },
   {
-    initials: "S.M.",
-    name: "S. M.",
-    role: { fr: "Demande d'autorisation de travail et de séjour", en: "Work and residence authorisation" },
+    initials: "MB",
+    name: "Moncef Ben Hamida",
+    role: { fr: "CEO — carte professionnelle & titre de séjour", en: "CEO — professional card & residence permit" },
     quote: {
-      fr: "Votre professionnalisme et votre accompagnement m'ont été d'une aide précieuse lors de ma demande d'autorisation de travail et séjour…",
-      en: "Your professionalism and support were invaluable to me during my work and residence authorisation process…",
+      fr: "Maître Debruyne a démontré l'étendue de son expertise lorsque je l'ai mandatée pour obtenir ma carte professionnelle et mon titre de séjour à Bruxelles. Elle m'a expliqué clairement les démarches. Je la recommande vivement.",
+      en: "Attorney Debruyne demonstrated the full extent of her expertise when I mandated her to obtain my professional card and residence permit in Brussels. She explained each step clearly. I highly recommend her.",
     },
   },
   {
-    initials: "O.G.",
-    name: "O. G. N. B.",
-    role: { fr: "Dossier de travail et séjour", en: "Work and residence file" },
+    initials: "SB",
+    name: "Sal. B.",
+    role: { fr: "Résidence permanente en Belgique", en: "Permanent residence in Belgium" },
     quote: {
-      fr: "Je remercie le cabinet Lexpat Lawfirm de m'avoir soutenu au cours du traitement de mon dossier. En effet, j'ai pu avoir une réponse positive après 8 mois d'attente.",
-      en: "I thank the Lexpat Lawfirm for supporting me throughout the processing of my file. I was able to receive a positive outcome after 8 months of waiting.",
+      fr: "J'étais ravie d'avoir un cabinet extrêmement compétent à mes côtés au moment où j'en avais le plus besoin. J'ai obtenu mon statut de résident permanent et je leur suis éternellement reconnaissante pour leur service courtois et professionnel.",
+      en: "I was delighted to have an extremely competent firm by my side when I needed it most. I obtained my permanent residence status and I am eternally grateful for their courteous and professional service.",
     },
   },
 ];
