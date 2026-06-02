@@ -1,4 +1,3 @@
-import Script from "next/script";
 import {
   HeroPremium,
   FeaturedProfiles,
@@ -147,8 +146,7 @@ export default async function HomePage() {
   ]);
   return (
     <>
-      <Script
-        id="json-ld-homepage"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
