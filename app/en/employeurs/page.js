@@ -3,12 +3,6 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps, TestimonialsStrip } from "../../../components/Sections";
 import { getServiceClient } from "../../../lib/supabase/server";
 
-export const metadata = {
-  title: "International recruitment in Belgium — Qualified profiles in shortage occupations | LEXPAT Connect",
-  description:
-    "Access qualified international worker profiles in Belgium's shortage occupations today. Fast recruitment, legally secured by LEXPAT law firm if a single permit is required."
-};
-
 // ── Point 5 : live count on EN page (was missing)
 async function getLiveProfileCount() {
   try {
@@ -24,9 +18,9 @@ async function getLiveProfileCount() {
 }
 
 export const metadata = {
-  title: "Employers | LEXPAT Connect",
+  title: "International recruitment in Belgium — Qualified profiles in shortage occupations | LEXPAT Connect",
   description:
-    "Find the qualified international profiles your team needs — available now for shortage occupations in Belgium. Fast, structured and legally secured."
+    "Access qualified international worker profiles in Belgium's shortage occupations today. Fast recruitment, legally secured by LEXPAT law firm if a single permit is required."
 };
 
 // ── Point 8 : step 2 reworded — targeted matching, not "no unnecessary intermediary"
