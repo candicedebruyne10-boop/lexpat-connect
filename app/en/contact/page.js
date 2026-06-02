@@ -1,25 +1,11 @@
-import { BulletList, Hero, Section } from "../../../components/Sections";
+import Link from "next/link";
+import { Hero, Section } from "../../../components/Sections";
 import FormCard from "../../../components/FormCard";
 
-const contactPoints = [
-  {
-    title: "An employer question",
-    text: "To submit a hiring need, clarify a recruitment issue or understand how to use the platform."
-  },
-  {
-    title: "A worker question",
-    text: "To make your profile visible, present your background more clearly or understand the opportunities available."
-  },
-  {
-    title: "A legal question",
-    text: "For single permit, right-to-work, residence or economic immigration matters."
-  }
-];
-
 export const metadata = {
-  title: "Contact | LEXPAT Connect",
+  title: "Contact — Ask about international recruitment or the single permit in Belgium | LEXPAT Connect",
   description:
-    "Contact LEXPAT Connect to ask a platform question, clarify a recruitment need, improve a candidate profile or request legal guidance."
+    "A question about international recruitment in Belgium, the single permit or the platform? Write to us — employers, workers and legal questions welcome. Reply within 24h."
 };
 
 export default function ContactPageEn() {
@@ -30,27 +16,38 @@ export default function ContactPageEn() {
         title={
           <>
             A question?
-            <span className="block text-[#57b7af]">Write to us — we will get back to you.</span>
+            <span className="block text-[#57b7af]">Write to us — we reply within 24h.</span>
           </>
         }
-        description="Whether you are an employer, a worker, or have a legal question about the single permit or the right to work — send us your question and we will point you in the right direction."
+        description="Whether you are an employer, a worker or have a question about the single permit or the right to work — send us your question here. We will point you to the right person within 24h."
         primaryHref="#form"
         primaryLabel="Ask my question"
-        secondaryHref="/en"
-        secondaryLabel="Back to home"
+        secondaryHref="/en/simulateur-eligibilite"
+        secondaryLabel="Test eligibility first"
       />
 
-      <Section
-        title="When to contact us"
-        intro="This page is the single entry point for questions related to either the platform or the law firm."
-        kicker="Guidance"
-      >
-        <BulletList items={contactPoints} />
-      </Section>
+      {/* Reassurance signals */}
+      <div className="border-y border-[#e5edf5] bg-white">
+        <div className="mx-auto max-w-4xl px-6 py-8">
+          <div className="grid gap-4 sm:grid-cols-3 text-center">
+            {[
+              { icon: "⏱", label: "Reply within 24h", sub: "On business days" },
+              { icon: "🔒", label: "Confidential data", sub: "GDPR-compliant processing" },
+              { icon: "🎯", label: "Routed to the right person", sub: "Platform or law firm depending on your need" },
+            ].map(({ icon, label, sub }) => (
+              <div key={label} className="flex flex-col items-center gap-1">
+                <span className="text-2xl">{icon}</span>
+                <p className="text-sm font-bold text-[#1E3A78]">{label}</p>
+                <p className="text-xs text-[#8a9db8]">{sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <Section
         title="Send your question"
-        intro="Describe your situation as clearly as possible so we can give you a fast and useful first response."
+        intro="Describe your situation in a few lines — we will point you to the right resource or the right person."
         kicker="Form"
         muted
       >
@@ -58,13 +55,12 @@ export default function ContactPageEn() {
           <FormCard
             locale="en"
             title="Contact form"
-            intro="Employer, worker, legal consultation or partnership: choose the right topic and tell us what you need."
+            intro="Choose the topic that best matches your situation."
             buttonLabel="Send message"
             formType="contact"
             fields={[
               { label: "Full name", placeholder: "First name Last name" },
               { label: "Email", type: "email", placeholder: "your.email@example.com" },
-              { label: "Phone", placeholder: "+32 ..." },
               {
                 label: "Request type",
                 type: "select",
@@ -74,6 +70,22 @@ export default function ContactPageEn() {
               { label: "Message", type: "textarea", placeholder: "Explain your question or situation...", wide: true }
             ]}
           />
+        </div>
+
+        {/* Direct links */}
+        <div className="mt-8 rounded-[20px] border border-[#e5edf5] bg-white p-6">
+          <p className="text-sm font-bold text-[#1E3A78] mb-4">Prefer to go directly?</p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/en/simulateur-eligibilite" className="inline-flex items-center gap-2 rounded-xl border border-[#d0dcf0] bg-[#f5f7ff] px-4 py-2.5 text-sm font-semibold text-[#1E3A78] transition hover:border-[#1E3A78]">
+              🧪 Check my role's eligibility
+            </Link>
+            <Link href="/en/base-de-profils" className="inline-flex items-center gap-2 rounded-xl border border-[#d0f0ed] bg-[#f0faf9] px-4 py-2.5 text-sm font-semibold text-[#0d7c6e] transition hover:border-[#57b7af]">
+              👤 Browse available profiles
+            </Link>
+            <Link href="/en/permis-unique" className="inline-flex items-center gap-2 rounded-xl border border-[#d0dcf0] bg-[#f5f7ff] px-4 py-2.5 text-sm font-semibold text-[#1E3A78] transition hover:border-[#1E3A78]">
+              📋 Single permit guide
+            </Link>
+          </div>
         </div>
       </Section>
     </>

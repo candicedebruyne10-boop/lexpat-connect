@@ -3,9 +3,9 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 
 export const metadata = {
-  title: "Workers | LEXPAT Connect",
+  title: "International workers — Find a job in Belgium in a shortage occupation | LEXPAT Connect",
   description:
-    "Make your profile visible to Belgian employers, clarify your experience and access opportunities in Belgium."
+    "Are you a qualified worker looking for a job in Belgium? Create your profile on LEXPAT Connect and become visible to Belgian employers recruiting in shortage occupations. Single permit support included if needed."
 };
 
 const candidateBenefits = [
