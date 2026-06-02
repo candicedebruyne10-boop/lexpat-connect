@@ -419,7 +419,7 @@ export default async function EmployeursPage() {
         text="Permis unique, droit au travail, immigration économique : le cabinet LEXPAT intervient uniquement si votre recrutement le nécessite. Commencez par accéder aux profils."
         primaryHref="/base-de-profils"
         primaryLabel="Voir les profils disponibles"
-        secondaryHref="/accompagnement-juridique"
+        secondaryHref="/permis-unique"
         secondaryLabel="Voir le relais juridique"
       />
 
@@ -467,6 +467,31 @@ export default async function EmployeursPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Encart "Vous hésitez encore ?" — lien vers /recrutement-international ── */}
+      <div className="border-t border-[#e5edf5] bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="flex flex-col gap-6 rounded-[28px] border border-[#b8d8f5] bg-[linear-gradient(135deg,#f0f7ff_0%,#eaf7f5_100%)] px-8 py-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#57b7af]">Statistiques 2025</p>
+              <h2 className="mt-2 text-xl font-extrabold leading-snug tracking-tight text-[#1d3b8b]">
+                Vous hésitez encore ?<br />
+                <span className="text-[#57b7af]">6 entreprises belges sur 10 ont déjà franchi le pas.</span>
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#5d6e83]">
+                Les données Acerta Consult 2025 montrent que le recrutement international n'est plus réservé aux grands groupes — et que les employeurs qui s'y lancent y reviennent. Découvrez pourquoi, avec les chiffres.
+              </p>
+            </div>
+            <Link
+              href="/recrutement-international"
+              className="flex-shrink-0 inline-flex items-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+              style={{ background: "#1E3A78", boxShadow: "0 8px 24px rgba(23,58,138,0.22)" }}
+            >
+              Voir les chiffres →
+            </Link>
+          </div>
+        </div>
+      </div>
 
       <div id="faq">
       {/* ── Point 6 : FAQ élargie */}
