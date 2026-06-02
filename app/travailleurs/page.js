@@ -2,6 +2,12 @@ import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 
+export const metadata = {
+  title: "Travailleurs internationaux — Trouvez un emploi en Belgique dans un métier en pénurie | LEXPAT Connect",
+  description:
+    "Vous êtes travailleur qualifié et vous cherchez un emploi en Belgique ? Créez votre profil sur LEXPAT Connect et devenez visible auprès des employeurs belges qui recrutent dans les métiers en pénurie."
+};
+
 const candidateBenefits = [
   {
     title: "Rendre votre profil visible",

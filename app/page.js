@@ -11,9 +11,9 @@ import { getServiceClient } from "../lib/supabase/server";
 import { normalizeRegion } from "../lib/matching";
 
 export const metadata = {
-  title: "LEXPAT Connect — Mise en relation ciblée employeurs belges & travailleurs internationaux",
+  title: "LEXPAT Connect — Recrutez un profil international qualifié en Belgique, sans vous perdre dans les démarches",
   description:
-    "La plateforme de mise en relation ciblée entre employeurs belges et travailleurs internationaux qualifiés dans les métiers en pénurie. Recrutement sécurisé, accompagnement juridique si nécessaire."
+    "Trouvez des travailleurs internationaux qualifiés dans les métiers en pénurie en Belgique. Profils disponibles dès maintenant — et si un permis unique est nécessaire, le cabinet d'avocats LEXPAT prend le relais."
 };
 
 /**

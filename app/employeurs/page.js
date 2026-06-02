@@ -3,6 +3,12 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps, TestimonialsStrip } from "../../components/Sections";
 import { getServiceClient } from "../../lib/supabase/server";
 
+export const metadata = {
+  title: "Recrutement international en Belgique — Profils qualifiés dans les métiers en pénurie | LEXPAT Connect",
+  description:
+    "Accédez dès aujourd'hui à des profils de travailleurs internationaux qualifiés dans les métiers en pénurie en Belgique. Recrutement rapide, cadre juridique sécurisé par le cabinet d'avocats LEXPAT si nécessaire."
+};
+
 async function getLiveProfileCount() {
   try {
     const supabase = getServiceClient();
