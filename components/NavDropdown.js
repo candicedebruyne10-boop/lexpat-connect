@@ -155,27 +155,53 @@ export default function NavDropdown({ label, href, items, color = 'slate', mobil
           {/* Bande couleur en haut */}
           <div className={`h-1 w-full ${p.stripe}`} />
 
-          {items.map((item, i) => (
-            <div key={`${item.href}-${i}`}>
-              <Link
-                href={item.href}
-                className={`flex items-start gap-3 px-5 py-4 transition group ${p.itemHoverBg}`}
-                onClick={() => setOpen(false)}
-              >
-                <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition
-                  ${p.iconBg} ${p.iconColor} ${p.iconHoverBg} group-hover:text-white`}>
-                  <NavIcon name={item.icon || (i === 0 ? 'arrow' : 'star')} />
-                </span>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1E3A78]">{item.label}</p>
-                  {item.description && (
-                    <p className="mt-0.5 text-[12px] leading-5 text-[#8a9bb0]">{item.description}</p>
-                  )}
+          {items.map((item, i) => {
+            if (item.type === "header") {
+              return (
+                <div key={`header-${i}`}>
+                  <div className="mx-4 border-t border-[#edf1f5]" />
+                  <p className="px-5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#8a9bb0]">{item.label}</p>
                 </div>
-              </Link>
-              {i < items.length - 1 && <div className="mx-4 border-t border-[#edf1f5]" />}
-            </div>
-          ))}
+              );
+            }
+            if (item.type === "cities") {
+              return (
+                <div key={`cities-${i}`} className="grid grid-cols-2 gap-1 px-3 pb-3">
+                  {item.cities.map(city => (
+                    <Link
+                      key={city.href}
+                      href={city.href}
+                      className={`rounded-xl px-3 py-2 text-[12px] font-semibold text-[#1E3A78] transition ${p.itemHoverBg}`}
+                      onClick={() => setOpen(false)}
+                    >
+                      {city.label} →
+                    </Link>
+                  ))}
+                </div>
+              );
+            }
+            return (
+              <div key={`${item.href}-${i}`}>
+                <Link
+                  href={item.href}
+                  className={`flex items-start gap-3 px-5 py-4 transition group ${p.itemHoverBg}`}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition
+                    ${p.iconBg} ${p.iconColor} ${p.iconHoverBg} group-hover:text-white`}>
+                    <NavIcon name={item.icon || (i === 0 ? 'arrow' : 'star')} />
+                  </span>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#1E3A78]">{item.label}</p>
+                    {item.description && (
+                      <p className="mt-0.5 text-[12px] leading-5 text-[#8a9bb0]">{item.description}</p>
+                    )}
+                  </div>
+                </Link>
+                {i < items.length - 1 && items[i + 1]?.type !== "header" && items[i + 1]?.type !== "cities" && <div className="mx-4 border-t border-[#edf1f5]" />}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

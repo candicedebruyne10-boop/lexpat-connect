@@ -69,6 +69,19 @@ export default function SiteChrome({ children }) {
           description: isEn ? "Browse qualified international profiles" : "Parcourez les profils qualifiés disponibles",
           icon: "search",
         },
+        {
+          type: "header",
+          label: isEn ? "By city" : "Par ville",
+        },
+        {
+          type: "cities",
+          cities: [
+            { href: "/employeurs/liege-metiers-en-penurie",   label: isEn ? "Liège"  : "Liège"  },
+            { href: "/employeurs/anvers-metiers-en-penurie",  label: isEn ? "Anvers" : "Anvers" },
+            { href: "/employeurs/gand-metiers-en-penurie",    label: isEn ? "Gand"   : "Gand"   },
+            { href: "/employeurs/bruges-metiers-en-penurie",  label: isEn ? "Bruges" : "Bruges" },
+          ],
+        },
       ],
     },
     "/travailleurs": {
