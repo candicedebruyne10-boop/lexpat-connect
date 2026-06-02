@@ -4,9 +4,9 @@ import { translateProfessionLabel, translateGroupTitle } from "../../lib/profess
 import { FLANDRE_MB_21 } from "../../lib/flandreKnelpuntberoepen";
 
 export const metadata = {
-  title: "Professions en pénurie par région en Belgique | LEXPAT Connect",
+  title: "Métiers en pénurie en Belgique 2026 — Listes Actiris, Forem et VDAB | LEXPAT Connect",
   description:
-    "Consultez rapidement les professions en pénurie classées par région en Belgique : Bruxelles, Wallonie et Flandre. Base LEXPAT Connect mise à jour en continu."
+    "Consultez les listes officielles des métiers en pénurie en Belgique par région : Actiris (Bruxelles), Forem (Wallonie) et VDAB (Flandre). Ces professions ouvrent droit à des procédures de recrutement international simplifiées et au permis unique."
 };
 
 const regionStyles = {
