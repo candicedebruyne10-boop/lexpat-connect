@@ -4579,6 +4579,71 @@ export default function AdminDashboard({ initialData }) {
                   </div>
                 </div>
 
+                {/* ── Liste des actions encore à faire ── */}
+                <div style={{ border: "2px solid #fca5a5", borderRadius: 12, padding: "16px 18px", background: "#fff5f5" }}>
+                  <p style={{ margin: "0 0 14px", fontWeight: 800, fontSize: 14, color: "#b91c1c" }}>📋 Actions RGPD encore à faire</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {[
+                      {
+                        done: false,
+                        label: "Signer le DPA Anthropic (Claude)",
+                        desc: "Va sur anthropic.com → Legal → Data Processing Agreement. Obligatoire pour utiliser l'API Claude dans un contexte professionnel RGPD.",
+                        link: "https://www.anthropic.com/legal/dpa",
+                        linkLabel: "anthropic.com/legal/dpa"
+                      },
+                      {
+                        done: false,
+                        label: "Signer le DPA OpenAI",
+                        desc: "Va sur platform.openai.com → Settings → Privacy → Data Processing Agreement.",
+                        link: "https://openai.com/policies/data-processing-addendum",
+                        linkLabel: "openai.com/policies/data-processing-addendum"
+                      },
+                      {
+                        done: false,
+                        label: "Activer la 2FA sur Gmail",
+                        desc: "Ta boîte Gmail est le maillon clé — si quelqu'un y accède, il peut se connecter à l'admin via magic link. Active la validation en deux étapes.",
+                        link: "https://myaccount.google.com/security",
+                        linkLabel: "myaccount.google.com/security"
+                      },
+                      {
+                        done: false,
+                        label: "Activer la 2FA sur Supabase",
+                        desc: "Supabase → ton avatar en haut à droite → Account Settings → Security → Enable 2FA.",
+                        link: "https://supabase.com/dashboard/account/security",
+                        linkLabel: "supabase.com/dashboard/account/security"
+                      },
+                      {
+                        done: false,
+                        label: "Supprimer le projet Supabase prototype",
+                        desc: "Le projet 'syncmjmtaerwrwjsorhy' est un ancien prototype inutilisé avec des tables sans RLS. Supabase → ce projet → Settings → General → Delete project.",
+                      },
+                      {
+                        done: false,
+                        label: "Supprimer le projet Vercel lexpat-connect-mvp",
+                        desc: "Un doublon qui génère des erreurs à chaque déploiement. Vercel → projet lexpat-connect-mvp → Settings → General → Delete project.",
+                      },
+                      {
+                        done: false,
+                        label: "Mentionner Claude & OpenAI dans la politique de confidentialité",
+                        desc: "Ajouter une ligne dans la politique de confidentialité du site : 'Certaines fonctionnalités utilisent des modèles d'IA tiers (Anthropic, OpenAI). Aucune donnée personnelle de membre n'est transmise à ces services.'",
+                      },
+                    ].map((item, i) => (
+                      <div key={i} style={{ display: "flex", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 8, border: "1px solid #fecaca" }}>
+                        <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>🔲</span>
+                        <div style={{ flex: 1 }}>
+                          <p style={{ margin: "0 0 2px", fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
+                          <p style={{ margin: 0, fontSize: 11, color: "#607086", lineHeight: 1.6 }}>{item.desc}</p>
+                          {item.link && (
+                            <a href={item.link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#1d4ed8", marginTop: 4, display: "inline-block" }}>
+                              → {item.linkLabel}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Budget */}
                 <div style={{ border: "1px solid #bbf7d0", borderRadius: 12, padding: "14px 16px", background: "#f0fdf4" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
