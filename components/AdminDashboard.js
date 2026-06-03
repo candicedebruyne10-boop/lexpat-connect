@@ -4509,6 +4509,71 @@ export default function AdminDashboard({ initialData }) {
               </button>
             </div>
 
+            {/* ── Section RGPD & Infrastructure ── */}
+            <div style={{ ...card, marginBottom: 28, borderTop: "4px solid #1E3A78" }}>
+              <p style={{ margin: "0 0 6px", fontWeight: 800, fontSize: 15, color: "#1E3A78" }}>🇪🇺 RGPD & Infrastructure — Actions prioritaires</p>
+              <p style={{ margin: "0 0 20px", fontSize: 12, color: "#8a9db8" }}>
+                Analyse de conformité RGPD de l'infrastructure actuelle. Ces recommandations concernent les prestataires qui hébergent ou traitent les données des membres de la plateforme.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+                {/* Vercel */}
+                <div style={{ border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 16px", background: "#fff5f5" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>▲ Vercel (hébergement du site)</span>
+                    <span style={{ fontSize: 11, background: "#fef3f2", border: "1px solid #fca5a5", color: "#b91c1c", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ Région EU non configurée</span>
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
+                    Vercel est une entreprise américaine. Le site est actuellement déployé sans configuration de région EU. Pour être conforme, Vercel ne doit jamais stocker de données personnelles — il sert uniquement les pages du site. Les données membres restent dans Supabase.
+                  </p>
+                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
+                    <strong>Action :</strong> Créer un fichier <code>vercel.json</code> à la racine du projet avec <code>"regions": ["cdg1"]</code> (Paris) pour forcer le déploiement en Europe. Désactiver Vercel Analytics si non nécessaire (actuellement actif mais derrière consentement).
+                  </div>
+                </div>
+
+                {/* Supabase */}
+                <div style={{ border: "1px solid #fcd34d", borderRadius: 12, padding: "14px 16px", background: "#fffbeb" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>🗄️ Supabase (base de données)</span>
+                    <span style={{ fontSize: 11, background: "#fffbeb", border: "1px solid #fcd34d", color: "#92400e", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ Vérifier la région</span>
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
+                    Supabase est une société américaine mais permet d'héberger les données en Europe. Le choix de région est <strong>irréversible</strong> — il doit être fait dès la création du projet. La région correcte est <strong>Frankfurt (eu-central-1)</strong>. Le RLS est activé sur les tables (✅ fait). Il faut aussi signer le DPA (accord de traitement des données) avec Supabase.
+                  </p>
+                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
+                    <strong>Action :</strong> Vérifier la région dans le dashboard Supabase → Settings → General → Region. Si ce n'est pas Frankfurt, contacter un développeur — la migration nécessite de recréer le projet.
+                  </div>
+                </div>
+
+                {/* Resend */}
+                <div style={{ border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 16px", background: "#fff5f5" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>📧 Resend (envoi d'emails)</span>
+                    <span style={{ fontSize: 11, background: "#fef3f2", border: "1px solid #fca5a5", color: "#b91c1c", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>🔴 À remplacer</span>
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
+                    Resend peut envoyer des emails depuis l'Irlande, mais les logs, métadonnées et analytics de compte restent stockés aux États-Unis — quelle que soit la région d'envoi choisie. Pour une plateforme qui traite des profils de travailleurs (données potentiellement sensibles), ce risque résiduel est problématique vis-à-vis du RGPD et de l'APD belge.
+                  </p>
+                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
+                    <strong>Alternative recommandée :</strong> <strong>Scaleway Transactional Email</strong> (Paris, 100% EU, RGPD-compliant, 3 000 emails/mois gratuits, migration estimée à moins d'une heure de développement). Resend est acceptable en phase prototype uniquement.
+                  </div>
+                </div>
+
+                {/* Budget */}
+                <div style={{ border: "1px solid #bbf7d0", borderRadius: 12, padding: "14px 16px", background: "#f0fdf4" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>💶 Coût infrastructure estimé</span>
+                    <span style={{ fontSize: 11, background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>✅ Raisonnable</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
+                    Infrastructure complète, conforme RGPD et défendable devant l'APD belge : <strong>15–18 €/mois en phase prototype</strong>, ~70–80 €/mois en phase de croissance. Soit moins de 800 €/an.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
             {securityLoading && (
               <div style={{ color: "#8a9db8", fontSize: 14, padding: "32px 0" }}>Chargement du statut de sécurité…</div>
             )}
