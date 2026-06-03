@@ -4550,13 +4550,13 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 16px", background: "#fff5f5" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>📧 Resend (envoi d'emails)</span>
-                    <span style={{ fontSize: 11, background: "#fef3f2", border: "1px solid #fca5a5", color: "#b91c1c", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>🔴 À remplacer</span>
+                    <span style={{ fontSize: 11, background: "#fffbeb", border: "1px solid #fcd34d", color: "#92400e", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ DPA à signer</span>
                   </div>
                   <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
-                    Resend peut envoyer des emails depuis l'Irlande, mais les logs, métadonnées et analytics de compte restent stockés aux États-Unis — quelle que soit la région d'envoi choisie. Pour une plateforme qui traite des profils de travailleurs (données potentiellement sensibles), ce risque résiduel est problématique vis-à-vis du RGPD et de l'APD belge.
+                    Resend envoie depuis l'Irlande (EU). C'est acceptable pour le RGPD à condition de signer leur DPA. La migration vers Scaleway (100% EU, Paris) reste une option si tu passes à grande échelle, mais n'est pas urgente.
                   </p>
-                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
-                    <strong>Alternative recommandée :</strong> <strong>Scaleway Transactional Email</strong> (Paris, 100% EU, RGPD-compliant, 3 000 emails/mois gratuits, migration estimée à moins d'une heure de développement). Resend est acceptable en phase prototype uniquement.
+                  <div style={{ background: "#fffbeb", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#92400e" }}>
+                    <strong>Action :</strong> Signe le DPA Resend sur <strong>resend.com/legal</strong> → "Data Processing Agreement". 5 minutes, et tu es conforme RGPD.
                   </div>
                 </div>
 
