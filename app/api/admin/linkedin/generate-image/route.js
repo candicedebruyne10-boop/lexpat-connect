@@ -75,11 +75,11 @@ export async function POST(request) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "dall-e-3",
+        model: "gpt-image-1",
         prompt,
         n: 1,
-        size: "1792x1024",
-        quality: "hd",
+        size: "1536x1024",
+        quality: "high",
       }),
       cache: "no-store",
     });
@@ -89,13 +89,20 @@ export async function POST(request) {
       throw new Error(data.error?.message || `OpenAI error ${response.status}`);
     }
 
-    const imageUrl = data.data?.[0]?.url;
-    if (!imageUrl) throw new Error("Aucune image retournée par DALL-E.");
+    const image = data.data?.[0];
+    if (!image) throw new Error("Aucune image retournée par OpenAI.");
+
+    // gpt-image-1 retourne b64_json, dall-e-3 retournait url
+    const dataUrl = image.b64_json
+      ? `data:image/png;base64,${image.b64_json}`
+      : image.url;
+
+    if (!dataUrl) throw new Error("Format d'image non reconnu.");
 
     return NextResponse.json({
       ok: true,
-      dataUrl: imageUrl,
-      revisedPrompt: data.data?.[0]?.revised_prompt || null,
+      dataUrl,
+      revisedPrompt: image.revised_prompt || null,
     });
   } catch (err) {
     const status = err.message?.includes("administrateur") ? 403 : 500;
