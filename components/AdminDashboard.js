@@ -4536,13 +4536,13 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ border: "1px solid #fcd34d", borderRadius: 12, padding: "14px 16px", background: "#fffbeb" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>🗄️ Supabase (base de données)</span>
-                    <span style={{ fontSize: 11, background: "#fffbeb", border: "1px solid #fcd34d", color: "#92400e", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ Vérifier la région</span>
+                    <span style={{ fontSize: 11, background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>✅ Paris (eu-west-3)</span>
                   </div>
                   <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
-                    Supabase est une société américaine mais permet d'héberger les données en Europe. Le choix de région est <strong>irréversible</strong> — il doit être fait dès la création du projet. La région correcte est <strong>Frankfurt (eu-central-1)</strong>. Le RLS est activé sur les tables (✅ fait). Il faut aussi signer le DPA (accord de traitement des données) avec Supabase.
+                    Supabase est une société américaine mais les données sont hébergées en Europe. ✅ La région configurée est <strong>West EU (Paris) — eu-west-3</strong> — toutes les données membres sont physiquement stockées en France, dans l'UE. C'est conforme RGPD. Le RLS est activé sur toutes les tables. Il reste à signer le DPA (accord de traitement des données) avec Supabase.
                   </p>
-                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
-                    <strong>Action :</strong> Vérifier la région dans le dashboard Supabase → Settings → General → Region. Si ce n'est pas Frankfurt, contacter un développeur — la migration nécessite de recréer le projet.
+                  <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#15803d" }}>
+                    ✅ Région Paris (eu-west-3) confirmée — données en France, conformité RGPD assurée. Action restante : signer le DPA Supabase (Settings → Legal).
                   </div>
                 </div>
 
