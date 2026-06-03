@@ -4522,13 +4522,13 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 16px", background: "#fff5f5" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>▲ Vercel (hébergement du site)</span>
-                    <span style={{ fontSize: 11, background: "#fef3f2", border: "1px solid #fca5a5", color: "#b91c1c", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ Région EU non configurée</span>
+                    <span style={{ fontSize: 11, background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>✅ Paris cdg1 configuré</span>
                   </div>
                   <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
-                    Vercel est une entreprise américaine. Le site est actuellement déployé sans configuration de région EU. Pour être conforme, Vercel ne doit jamais stocker de données personnelles — il sert uniquement les pages du site. Les données membres restent dans Supabase.
+                    Vercel est une entreprise américaine mais le déploiement est maintenant forcé en Europe. Le fichier <code>vercel.json</code> configure la région <strong>Paris (cdg1)</strong>. Vercel ne stocke pas de données personnelles — il sert uniquement les pages du site. Les données membres restent dans Supabase Paris.
                   </p>
-                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
-                    <strong>Action :</strong> Créer un fichier <code>vercel.json</code> à la racine du projet avec <code>"regions": ["cdg1"]</code> (Paris) pour forcer le déploiement en Europe. Désactiver Vercel Analytics si non nécessaire (actuellement actif mais derrière consentement).
+                  <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#15803d" }}>
+                    ✅ vercel.json créé — région cdg1 (Paris) active. Vercel Analytics derrière consentement cookie.
                   </div>
                 </div>
 
