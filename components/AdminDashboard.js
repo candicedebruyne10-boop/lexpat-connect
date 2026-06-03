@@ -4608,17 +4608,17 @@ export default function AdminDashboard({ initialData }) {
 
                       {/* Colonne Infrastructure hors code */}
                       <div>
-                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.08em" }}>⚠️ Infrastructure hors code</p>
+                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.08em" }}>⚠️ Actions à faire en dehors du code</p>
                         {[
-                          { label: "OVH DNS — enregistrement SPF", desc: 'Sous-domaine send · TXT : v=spf1 include:amazonses.com ~all' },
-                          { label: "Vercel — DKIM actif via Resend", desc: "Resend → Domains → vérifier ✅ SPF + DKIM + DMARC" },
-                          { label: "LinkedIn — reconnecter le compte", desc: "Dashboard → onglet LinkedIn Ads → bouton Connecter LinkedIn" },
+                          { label: "Emails : anti-spam", desc: "Vérifier que les emails envoyés depuis le site arrivent bien dans la boîte de réception (pas dans les spams). À configurer une fois dans OVH." },
+                          { label: "Emails : signature numérique", desc: "Une signature invisible protège les emails contre l'usurpation d'identité. À vérifier dans le compte Resend (service d'envoi d'emails)." },
+                          { label: "LinkedIn : reconnecter le compte", desc: "Si les posts LinkedIn ne fonctionnent plus, aller dans l'onglet LinkedIn de l'admin et cliquer 'Connecter LinkedIn'." },
                         ].map(item => (
                           <div key={item.label} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid #f0f4fb" }}>
                             <span style={{ color: "#ef4444", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>!</span>
                             <div>
                               <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
-                              <p style={{ margin: 0, fontSize: 11, color: "#8a9db8", lineHeight: 1.5, fontFamily: item.label.includes("SPF") ? "monospace" : "inherit" }}>{item.desc}</p>
+                              <p style={{ margin: 0, fontSize: 11, color: "#8a9db8", lineHeight: 1.5 }}>{item.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -4666,16 +4666,16 @@ export default function AdminDashboard({ initialData }) {
                       <p style={{ margin: "0 0 14px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>🔑 Secrets & variables d'environnement</p>
                       <p style={{ margin: "0 0 12px", fontSize: 12, color: "#8a9db8" }}>Seule la présence est vérifiée — jamais les valeurs.</p>
                       {[
-                        { key: "SUPABASE_SERVICE_ROLE_KEY",     label: "Supabase service role",   critical: true },
-                        { key: "NEXT_PUBLIC_SUPABASE_URL",      label: "Supabase URL",             critical: true },
-                        { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", label: "Supabase anon key",        critical: true },
-                        { key: "RESEND_API_KEY",                label: "Resend (emails)",          critical: true },
-                        { key: "CONTACT_EMAIL",                 label: "Email admin (CONTACT_EMAIL)", critical: true },
-                        { key: "ANTHROPIC_API_KEY",             label: "Claude Haiku (Studio IA)", critical: false },
-                        { key: "OPENAI_API_KEY",                label: "OpenAI (fallback IA)",     critical: false },
-                        { key: "LINKEDIN_CLIENT_ID",            label: "LinkedIn OAuth client ID", critical: false },
-                        { key: "LINKEDIN_CLIENT_SECRET",        label: "LinkedIn OAuth secret",    critical: false },
-                        { key: "NEXT_PUBLIC_GA_MEASUREMENT_ID", label: "Google Analytics 4",       critical: false },
+                        { key: "SUPABASE_SERVICE_ROLE_KEY",     label: "Base de données — clé secrète",   critical: true },
+                        { key: "NEXT_PUBLIC_SUPABASE_URL",      label: "Base de données — adresse",       critical: true },
+                        { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", label: "Base de données — clé publique",  critical: true },
+                        { key: "RESEND_API_KEY",                label: "Service d'envoi d'emails",        critical: true },
+                        { key: "CONTACT_EMAIL",                 label: "Email administrateur du site",    critical: true },
+                        { key: "ANTHROPIC_API_KEY",             label: "Claude IA (génération de textes)", critical: false },
+                        { key: "OPENAI_API_KEY",                label: "OpenAI (alternative IA)",         critical: false },
+                        { key: "LINKEDIN_CLIENT_ID",            label: "LinkedIn — identifiant",          critical: false },
+                        { key: "LINKEDIN_CLIENT_SECRET",        label: "LinkedIn — clé secrète",          critical: false },
+                        { key: "NEXT_PUBLIC_GA_MEASUREMENT_ID", label: "Google Analytics",                critical: false },
                       ].map(({ key, label, critical }) => (
                         <div key={key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid #f0f4fb" }}>
                           <span style={{ fontSize: 14 }}>{envVars[key] ? "✅" : critical ? "🔴" : "⚪"}</span>
@@ -4710,13 +4710,13 @@ export default function AdminDashboard({ initialData }) {
 
                     {/* ── Matrice des accès par table ── */}
                     <div style={{ ...card, gridColumn: "1 / -1" }}>
-                      <p style={{ margin: "0 0 4px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>📋 Matrice des accès par table</p>
-                      <p style={{ margin: "0 0 16px", fontSize: 12, color: "#8a9db8" }}>Qui peut lire et écrire quoi. Toutes les opérations sensibles passent par le service_role (API routes Next.js).</p>
+                      <p style={{ margin: "0 0 4px", fontWeight: 800, fontSize: 14, color: "#1E3A78" }}>📋 Qui voit quoi sur le site</p>
+                      <p style={{ margin: "0 0 16px", fontSize: 12, color: "#8a9db8" }}>Résumé des droits d'accès selon le type d'utilisateur. Les données sensibles (emails, téléphones, documents) ne sont jamais visibles par des inconnus.</p>
                       <div style={{ overflowX: "auto" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                           <thead>
                             <tr style={{ background: "#f0f4fb" }}>
-                              {["Table", "Visiteur (anon)", "Travailleur connecté", "Employeur connecté", "Admin / service_role", "Données sensibles"].map(h => (
+                              {["Données", "Visiteur inconnu", "Travailleur connecté", "Employeur connecté", "Admin", "Niveau de confidentialité"].map(h => (
                                 <th key={h} style={{ padding: "8px 12px", textAlign: "left", color: "#607086", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>{h}</th>
                               ))}
                             </tr>
@@ -4755,15 +4755,13 @@ export default function AdminDashboard({ initialData }) {
 
                     {/* ── Règles d'or ── */}
                     <div style={{ ...card, gridColumn: "1 / -1", borderTop: "4px solid #f59e0b", background: "#fffbeb" }}>
-                      <p style={{ margin: "0 0 16px", fontWeight: 800, fontSize: 14, color: "#92400e" }}>⚠️ Règles à ne jamais enfreindre</p>
+                      <p style={{ margin: "0 0 16px", fontWeight: 800, fontSize: 14, color: "#92400e" }}>⚠️ Ce qu'il ne faut jamais faire</p>
                       <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
                         {[
-                          { icon: "🚫", title: "Ne jamais exposer SUPABASE_SERVICE_ROLE_KEY", desc: "Cette clé bypasse toute la sécurité RLS. Elle ne doit apparaître que dans les API routes Next.js, jamais dans le code client ni les logs." },
-                          { icon: "🚫", title: "Ne jamais SELECT * sur worker_profiles côté client", desc: "Sélectionnez uniquement les colonnes nécessaires. Les colonnes birth_date, phone, email, address ne doivent jamais être exposées à un visiteur non connecté." },
-                          { icon: "🚫", title: "Ne pas promouvoir un rôle admin côté client", desc: "Le changement de rôle vers 'admin' doit toujours passer par une API route utilisant le service_role. La RLS bloque l'auto-promotion, mais restez vigilante." },
-                          { icon: "🚫", title: "Ne jamais committer de fichier .env", desc: "Les fichiers .env.local sont dans .gitignore. Vérifiez git status avant chaque commit contenant des configs." },
-                          { icon: "⚠️", title: "Toute nouvelle table doit avoir RLS activée", desc: "CREATE TABLE sans ALTER TABLE ... ENABLE ROW LEVEL SECURITY laisse la table ouverte à tous les utilisateurs authentifiés. Toujours ajouter les deux lignes." },
-                          { icon: "⚠️", title: "Vérifier les GRANTs après chaque nouvelle migration", desc: "Sans GRANT explicite sur les nouveaux rôles (anon / authenticated), PostgREST refusera l'accès même si la RLS policy l'autorise (règle Supabase 2026)." },
+                          { icon: "🚫", title: "Ne jamais partager les clés secrètes du site", desc: "Les clés de la base de données et des services (emails, IA) ne doivent jamais être envoyées par email, mises dans un doc partagé ou visible dans le code public." },
+                          { icon: "🚫", title: "Les données personnelles des membres sont protégées", desc: "Les informations privées (téléphone, email, adresse) d'un travailleur ne sont visibles que par lui-même et par l'admin. Jamais par un visiteur non connecté." },
+                          { icon: "🚫", title: "Seul un développeur peut donner l'accès admin", desc: "Pour donner l'accès admin à une nouvelle personne, il faut passer par le développeur — il n'est pas possible de se promouvoir admin soi-même depuis le site." },
+                          { icon: "🚫", title: "Les mots de passe du site ne sont jamais dans le code", desc: "Toutes les clés secrètes sont stockées dans Vercel (variables d'environnement), jamais dans les fichiers du projet ni sur GitHub." },
                         ].map(rule => (
                           <div key={rule.title} style={{ padding: "12px 14px", background: "#fff", borderRadius: 12, border: "1px solid #fde68a" }}>
                             <p style={{ margin: "0 0 4px", fontWeight: 700, fontSize: 13, color: "#92400e" }}>{rule.icon} {rule.title}</p>
