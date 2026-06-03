@@ -4560,6 +4560,20 @@ export default function AdminDashboard({ initialData }) {
                   </div>
                 </div>
 
+                {/* Claude / OpenAI */}
+                <div style={{ border: "1px solid #bbf7d0", borderRadius: 12, padding: "14px 16px", background: "#f0fdf4" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>✨ Claude IA & OpenAI (génération de textes)</span>
+                    <span style={{ fontSize: 11, background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>✅ Aucune donnée personnelle</span>
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
+                    Le code a été vérifié : les prompts envoyés à Claude et OpenAI ne contiennent aucune donnée personnelle de membres (pas de noms, emails, téléphones). Seuls le type d'audience générique et le texte de description saisi par l'admin sont transmis. L'API Anthropic ne réutilise pas ces données pour l'entraînement.
+                  </p>
+                  <div style={{ background: "#f8f9ff", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#1E3A78" }}>
+                    <strong>Seul risque résiduel :</strong> si tu inclus toi-même le nom d'un contact dans le champ prompt (ex : "email pour Thomas, DRH chez Acme"), cette donnée part chez Anthropic. C'est un choix délibéré, pas un flux automatique — à éviter par précaution.
+                  </div>
+                </div>
+
                 {/* Budget */}
                 <div style={{ border: "1px solid #bbf7d0", borderRadius: 12, padding: "14px 16px", background: "#f0fdf4" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
