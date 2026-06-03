@@ -4550,13 +4550,13 @@ export default function AdminDashboard({ initialData }) {
                 <div style={{ border: "1px solid #fca5a5", borderRadius: 12, padding: "14px 16px", background: "#fff5f5" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>📧 Resend (envoi d'emails)</span>
-                    <span style={{ fontSize: 11, background: "#fffbeb", border: "1px solid #fcd34d", color: "#92400e", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>⚠️ DPA à signer</span>
+                    <span style={{ fontSize: 11, background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", borderRadius: 20, padding: "2px 10px", fontWeight: 700 }}>✅ DPA automatique + SOC 2</span>
                   </div>
                   <p style={{ margin: "0 0 8px", fontSize: 12, color: "#607086", lineHeight: 1.7 }}>
                     Resend envoie depuis l'Irlande (EU). C'est acceptable pour le RGPD à condition de signer leur DPA. La migration vers Scaleway (100% EU, Paris) reste une option si tu passes à grande échelle, mais n'est pas urgente.
                   </p>
-                  <div style={{ background: "#fffbeb", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#92400e" }}>
-                    <strong>Action :</strong> Signe le DPA Resend sur <strong>resend.com/legal</strong> → "Data Processing Agreement". 5 minutes, et tu es conforme RGPD.
+                  <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#15803d" }}>
+                    ✅ DPA automatiquement en vigueur à l'inscription. Resend est SOC 2 Type II certifié (audit Vanta 2025–2026). Télécharge le PDF depuis Settings → Documents dans Resend pour tes archives RGPD.
                   </div>
                 </div>
 
