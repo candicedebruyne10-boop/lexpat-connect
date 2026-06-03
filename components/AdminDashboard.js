@@ -1023,6 +1023,27 @@ export default function AdminDashboard({ initialData }) {
     });
   }
 
+  // ── Coach stratégie state ───────────────────────────────────────────────────
+  const [strategy, setStrategy]           = useState(null);
+  const [strategyLoading, setStrategyLoading] = useState(false);
+  const [strategyError, setStrategyError] = useState(null);
+
+  const fetchStrategy = useCallback(async () => {
+    if (!token) return;
+    setStrategyLoading(true);
+    setStrategyError(null);
+    try {
+      const res = await fetch("/api/admin/coach/strategy", { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur stratégie");
+      setStrategy(data);
+    } catch (e) {
+      setStrategyError(e.message);
+    } finally {
+      setStrategyLoading(false);
+    }
+  }, [token]);
+
   // ── Emailing state ──────────────────────────────────────────────────────────
   const [emailSegment, setEmailSegment]   = useState("workers_hidden");
   const [emailTemplate, setEmailTemplate] = useState("visibility_initial");
@@ -2026,8 +2047,121 @@ export default function AdminDashboard({ initialData }) {
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>Coach IA</h2>
               <p style={{ margin: 0, fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
-                Diagnostics automatiques basés sur vos KPIs. Cliquez sur une action pour envoyer directement l'email ciblé — sans aller dans l'onglet Emailing.
+                Diagnostics automatiques et stratégie de prospection basés sur vos profils disponibles.
               </p>
+            </div>
+
+            {/* ══ STRATÉGIE DE CIBLAGE ══════════════════════════════════════════ */}
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>🎯 Qui contacter en priorité ?</h3>
+                  <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>
+                    Recommandations générées par IA à partir de vos profils disponibles sur la plateforme.
+                  </p>
+                </div>
+                <button
+                  style={{ ...btn.base, ...btn.primary }}
+                  onClick={fetchStrategy}
+                  disabled={strategyLoading}
+                >
+                  {strategyLoading ? "⏳ Analyse en cours…" : strategy ? "🔄 Regénérer" : "✨ Analyser mes profils"}
+                </button>
+              </div>
+
+              {strategyError && (
+                <div style={{ ...card, borderLeft: "4px solid #ef4444", background: "#fff5f5", color: "#b91c1c", fontSize: 13, padding: "12px 16px", marginBottom: 16 }}>
+                  ⚠️ {strategyError}
+                </div>
+              )}
+
+              {!strategy && !strategyLoading && (
+                <div style={{ ...card, textAlign: "center", padding: "40px 24px", color: "#8a9db8" }}>
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>🎯</div>
+                  <p style={{ margin: "0 0 6px", fontWeight: 700, color: "#1E3A78", fontSize: 15 }}>Analyse stratégique de vos profils</p>
+                  <p style={{ margin: "0 0 20px", fontSize: 13 }}>Cliquez sur "Analyser mes profils" pour savoir quels employeurs belges contacter en premier, avec quel argument et via quel canal.</p>
+                </div>
+              )}
+
+              {strategy && !strategyLoading && (
+                <>
+                  {/* Résumé des profils */}
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
+                    <div style={{ ...card, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 24 }}>👤</span>
+                      <div>
+                        <div style={{ fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>{strategy.profileCount}</div>
+                        <div style={{ fontSize: 11, color: "#8a9db8" }}>profils disponibles</div>
+                      </div>
+                    </div>
+                    {(strategy.topSectors || []).slice(0, 3).map(([sector, count]) => (
+                      <div key={sector} style={{ ...card, padding: "12px 18px" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78" }}>{sector}</div>
+                        <div style={{ fontSize: 11, color: "#8a9db8" }}>{count} profil{count > 1 ? "s" : ""}</div>
+                      </div>
+                    ))}
+                    {(strategy.topRegions || []).slice(0, 2).map(([region, count]) => (
+                      <div key={region} style={{ ...card, padding: "12px 18px", borderLeft: "3px solid #57B7AF" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0d7c6e" }}>{region}</div>
+                        <div style={{ fontSize: 11, color: "#8a9db8" }}>{count} profil{count > 1 ? "s" : ""}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Recommandations */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 18 }}>
+                    {(strategy.recommendations || []).map((rec) => (
+                      <div key={rec.id} style={{ ...card, borderTop: `4px solid ${rec.priority === "haute" ? "#e91e8c" : "#57B7AF"}`, display: "flex", flexDirection: "column", gap: 12 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                          <div>
+                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: rec.priority === "haute" ? "#e91e8c" : "#0d7c6e" }}>
+                              {rec.priority === "haute" ? "🔴 Priorité haute" : "🟡 Priorité moyenne"}
+                            </span>
+                            <h4 style={{ margin: "4px 0 0", fontSize: 15, fontWeight: 800, color: "#1E3A78" }}>{rec.segment}</h4>
+                          </div>
+                          <span style={{ fontSize: 11, background: "#f0f4fb", border: "1px solid #dde4f5", borderRadius: 20, padding: "3px 10px", color: "#607086", whiteSpace: "nowrap", flexShrink: 0 }}>
+                            {rec.profileMatch}
+                          </span>
+                        </div>
+
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: 11, background: "#eef4ff", borderRadius: 20, padding: "2px 9px", color: "#1E3A78" }}>📍 {rec.region}</span>
+                          <span style={{ fontSize: 11, background: "#eef4ff", borderRadius: 20, padding: "2px 9px", color: "#1E3A78" }}>⚙️ {rec.sector}</span>
+                          <span style={{ fontSize: 11, background: "#fce4f0", borderRadius: 20, padding: "2px 9px", color: "#b5005c" }}>📣 {rec.channel}</span>
+                        </div>
+
+                        <div style={{ fontSize: 12, color: "#607086", lineHeight: 1.6 }}>
+                          <strong style={{ color: "#1E3A78" }}>Pourquoi maintenant :</strong> {rec.why}
+                        </div>
+
+                        <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 10, padding: "10px 12px", fontSize: 12, color: "#0369a1", lineHeight: 1.6 }}>
+                          <strong>💬 Argument :</strong> {rec.pitch}
+                        </div>
+
+                        <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "10px 12px", fontSize: 12, color: "#15803d", lineHeight: 1.6 }}>
+                          <strong>→ Action immédiate :</strong> {rec.action}
+                        </div>
+
+                        <button
+                          style={{ ...btn.base, ...btn.ghost, fontSize: 12, justifyContent: "center" }}
+                          onClick={() => {
+                            setActiveTab("promo");
+                            setUtmSource(rec.channel?.toLowerCase().includes("linkedin") ? "linkedin" : rec.channel?.toLowerCase().includes("email") ? "email" : "autre");
+                          }}
+                        >
+                          → Créer un lien tracké pour cette action
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            {/* ══ FIN STRATÉGIE ════════════════════════════════════════════════ */}
+
+            <div style={{ marginBottom: 28 }}>
+              <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>📊 Diagnostics KPI</h3>
+              <p style={{ margin: 0, fontSize: 13, color: "#8a9db8" }}>Alertes automatiques basées sur vos données internes.</p>
             </div>
 
             {kpisLoading ? (
