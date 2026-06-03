@@ -11,7 +11,7 @@ const TABS = [
   { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
   { id: "prospection", label: "Prospection",      icon: "✨" },
   { id: "promo",       label: "Promo",            icon: "📣" },
-  { id: "linkedin",   label: "LinkedIn",          icon: "in" },
+  { id: "linkedin",   label: "Posts LinkedIn",     icon: "in" },
   { id: "security",   label: "Sécurité données", icon: "🔒" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
   { id: "history",    label: "Historique",       icon: "📋" },
@@ -2247,33 +2247,14 @@ export default function AdminDashboard({ initialData }) {
               );
             })()}
 
-            {/* ════ SECTION TRAFIC ════ */}
-            <div style={{ marginTop: 40 }}>
-              <div style={{ marginBottom: 16 }}>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: "#1E3A78" }}>📊 Trafic — Vercel Analytics</h3>
-                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8a9db8" }}>Consultez vos données de trafic directement sur Vercel.</p>
-              </div>
-              <div style={{ ...card, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, padding: "20px 24px" }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: "#1E3A78", marginBottom: 6 }}>Pages clés à surveiller</div>
-                  <div style={{ fontSize: 13, color: "#5d6e83", lineHeight: 1.8 }}>
-                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/</span>
-                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/travailleurs</span>
-                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/employeurs</span>
-                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/simulateur-eligibilite</span>
-                    <span style={{ display: "inline-block", background: "#eef4ff", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12 }}>/metiers-en-penurie</span>
-                    <span style={{ display: "inline-block", background: "#e6faf7", borderRadius: 6, padding: "1px 8px", marginRight: 6, marginBottom: 4, fontFamily: "monospace", fontSize: 12, color: "#0d7c6e" }}>/employeurs/liege-metiers-en-penurie ⭐</span>
-                  </div>
-                </div>
-                <a
-                  href="https://vercel.com/candicedebruyne10-3544s-projects/lexpat-connect/analytics"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#1E3A78", color: "#fff", borderRadius: 10, padding: "10px 20px", fontWeight: 700, fontSize: 14, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}
-                >
-                  Voir le trafic →
-                </a>
-              </div>
+            {/* Lien rapide vers Analyse trafic */}
+            <div style={{ marginTop: 32, ...card, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", padding: "16px 20px", background: "#f8faff", borderLeft: "4px solid #57B7AF" }}>
+              <p style={{ margin: 0, fontSize: 13, color: "#607086" }}>
+                📈 Pour analyser le trafic de ton site, va dans l'onglet <strong style={{ color: "#1E3A78" }}>Analyse trafic</strong>.
+              </p>
+              <button style={{ ...btn.base, ...btn.ghost, fontSize: 12 }} onClick={() => setActiveTab("analytics")}>
+                Voir l'analyse trafic →
+              </button>
             </div>
           </div>
         )}
@@ -3982,9 +3963,9 @@ export default function AdminDashboard({ initialData }) {
           <div>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>LinkedIn</h2>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>📣 Posts LinkedIn</h2>
                 <p style={{ margin: "6px 0 0", fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
-                  Générez et publiez des posts organiques sur LinkedIn directement depuis l'admin.
+                  Générez et publiez des posts organiques sur LinkedIn. Pour les messages directs (DMs) et kits de prospection, utilise l'onglet <strong style={{ color: "#1E3A78", cursor: "pointer" }} onClick={() => setActiveTab("promo")}>Promo</strong>.
                 </p>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
