@@ -14,12 +14,12 @@ const copy = {
       },
       {
         step: "Bloc 2",
-        eyebrow: "Base de données européenne",
-        title: "Infrastructure UE maîtrisée",
+        eyebrow: "Infrastructure 100 % européenne",
+        title: "Données hébergées en France et en Europe",
         accent: "blue",
         description:
-          "Les données de matching sont hébergées en Europe sur une infrastructure pensée pour le contrôle d'accès et la conformité.",
-        items: ["Supabase Europe (Francfort)", "Hébergement UE", "Chiffrement", "Accès contrôlé"]
+          "Toute l'infrastructure de la plateforme est hébergée en Europe. Les prestataires ont été vérifiés et les accords RGPD signés.",
+        items: ["Supabase — Paris (eu-west-3) ✅", "Vercel — Paris (cdg1) ✅", "Resend — Irlande, SOC 2 ✅", "DPA signé avec chaque prestataire ✅", "RLS activé sur toutes les tables ✅", "Clés secrètes dans Vercel uniquement ✅"]
       },
       {
         step: "Bloc 3",
@@ -57,11 +57,12 @@ const copy = {
       }
     ],
     benefits: [
-      "Données hébergées en Europe",
-      "Séparation claire des traitements",
-      "Matching avant divulgation",
-      "Partage graduel des informations",
-      "Relais juridique activé uniquement si nécessaire"
+      "Données hébergées en France (Paris) — Supabase eu-west-3 & Vercel cdg1",
+      "DPA signé avec Supabase, Resend et Anthropic",
+      "Accès aux données personnelles protégé par RLS sur toutes les tables",
+      "Aucune donnée personnelle transmise aux IA (Claude, OpenAI)",
+      "Matching avant divulgation de l'identité",
+      "Relais juridique LEXPAT activé uniquement si nécessaire"
     ],
     heroBadge: "Sécurité & conformité",
     heroTitle: "Comment LEXPAT Connect sépare le matching professionnel du traitement juridique",
@@ -92,12 +93,12 @@ const copy = {
       },
       {
         step: "Block 2",
-        eyebrow: "European database",
-        title: "Controlled EU infrastructure",
+        eyebrow: "100% European infrastructure",
+        title: "Data hosted in France and Europe",
         accent: "blue",
         description:
-          "Matching data is hosted in Europe on an infrastructure designed for access control, stability and compliance.",
-        items: ["Supabase Europe (Frankfurt)", "EU hosting", "Encryption", "Controlled access"]
+          "All platform infrastructure is hosted in Europe. Providers have been verified and GDPR agreements signed.",
+        items: ["Supabase — Paris (eu-west-3) ✅", "Vercel — Paris (cdg1) ✅", "Resend — Ireland, SOC 2 ✅", "DPA signed with each provider ✅", "RLS enabled on all tables ✅", "Secret keys in Vercel only ✅"]
       },
       {
         step: "Block 3",
@@ -135,11 +136,12 @@ const copy = {
       }
     ],
     benefits: [
-      "Data hosted in Europe",
-      "Clear separation of processing",
-      "Matching before disclosure",
-      "Progressive information sharing",
-      "Legal relay activated only when needed"
+      "Data hosted in France (Paris) — Supabase eu-west-3 & Vercel cdg1",
+      "DPA signed with Supabase, Resend and Anthropic",
+      "Personal data protected by RLS on all tables",
+      "No personal data transmitted to AI models (Claude, OpenAI)",
+      "Matching before identity disclosure",
+      "LEXPAT legal relay activated only when needed"
     ],
     heroBadge: "Security & compliance",
     heroTitle: "How LEXPAT Connect separates professional matching from legal processing",
