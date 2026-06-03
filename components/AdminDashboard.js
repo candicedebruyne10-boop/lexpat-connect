@@ -4599,28 +4599,24 @@ export default function AdminDashboard({ initialData }) {
                         linkLabel: "openai.com/policies/data-processing-addendum"
                       },
                       {
-                        done: false,
-                        label: "Activer la 2FA sur Gmail",
-                        desc: "Ta boîte Gmail est le maillon clé — si quelqu'un y accède, il peut se connecter à l'admin via magic link. Active la validation en deux étapes.",
-                        link: "https://myaccount.google.com/security",
-                        linkLabel: "myaccount.google.com/security"
+                        done: true,
+                        label: "Activer la 2FA sur Gmail ✅",
+                        desc: "Fait — la validation en deux étapes est active sur la boîte Gmail liée à l'admin.",
                       },
                       {
-                        done: false,
-                        label: "Activer la 2FA sur Supabase",
-                        desc: "Supabase → ton avatar en haut à droite → Account Settings → Security → Enable 2FA.",
-                        link: "https://supabase.com/dashboard/account/security",
-                        linkLabel: "supabase.com/dashboard/account/security"
+                        done: true,
+                        label: "Activer la 2FA sur Supabase ✅",
+                        desc: "Fait — authentification à deux facteurs activée sur le compte Supabase.",
                       },
                       {
-                        done: false,
-                        label: "Supprimer le projet Supabase prototype",
-                        desc: "Le projet 'syncmjmtaerwrwjsorhy' est un ancien prototype inutilisé avec des tables sans RLS. Supabase → ce projet → Settings → General → Delete project.",
+                        done: true,
+                        label: "Supprimer le projet Supabase prototype ✅",
+                        desc: "Fait — le projet 'syncmjmtaerwrwjsorhy' a été supprimé. L'alerte de sécurité Supabase a disparu.",
                       },
                       {
-                        done: false,
-                        label: "Supprimer le projet Vercel lexpat-connect-mvp",
-                        desc: "Un doublon qui génère des erreurs à chaque déploiement. Vercel → projet lexpat-connect-mvp → Settings → General → Delete project.",
+                        done: true,
+                        label: "Supprimer le projet Vercel lexpat-connect-mvp ✅",
+                        desc: "Fait — le doublon Vercel a été supprimé. Plus d'erreurs de déploiement.",
                       },
                       {
                         done: false,
@@ -4628,8 +4624,8 @@ export default function AdminDashboard({ initialData }) {
                         desc: "Ajouter une ligne dans la politique de confidentialité du site : 'Certaines fonctionnalités utilisent des modèles d'IA tiers (Anthropic, OpenAI). Aucune donnée personnelle de membre n'est transmise à ces services.'",
                       },
                     ].map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 8, border: "1px solid #fecaca" }}>
-                        <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>🔲</span>
+                      <div key={i} style={{ display: "flex", gap: 10, padding: "10px 12px", background: item.done ? "#f0fdf4" : "#fff", borderRadius: 8, border: `1px solid ${item.done ? "#bbf7d0" : "#fecaca"}` }}>
+                        <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{item.done ? "✅" : "🔲"}</span>
                         <div style={{ flex: 1 }}>
                           <p style={{ margin: "0 0 2px", fontSize: 12, fontWeight: 700, color: "#1E3A78" }}>{item.label}</p>
                           <p style={{ margin: 0, fontSize: 11, color: "#607086", lineHeight: 1.6 }}>{item.desc}</p>
