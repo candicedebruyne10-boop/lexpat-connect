@@ -471,7 +471,7 @@ function AdminLoginScreen() {
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState(null);
   const [sent, setSent]         = useState(false);
-  const [mode, setMode]         = useState("password"); // "password" | "magic"
+  const [mode, setMode]         = useState("magic"); // "password" | "magic"
 
   const handlePasswordLogin = async (e) => {
     e.preventDefault();
@@ -584,8 +584,13 @@ function AdminLoginScreen() {
               )}
 
               {mode === "magic" && (
-                <div style={{ marginBottom: 20, fontSize: 12, color: "#8a9db8", lineHeight: 1.6 }}>
-                  Un lien de connexion sera envoyé à votre adresse email.
+                <div style={{ marginBottom: 20, background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#15803d", lineHeight: 1.6 }}>
+                  ✅ <strong>Mode recommandé.</strong> Un lien de connexion à usage unique sera envoyé à votre adresse email. Plus sûr qu'un mot de passe.
+                </div>
+              )}
+              {mode === "password" && (
+                <div style={{ marginBottom: 8, background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#92400e", lineHeight: 1.6 }}>
+                  ⚠️ Préférez le <strong>Lien magique</strong> pour une connexion plus sécurisée.
                 </div>
               )}
 
