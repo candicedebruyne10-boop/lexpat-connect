@@ -131,10 +131,16 @@ const sections = [
     body: (
       <>
         <p className="text-base leading-8 text-[#5c6e84]">
-          Le site est déployé sur Vercel. Certaines données ou métadonnées techniques peuvent donc transiter ou être hébergées via cette infrastructure. La plateforme peut également utiliser Supabase pour l’authentification, la base de données et le stockage applicatif.
+          LEXPAT Connect utilise les prestataires suivants, tous encadrés par un accord de traitement des données (DPA) conforme au RGPD :
         </p>
-        <p className="text-base leading-8 text-[#5c6e84]">
-          Le site peut egalement utiliser Resend pour l'envoi de certains emails transactionnels ou de notifications. Lorsque des traitements impliquent des prestataires situes en dehors de l'Union europeenne, nous veillons a encadrer ces transferts au moyen de garanties appropriees prevues par le RGPD.
+        <ul className="mt-4 space-y-3 text-base leading-8 text-[#5c6e84]">
+          <li><strong className="text-[#1d3b8b]">Supabase</strong> — base de données, authentification et stockage applicatif. Hébergé en France (région Paris, eu-west-3). DPA signé.</li>
+          <li><strong className="text-[#1d3b8b]">Vercel</strong> — déploiement et diffusion du site. Région configurée : Paris (cdg1). Vercel ne stocke pas de données personnelles des membres — il sert uniquement les pages du site.</li>
+          <li><strong className="text-[#1d3b8b]">Resend</strong> — envoi d’emails transactionnels et de notifications. Envoi depuis l’Irlande (Union européenne). Certifié SOC 2 Type II. DPA en vigueur à l’inscription.</li>
+          <li><strong className="text-[#1d3b8b]">Anthropic (Claude) et OpenAI</strong> — modèles d’intelligence artificielle utilisés pour la génération de contenu (emails, posts). Aucune donnée personnelle de membre (nom, email, téléphone) n’est transmise à ces services. Seuls des textes de description génériques saisis par l’administrateur de la plateforme sont envoyés. L’API Anthropic ne réutilise pas ces données pour l’entraînement de ses modèles.</li>
+        </ul>
+        <p className="mt-4 text-base leading-8 text-[#5c6e84]">
+          Lorsque des traitements impliquent des prestataires situés en dehors de l’Union européenne, nous veillons à encadrer ces transferts au moyen de garanties appropriées prévues par le RGPD (clauses contractuelles types ou décision d’adéquation).
         </p>
       </>
     )
