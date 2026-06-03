@@ -5204,73 +5204,80 @@ export default function AdminDashboard({ initialData }) {
 
           {/* ── Section 3 : Liens UTM ── */}
           <div>
-            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>🔗 Liens trackés (UTM)</h3>
+            <h3 style={{ margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: "#1E3A78" }}>🔗 Liens trackés</h3>
+            <p style={{ margin: "0 0 16px", fontSize: 13, color: "#8a9db8" }}>
+              Un lien tracké te permet de savoir combien de personnes ont cliqué depuis LinkedIn, un email ou un événement — et si elles se sont inscrites. Tu partages ce lien à la place du lien normal.
+            </p>
             <div style={{ ...card }}>
-              <p style={{ margin: "0 0 16px", fontSize: 13, color: "#607086" }}>
-                Créez des liens avec paramètres UTM pour savoir d'où viennent vos visiteurs dans Google Analytics.
-              </p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
-                <div>
-                  <label style={labelStyle}>Source (d'où vient le clic)</label>
-                  <select value={utmSource} onChange={e => setUtmSource(e.target.value)} style={inputStyle}>
-                    <option value="linkedin">LinkedIn</option>
-                    <option value="email">Email</option>
-                    <option value="whatsapp">WhatsApp</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="evenement">Événement</option>
-                    <option value="partenaire">Partenaire</option>
-                    <option value="autre">Autre</option>
-                  </select>
+
+              {/* Étape 1 */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <span style={{ width: 24, height: 24, borderRadius: "50%", background: "#1E3A78", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>1</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78" }}>D'où vient ce lien ? <span style={{ fontWeight: 400, color: "#8a9db8" }}>(où tu vas le partager)</span></span>
                 </div>
-                <div>
-                  <label style={labelStyle}>Medium (type de canal)</label>
-                  <select value={utmMedium} onChange={e => setUtmMedium(e.target.value)} style={inputStyle}>
-                    <option value="social">Social</option>
-                    <option value="email">Email</option>
-                    <option value="cpc">CPC (payant)</option>
-                    <option value="referral">Referral</option>
-                    <option value="qr">QR code</option>
-                    <option value="offline">Offline</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={labelStyle}>Campagne (nom de l'action)</label>
-                  <input type="text" value={utmCampaign} onChange={e => setUtmCampaign(e.target.value)} style={inputStyle} placeholder="ex: prospection-2026" />
-                </div>
-                <div>
-                  <label style={labelStyle}>Page de destination</label>
-                  <select value={utmPage} onChange={e => setUtmPage(e.target.value)} style={inputStyle}>
-                    <option value="/">Accueil</option>
-                    <option value="/employeurs">Employeurs</option>
-                    <option value="/travailleurs">Travailleurs</option>
-                    <option value="/base-de-profils">Profils disponibles</option>
-                    <option value="/simulateur-eligibilite">Simulateur</option>
-                    <option value="/permis-unique">Permis unique</option>
-                    <option value="/recrutement-international">Recrutement international</option>
-                  </select>
-                </div>
-              </div>
-              <div style={{ background: "#f0f4fb", border: "1px solid #dde4f5", borderRadius: 10, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                <code style={{ fontSize: 12, color: "#1E3A78", wordBreak: "break-all" }}>{buildUtm()}</code>
-                <button style={{ ...btn.base, ...btn.teal, fontSize: 12, flexShrink: 0 }} onClick={() => copyPromo(buildUtm(), "utm")}>
-                  {promoCopied === "utm" ? "✓ Copié !" : "Copier le lien"}
-                </button>
+                <select value={utmSource} onChange={e => setUtmSource(e.target.value)} style={inputStyle}>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="email">Email</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="evenement">Événement / salon</option>
+                  <option value="partenaire">Partenaire</option>
+                  <option value="autre">Autre</option>
+                </select>
               </div>
 
-              {/* Liens pré-construits */}
+              {/* Étape 2 */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <span style={{ width: 24, height: 24, borderRadius: "50%", background: "#1E3A78", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>2</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78" }}>Sur quelle page du site tu veux envoyer les gens ?</span>
+                </div>
+                <select value={utmPage} onChange={e => setUtmPage(e.target.value)} style={inputStyle}>
+                  <option value="/">Page d'accueil</option>
+                  <option value="/employeurs">Page Employeurs</option>
+                  <option value="/travailleurs">Page Travailleurs</option>
+                  <option value="/base-de-profils">Voir les profils disponibles</option>
+                  <option value="/simulateur-eligibilite">Simulateur d'éligibilité</option>
+                  <option value="/permis-unique">Guide permis unique</option>
+                  <option value="/recrutement-international">Recrutement international</option>
+                </select>
+              </div>
+
+              {/* Étape 3 */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <span style={{ width: 24, height: 24, borderRadius: "50%", background: "#1E3A78", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>3</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1E3A78" }}>Donne un nom à cette action <span style={{ fontWeight: 400, color: "#8a9db8" }}>(pour te souvenir dans Analytics)</span></span>
+                </div>
+                <input type="text" value={utmCampaign} onChange={e => setUtmCampaign(e.target.value)} style={inputStyle} placeholder="ex: salon-rh-juin-2026" />
+              </div>
+
+              {/* Résultat */}
+              <div style={{ background: "#f0f4fb", border: "2px solid #1E3A78", borderRadius: 12, padding: "14px 16px" }}>
+                <p style={{ margin: "0 0 8px", fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.1em" }}>Ton lien tracké — copie-le et utilise-le à la place du lien normal</p>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  <code style={{ fontSize: 12, color: "#1E3A78", wordBreak: "break-all", flex: 1 }}>{buildUtm()}</code>
+                  <button style={{ ...btn.base, ...btn.primary, fontSize: 12, flexShrink: 0 }} onClick={() => copyPromo(buildUtm(), "utm")}>
+                    {promoCopied === "utm" ? "✓ Copié !" : "📋 Copier ce lien"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Liens rapides */}
               <div style={{ marginTop: 20 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 10 }}>Liens rapides pré-construits :</p>
+                <p style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 10 }}>⚡ Liens rapides — prêts à l'emploi :</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {[
-                    { label: "LinkedIn → Employeurs", url: `${promoBase}/employeurs?utm_source=linkedin&utm_medium=social&utm_campaign=prospection-employeurs` },
-                    { label: "Email → Simulateur", url: `${promoBase}/simulateur-eligibilite?utm_source=email&utm_medium=email&utm_campaign=prospection-simulateur` },
-                    { label: "QR code événement → Accueil", url: `${promoBase}/?utm_source=evenement&utm_medium=qr&utm_campaign=networking-2026` },
-                    { label: "WhatsApp → Travailleurs", url: `${promoBase}/travailleurs?utm_source=whatsapp&utm_medium=social&utm_campaign=prospection-travailleurs` },
+                    { label: "📘 Post LinkedIn → page Employeurs", url: `${promoBase}/employeurs?utm_source=linkedin&utm_medium=social&utm_campaign=prospection-employeurs` },
+                    { label: "📧 Email → Simulateur d'éligibilité", url: `${promoBase}/simulateur-eligibilite?utm_source=email&utm_medium=email&utm_campaign=prospection-simulateur` },
+                    { label: "📱 QR code salon → Accueil", url: `${promoBase}/?utm_source=evenement&utm_medium=qr&utm_campaign=networking-2026` },
+                    { label: "💬 WhatsApp → page Travailleurs", url: `${promoBase}/travailleurs?utm_source=whatsapp&utm_medium=social&utm_campaign=prospection-travailleurs` },
                   ].map(({ label, url }) => (
                     <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8faff", borderRadius: 8, padding: "8px 12px", gap: 10 }}>
                       <span style={{ fontSize: 12, color: "#3d5470" }}>{label}</span>
                       <button style={{ ...btn.base, ...btn.ghost, fontSize: 11, padding: "3px 12px", flexShrink: 0 }} onClick={() => copyPromo(url, label)}>
-                        {promoCopied === label ? "✓" : "Copier"}
+                        {promoCopied === label ? "✓ Copié !" : "Copier"}
                       </button>
                     </div>
                   ))}
