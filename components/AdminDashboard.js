@@ -4835,6 +4835,24 @@ export default function AdminDashboard({ initialData }) {
                     {/* ── Règles d'or ── */}
                     <div style={{ ...card, gridColumn: "1 / -1", borderTop: "4px solid #f59e0b", background: "#fffbeb" }}>
                       <p style={{ margin: "0 0 16px", fontWeight: 800, fontSize: 14, color: "#92400e" }}>⚠️ Ce qu'il ne faut jamais faire</p>
+
+                      {/* Recommandations connexion admin */}
+                      <div style={{ marginBottom: 20, padding: "14px 16px", background: "#f0f7ff", border: "1px solid #b8d8f5", borderRadius: 12 }}>
+                        <p style={{ margin: "0 0 10px", fontWeight: 800, fontSize: 13, color: "#1E3A78" }}>🔐 Connexion à ce dashboard — recommandations</p>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {[
+                            { icon: "✅", text: "Utilise toujours le mode Magic Link (lien par email) plutôt que le mot de passe — si quelqu'un vole ton mot de passe, il ne peut pas entrer sans accès à ta boîte email." },
+                            { icon: "✅", text: "Active la double authentification (2FA) sur ton compte Gmail — c'est le maillon clé. Sans accès à ta boîte email, personne ne peut se connecter à l'admin via magic link." },
+                            { icon: "✅", text: "Active la 2FA sur ton compte Supabase → supabase.com → Account Settings → Security." },
+                            { icon: "⚠️", text: "Ne partage jamais le lien /admin avec quelqu'un qui n'est pas admin. La page est publique mais seules les adresses autorisées peuvent se connecter." },
+                          ].map(({ icon, text }, i) => (
+                            <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "#3d5470", lineHeight: 1.6 }}>
+                              <span style={{ flexShrink: 0 }}>{icon}</span>
+                              <span>{text}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                       <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
                         {[
                           { icon: "🚫", title: "Ne jamais partager les clés secrètes du site", desc: "Les clés de la base de données et des services (emails, IA) ne doivent jamais être envoyées par email, mises dans un doc partagé ou visible dans le code public." },
