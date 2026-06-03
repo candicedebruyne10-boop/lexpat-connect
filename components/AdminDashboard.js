@@ -11,7 +11,7 @@ const TABS = [
   { id: "analytics",  label: "Analyse trafic",   icon: "📈" },
   { id: "prospection", label: "Prospection",      icon: "✨" },
   { id: "promo",       label: "Promo",            icon: "📣" },
-  { id: "linkedin",   label: "LinkedIn Ads",     icon: "in" },
+  { id: "linkedin",   label: "LinkedIn",          icon: "in" },
   { id: "security",   label: "Sécurité données", icon: "🔒" },
   { id: "operations", label: "Opérationnel",     icon: "⚙️" },
   { id: "history",    label: "Historique",       icon: "📋" },
@@ -3843,9 +3843,9 @@ export default function AdminDashboard({ initialData }) {
           <div>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>LinkedIn Ads</h2>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>LinkedIn</h2>
                 <p style={{ margin: "6px 0 0", fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
-                  Connectez votre compte LinkedIn Marketing pour préparer l'administration des campagnes depuis LEXPAT Connect.
+                  Générez et publiez des posts organiques sur LinkedIn directement depuis l'admin.
                 </p>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -3890,7 +3890,13 @@ export default function AdminDashboard({ initialData }) {
               </Alert>
             )}
 
-            <div style={{ display: "grid", gridTemplateColumns: "1.3fr 0.9fr", gap: 18, alignItems: "start" }}>
+            {/* ── Note Campaign Builder ── */}
+            <div style={{ marginBottom: 20, background: "#f8faff", border: "1px solid #dde4f5", borderRadius: 10, padding: "10px 16px", fontSize: 12, color: "#607086", display: "flex", alignItems: "center", gap: 8 }}>
+              <span>💡</span>
+              <span>Le <strong>Campaign Builder LinkedIn Ads</strong> (campagnes payantes, ciblage URN, budgets) est disponible mais masqué. Demande à Candice de le réactiver dans le code si tu en as besoin.</span>
+            </div>
+
+            {false && <><div style={{ display: "grid", gridTemplateColumns: "1.3fr 0.9fr", gap: 18, alignItems: "start" }}>
               <div style={card}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                   <div style={{ fontWeight: 800, fontSize: 16, color: "#1E3A78" }}>Comptes publicitaires detectes</div>
@@ -4199,6 +4205,8 @@ export default function AdminDashboard({ initialData }) {
                 </div>
               )}
             </div>
+            </>}
+            {/* ── FIN Campaign Builder masqué ── */}
 
             <div style={{ ...card, marginTop: 20 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
