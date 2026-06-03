@@ -76,6 +76,13 @@ export async function POST(request) {
     });
   } catch (err) {
     const status = err.message?.includes("administrateur") ? 403 : 500;
-    return NextResponse.json({ error: err.message }, { status });
+    let message = err.message;
+    if (message?.toLowerCase().includes("version") && message?.toLowerCase().includes("not active")) {
+      message = `Version LinkedIn invalide. Vérifiez la variable LINKEDIN_API_VERSION dans Vercel — format requis : YYYYMM (ex: 202501 et non 20250401). Erreur : ${message}`;
+    }
+    if (message?.toLowerCase().includes("unauthorized")) {
+      message = `Token LinkedIn expiré — reconnectez votre compte depuis l'onglet Posts LinkedIn → bouton "Connecter LinkedIn".`;
+    }
+    return NextResponse.json({ error: message }, { status });
   }
 }
