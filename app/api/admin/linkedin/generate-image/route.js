@@ -80,7 +80,6 @@ export async function POST(request) {
         n: 1,
         size: "1792x1024",
         quality: "hd",
-        response_format: "b64_json",
       }),
       cache: "no-store",
     });
@@ -90,12 +89,12 @@ export async function POST(request) {
       throw new Error(data.error?.message || `OpenAI error ${response.status}`);
     }
 
-    const b64 = data.data?.[0]?.b64_json;
-    if (!b64) throw new Error("Aucune image retournée par DALL-E.");
+    const imageUrl = data.data?.[0]?.url;
+    if (!imageUrl) throw new Error("Aucune image retournée par DALL-E.");
 
     return NextResponse.json({
       ok: true,
-      dataUrl: `data:image/png;base64,${b64}`,
+      dataUrl: imageUrl,
       revisedPrompt: data.data?.[0]?.revised_prompt || null,
     });
   } catch (err) {
