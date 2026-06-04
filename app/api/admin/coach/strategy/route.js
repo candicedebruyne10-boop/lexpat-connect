@@ -111,44 +111,58 @@ Réponds UNIQUEMENT avec ce JSON :
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
 
+    // Helper : nettoie les backticks markdown et parse le JSON sans crasher
+    function safeParseJSON(raw) {
+      try {
+        const cleaned = (raw || "").replace(/^```[\w]*\n?/m, "").replace(/```$/m, "").trim();
+        return JSON.parse(cleaned);
+      } catch {
+        return null;
+      }
+    }
+
     if (anthropicKey) {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": anthropicKey,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
-          max_tokens: 1200,
-          system: systemPrompt,
-          messages: [{ role: "user", content: userPrompt }],
-        }),
-        cache: "no-store",
-      });
-      const data = await res.json();
-      const raw = data.content?.[0]?.text?.trim() || "";
-      const parsed = JSON.parse(raw);
-      recommendations = parsed.recommendations || [];
+      try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": anthropicKey,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
+            max_tokens: 1200,
+            system: systemPrompt,
+            messages: [{ role: "user", content: userPrompt }],
+          }),
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        const raw = data.content?.[0]?.text?.trim() || "";
+        const parsed = safeParseJSON(raw);
+        recommendations = parsed?.recommendations || [];
+      } catch { /* tombe sur le fallback statique */ }
     } else if (openaiKey) {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
-        body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-          response_format: { type: "json_object" },
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-        }),
-        cache: "no-store",
-      });
-      const data = await res.json();
-      const raw = data.choices?.[0]?.message?.content?.trim() || "";
-      const parsed = JSON.parse(raw);
-      recommendations = parsed.recommendations || [];
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
+          body: JSON.stringify({
+            model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+            response_format: { type: "json_object" },
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+          }),
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        const raw = data.choices?.[0]?.message?.content?.trim() || "";
+        const parsed = safeParseJSON(raw);
+        recommendations = parsed?.recommendations || [];
+      } catch { /* tombe sur le fallback statique */ }
     } else {
       // Fallback statique si pas d'IA configurée
       recommendations = [{

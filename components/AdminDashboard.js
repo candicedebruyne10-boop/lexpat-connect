@@ -2503,27 +2503,39 @@ export default function AdminDashboard({ initialData }) {
         ════════════════════════════════════════════════════ */}
         {activeTab === "prospection" && (
           <div>
-            {/* ── Sous-navigation ── */}
-            <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "#f0f4fb", borderRadius: 14, padding: 4, width: "fit-content" }}>
-              {[
-                { id: "contacts", label: "👥 Contacts" },
-                { id: "emailing", label: "✉️ Emailing" },
-              ].map(sub => (
-                <button
-                  key={sub.id}
-                  onClick={() => setProspectionTab(sub.id)}
-                  style={{
-                    padding: "9px 22px", borderRadius: 10, fontWeight: 700, fontSize: 13,
-                    cursor: "pointer", border: "none",
-                    background: prospectionTab === sub.id ? "#fff" : "transparent",
-                    color: prospectionTab === sub.id ? "#1E3A78" : "#8a9db8",
-                    boxShadow: prospectionTab === sub.id ? "0 1px 6px rgba(30,58,120,0.10)" : "none",
-                    transition: "all .15s",
-                  }}
-                >
-                  {sub.label}
-                </button>
-              ))}
+            {/* ── Sous-navigation + explication du flux ── */}
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ display: "flex", gap: 4, background: "#f0f4fb", borderRadius: 14, padding: 4, width: "fit-content", marginBottom: 12 }}>
+                {[
+                  { id: "contacts", label: "👥 Contacts" },
+                  { id: "emailing", label: "✉️ Emailing" },
+                ].map(sub => (
+                  <button
+                    key={sub.id}
+                    onClick={() => setProspectionTab(sub.id)}
+                    style={{
+                      padding: "9px 22px", borderRadius: 10, fontWeight: 700, fontSize: 13,
+                      cursor: "pointer", border: "none",
+                      background: prospectionTab === sub.id ? "#fff" : "transparent",
+                      color: prospectionTab === sub.id ? "#1E3A78" : "#8a9db8",
+                      boxShadow: prospectionTab === sub.id ? "0 1px 6px rgba(30,58,120,0.10)" : "none",
+                      transition: "all .15s",
+                    }}
+                  >
+                    {sub.label}
+                  </button>
+                ))}
+              </div>
+              {/* Explication du flux */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#eef3fb", border: "1px solid #d0dcf0", borderRadius: 8, padding: "5px 12px", fontSize: 12, color: "#1E3A78" }}>
+                  <span>👥</span><strong>Contacts</strong> <span style={{ color: "#8a9db8" }}>— vos inscrits (travailleurs + employeurs)</span>
+                </div>
+                <span style={{ color: "#c0cce0", fontWeight: 700 }}>→</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#eef3fb", border: "1px solid #d0dcf0", borderRadius: 8, padding: "5px 12px", fontSize: 12, color: "#1E3A78" }}>
+                  <span>✉️</span><strong>Emailing</strong> <span style={{ color: "#8a9db8" }}>— campagne CSV · campagne ciblée · email individuel</span>
+                </div>
+              </div>
             </div>
 
             {/* ── Sous-onglet Contacts ── */}
@@ -3205,6 +3217,30 @@ export default function AdminDashboard({ initialData }) {
 
                 {/* Colonne gauche */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  {/* Sélection rapide d'un utilisateur inscrit */}
+                  <div>
+                    <label style={labelStyle}>Choisir un utilisateur inscrit</label>
+                    <select
+                      style={{ ...inputStyle, color: "#1E3A78" }}
+                      value=""
+                      onChange={e => {
+                        const c = contacts.find(x => x.email === e.target.value);
+                        if (c) {
+                          setSoloEmail(c.email || "");
+                          setSoloPrenom(c.prenom || c.name?.split(" ")[0] || "");
+                          setSoloSociete(c.societe || c.companyName || "");
+                        }
+                      }}
+                    >
+                      <option value="">— Sélectionner pour auto-remplir —</option>
+                      {contacts.slice().sort((a, b) => (a.name || a.email || "").localeCompare(b.name || b.email || "")).map(c => (
+                        <option key={c.email} value={c.email}>
+                          {c.name || c.prenom || ""}{c.societe ? ` · ${c.societe}` : ""} — {c.email}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div>
                       <label style={labelStyle}>Prénom</label>
