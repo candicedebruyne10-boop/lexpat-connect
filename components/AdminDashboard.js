@@ -1134,12 +1134,27 @@ export default function AdminDashboard({ initialData }) {
     cta: "",
     author: "",
     commentary: "",
-    imageDataUrl: "https://lexpat-connect.be/og-image.jpg",
-    imageFileName: "og-image-lexpat-connect.jpg",
+    imageDataUrl: "",
+    imageFileName: "hero-world-map.webp",
     articleUrl: "",
     articleTitle: "",
     articleDescription: "",
   });
+  // Charge l'image par défaut en base64 au montage
+  useEffect(() => {
+    fetch("/hero-world-map.webp")
+      .then((r) => r.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setLinkedinPostForm((prev) =>
+            prev.imageDataUrl ? prev : { ...prev, imageDataUrl: e.target.result }
+          );
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => {});
+  }, []);
   const [linkedinPostLoading, setLinkedinPostLoading] = useState(false);
   const [linkedinPostResult, setLinkedinPostResult] = useState(null);
   const [linkedinImageLoading, setLinkedinImageLoading] = useState(false);

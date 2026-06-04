@@ -279,7 +279,7 @@ export function HeroPremium({ primaryHref, secondaryHref, locale = "fr", showPro
         {/* Carte mobile */}
         <div className="relative mx-4 mb-10 h-56 overflow-hidden rounded-[28px] border border-[#d4e8e6] shadow-[0_4px_24px_rgba(87,183,175,0.12)]">
           <Image
-            src="/hero-image.jpg"
+            src="/hero-world-map.webp"
             alt="Carte mondiale et Belgique — connexions LEXPAT Connect"
             fill
             priority
