@@ -4549,8 +4549,27 @@ export default function AdminDashboard({ initialData }) {
                       {linkedinPostForm.imageDataUrl ? (
                         <div>
                           <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ width: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 8, border: "1px solid #e3eaf1", marginBottom: 8 }} />
-                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontSize: 11, color: "#5d6e83", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{linkedinPostForm.imageFileName}</span>
+                            {/* Upload custom */}
+                            <label style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", background: "#eef9f8", border: "1px solid #b2deda", borderRadius: 6, padding: "3px 8px", cursor: "pointer", flexShrink: 0 }}>
+                              📤 Importer
+                              <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  const reader = new FileReader();
+                                  reader.onload = (ev) => {
+                                    setLinkedinPostForm((prev) => ({ ...prev, imageDataUrl: ev.target.result, imageFileName: file.name, articleUrl: "" }));
+                                  };
+                                  reader.readAsDataURL(file);
+                                  e.target.value = "";
+                                }}
+                              />
+                            </label>
                             <button
                               type="button"
                               onClick={generateLinkedinImage}
