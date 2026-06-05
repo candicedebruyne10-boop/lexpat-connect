@@ -1171,6 +1171,7 @@ export default function AdminDashboard({ initialData }) {
   const [liSuggestionLoading, setLiSuggestionLoading] = useState(false);
   const [liSuggestionError, setLiSuggestionError] = useState(null);
   const [liSuggestionCopied, setLiSuggestionCopied] = useState(false);
+  const [showLinkedinPreview, setShowLinkedinPreview] = useState(false);
 
   const generateLiSuggestion = async () => {
     if (!liCommentText.trim()) return;
@@ -4648,6 +4649,70 @@ export default function AdminDashboard({ initialData }) {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* ── Aperçu LinkedIn ── */}
+              <div style={{ marginTop: 16 }}>
+                <button
+                  onClick={() => setShowLinkedinPreview(p => !p)}
+                  style={{ ...btn.base, ...btn.ghost, width: "100%", justifyContent: "center", gap: 8 }}
+                >
+                  {showLinkedinPreview ? "▲ Masquer l'aperçu" : "👁️ Aperçu du post LinkedIn"}
+                </button>
+
+                {showLinkedinPreview && (
+                  <div style={{ marginTop: 14, border: "1px solid #dce6f0", borderRadius: 14, overflow: "hidden", background: "#fff", maxWidth: 560, boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+                    {/* Header profil */}
+                    <div style={{ padding: "14px 16px 10px", display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: "50%", background: "linear-gradient(135deg,#1E3A78,#57B7AF)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800, fontSize: 16, flexShrink: 0 }}>
+                        C
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: 14, color: "#000" }}>Candice Debruyne</div>
+                        <div style={{ fontSize: 12, color: "#666", marginTop: 1 }}>Fondatrice LEXPAT Connect · cabinet d'avocats LEXPAT</div>
+                        <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>À l'instant · 🌐</div>
+                      </div>
+                    </div>
+
+                    {/* Texte du post */}
+                    {linkedinPostForm.commentary ? (
+                      <div style={{ padding: "0 16px 12px", fontSize: 14, color: "#000", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                        {linkedinPostForm.commentary.length > 300 && !showLinkedinPreview
+                          ? linkedinPostForm.commentary.slice(0, 300) + "… voir plus"
+                          : linkedinPostForm.commentary}
+                      </div>
+                    ) : (
+                      <div style={{ padding: "0 16px 12px", fontSize: 14, color: "#999", fontStyle: "italic" }}>
+                        Le texte du post apparaîtra ici…
+                      </div>
+                    )}
+
+                    {/* Image */}
+                    {linkedinPostForm.imageDataUrl && (
+                      <img
+                        src={linkedinPostForm.imageDataUrl}
+                        alt="post"
+                        style={{ width: "100%", maxHeight: 280, objectFit: "cover", display: "block", borderTop: "1px solid #e8eef6" }}
+                      />
+                    )}
+
+                    {/* Article link preview */}
+                    {!linkedinPostForm.imageDataUrl && linkedinPostForm.articleUrl && (
+                      <div style={{ margin: "0 0 0", borderTop: "1px solid #e8eef6", padding: "10px 14px", background: "#f9f9f9" }}>
+                        <div style={{ fontSize: 11, color: "#999", marginBottom: 3 }}>{linkedinPostForm.articleUrl}</div>
+                        {linkedinPostForm.articleTitle && <div style={{ fontSize: 13, fontWeight: 700, color: "#000" }}>{linkedinPostForm.articleTitle}</div>}
+                        {linkedinPostForm.articleDescription && <div style={{ fontSize: 12, color: "#555", marginTop: 2 }}>{linkedinPostForm.articleDescription}</div>}
+                      </div>
+                    )}
+
+                    {/* Actions LinkedIn simulées */}
+                    <div style={{ padding: "8px 16px", borderTop: "1px solid #e8eef6", display: "flex", gap: 4 }}>
+                      {["👍 J'aime", "💬 Commenter", "↗️ Republier", "📤 Envoyer"].map(a => (
+                        <div key={a} style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#666", padding: "6px 0", borderRadius: 6, background: "#f5f5f5" }}>{a}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div style={{ marginTop: 14, background: "#f8faff", border: "1px solid #e8eef8", borderRadius: 12, padding: "12px 14px", fontSize: 12, color: "#5d6e83", lineHeight: 1.8 }}>
