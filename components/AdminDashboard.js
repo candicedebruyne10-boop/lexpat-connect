@@ -1169,21 +1169,24 @@ export default function AdminDashboard({ initialData }) {
   const [liCommentsLoading, setLiCommentsLoading] = useState(false);
   const [liCommentsError, setLiCommentsError] = useState(null);
   const [liCommentsLoaded, setLiCommentsLoaded] = useState(false);
-  const [liReplyEdits, setLiReplyEdits] = useState({}); // { commentId: texte édité }
-  const [liReplyStatuses, setLiReplyStatuses] = useState({}); // { commentId: "sending"|"sent"|"error"|"ignored" }
+  const [liSelectedPostId, setLiSelectedPostId] = useState(""); // ID du post sélectionné
+  const [liManualPostId, setLiManualPostId] = useState(""); // saisie manuelle
+  const [liReplyEdits, setLiReplyEdits] = useState({});
+  const [liReplyStatuses, setLiReplyStatuses] = useState({});
 
   const fetchLiComments = async () => {
+    const postId = liSelectedPostId || liManualPostId;
+    if (!postId) return;
     setLiCommentsLoading(true);
     setLiCommentsError(null);
     try {
-      const res = await fetch("/api/admin/linkedin/comments", {
+      const res = await fetch(`/api/admin/linkedin/comments?postId=${encodeURIComponent(postId)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
       setLiComments(json.comments || []);
       setLiCommentsLoaded(true);
-      // Initialiser les textes éditables avec les suggestions IA
       const edits = {};
       (json.comments || []).forEach(c => { edits[c.id] = c.suggestion; });
       setLiReplyEdits(edits);
@@ -4653,18 +4656,49 @@ export default function AdminDashboard({ initialData }) {
 
               {/* ── Modération commentaires ── */}
               <div style={{ marginTop: 32, borderTop: "1px solid #e8eef6", paddingTop: 28 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>💬 Réponses aux commentaires</h3>
-                    <p style={{ margin: "4px 0 0", fontSize: 12, color: "#8a9db8" }}>L'IA suggère une réponse — vous approuvez avant publication. Rien n'est envoyé sans votre accord.</p>
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>💬 Réponses aux commentaires</h3>
+                  <p style={{ margin: "0 0 14px", fontSize: 12, color: "#8a9db8" }}>L'IA suggère une réponse — vous approuvez avant publication. Rien n'est envoyé sans votre accord.</p>
+
+                  {/* Sélection du post */}
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div style={{ flex: 1, minWidth: 220 }}>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>
+                        Post depuis l'historique
+                      </label>
+                      <select
+                        value={liSelectedPostId}
+                        onChange={e => { setLiSelectedPostId(e.target.value); setLiManualPostId(""); }}
+                        style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "7px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit" }}
+                      >
+                        <option value="">— Choisir un post publié via l'admin —</option>
+                        {linkedinPostHistory.map(p => (
+                          <option key={p.id} value={p.postId || p.id}>
+                            {new Date(p.publishedAt || p.createdAt || Date.now()).toLocaleDateString("fr-BE")} — {(p.commentary || "").slice(0, 60)}…
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 180 }}>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>
+                        Ou coller l'ID / URL du post
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="urn:li:ugcPost:xxx ou ID brut"
+                        value={liManualPostId}
+                        onChange={e => { setLiManualPostId(e.target.value); setLiSelectedPostId(""); }}
+                        style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "7px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <button
+                      onClick={fetchLiComments}
+                      disabled={liCommentsLoading || !linkedinStatus?.connected || !(liSelectedPostId || liManualPostId)}
+                      style={{ ...btn.base, ...btn.primary, opacity: (!(liSelectedPostId || liManualPostId) || !linkedinStatus?.connected) ? 0.5 : 1, whiteSpace: "nowrap" }}
+                    >
+                      {liCommentsLoading ? "Chargement…" : "💬 Charger"}
+                    </button>
                   </div>
-                  <button
-                    onClick={fetchLiComments}
-                    disabled={liCommentsLoading || !linkedinStatus?.connected}
-                    style={{ ...btn.base, ...btn.primary, opacity: (!linkedinStatus?.connected) ? 0.5 : 1 }}
-                  >
-                    {liCommentsLoading ? "Chargement…" : liCommentsLoaded ? "🔄 Actualiser" : "💬 Charger les commentaires"}
-                  </button>
                 </div>
 
                 {liCommentsError && (
