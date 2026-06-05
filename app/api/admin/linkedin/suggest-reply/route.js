@@ -53,11 +53,18 @@ Rédige une réponse courte (2-3 phrases max), naturelle, professionnelle et eng
         cache: "no-store",
       });
       const data = await res.json().catch(() => ({}));
+      // Remonter l'erreur Anthropic pour diagnostic
+      if (!res.ok) {
+        const errMsg = data.error?.message || data.error?.type || `Anthropic error ${res.status}`;
+        return NextResponse.json({ error: `Clé Anthropic : ${errMsg}`, mode: "error" }, { status: 500 });
+      }
       const text = data.content?.[0]?.text?.trim();
       if (text) return NextResponse.json({ ok: true, suggestion: text, mode: "claude" });
+    } else {
+      return NextResponse.json({ error: "ANTHROPIC_API_KEY non configurée dans Vercel.", mode: "error" }, { status: 500 });
     }
 
-    // Fallback
+    // Fallback (ne devrait pas arriver si la clé est configurée)
     const suggestion = `Merci ${name} pour votre commentaire ! N'hésitez pas à tester notre simulateur gratuit sur lexpat-connect.be — réponse en 3 minutes. Vous recrutez hors UE ou cherchez à travailler en Belgique ?`;
     return NextResponse.json({ ok: true, suggestion, mode: "fallback" });
 
