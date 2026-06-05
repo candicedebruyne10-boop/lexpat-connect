@@ -1164,36 +1164,32 @@ export default function AdminDashboard({ initialData }) {
   });
   const [showLinkedinHistory, setShowLinkedinHistory] = useState(false);
 
-  // ── Modération commentaires LinkedIn ────────────────────────────────────────
-  const [liComments, setLiComments] = useState([]);
-  const [liCommentsLoading, setLiCommentsLoading] = useState(false);
-  const [liCommentsError, setLiCommentsError] = useState(null);
-  const [liCommentsLoaded, setLiCommentsLoaded] = useState(false);
-  const [liSelectedPostId, setLiSelectedPostId] = useState(""); // ID du post sélectionné
-  const [liManualPostId, setLiManualPostId] = useState(""); // saisie manuelle
-  const [liReplyEdits, setLiReplyEdits] = useState({});
-  const [liReplyStatuses, setLiReplyStatuses] = useState({});
+  // ── Suggestions réponses commentaires LinkedIn ──────────────────────────────
+  const [liCommentText, setLiCommentText] = useState("");
+  const [liAuthorName, setLiAuthorName] = useState("");
+  const [liSuggestion, setLiSuggestion] = useState("");
+  const [liSuggestionLoading, setLiSuggestionLoading] = useState(false);
+  const [liSuggestionError, setLiSuggestionError] = useState(null);
+  const [liSuggestionCopied, setLiSuggestionCopied] = useState(false);
 
-  const fetchLiComments = async () => {
-    const postId = liSelectedPostId || liManualPostId;
-    if (!postId) return;
-    setLiCommentsLoading(true);
-    setLiCommentsError(null);
+  const generateLiSuggestion = async () => {
+    if (!liCommentText.trim()) return;
+    setLiSuggestionLoading(true);
+    setLiSuggestionError(null);
+    setLiSuggestion("");
     try {
-      const res = await fetch(`/api/admin/linkedin/comments?postId=${encodeURIComponent(postId)}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await fetch("/api/admin/linkedin/suggest-reply", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ commentText: liCommentText, authorName: liAuthorName }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
-      setLiComments(json.comments || []);
-      setLiCommentsLoaded(true);
-      const edits = {};
-      (json.comments || []).forEach(c => { edits[c.id] = c.suggestion; });
-      setLiReplyEdits(edits);
+      setLiSuggestion(json.suggestion || "");
     } catch (e) {
-      setLiCommentsError(e.message);
+      setLiSuggestionError(e.message);
     } finally {
-      setLiCommentsLoading(false);
+      setLiSuggestionLoading(false);
     }
   };
 
@@ -4075,7 +4071,7 @@ export default function AdminDashboard({ initialData }) {
               <div>
                 <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#1E3A78" }}>📣 Posts LinkedIn</h2>
                 <p style={{ margin: "6px 0 0", fontSize: 14, color: "#8a9db8", lineHeight: 1.6 }}>
-                  Générez et publiez des posts organiques sur LinkedIn. Pour les messages directs (DMs) et kits de prospection, utilise l'onglet <strong style={{ color: "#1E3A78", cursor: "pointer" }} onClick={() => setActiveTab("promo")}>Promo</strong>.
+                  Générez et publiez des posts organiques sur LinkedIn. Pour les messages directs (DMs) et kits de prospection, utilise l'onglet <strong style={{ color: "#1E3A78", cursor: "pointer" }} onClick={() => setActiveTab("promo")}>Kit comm</strong>.
                 </p>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -4654,128 +4650,70 @@ export default function AdminDashboard({ initialData }) {
                 </div>
               )}
 
-              {/* ── Modération commentaires ── */}
+              {/* ── Suggestions réponses commentaires ── */}
               <div style={{ marginTop: 32, borderTop: "1px solid #e8eef6", paddingTop: 28 }}>
-                <div style={{ marginBottom: 16 }}>
-                  <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>💬 Réponses aux commentaires</h3>
-                  <p style={{ margin: "0 0 14px", fontSize: 12, color: "#8a9db8" }}>L'IA suggère une réponse — vous approuvez avant publication. Rien n'est envoyé sans votre accord.</p>
+                <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>💬 Répondre à un commentaire</h3>
+                <p style={{ margin: "0 0 18px", fontSize: 12, color: "#8a9db8" }}>Collez le commentaire reçu sur LinkedIn — l'IA génère une réponse que vous copiez-collez vous-même.</p>
 
-                  {/* Sélection du post */}
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
-                    <div style={{ flex: 1, minWidth: 220 }}>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>
-                        Post depuis l'historique
-                      </label>
-                      <select
-                        value={liSelectedPostId}
-                        onChange={e => { setLiSelectedPostId(e.target.value); setLiManualPostId(""); }}
-                        style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "7px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit" }}
-                      >
-                        <option value="">— Choisir un post publié via l'admin —</option>
-                        {linkedinPostHistory.map(p => (
-                          <option key={p.id} value={p.postId || p.id}>
-                            {new Date(p.publishedAt || p.createdAt || Date.now()).toLocaleDateString("fr-BE")} — {(p.commentary || "").slice(0, 60)}…
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 180 }}>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>
-                        Ou coller l'ID / URL du post
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="urn:li:ugcPost:xxx ou ID brut"
-                        value={liManualPostId}
-                        onChange={e => { setLiManualPostId(e.target.value); setLiSelectedPostId(""); }}
-                        style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "7px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", boxSizing: "border-box" }}
-                      />
-                    </div>
-                    <button
-                      onClick={fetchLiComments}
-                      disabled={liCommentsLoading || !linkedinStatus?.connected || !(liSelectedPostId || liManualPostId)}
-                      style={{ ...btn.base, ...btn.primary, opacity: (!(liSelectedPostId || liManualPostId) || !linkedinStatus?.connected) ? 0.5 : 1, whiteSpace: "nowrap" }}
-                    >
-                      {liCommentsLoading ? "Chargement…" : "💬 Charger"}
-                    </button>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>Commentaire reçu *</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Collez ici le commentaire LinkedIn reçu…"
+                      value={liCommentText}
+                      onChange={e => { setLiCommentText(e.target.value); setLiSuggestion(""); }}
+                      style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "8px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5, boxSizing: "border-box" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 5 }}>Réponse suggérée par l'IA</label>
+                    <textarea
+                      rows={4}
+                      placeholder="La suggestion apparaîtra ici…"
+                      value={liSuggestion}
+                      onChange={e => setLiSuggestion(e.target.value)}
+                      style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "8px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5, boxSizing: "border-box", background: liSuggestion ? "#f8faff" : "#fafafa" }}
+                    />
                   </div>
                 </div>
 
-                {liCommentsError && (
-                  <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "10px 14px", color: "#b91c1c", fontSize: 13, marginBottom: 14 }}>
-                    ❌ {liCommentsError}
-                  </div>
-                )}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                  <input
+                    type="text"
+                    placeholder="Prénom de la personne (optionnel)"
+                    value={liAuthorName}
+                    onChange={e => setLiAuthorName(e.target.value)}
+                    style={{ border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "7px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", width: 220 }}
+                  />
+                  <button
+                    onClick={generateLiSuggestion}
+                    disabled={liSuggestionLoading || !liCommentText.trim()}
+                    style={{ ...btn.base, ...btn.primary, opacity: !liCommentText.trim() ? 0.5 : 1 }}
+                  >
+                    {liSuggestionLoading ? "Génération…" : "✨ Générer la réponse"}
+                  </button>
+                  {liSuggestion && (
+                    <button
+                      onClick={() => { navigator.clipboard.writeText(liSuggestion); setLiSuggestionCopied(true); setTimeout(() => setLiSuggestionCopied(false), 2000); }}
+                      style={{ ...btn.base, ...btn.ghost }}
+                    >
+                      {liSuggestionCopied ? "✅ Copié !" : "📋 Copier"}
+                    </button>
+                  )}
+                  {liSuggestion && (
+                    <button
+                      onClick={() => { setLiCommentText(""); setLiSuggestion(""); setLiAuthorName(""); }}
+                      style={{ fontSize: 12, color: "#8a9db8", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                    >
+                      Nouveau commentaire
+                    </button>
+                  )}
+                </div>
 
-                {liCommentsLoaded && liComments.length === 0 && !liCommentsLoading && (
-                  <div style={{ textAlign: "center", padding: "28px 0", color: "#8a9db8", fontSize: 13, border: "2px dashed #e2eaf8", borderRadius: 12 }}>
-                    Aucun nouveau commentaire sur vos 3 derniers posts.
-                  </div>
-                )}
-
-                {liComments.length > 0 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {liComments.map(c => {
-                      const status = liReplyStatuses[c.id];
-                      const isSent = status === "sent";
-                      const isIgnored = status === "ignored";
-                      const isSending = status === "sending";
-                      const isError = status?.startsWith("error:");
-                      if (isSent || isIgnored) return (
-                        <div key={c.id} style={{ border: "1px solid #e2eaf3", borderRadius: 12, padding: "12px 16px", background: isSent ? "#f0fdf4" : "#f8fafc", opacity: 0.7, fontSize: 13, color: isSent ? "#16a34a" : "#8a9db8" }}>
-                          {isSent ? "✅ Réponse publiée" : "🚫 Ignoré"} — <em>{c.commentText.slice(0, 60)}…</em>
-                        </div>
-                      );
-                      return (
-                        <div key={c.id} style={{ border: "1px solid #dde4f5", borderRadius: 14, overflow: "hidden", background: "#fff" }}>
-                          {/* Header post */}
-                          <div style={{ background: "#f4f7fd", padding: "8px 14px", fontSize: 11, color: "#8a9db8", borderBottom: "1px solid #e8eef6" }}>
-                            📄 Post : <em>{c.postSnippet || "—"}</em>
-                          </div>
-                          {/* Commentaire reçu */}
-                          <div style={{ padding: "12px 16px", borderBottom: "1px solid #f0f4f8" }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                              Commentaire reçu
-                            </div>
-                            <div style={{ fontSize: 13, color: "#1E3A78", fontStyle: "italic" }}>
-                              "{c.commentText}"
-                            </div>
-                          </div>
-                          {/* Suggestion IA */}
-                          <div style={{ padding: "12px 16px" }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                              ✨ Suggestion IA — modifiez si besoin
-                            </div>
-                            <textarea
-                              rows={3}
-                              value={liReplyEdits[c.id] ?? c.suggestion}
-                              onChange={e => setLiReplyEdits(prev => ({ ...prev, [c.id]: e.target.value }))}
-                              disabled={isSending}
-                              style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "8px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5, boxSizing: "border-box" }}
-                            />
-                            {isError && (
-                              <div style={{ color: "#b91c1c", fontSize: 11, marginTop: 4 }}>❌ {status.replace("error:", "")}</div>
-                            )}
-                            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                              <button
-                                onClick={() => approveLiReply(c)}
-                                disabled={isSending || !(liReplyEdits[c.id] ?? c.suggestion)?.trim()}
-                                style={{ ...btn.base, ...btn.primary, fontSize: 12, padding: "6px 14px" }}
-                              >
-                                {isSending ? "Envoi…" : "✅ Approuver & publier"}
-                              </button>
-                              <button
-                                onClick={() => ignoreLiReply(c.id)}
-                                disabled={isSending}
-                                style={{ ...btn.base, ...btn.ghost, fontSize: 12, padding: "6px 14px" }}
-                              >
-                                🚫 Ignorer
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                {liSuggestionError && (
+                  <div style={{ marginTop: 10, background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px", color: "#b91c1c", fontSize: 13 }}>
+                    ❌ {liSuggestionError}
                   </div>
                 )}
               </div>
