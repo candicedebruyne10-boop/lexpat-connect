@@ -4548,7 +4548,9 @@ export default function AdminDashboard({ initialData }) {
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A78", marginBottom: 8 }}>🖼 Image</div>
                       {linkedinPostForm.imageDataUrl ? (
                         <div>
-                          <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ width: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 8, border: "1px solid #e3eaf1", marginBottom: 8 }} />
+                          <div style={{ width: "100%", height: 110, borderRadius: 8, border: "1px solid #e3eaf1", marginBottom: 8, overflow: "hidden", background: "#f4f7fb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <img src={linkedinPostForm.imageDataUrl} alt="preview" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }} />
+                          </div>
                           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontSize: 11, color: "#5d6e83", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{linkedinPostForm.imageFileName}</span>
                             {/* Upload custom */}
