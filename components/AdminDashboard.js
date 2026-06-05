@@ -1164,6 +1164,62 @@ export default function AdminDashboard({ initialData }) {
   });
   const [showLinkedinHistory, setShowLinkedinHistory] = useState(false);
 
+  // ── Modération commentaires LinkedIn ────────────────────────────────────────
+  const [liComments, setLiComments] = useState([]);
+  const [liCommentsLoading, setLiCommentsLoading] = useState(false);
+  const [liCommentsError, setLiCommentsError] = useState(null);
+  const [liCommentsLoaded, setLiCommentsLoaded] = useState(false);
+  const [liReplyEdits, setLiReplyEdits] = useState({}); // { commentId: texte édité }
+  const [liReplyStatuses, setLiReplyStatuses] = useState({}); // { commentId: "sending"|"sent"|"error"|"ignored" }
+
+  const fetchLiComments = async () => {
+    setLiCommentsLoading(true);
+    setLiCommentsError(null);
+    try {
+      const res = await fetch("/api/admin/linkedin/comments", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || `Erreur ${res.status}`);
+      setLiComments(json.comments || []);
+      setLiCommentsLoaded(true);
+      // Initialiser les textes éditables avec les suggestions IA
+      const edits = {};
+      (json.comments || []).forEach(c => { edits[c.id] = c.suggestion; });
+      setLiReplyEdits(edits);
+    } catch (e) {
+      setLiCommentsError(e.message);
+    } finally {
+      setLiCommentsLoading(false);
+    }
+  };
+
+  const approveLiReply = async (comment) => {
+    const replyText = liReplyEdits[comment.id] || comment.suggestion;
+    setLiReplyStatuses(s => ({ ...s, [comment.id]: "sending" }));
+    try {
+      const res = await fetch("/api/admin/linkedin/comments/reply", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postUrn: comment.postUrn,
+          commentUrn: comment.id,
+          replyText,
+          author: linkedinPostForm.author,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Erreur envoi");
+      setLiReplyStatuses(s => ({ ...s, [comment.id]: "sent" }));
+    } catch (e) {
+      setLiReplyStatuses(s => ({ ...s, [comment.id]: `error:${e.message}` }));
+    }
+  };
+
+  const ignoreLiReply = (commentId) => {
+    setLiReplyStatuses(s => ({ ...s, [commentId]: "ignored" }));
+  };
+
   // ── Analytics tab state ─────────────────────────────────────────────────────
   const [analyticsInputs, setAnalyticsInputs] = useState({
     totalVisitors: "",
@@ -4594,6 +4650,101 @@ export default function AdminDashboard({ initialData }) {
                   ) : null}
                 </div>
               )}
+
+              {/* ── Modération commentaires ── */}
+              <div style={{ marginTop: 32, borderTop: "1px solid #e8eef6", paddingTop: 28 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: "#1E3A78" }}>💬 Réponses aux commentaires</h3>
+                    <p style={{ margin: "4px 0 0", fontSize: 12, color: "#8a9db8" }}>L'IA suggère une réponse — vous approuvez avant publication. Rien n'est envoyé sans votre accord.</p>
+                  </div>
+                  <button
+                    onClick={fetchLiComments}
+                    disabled={liCommentsLoading || !linkedinStatus?.connected}
+                    style={{ ...btn.base, ...btn.primary, opacity: (!linkedinStatus?.connected) ? 0.5 : 1 }}
+                  >
+                    {liCommentsLoading ? "Chargement…" : liCommentsLoaded ? "🔄 Actualiser" : "💬 Charger les commentaires"}
+                  </button>
+                </div>
+
+                {liCommentsError && (
+                  <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "10px 14px", color: "#b91c1c", fontSize: 13, marginBottom: 14 }}>
+                    ❌ {liCommentsError}
+                  </div>
+                )}
+
+                {liCommentsLoaded && liComments.length === 0 && !liCommentsLoading && (
+                  <div style={{ textAlign: "center", padding: "28px 0", color: "#8a9db8", fontSize: 13, border: "2px dashed #e2eaf8", borderRadius: 12 }}>
+                    Aucun nouveau commentaire sur vos 3 derniers posts.
+                  </div>
+                )}
+
+                {liComments.length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {liComments.map(c => {
+                      const status = liReplyStatuses[c.id];
+                      const isSent = status === "sent";
+                      const isIgnored = status === "ignored";
+                      const isSending = status === "sending";
+                      const isError = status?.startsWith("error:");
+                      if (isSent || isIgnored) return (
+                        <div key={c.id} style={{ border: "1px solid #e2eaf3", borderRadius: 12, padding: "12px 16px", background: isSent ? "#f0fdf4" : "#f8fafc", opacity: 0.7, fontSize: 13, color: isSent ? "#16a34a" : "#8a9db8" }}>
+                          {isSent ? "✅ Réponse publiée" : "🚫 Ignoré"} — <em>{c.commentText.slice(0, 60)}…</em>
+                        </div>
+                      );
+                      return (
+                        <div key={c.id} style={{ border: "1px solid #dde4f5", borderRadius: 14, overflow: "hidden", background: "#fff" }}>
+                          {/* Header post */}
+                          <div style={{ background: "#f4f7fd", padding: "8px 14px", fontSize: 11, color: "#8a9db8", borderBottom: "1px solid #e8eef6" }}>
+                            📄 Post : <em>{c.postSnippet || "—"}</em>
+                          </div>
+                          {/* Commentaire reçu */}
+                          <div style={{ padding: "12px 16px", borderBottom: "1px solid #f0f4f8" }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "#57B7AF", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                              Commentaire reçu
+                            </div>
+                            <div style={{ fontSize: 13, color: "#1E3A78", fontStyle: "italic" }}>
+                              "{c.commentText}"
+                            </div>
+                          </div>
+                          {/* Suggestion IA */}
+                          <div style={{ padding: "12px 16px" }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db8", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                              ✨ Suggestion IA — modifiez si besoin
+                            </div>
+                            <textarea
+                              rows={3}
+                              value={liReplyEdits[c.id] ?? c.suggestion}
+                              onChange={e => setLiReplyEdits(prev => ({ ...prev, [c.id]: e.target.value }))}
+                              disabled={isSending}
+                              style={{ width: "100%", border: "1.5px solid #d0dcf0", borderRadius: 8, padding: "8px 10px", fontSize: 13, color: "#1E3A78", fontFamily: "inherit", resize: "vertical", lineHeight: 1.5, boxSizing: "border-box" }}
+                            />
+                            {isError && (
+                              <div style={{ color: "#b91c1c", fontSize: 11, marginTop: 4 }}>❌ {status.replace("error:", "")}</div>
+                            )}
+                            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                              <button
+                                onClick={() => approveLiReply(c)}
+                                disabled={isSending || !(liReplyEdits[c.id] ?? c.suggestion)?.trim()}
+                                style={{ ...btn.base, ...btn.primary, fontSize: 12, padding: "6px 14px" }}
+                              >
+                                {isSending ? "Envoi…" : "✅ Approuver & publier"}
+                              </button>
+                              <button
+                                onClick={() => ignoreLiReply(c.id)}
+                                disabled={isSending}
+                                style={{ ...btn.base, ...btn.ghost, fontSize: 12, padding: "6px 14px" }}
+                              >
+                                🚫 Ignorer
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* ── Historique des posts publiés ── */}
               <div style={{ marginTop: 28 }}>
