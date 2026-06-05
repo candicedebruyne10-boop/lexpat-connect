@@ -112,8 +112,23 @@ export default function SimulateurPage() {
       {/* ── Vidéo démo ── */}
       <div className="bg-white px-4 pb-10 pt-4">
         <div className="mx-auto max-w-3xl">
+
+          {/* Exemple concret */}
+          <div className="mb-6 rounded-2xl border border-[#e2f0ee] bg-[#f0faf9] px-6 py-5">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#57b7af]">Exemple concret — secteur photovoltaïque</p>
+            <p className="mt-3 text-sm leading-7 text-[#4a5e76]">
+              Un technicien PV recruté hors UE n'apparaît pas toujours sous ce titre dans les nomenclatures officielles.
+              Il est rattaché à <strong className="text-[#1E3A78]">« électricien installateur »</strong> — métier en pénurie dans les 3 régions.
+              Ce rattachement peut ouvrir une procédure permis unique simplifiée,{" "}
+              <strong className="text-[#57b7af]">voire une exemption totale en Flandre.</strong>
+            </p>
+            <p className="mt-3 text-[13px] font-bold text-[#e91e8c]">
+              → Ce n'est pas l'intitulé qui compte — c'est le code métier. L'outil l'identifie pour vous en quelques secondes.
+            </p>
+          </div>
+
           <p className="mb-4 text-center text-sm font-semibold text-[#1E3A78]">
-            🎬 Voir comment fonctionne le simulateur en pratique
+            🎬 Voir comment ça marche en pratique (55 sec)
           </p>
           <div className="overflow-hidden rounded-2xl border border-[#e2eaf3] shadow-[0_4px_24px_rgba(30,58,120,0.08)]">
             <video
