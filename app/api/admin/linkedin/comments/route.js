@@ -91,16 +91,31 @@ export async function GET(request) {
       throw new Error("Profil LinkedIn non trouvé. Reconnectez votre compte.");
     }
 
-    // 1. Récupérer les posts récents
-    const postsRes = await fetch(
-      `https://api.linkedin.com/v2/ugcPosts?q=authors&authors=List(${encodeURIComponent(authorUrn)})&count=5&sortBy=LAST_MODIFIED`,
-      { headers: liHeaders(token), cache: "no-store" }
-    );
-    const postsData = await postsRes.json().catch(() => ({}));
-    const posts = postsData.elements || [];
+    // 1. Récupérer les posts récents — ugcPosts ET shares (posts publiés directement sur LinkedIn)
+    const [ugcRes, sharesRes] = await Promise.all([
+      fetch(
+        `https://api.linkedin.com/v2/ugcPosts?q=authors&authors=List(${encodeURIComponent(authorUrn)})&count=5&sortBy=LAST_MODIFIED`,
+        { headers: liHeaders(token), cache: "no-store" }
+      ),
+      fetch(
+        `https://api.linkedin.com/v2/shares?q=owners&owners=List(${encodeURIComponent(authorUrn)})&count=5&sortBy=LAST_MODIFIED`,
+        { headers: liHeaders(token), cache: "no-store" }
+      ),
+    ]);
+
+    const ugcData = await ugcRes.json().catch(() => ({}));
+    const sharesData = await sharesRes.json().catch(() => ({}));
+
+    // Fusionner et dédupliquer par ID
+    const allPosts = [
+      ...(ugcData.elements || []),
+      ...(sharesData.elements || []),
+    ].filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i);
+
+    const posts = allPosts.slice(0, 5);
 
     if (posts.length === 0) {
-      return NextResponse.json({ ok: true, comments: [], message: "Aucun post récent trouvé." });
+      return NextResponse.json({ ok: true, comments: [], message: "Aucun post récent trouvé. Vérifiez que votre compte LinkedIn est bien connecté." });
     }
 
     // 2. Pour chaque post, récupérer les commentaires
@@ -108,7 +123,10 @@ export async function GET(request) {
 
     for (const post of posts.slice(0, 3)) {
       const postUrn = post.id;
-      const postText = post.specificContent?.["com.linkedin.ugc.ShareContent"]?.shareCommentary?.text || "";
+      const postText =
+        post.specificContent?.["com.linkedin.ugc.ShareContent"]?.shareCommentary?.text ||
+        post.text?.text ||
+        "";
       const postSnippet = postText.slice(0, 80) + (postText.length > 80 ? "…" : "");
 
       try {
