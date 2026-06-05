@@ -109,6 +109,27 @@ export default function SimulateurPage() {
         </p>
       </div>
 
+      {/* ── Vidéo démo ── */}
+      <div className="bg-white px-4 pb-10 pt-4">
+        <div className="mx-auto max-w-3xl">
+          <p className="mb-4 text-center text-sm font-semibold text-[#1E3A78]">
+            🎬 Voir comment fonctionne le simulateur en pratique
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-[#e2eaf3] shadow-[0_4px_24px_rgba(30,58,120,0.08)]">
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="w-full"
+              style={{ display: "block", maxHeight: "480px", background: "#000" }}
+            >
+              <source src="/demo-simulateur.mp4" type="video/mp4" />
+              Votre navigateur ne supporte pas la lecture vidéo.
+            </video>
+          </div>
+        </div>
+      </div>
+
       {/* ── Séparateur "Commencer" ── */}
       <div className="border-b border-[#e5edf5] bg-[#f8fbff] px-4 py-4 text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-[#4a6b99]">
