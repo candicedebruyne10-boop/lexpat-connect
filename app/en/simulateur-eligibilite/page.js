@@ -38,8 +38,9 @@ export default function SimulateurPageEn() {
         </p>
 
         {/* H1 with "possible?" in pink */}
-        <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Is my international recruitment <span style={{ color: "#e91e8c" }}>possible?</span>
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          Is my international recruitment<br />
+          <span style={{ color: "#e91e8c" }}>possible?</span>
         </h1>
 
         {/* Description with key concepts in teal */}
@@ -107,6 +108,59 @@ export default function SimulateurPageEn() {
           <strong style={{ color: "#f48fb1" }}>international workers</strong>{" "}
           who want to know their chances
         </p>
+      </div>
+
+      {/* ── Podcast ── */}
+      <div className="bg-white px-4 pb-2 pt-4">
+        <div className="mx-auto max-w-3xl">
+          <div className="flex items-center gap-4 rounded-2xl border border-[#e2eaf3] bg-[#f0faf9] px-5 py-4">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#1E3A78] text-xl">
+              🎧
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#57B7AF]">Podcast · 3 min</p>
+              <p className="text-[13px] font-bold text-[#1E3A78]">Recruit outside the EU without administrative headaches</p>
+            </div>
+            <audio controls preload="metadata" className="w-48 flex-shrink-0" style={{ height: 36 }}>
+              <source src="/podcast-recrutement-international.m4a" type="audio/mp4" />
+            </audio>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Video demo ── */}
+      <div className="bg-white px-4 pb-10 pt-4">
+        <div className="mx-auto max-w-3xl">
+          {/* Concrete example */}
+          <div className="mb-6 rounded-2xl border border-[#e2f0ee] bg-[#f0faf9] px-6 py-5">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#57b7af]">Concrete example — solar energy sector</p>
+            <p className="mt-3 text-sm leading-7 text-[#4a5e76]">
+              A PV technician recruited outside the EU doesn't always appear under that job title in official nomenclatures.
+              The role maps to <strong className="text-[#1E3A78]">"electrical installer"</strong> — a shortage occupation in all 3 regions.
+              This mapping can open a simplified single permit procedure,{" "}
+              <strong className="text-[#57b7af]">or even full exemption in Flanders.</strong>
+            </p>
+            <p className="mt-3 text-[13px] font-bold text-[#e91e8c]">
+              → The job title doesn't matter — it's the occupation code. The tool identifies it for you in seconds.
+            </p>
+          </div>
+
+          <p className="mb-4 text-center text-sm font-semibold text-[#1E3A78]">
+            🎬 See how it works in practice (55 sec)
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-[#e2eaf3] shadow-[0_4px_24px_rgba(30,58,120,0.08)]">
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="w-full"
+              style={{ display: "block", maxHeight: "480px", background: "#000" }}
+            >
+              <source src="/demo-simulateur.mp4" type="video/mp4" />
+              Your browser does not support video playback.
+            </video>
+          </div>
+        </div>
       </div>
 
       {/* ── Separator ── */}

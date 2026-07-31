@@ -109,6 +109,24 @@ export default function SimulateurPage() {
         </p>
       </div>
 
+      {/* ── Podcast ── */}
+      <div className="bg-white px-4 pb-2 pt-2">
+        <div className="mx-auto max-w-3xl">
+          <div className="flex items-center gap-4 rounded-2xl border border-[#e2eaf3] bg-[#f0faf9] px-5 py-4">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#1E3A78] text-xl">
+              🎧
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#57B7AF]">Podcast · 3 min</p>
+              <p className="text-[13px] font-bold text-[#1E3A78]">Recruter hors UE sans freins administratifs</p>
+            </div>
+            <audio controls preload="metadata" className="w-48 flex-shrink-0" style={{ height: 36 }}>
+              <source src="/podcast-recrutement-international.m4a" type="audio/mp4" />
+            </audio>
+          </div>
+        </div>
+      </div>
+
       {/* ── Vidéo démo ── */}
       <div className="bg-white px-4 pb-10 pt-4">
         <div className="mx-auto max-w-3xl">
