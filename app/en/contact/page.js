@@ -2,7 +2,10 @@ import Link from "next/link";
 import { Hero, Section } from "../../../components/Sections";
 import FormCard from "../../../components/FormCard";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/contact"),
   title: "Contact — Ask about international recruitment or the single permit in Belgium | LEXPAT Connect",
   description:
     "A question about international recruitment in Belgium, the single permit or the platform? Write to us — employers, workers and legal questions welcome. Reply within 24h."

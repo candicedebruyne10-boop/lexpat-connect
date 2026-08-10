@@ -1,7 +1,10 @@
 import Script from "next/script";
 import NationalitySchemaInteractif from "../../../components/NationalitySchemaInteractif";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/devenir-belge/schema-interactif"),
   title: "Schéma interactif pour devenir Belge | LEXPAT Connect",
   description:
     "Simulateur d'orientation pour identifier les principales voies d'acquisition ou d'attribution de la nationalité belge.",

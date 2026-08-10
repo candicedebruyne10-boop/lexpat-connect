@@ -3,7 +3,10 @@ import { shortageJobs2026 } from "../../lib/shortageJobs2026";
 import { translateProfessionLabel, translateGroupTitle } from "../../lib/professions";
 import { FLANDRE_MB_21 } from "../../lib/flandreKnelpuntberoepen";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/metiers-en-penurie"),
   title: "Métiers en pénurie en Belgique 2026 — Listes Actiris, Forem et VDAB | LEXPAT Connect",
   description:
     "Consultez les listes officielles des métiers en pénurie en Belgique par région : Actiris (Bruxelles), Forem (Wallonie) et VDAB (Flandre). Ces professions ouvrent droit à des procédures de recrutement international simplifiées et au permis unique."

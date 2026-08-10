@@ -1,6 +1,9 @@
 import SimulateurEligibilite from "../../../components/SimulateurEligibilite";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/simulateur-eligibilite"),
   title: "Single permit eligibility simulator 2026 | LEXPAT Connect",
   description:
     "Check in 4 steps whether your role is still eligible for a single permit procedure in Belgium. Instant result based on the official Actiris, Forem and VDAB 2026 lists.",

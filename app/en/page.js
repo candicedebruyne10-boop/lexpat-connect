@@ -10,7 +10,10 @@ import {
 import { getServiceClient } from "../../lib/supabase/server";
 import { normalizeRegion } from "../../lib/matching";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en"),
   title: "LEXPAT Connect — Targeted matching for Belgian employers and international workers",
   description:
     "A targeted matching platform connecting Belgian employers with qualified international workers in shortage occupations. Secure recruitment, legal relay if needed."

@@ -1,5 +1,7 @@
 import EmployerRegionalLanding from "../../../../components/EmployerRegionalLanding";
 
+import { alternatesFor } from "../../../../lib/seo-alternates";
+
 const page = {
   seo: {
     title: "Shortage occupations in Ghent: recruit international workers | LEXPAT Connect",
@@ -210,18 +212,10 @@ const page = {
   }
 };
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://lexpat-connect.be";
-
 export const metadata = {
   title: page.seo.title,
   description: page.seo.description,
-  alternates: {
-    canonical: `${BASE}/en/employeurs/gand-metiers-en-penurie`,
-    languages: {
-      en: `${BASE}/en/employeurs/gand-metiers-en-penurie`,
-      fr: `${BASE}/employeurs/gand-metiers-en-penurie`,
-    },
-  },
+  alternates: alternatesFor("/en/employeurs/gand-metiers-en-penurie"),
 };
 
 export default function GandShortageJobsPageEn() {

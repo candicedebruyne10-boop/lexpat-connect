@@ -1,5 +1,7 @@
 import EmployerRegionalLanding from "../../../../components/EmployerRegionalLanding";
 
+import { alternatesFor } from "../../../../lib/seo-alternates";
+
 const page = {
   seo: {
     title: "Shortage occupations in Liege: recruit international workers | LEXPAT Connect",
@@ -210,6 +212,7 @@ const page = {
 };
 
 export const metadata = {
+  alternates: alternatesFor("/en/employeurs/liege-metiers-en-penurie"),
   title: page.seo.title,
   description: page.seo.description
 };

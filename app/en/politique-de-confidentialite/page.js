@@ -1,6 +1,9 @@
 import LegalPageLayout from "../../../components/LegalPageLayout";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/politique-de-confidentialite"),
   title: "Privacy policy | LEXPAT Connect",
   description:
     "GDPR privacy policy for LEXPAT Connect: data collected, purposes, legal bases, retention, data subject rights and contact details."

@@ -1,6 +1,9 @@
 import LegalPageLayout from "../../../components/LegalPageLayout";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/conditions-utilisation"),
   title: "Terms of use | LEXPAT Connect",
   description:
     "Terms of use of LEXPAT Connect: access to the website, obligations of employers and workers, role of the platform, liability and applicable law."

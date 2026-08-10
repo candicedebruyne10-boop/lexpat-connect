@@ -1,6 +1,9 @@
 import SimulateurEligibilite from "../../components/SimulateurEligibilite";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/simulateur-eligibilite"),
   title: "Simulateur d'éligibilité permis unique 2026 | LEXPAT Connect",
   description:
     "Vérifiez en 4 étapes si votre poste est éligible à une procédure de permis unique en Belgique. Résultat immédiat basé sur les listes officielles Actiris, Forem et VDAB 2026.",

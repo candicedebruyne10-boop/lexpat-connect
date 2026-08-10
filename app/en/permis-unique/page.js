@@ -3,7 +3,10 @@ import Link from "next/link";
 import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 import MemberLockedPermitContent from "../../../components/MemberLockedPermitContent";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/permis-unique"),
   title: "Single permit in Belgium: a simple employer guide | LEXPAT Connect",
   description:
     "Understand the Belgian single permit in plain language: who it applies to, who decides, what it changes for employers and when legal support matters."
