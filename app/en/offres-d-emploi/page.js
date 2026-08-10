@@ -1,7 +1,10 @@
 import PublicMarketplacePage from "../../../components/PublicMarketplacePage";
 import { getPublicOffersData } from "../../../lib/public-marketplace";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/offres-d-emploi"),
   title: "Job openings | LEXPAT Connect",
   description: "Public preview of job openings available on LEXPAT Connect."
 };

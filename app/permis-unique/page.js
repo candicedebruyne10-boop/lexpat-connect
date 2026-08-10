@@ -3,7 +3,10 @@ import Link from "next/link";
 import { CardGrid, CtaBanner, Faq, Hero, Section, Steps } from "../../components/Sections";
 import MemberLockedPermitContent from "../../components/MemberLockedPermitContent";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/permis-unique"),
   title: "Permis unique en Belgique : guide simple pour employeurs | LEXPAT Connect",
   description:
     "Comprenez simplement le permis unique en Belgique : à qui il s'applique, qui décide, ce que cela change pour l'employeur et quand faire intervenir un avocat."

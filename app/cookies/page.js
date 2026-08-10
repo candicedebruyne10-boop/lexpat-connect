@@ -1,6 +1,9 @@
 import LegalPageLayout from "../../components/LegalPageLayout";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/cookies"),
   title: "Politique cookies | LEXPAT Connect",
   description:
     "Politique cookies de LEXPAT Connect : cookies essentiels, mesures d’audience éventuelles, durée de conservation et gestion des préférences."

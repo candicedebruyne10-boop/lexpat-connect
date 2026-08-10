@@ -1,6 +1,9 @@
 import LegalPageLayout from "../../components/LegalPageLayout";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/politique-de-confidentialite"),
   title: "Politique de confidentialité | LEXPAT Connect",
   description:
     "Politique de confidentialité RGPD de LEXPAT Connect : données collectées, finalités, bases juridiques, conservation, droits des personnes et contact."

@@ -48,7 +48,7 @@ const nextConfig = {
       },
       {
         source: '/en/highly-qualified-workers',
-        destination: '/en/workers#qualifies',
+        destination: '/en/travailleurs#qualifies',
         permanent: true
       },
       // Revenir en Belgique → section #retour dans /travailleurs
@@ -59,7 +59,7 @@ const nextConfig = {
       },
       {
         source: '/en/returning-to-belgium-after-leaving',
-        destination: '/en/workers#retour',
+        destination: '/en/travailleurs#retour',
         permanent: true
       },
       // Slugs FR/EN inversés — correction des arbres de routes
@@ -69,8 +69,11 @@ const nextConfig = {
         permanent: true
       },
       {
+        // Cible directe : pointer vers /en/returning-to-belgium-after-leaving
+        // créerait une chaîne de deux redirections, cette route étant
+        // elle-même redirigée vers /en/travailleurs#retour.
         source: '/en/revenir-en-belgique-apres-un-retour',
-        destination: '/en/returning-to-belgium-after-leaving',
+        destination: '/en/travailleurs#retour',
         permanent: true
       }
     ];

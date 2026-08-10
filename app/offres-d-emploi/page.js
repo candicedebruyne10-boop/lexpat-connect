@@ -2,7 +2,10 @@ import Link from "next/link";
 import PublicMarketplacePage from "../../components/PublicMarketplacePage";
 import { getPublicOffersData } from "../../lib/public-marketplace";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/offres-d-emploi"),
   title: "Offres d'emploi dans les métiers en pénurie en Belgique | LEXPAT Connect",
   description:
     "Consultez les offres d'emploi dans les métiers en pénurie en Belgique : industrie, construction, santé, logistique, IT. Des postes ouverts au recrutement international — permis unique géré si nécessaire."

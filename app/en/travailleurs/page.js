@@ -2,7 +2,10 @@ import Script from "next/script";
 import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps } from "../../../components/Sections";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/travailleurs"),
   title: "International workers — Find a job in Belgium in a shortage occupation | LEXPAT Connect",
   description:
     "Are you a qualified worker looking for a job in Belgium? Create your profile on LEXPAT Connect and become visible to Belgian employers recruiting in shortage occupations. Single permit support included if needed."

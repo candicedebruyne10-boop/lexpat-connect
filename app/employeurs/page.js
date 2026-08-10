@@ -3,7 +3,10 @@ import Link from "next/link";
 import { BulletList, CtaBanner, Faq, Hero, Section, Steps, TestimonialsStrip } from "../../components/Sections";
 import { getServiceClient } from "../../lib/supabase/server";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/employeurs"),
   title: "Recrutement international en Belgique — Profils qualifiés dans les métiers en pénurie | LEXPAT Connect",
   description:
     "Accédez dès aujourd'hui à des profils de travailleurs internationaux qualifiés dans les métiers en pénurie en Belgique. Recrutement rapide, cadre juridique sécurisé par le cabinet d'avocats LEXPAT si nécessaire."

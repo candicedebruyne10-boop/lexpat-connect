@@ -3,7 +3,10 @@ import { shortageJobs2026 } from "../../../lib/shortageJobs2026";
 import { translateGroupTitle, translateProfessionLabel, translateRegionLabel } from "../../../lib/professions";
 import { FLANDRE_MB_21 } from "../../../lib/flandreKnelpuntberoepen";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/metiers-en-penurie"),
   title: "Shortage occupations by region in Belgium | LEXPAT Connect",
   description:
     "Consult shortage occupations by region in Belgium: Brussels, Wallonia and Flanders. LEXPAT Connect regional database updated continuously."

@@ -2,7 +2,10 @@ import Link from "next/link";
 import { Hero, Section } from "../../components/Sections";
 import FormCard from "../../components/FormCard";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/contact"),
   title: "Contact — Posez votre question sur le recrutement international ou le permis unique | LEXPAT Connect",
   description:
     "Une question sur le recrutement international en Belgique, le permis unique ou la plateforme ? Écrivez-nous — employeurs, travailleurs et questions juridiques bienvenues. Réponse sous 24h."

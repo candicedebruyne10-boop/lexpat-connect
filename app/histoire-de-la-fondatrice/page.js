@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { CardGrid, CtaBanner, Section, Steps } from "../../components/Sections";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/histoire-de-la-fondatrice"),
   title: "L’histoire de la fondatrice | LEXPAT Connect",
   description:
     "Découvrez l’histoire de Maître Candice Debruyne, avocate en immigration économique et fondatrice de LEXPAT Connect : le constat terrain, le déclic et la vision derrière la plateforme."

@@ -1,5 +1,7 @@
 import EmployerRegionalLanding from "../../components/EmployerRegionalLanding";
 
+import { alternatesFor } from "../../lib/seo-alternates";
+
 const page = {
   seo: {
     title: "Recrutement international en Belgique : 6 entreprises sur 10 le font déjà | LEXPAT Connect",
@@ -223,6 +225,7 @@ const page = {
 };
 
 export const metadata = {
+  alternates: alternatesFor("/recrutement-international"),
   title: page.seo.title,
   description: page.seo.description
 };

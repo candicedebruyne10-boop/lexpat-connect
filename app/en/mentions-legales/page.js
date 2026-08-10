@@ -1,6 +1,9 @@
 import LegalPageLayout from "../../../components/LegalPageLayout";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/mentions-legales"),
   title: "Legal notice | LEXPAT Connect",
   description:
     "Legal notice for LEXPAT Connect: publisher, hosting, purpose of the platform, liability, intellectual property and applicable law."

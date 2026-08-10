@@ -1,7 +1,10 @@
 import Image from "next/image";
 import { CardGrid, CtaBanner, Section, Steps } from "../../../components/Sections";
 
+import { alternatesFor } from "../../../lib/seo-alternates";
+
 export const metadata = {
+  alternates: alternatesFor("/en/histoire-de-la-fondatrice"),
   title: "The founder's story | LEXPAT Connect",
   description:
     "Discover the story of Maître Candice Debruyne, lawyer in economic immigration and founder of LEXPAT Connect: the field reality, the turning point and the long-term vision behind the platform."
