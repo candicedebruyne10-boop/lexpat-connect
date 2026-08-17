@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import RegionSelector from "./RegionSelector";
+import FlandreRegimeInfo from "./FlandreRegimeInfo";
 import { COUNTRIES, EU_NATIONALITIES_FR } from "../lib/countries";
 import { FLANDRE_MB_21, FLANDRE_VDAB_227_SET } from "../lib/flandreKnelpuntberoepen";
 import {
@@ -1172,6 +1173,11 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
                             ? `↑ Only shortage occupations for ${displayedRegionLabels[0]} (official 2026 list)`
                             : `↑ Uniquement les métiers en pénurie pour ${regionLabels[0]} — liste officielle 2026`}
                         </p>
+                      )}
+                      {isFlandre(data.region) && (
+                        <div className="mt-3">
+                          <FlandreRegimeInfo lang={isEn ? "en" : "fr"} />
+                        </div>
                       )}
                     </>
                   ) : (
