@@ -20,12 +20,12 @@ const COPY = {
     ],
     lists: [
       {
-        name: "Métiers en pénurie moyennement qualifiés",
+        name: "Fonctions moyennement qualifiées",
         detail:
           "Arrêté ministériel du 1er décembre 2025, en vigueur depuis le 1er janvier 2026. Dispense totale du test du marché de l'emploi : aucune publication d'offre ni justification de refus de candidats locaux n'est exigée.",
       },
       {
-        name: "Métiers en pénurie VDAB",
+        name: "Professions en pénurie",
         detail:
           "Knelpuntberoepen 2026, publiés le 1er février 2026. Conditions cumulatives : qualification de niveau 3 ou 4, offre publiée 9 semaines sur VDAB et EURES dans les 4 mois précédant la demande, médiation active du VDAB et refus motivés des candidats locaux et européens.",
       },
@@ -42,12 +42,12 @@ const COPY = {
     ],
     lists: [
       {
-        name: "Medium-skilled shortage occupations",
+        name: "Medium-skilled functions",
         detail:
           "Ministerial Decree of 1 December 2025, in force since 1 January 2026. Full exemption from the labour market test: no vacancy publication and no justification for rejecting local candidates are required.",
       },
       {
-        name: "VDAB shortage occupations",
+        name: "Shortage occupations",
         detail:
           "Knelpuntberoepen 2026, published on 1 February 2026. Cumulative conditions: level 3 or 4 qualification, vacancy advertised for 9 weeks on VDAB and EURES within the 4 months preceding the application, active VDAB mediation, and reasoned rejection of local and European candidates.",
       },

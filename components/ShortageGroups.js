@@ -10,31 +10,28 @@
 import { splitFlandreGroups } from "../lib/flandreKnelpuntberoepen";
 import { translateGroupTitle, translateProfessionLabel } from "../lib/professions";
 import FlandreRegimeInfo from "./FlandreRegimeInfo";
+import FlandreTabs from "./FlandreTabs";
 
 const COPY = {
   fr: {
-    mbBadge: "Liste 1",
-    mbTitle: "Métiers en pénurie moyennement qualifiés",
-    mbSource: "Arrêté ministériel du 1er décembre 2025",
-    mbRegime: "Dispense du test du marché de l'emploi",
-    vdabBadge: "Liste 2",
-    vdabTitle: "Métiers en pénurie VDAB",
-    vdabSource: "Knelpuntberoepen 2026, publiés le 1er février 2026",
-    vdabRegime:
-      "Qualification de niveau 3 ou 4, et offre publiée 9 semaines sur VDAB et EURES",
-    count: (n) => `${n} métier${n > 1 ? "s" : ""}`,
+    shortage: "Professions en pénurie",
+    shortageSource: "Liste VDAB des knelpuntberoepen 2026, publiée le 1er février 2026",
+    shortageRegime:
+      "Qualification de niveau 3 ou 4, et offre publiée 9 semaines sur VDAB et EURES dans les 4 mois précédant la demande",
+    mediumSkilled: "Fonctions moyennement qualifiées",
+    mediumSkilledSource:
+      "Arrêté ministériel du 1er décembre 2025, en vigueur depuis le 1er janvier 2026",
+    mediumSkilledRegime: "Dispense du test du marché de l'emploi",
   },
   en: {
-    mbBadge: "List 1",
-    mbTitle: "Medium-skilled shortage occupations",
-    mbSource: "Ministerial Decree of 1 December 2025",
-    mbRegime: "Exemption from the labour market test",
-    vdabBadge: "List 2",
-    vdabTitle: "VDAB shortage occupations",
-    vdabSource: "Knelpuntberoepen 2026, published on 1 February 2026",
-    vdabRegime:
-      "Level 3 or 4 qualification, and vacancy advertised for 9 weeks on VDAB and EURES",
-    count: (n) => `${n} occupation${n > 1 ? "s" : ""}`,
+    shortage: "Shortage occupations",
+    shortageSource: "VDAB knelpuntberoepen 2026 list, published on 1 February 2026",
+    shortageRegime:
+      "Level 3 or 4 qualification, and vacancy advertised for 9 weeks on VDAB and EURES within the 4 months preceding the application",
+    mediumSkilled: "Medium-skilled functions",
+    mediumSkilledSource:
+      "Ministerial Decree of 1 December 2025, in force since 1 January 2026",
+    mediumSkilledRegime: "Exemption from the labour market test",
   },
 };
 
@@ -88,85 +85,39 @@ export function GroupGrid({
   );
 }
 
-/** En-tête d'une des deux listes flamandes. */
-function ListHeader({ badge, title, source, regime, count, accent }) {
-  return (
-    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-      <div>
-        <span
-          className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] ${
-            accent
-              ? "border-amber-200 bg-amber-50 text-amber-700"
-              : "border-[#d4e8e6] bg-[#f0faf9] text-[#57b7af]"
-          }`}
-        >
-          {accent ? "✦ " : "● "}
-          {badge} · {count}
-        </span>
-        <h3 className="mt-2.5 text-xl font-semibold tracking-tight text-[#1E3A78]">
-          {title}
-        </h3>
-        <p className="mt-1 text-[13px] leading-6 text-[#8298b3]">{source}</p>
-        <p
-          className={`mt-1.5 text-sm font-medium leading-6 ${
-            accent ? "text-amber-700" : "text-[#57b7af]"
-          }`}
-        >
-          {regime}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/** Les deux listes flamandes, précédées du bouton info. */
+/** Les deux listes flamandes, en onglets, précédées du bouton info. */
 export function FlandreLists({ region, style, lang = "fr", translateGroup }) {
   const t = COPY[lang] || COPY.fr;
   const { mbGroups, vdabGroups, mbCount, vdabCount } = splitFlandreGroups(region.groups);
 
   return (
-    <>
-      <div className="mt-5">
-        <FlandreRegimeInfo lang={lang} />
-      </div>
-
-      <div className="mt-6 rounded-[28px] border border-amber-200 bg-amber-50/30 p-5 md:p-6">
-        <ListHeader
+    <FlandreTabs
+      info={<FlandreRegimeInfo lang={lang} />}
+      shortageLabel={t.shortage}
+      shortageCount={vdabCount}
+      shortageSource={t.shortageSource}
+      shortageRegime={t.shortageRegime}
+      panelShortage={
+        <GroupGrid
+          groups={vdabGroups}
+          style={style}
+          lang={lang}
+          translateGroup={translateGroup}
+        />
+      }
+      mediumSkilledLabel={t.mediumSkilled}
+      mediumSkilledCount={mbCount}
+      mediumSkilledSource={t.mediumSkilledSource}
+      mediumSkilledRegime={t.mediumSkilledRegime}
+      panelMediumSkilled={
+        <GroupGrid
+          groups={mbGroups}
+          style={style}
+          lang={lang}
+          translateGroup={translateGroup}
           accent
-          badge={t.mbBadge}
-          title={t.mbTitle}
-          source={t.mbSource}
-          regime={t.mbRegime}
-          count={t.count(mbCount)}
         />
-        <div className="mt-5">
-          <GroupGrid
-            groups={mbGroups}
-            style={style}
-            lang={lang}
-            translateGroup={translateGroup}
-            accent
-          />
-        </div>
-      </div>
-
-      <div className={`mt-6 rounded-[28px] border p-5 md:p-6 ${style.border}`}>
-        <ListHeader
-          badge={t.vdabBadge}
-          title={t.vdabTitle}
-          source={t.vdabSource}
-          regime={t.vdabRegime}
-          count={t.count(vdabCount)}
-        />
-        <div className="mt-5">
-          <GroupGrid
-            groups={vdabGroups}
-            style={style}
-            lang={lang}
-            translateGroup={translateGroup}
-          />
-        </div>
-      </div>
-    </>
+      }
+    />
   );
 }
