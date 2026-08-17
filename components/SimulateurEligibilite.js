@@ -3,8 +3,9 @@
 import { useState } from "react";
 import RegionSelector from "./RegionSelector";
 import FlandreRegimeInfo from "./FlandreRegimeInfo";
+import FlandreRegimeBanner from "./FlandreRegimeBanner";
 import { COUNTRIES, EU_NATIONALITIES_FR } from "../lib/countries";
-import { FLANDRE_MB_21, FLANDRE_VDAB_227_SET } from "../lib/flandreKnelpuntberoepen";
+import { isMediumSkilledFunction, isVdabShortageJob } from "../lib/flandreKnelpuntberoepen";
 import {
   getProfessionGroupsForRegions,
   parseRegionSelection,
@@ -348,7 +349,7 @@ function isShortageJob(data) {
     return (
       data.profession &&
       data.profession !== "Autre profession" &&
-      (FLANDRE_VDAB_227_SET.has(data.profession) || FLANDRE_MB_21.has(data.profession))
+      (isVdabShortageJob(data.profession) || isMediumSkilledFunction(data.profession))
     );
   }
 
@@ -364,7 +365,7 @@ function isShortageJob(data) {
  */
 function isMBShortageJob(data) {
   if (!isFlandre(data.region)) return false;
-  return data.profession && FLANDRE_MB_21.has(data.profession);
+  return Boolean(data.profession) && isMediumSkilledFunction(data.profession);
 }
 
 function isFlandre(region) {
@@ -1179,6 +1180,23 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
                           <FlandreRegimeInfo lang={isEn ? "en" : "fr"} />
                         </div>
                       )}
+                      {/* Régime applicable au métier choisi : c'est la seule
+                          information qui change les démarches de l'employeur. */}
+                      {isFlandre(data.region) &&
+                        data.profession &&
+                        data.profession !== "Autre profession" &&
+                        (isMediumSkilledFunction(data.profession) ||
+                          isVdabShortageJob(data.profession)) && (
+                          <FlandreRegimeBanner
+                            className="mt-4"
+                            lang={isEn ? "en" : "fr"}
+                            regime={
+                              isMediumSkilledFunction(data.profession)
+                                ? "mediumSkilled"
+                                : "shortage"
+                            }
+                          />
+                        )}
                     </>
                   ) : (
                     <p className="text-sm text-[#a0afc0]">

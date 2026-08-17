@@ -92,11 +92,11 @@ export function FlandreLists({ region, style, lang = "fr", translateGroup }) {
 
   return (
     <FlandreTabs
+      lang={lang}
       info={<FlandreRegimeInfo lang={lang} />}
       shortageLabel={t.shortage}
       shortageCount={vdabCount}
       shortageSource={t.shortageSource}
-      shortageRegime={t.shortageRegime}
       panelShortage={
         <GroupGrid
           groups={vdabGroups}
@@ -108,7 +108,6 @@ export function FlandreLists({ region, style, lang = "fr", translateGroup }) {
       mediumSkilledLabel={t.mediumSkilled}
       mediumSkilledCount={mbCount}
       mediumSkilledSource={t.mediumSkilledSource}
-      mediumSkilledRegime={t.mediumSkilledRegime}
       panelMediumSkilled={
         <GroupGrid
           groups={mbGroups}

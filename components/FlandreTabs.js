@@ -15,7 +15,10 @@
 
 import { useState } from "react";
 
+import FlandreRegimeBanner from "./FlandreRegimeBanner";
+
 export default function FlandreTabs({
+  lang = "fr",
   shortageLabel,
   shortageCount,
   shortageSource,
@@ -107,14 +110,11 @@ export default function FlandreTabs({
           current.accent ? "border-amber-200 bg-amber-50/30" : "border-[#dbe8f4]"
         }`}
       >
-        <p className="text-[13px] leading-6 text-[#8298b3]">{current.source}</p>
-        <p
-          className={`mt-1 text-sm font-medium leading-6 ${
-            current.accent ? "text-amber-700" : "text-[#57b7af]"
-          }`}
-        >
-          {current.regime}
-        </p>
+        <FlandreRegimeBanner
+          regime={current.accent ? "mediumSkilled" : "shortage"}
+          lang={lang}
+        />
+        <p className="mt-3 text-[13px] leading-6 text-[#8298b3]">{current.source}</p>
         <div className="mt-5">{current.panel}</div>
       </div>
     </div>
