@@ -1161,20 +1161,59 @@ export default function SimulateurEligibilite({ locale = "fr" }) {
                       >
                         <option value="" disabled>{isEn ? "Select the target occupation" : "Sélectionnez le métier visé"}</option>
                         {professionGroups.map((group) => (
-                          <optgroup key={group.label} label={group.label}>
+                          <optgroup
+                            key={group.label}
+                            label={group.label}
+                            className={
+                              group.tone === "mediumSkilled"
+                                ? "optgroup-exempt"
+                                : group.tone === "shortage"
+                                  ? "optgroup-shortage"
+                                  : undefined
+                            }
+                          >
                             {group.options.map((job) => (
                               <option key={`${group.label}-${job.value}`} value={job.value}>{job.label}</option>
                             ))}
                           </optgroup>
                         ))}
                       </select>
-                      {regionLabels.length === 1 && (
-                        <p className="mt-2 text-xs text-[#57b7af]">
-                          {isEn
-                            ? `↑ Only shortage occupations for ${displayedRegionLabels[0]} (official 2026 list)`
-                            : `↑ Uniquement les métiers en pénurie pour ${regionLabels[0]} — liste officielle 2026`}
-                        </p>
-                      )}
+                      {regionLabels.length === 1 &&
+                        (isFlandre(data.region) ? (
+                          <p className="mt-2 text-xs leading-5 text-[#57b7af]">
+                            {isEn ? (
+                              <>
+                                ↑ The menu holds both Flemish lists —{" "}
+                                <strong className="font-semibold text-emerald-700">
+                                  medium-skilled functions
+                                </strong>{" "}
+                                (test exemption) and{" "}
+                                <strong className="font-semibold text-[#a86a00]">
+                                  shortage occupations
+                                </strong>{" "}
+                                (9-week publication). Official 2026 lists.
+                              </>
+                            ) : (
+                              <>
+                                ↑ Le menu contient les deux listes flamandes —{" "}
+                                <strong className="font-semibold text-emerald-700">
+                                  fonctions moyennement qualifiées
+                                </strong>{" "}
+                                (dispense de test) et{" "}
+                                <strong className="font-semibold text-[#a86a00]">
+                                  professions en pénurie
+                                </strong>{" "}
+                                (publication 9 semaines). Listes officielles 2026.
+                              </>
+                            )}
+                          </p>
+                        ) : (
+                          <p className="mt-2 text-xs text-[#57b7af]">
+                            {isEn
+                              ? `↑ Only shortage occupations for ${displayedRegionLabels[0]} (official 2026 list)`
+                              : `↑ Uniquement les métiers en pénurie pour ${regionLabels[0]} — liste officielle 2026`}
+                          </p>
+                        ))}
                       {isFlandre(data.region) && (
                         <div className="mt-3">
                           <FlandreRegimeInfo lang={isEn ? "en" : "fr"} />

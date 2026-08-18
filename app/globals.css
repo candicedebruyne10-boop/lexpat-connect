@@ -248,3 +248,23 @@
     }
   }
 }
+
+/* ── Titres de groupes du menu métier (simulateur) ───────────────────────────
+   Colorer les <optgroup> pour distinguer d'un coup d'œil les deux régimes
+   flamands. Safari ignore ces règles : les symboles ✦ et ● présents dans le
+   libellé assurent la lisibilité partout. */
+select optgroup.optgroup-exempt {
+  color: #047857;
+  font-weight: 600;
+}
+
+select optgroup.optgroup-shortage {
+  color: #a86a00;
+  font-weight: 600;
+}
+
+select optgroup.optgroup-exempt option,
+select optgroup.optgroup-shortage option {
+  color: #1e293b;
+  font-weight: 400;
+}
